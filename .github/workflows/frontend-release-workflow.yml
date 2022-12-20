@@ -1,0 +1,69 @@
+name: Frontend release workflow
+
+on:
+  pull_request_target:
+    types:
+      - closed
+    branches:
+      - master
+      - main
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./legendary-dragons-frontend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Use Node.js v16.15.1
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16.15.1'
+
+      - name: Clean install
+        run: npm ci
+
+      - name: Build the application
+        run: npm run build
+
+      # - name: Run End To End Tests
+      #   run: npm run e2e:ci
+
+      # - name: Create Coverage Report
+      #   run:  npm run e2e:coverage
+
+      - name: Run SonarQube scanner
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: npm run sonar -- -Dsonar.login=$SONAR_TOKEN
+
+      # - name: Tag the build version
+      #   run: |
+      #     git tag "legendary-dragons-frontend-v${GITHUB_RUN_NUMBER}"
+      #     git push origin "legendary-dragons-frontend-v${GITHUB_RUN_NUMBER}"
+
+      # - name: Configure AWS Credentials
+      #   uses: aws-actions/configure-aws-credentials@v1
+      #   with:
+      #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #     aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+      #     aws-region: us-east-1
+
+      # - name: Sync Build files to AWS S3 Bucket
+      #   run: aws s3 sync dist/legendary-dragons-frontend s3://legendary-dragons-frontend
+
+      # - name: Create Release
+      #   id: create_release
+      #   uses: actions/create-release@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+      #   with:
+      #     tag_name: legendary-dragons-frontend-v${{ github.run_number }}
+      #     release_name: legendary-dragons-frontend-v${{ github.run_number }}
+      #     draft: false
+      #     prerelease: false

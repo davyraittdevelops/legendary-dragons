@@ -1,0 +1,35 @@
+name: Frontend Feature workflow
+
+on:
+  push:
+    branches: ['feature**']
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./legendary-dragons-frontend
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js v16.15.1
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16.15.1'
+
+      - name: Clean install
+        run: npm ci
+
+      - name: Build the application
+        run: npm run build
+
+      # - name: Run End To End Tests
+      #   run: npm run e2e:ci
+
+      # - name: Create Coverage Report
+      #   run:  npm run e2e:coverage
+
+      - name: Run SonarQube scanner
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: npm run sonar -- -Dsonar.login=$SONAR_TOKEN
