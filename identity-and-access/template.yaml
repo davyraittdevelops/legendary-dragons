@@ -16,6 +16,46 @@ Globals:
     TracingEnabled: True
 
 Resources:
+  LegDragonsCognitoUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: "LegendaryDragonsCognitoUserPool"
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 10
+          RequireLowercase: true
+          RequireNumbers: true
+          RequireSymbols: true
+          RequireUppercase: true
+      UsernameAttributes:
+        - email
+      AutoVerifiedAttributes:
+        - email
+      Schema:
+        - AttributeDataType: String
+          Name: email
+          Required: true
+        - AttributeDataType: String
+          Name: display_name
+          Mutable: true
+          Required: true
+          StringAttributeConstraints:
+            MinLength: "3"
+            MaxLength: "75"
+      VerificationMessageTemplate:
+        DefaultEmailOption: CONFIRM_WITH_LINK
+
+  LegDragonsUserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      ExplicitAuthFlows:
+        - ALLOW_USER_PASSWORD_AUTH
+        - ALLOW_REFRESH_TOKEN_AUTH
+        - ALLOW_USER_SRP_AUTH
+        - ALLOW_CUSTOM_AUTH
+      UserPoolId: !Ref LegDragonsCognitoUserPool
+      GenerateSecret: false
+
   IdentityAndAccessRestApi:
     Type: AWS::Serverless::Api
     Properties:
@@ -40,7 +80,7 @@ Resources:
   RegisterUserFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: register/
+      CodeUri: functions/register/
       Events:
         RegisterUser:
           Type: Api

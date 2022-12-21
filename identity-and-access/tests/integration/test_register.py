@@ -15,7 +15,7 @@ OS_ENV = {
 def test_lambda_handler():
     # Arrange
     # Act
-    from register.app import lambda_handler
+    from functions.register.app import lambda_handler
 
     response = lambda_handler({}, {})
 
