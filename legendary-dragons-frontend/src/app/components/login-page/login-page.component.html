@@ -1,0 +1,39 @@
+<body class="flex flex-col items-center justify-center w-screen h-screen bg-gray-200 text-gray-700">
+
+<form class="flex flex-col bg-white rounded shadow-lg p-12 mt-12" [formGroup]="form" (ngSubmit)="login()">
+  <input
+    type="email"
+    name="email"
+    class="px-4 py-3 w-full rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:bg-white focus:ring-0 text-sm"
+    placeholder="Email address"
+    [formControlName]="'email'"
+  />
+  <input
+    type="password"
+    name="password"
+    class="px-4 py-3 mt-4 w-full rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:bg-white focus:ring-0 text-sm"
+    placeholder="Password"
+    [formControlName]="'password'"
+  />
+
+  <div *ngIf="loginFailed">
+    Email or password is incorrect.
+  </div>
+
+  <div *ngIf="loginSuccess">
+    Login correct, redirecting to dashboard!
+  </div>
+
+  <button [disabled]="loginSuccess" class="flex items-center justify-center h-12 px-6 w-64 bg-blue-600 mt-8 rounded font-semibold text-sm text-blue-100 hover:bg-blue-700">Login</button>
+</form>
+
+<p class="text-sm font-semibold mt-2 pt-1 mb-0">
+  Don't have an account?
+  <a
+    href="/register"
+    class="text-red-600 hover:text-red-700 focus:text-red-700 transition duration-200 ease-in-out"
+  >Register</a
+  >
+</p>
+
+</body>
