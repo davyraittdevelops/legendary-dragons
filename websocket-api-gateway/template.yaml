@@ -1,0 +1,59 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: SAM Template for websocket API Gateway
+
+Globals:
+  Api:
+    TracingEnabled: True
+
+Resources:
+  LegDragonsWebSocketApi:
+    Type: AWS::ApiGatewayV2::Api
+    Properties:
+      Name: LegDragonsWebSocketApi
+      ProtocolType: WEBSOCKET
+      RouteSelectionExpression: "$request.body.action"
+
+  DefaultRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref LegDragonsWebSocketApi
+      RouteKey: $default
+      AuthorizationType: NONE
+      OperationName: DefaultRoute
+      Target: !Join
+        - '/'
+        - - 'integrations'
+          - !Ref DefaultIntegration
+
+  DefaultIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref LegDragonsWebSocketApi
+      Description: Default Integration
+      IntegrationType: MOCK
+
+  Deployment:
+    Type: AWS::ApiGatewayV2::Deployment
+    DependsOn:
+      - DefaultRoute
+    Properties:
+      ApiId: !Ref LegDragonsWebSocketApi
+
+  Stage:
+    Type: AWS::ApiGatewayV2::Stage
+    Properties:
+      StageName: Prod
+      Description: Prod Stage
+      ApiId: !Ref LegDragonsWebSocketApi
+      AutoDeploy: true
+
+Outputs:
+  LegDragonsWebSocketApi:
+    Description: "Legendary Dragons WebSocket API Gateway"
+    Value: !Ref LegDragonsWebSocketApi
+    Export:
+      Name: !Sub "${AWS::StackName}-LegDragonsWebSocketApi"
+  WebSocketURI:
+    Description: "The WSS Protocol URI to connect to"
+    Value: !Join [ '', [ 'wss://', !Ref LegDragonsWebSocketApi, '.execute-api.', !Ref 'AWS::Region', '.amazonaws.com/', !Ref 'Stage' ] ]
