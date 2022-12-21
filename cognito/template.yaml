@@ -1,0 +1,73 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: SAM Template for Cognito & SES Email Identity
+
+Resources:
+  LegDragonsEmailIdentity:
+    Type: AWS::SES::EmailIdentity
+    Properties:
+      EmailIdentity: legendarydragons.cloud-native-minor.it
+      DkimAttributes:
+        SigningEnabled: true
+      DkimSigningAttributes:
+        NextSigningKeyLength: "RSA_2048_BIT"
+
+  LegDragonsCognitoUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: "LegendaryDragonsCognitoUserPool"
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 10
+          RequireLowercase: true
+          RequireNumbers: true
+          RequireSymbols: true
+          RequireUppercase: true
+      UsernameAttributes:
+        - email
+      AutoVerifiedAttributes:
+        - email
+      Schema:
+        - AttributeDataType: String
+          Name: email
+          Required: true
+        - AttributeDataType: String
+          Name: nickname
+          Mutable: true
+          Required: true
+          StringAttributeConstraints:
+            MinLength: "3"
+            MaxLength: "75"
+      # EmailConfiguration:
+        # EmailSendingAccount: DEVELOPER
+        # From: "no-reply@legendarydragons.cloud-native-minor.it"
+        # SourceArn:
+      VerificationMessageTemplate:
+        DefaultEmailOption: CONFIRM_WITH_LINK
+
+  CognitoDomain:
+    Type: AWS::Cognito::UserPoolDomain
+    Properties:
+      # CustomDomainConfig:
+        # TODO: Update with template value (future)
+        # CertificateArn: arn:aws:acm:us-east-1:861259332787:certificate/8aa37323-aabd-47ef-b163-8e7a0532bdf4
+      Domain: "legendarydragons-cloud-native-minor-it"
+      UserPoolId: !Ref LegDragonsCognitoUserPool
+
+  LegDragonsUserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      ExplicitAuthFlows:
+        - ALLOW_USER_PASSWORD_AUTH
+        - ALLOW_REFRESH_TOKEN_AUTH
+        - ALLOW_USER_SRP_AUTH
+        - ALLOW_CUSTOM_AUTH
+      UserPoolId: !Ref LegDragonsCognitoUserPool
+      GenerateSecret: false
+
+Outputs:
+  LegDragonsUserPoolClient:
+    Description: "Legendary Dragons User Pool Client ID"
+    Value: !Ref LegDragonsUserPoolClient
+    Export:
+      Name: !Sub "${AWS::StackName}-LegDragonUserPoolClient"

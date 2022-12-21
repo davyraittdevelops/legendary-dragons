@@ -5,13 +5,20 @@ Description: >
 
   SAM Template for identity-and-access context
 
+Parameters:
+  LegDragonsUserPoolClient:
+    Type: String
+    Default: "legendary-dragons-cognito-LegDragonUserPoolClient"
+
 Globals:
   Function:
     Handler: app.lambda_handler
     Runtime: python3.9
     Environment:
         Variables:
-          COGNITO_CLIENT: !Ref LegDragonsUserPoolClient
+          COGNITO_CLIENT:
+            Fn::ImportValue:
+              !Sub "${LegDragonsUserPoolClient}"
     Architectures:
       - x86_64
     Tracing: Active
@@ -19,52 +26,6 @@ Globals:
     TracingEnabled: True
 
 Resources:
-  LegDragonsCognitoUserPool:
-    Type: AWS::Cognito::UserPool
-    Properties:
-      UserPoolName: "LegendaryDragonsCognitoUserPool"
-      Policies:
-        PasswordPolicy:
-          MinimumLength: 10
-          RequireLowercase: true
-          RequireNumbers: true
-          RequireSymbols: true
-          RequireUppercase: true
-      UsernameAttributes:
-        - email
-      AutoVerifiedAttributes:
-        - email
-      Schema:
-        - AttributeDataType: String
-          Name: email
-          Required: true
-        - AttributeDataType: String
-          Name: nickname
-          Mutable: true
-          Required: true
-          StringAttributeConstraints:
-            MinLength: "3"
-            MaxLength: "75"
-      VerificationMessageTemplate:
-        DefaultEmailOption: CONFIRM_WITH_LINK
-
-  CognitoDomain:
-    Type: AWS::Cognito::UserPoolDomain
-    Properties:
-      Domain: legendary-dragons-tmp
-      UserPoolId: !Ref LegDragonsCognitoUserPool
-
-  LegDragonsUserPoolClient:
-    Type: AWS::Cognito::UserPoolClient
-    Properties:
-      ExplicitAuthFlows:
-        - ALLOW_USER_PASSWORD_AUTH
-        - ALLOW_REFRESH_TOKEN_AUTH
-        - ALLOW_USER_SRP_AUTH
-        - ALLOW_CUSTOM_AUTH
-      UserPoolId: !Ref LegDragonsCognitoUserPool
-      GenerateSecret: false
-
   IdentityAndAccessRestApi:
     Type: AWS::Serverless::Api
     Properties:
@@ -97,7 +58,6 @@ Resources:
             RestApiId: !Ref IdentityAndAccessRestApi
             Path: /users/register
             Method: post
-
 
 Outputs:
   IdentityAndAccessRestApi:
