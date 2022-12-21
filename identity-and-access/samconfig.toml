@@ -1,0 +1,11 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "legendary-dragons-identity-and-access"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-he0au9dk38to"
+s3_prefix = "legendary-dragons-identity-and-access"
+region = "us-east-1"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+image_repositories = []

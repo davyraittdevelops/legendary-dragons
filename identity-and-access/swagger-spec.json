@@ -1,0 +1,56 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "identity-and-access-api",
+    "version": "1.0",
+    "description": "A REST api to register and authenticate users"
+  },
+  "host": "localhost:3000",
+  "schemes": [
+    "https"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "paths": {
+    "/users/register": {
+      "parameters": [],
+      "post": {
+        "summary": "",
+        "operationId": "post-user",
+        "responses": {
+          "201": {
+            "description": "Created",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "display_name": {
+                  "type": "string"
+                },
+                "email": {
+                  "type": "string"
+                },
+                "password": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "httpMethod": "POST",
+          "type": "aws_proxy",
+          "uri": {
+            "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${RegisterUserFunction.Arn}/invocations"
+          },
+          "passthroughBehavior": "when_no_match"
+        },
+        "description": "Register a new user"
+      }
+    }
+  },
+  "definitions": {}
+}
