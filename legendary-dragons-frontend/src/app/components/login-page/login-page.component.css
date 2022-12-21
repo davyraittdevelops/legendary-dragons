@@ -1,0 +1,23 @@
+.spacing{
+    margin-bottom: 15px;
+}
+
+h1{
+    text-align: center;
+}
+
+.page{
+    height: 100%;
+}
+
+.white-background{
+    background-color: rgb(255, 255, 255, 0.5);
+    border: 2px solid black;
+    margin-left: 15%;
+    margin-right: 15%;
+}
+
+.left-right-padding{
+    padding-left: 10%;
+    padding-right: 10%;
+}
