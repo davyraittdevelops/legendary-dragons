@@ -1,0 +1,75 @@
+name: Identity & Access Release workflow
+
+on:
+  push:
+    branches: [ "master" ]
+    paths:
+      - 'identity-and-access**'
+      - '.github/workflows/identity-access-release-workflow.yml'
+  workflow_dispatch:
+
+defaults:
+  run:
+    working-directory: ./identity-and-access
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+          cache: 'pip'
+
+      - name: Generate test report & rapport
+        run: |
+          pip3 install -r tests/test-requirements.txt
+          coverage run --source=./ -m pytest -v -rap --junitxml target/testreport-tests.xml
+          coverage xml -o target/coverage-identity-and-access.xml
+
+      - name: Run scanner
+        uses: sonarsource/sonarqube-scan-action@master
+        with:
+          projectBaseDir: './identity-and-access'
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: https://sonar.cloud-native-minor.it
+
+      - name: Tag the build version
+        run: |
+          git tag "identity-and-access-v${GITHUB_RUN_NUMBER}"
+          git push origin "identity-and-access-v${GITHUB_RUN_NUMBER}"
+
+      - name: Set up SAM CLI
+        uses: aws-actions/setup-sam@v2
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1-node16
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Build the serverless application
+        run: |
+          pip3 install -r functions/register/requirements.txt
+          sam build
+
+      - name: Deploy the serverless application
+        run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: identity-and-access-v${{ github.run_number }}
+          release_name: identity-and-access-v${{ github.run_number }}
+          draft: false
+          prerelease: false
