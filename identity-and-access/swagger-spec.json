@@ -27,7 +27,7 @@
             "schema": {
               "type": "object",
               "properties": {
-                "display_name": {
+                "nickname": {
                   "type": "string"
                 },
                 "email": {

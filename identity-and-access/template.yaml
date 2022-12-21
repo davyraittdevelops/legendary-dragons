@@ -9,6 +9,9 @@ Globals:
   Function:
     Handler: app.lambda_handler
     Runtime: python3.9
+    Environment:
+        Variables:
+          COGNITO_CLIENT: !Ref LegDragonsUserPoolClient
     Architectures:
       - x86_64
     Tracing: Active
@@ -36,7 +39,7 @@ Resources:
           Name: email
           Required: true
         - AttributeDataType: String
-          Name: display_name
+          Name: nickname
           Mutable: true
           Required: true
           StringAttributeConstraints:
@@ -44,6 +47,12 @@ Resources:
             MaxLength: "75"
       VerificationMessageTemplate:
         DefaultEmailOption: CONFIRM_WITH_LINK
+
+  CognitoDomain:
+    Type: AWS::Cognito::UserPoolDomain
+    Properties:
+      Domain: legendary-dragons-tmp
+      UserPoolId: !Ref LegDragonsCognitoUserPool
 
   LegDragonsUserPoolClient:
     Type: AWS::Cognito::UserPoolClient
@@ -89,12 +98,13 @@ Resources:
             Path: /users/register
             Method: post
 
+
 Outputs:
   IdentityAndAccessRestApi:
     Description: "API Gateway endpoint URL for Prod stage"
     Value: !Sub "https://${IdentityAndAccessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/users/"
   RegisterUserFunction:
-    Description: "Hello World Lambda Function ARN"
+    Description: "Register User Lambda Function ARN"
     Value: !GetAtt RegisterUserFunction.Arn
   RegisterUserFunctionIamRole:
     Description: "Implicit IAM Role created for Register User function"
