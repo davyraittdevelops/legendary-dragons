@@ -10,25 +10,25 @@ import { Subscription } from "rxjs";
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit, OnDestroy {
-  userSubscription: Subscription | undefined;
-  userName: string | undefined
+  // userSubscription: Subscription | undefined;
+  // userName: string | undefined
 
-  constructor(private appStore: Store<AppState>) { }
+  // constructor(private appStore: Store<AppState>) { }
 
   ngOnInit(): void {
-    this.userSubscription = this.appStore
-      .select('userState')
-      .subscribe((state: UserState) => {
+  //   this.userSubscription = this.appStore
+  //     .select('userState')
+  //     .subscribe((state: UserState) => {
 
-        if (!state.hasUserError && !state.isUserLoading) {
-          this.userName = state.user.name;
-        }
-      });
+  //       if (!state.hasUserError && !state.isUserLoading) {
+  //         this.userName = state.user.name;
+  //       }
+  //     });
   }
 
   ngOnDestroy(): void {
-    if (this.userSubscription) {
-      this.userSubscription.unsubscribe();
-    }
+  //   if (this.userSubscription) {
+  //     this.userSubscription.unsubscribe();
+  //   }
   }
 }

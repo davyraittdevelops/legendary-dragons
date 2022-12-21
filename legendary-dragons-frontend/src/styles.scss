@@ -2,3 +2,13 @@
 
 /* Importing Bootstrap SCSS file. */
 @import '~bootstrap/scss/bootstrap';
+
+body{
+    background-image: url("assets/4541098.png");
+    color: white;
+    height: 100%;
+}
+
+html{
+    height: 100%;
+}
