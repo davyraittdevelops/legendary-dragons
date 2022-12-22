@@ -33,9 +33,10 @@ export class LoginPageComponent implements OnInit {
     const user = {
       email: this.form.controls?.["email"].value!,
       password: this.form.controls?.["password"].value!,
+      nickname: "yooo"
     }
 
-    this.userService.loginUser(user.email, user.password).subscribe({
+    this.userService.loginUser(user).subscribe({
       next: () => {
         this.router.navigate(["dashboard"])
       },
