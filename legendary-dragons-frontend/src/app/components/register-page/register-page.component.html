@@ -1,46 +1,103 @@
-<body class="flex flex-col items-center justify-center w-screen h-screen bg-gray-200 text-gray-700">
+<div class="page mt-3">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4 col-sm-4 col-xs-2"></div>
+      <div class="col-md-4 col-sm-4 col-xs-8">
+        <form class="" [formGroup]="form" (ngSubmit)="registerUser()" #f="ngForm" novalidate>
+          <div class="row row-col-1 align-items-center bg-light bg-opacity-75 rounded-3 shadow-sm text-dark pb-4 pt-2">
+            <h1 class="text-center">Register</h1>
+            <label class="form-label px-4">Email</label>
+            <div class="spacing px-4">
+              <input
+                  type="email"
+                  name="email"
+                  class="form-control"
+                  placeholder="example@example.com"
+                  [formControlName]="'email'"
+              />
+              <div class="col-12" *ngIf="email.invalid && (email.dirty || email.touched)">
+                <span class="form-text text-danger fw-bold" *ngIf="email.errors?.['required']">
+                  Email is required.
+                </span>
 
-<form class="flex flex-col bg-white rounded shadow-lg p-12 mt-12" [formGroup]="form" (ngSubmit)="registerUser()">
-  <input
-    type="name"
-    name="name"
-    class="px-4 py-3 mt-4 w-full rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:bg-white focus:ring-0 text-sm"
-    placeholder="Your name"
-    [formControlName]="'name'"
-  />
-  <input
-    type="email"
-    name="email"
-    class="px-4 py-3 mt-4 w-full rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:bg-white focus:ring-0 text-sm"
-    placeholder="Your email"
-    [formControlName]="'email'"
-  />
-  <input
-    type="password"
-    name="password"
-    class="px-4 py-3 mt-4 w-full rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:bg-white focus:ring-0 text-sm"
-    placeholder="Password"
-    [formControlName]="'password'"
-  />
+                <span class="form-text text-danger fw-bold" *ngIf="email.errors?.['email']">
+                  Email is not valid.
+                </span>
+              </div>
 
-  <div *ngIf="registerFail">
-    Email already exists!
+            </div>
+            <label class="form-label px-4">Nickname</label>
+            <div class="spacing px-4">
+              <input
+                type="name"
+                name="name"
+                required minlength="3"
+                class="form-control"
+                placeholder="Your nickname"
+                [formControlName]="'name'"
+              />
+
+              <div class="col-12" *ngIf="name.invalid && (name.dirty || name.touched)">
+                <div class="form-text text-danger fw-bold" *ngIf="name.errors?.['required']">
+                  Name is required.
+                </div>
+                <div class="form-text text-danger fw-bold" *ngIf="name.errors?.['minlength']">
+                  Name must be at least 3 characters long.
+                </div>
+                <div class="form-text text-danger fw-bold" *ngIf="name.errors?.['maxlength']">
+                  Name must be shorter than 75 characters.
+                </div>
+              </div>
+            </div>
+            <label class="form-label px-4">Password</label>
+            <div class="spacing px-4">
+              <input
+                type="password"
+                name="password"
+                required minlength="10"
+                class="form-control"
+                placeholder="Password"
+                [formControlName]="'password'"
+              />
+              <div class="col-12" *ngIf="password.invalid && (password.dirty || password.touched)">
+                <div class="form-text text-danger fw-bold" *ngIf="password.errors?.['required']">
+                  Password is required.
+                </div>
+                <div class="form-text text-danger fw-bold" *ngIf="password.errors?.['minlength']">
+                  Password must be at least 10 characters long.
+                </div>
+                <div class="form-text text-danger fw-bold" *ngIf="password.errors?.['pattern']">
+                  Password must contain lowercase letters, uppercase letters, numbers and special characters.
+                </div>
+              </div>
+            </div>
+            <label class="form-label px-4">Confirm password</label>
+            <div class="spacing px-4">
+              <input
+                  type="password"
+                  name="confirm password"
+                  class="form-control"
+                  placeholder="Password"
+                  [formControlName]="'confirmpassword'"
+              />
+
+              <div class="form-text text-danger fw-bold" *ngIf="confirmpassword.touched && form.errors?.['passwordsNotEqual']">
+                The repeated password does not match.
+              </div>
+            </div>
+
+            <div class="px-4 d-grid mt-2">
+              <button [disabled]="form.invalid" type="submit" class="btn btn-light spacing">Register</button>
+            </div>
+
+            <p class="text-center">
+              Already have an account?
+              <a routerLink="/login" class="text-light">Login here</a>
+            </p>
+          </div>
+        </form>
+      </div>
+      <div class="col-md-4 col-sm-4 col-xs-2"></div>
+    </div>
   </div>
-
-  <div *ngIf="registerSuccess">
-    Succesfully registered account!
-  </div>
-
-  <button [disabled]="registerSuccess" class="flex items-center justify-center h-12 px-6 w-64 bg-blue-600 mt-8 rounded font-semibold text-sm text-blue-100 hover:bg-blue-700">Create an Account</button>
-</form>
-
-<p class="text-sm font-semibold mt-2 pt-1 mb-0">
-  Already have an account?
-  <a
-    href="/login"
-    class="text-red-600 hover:text-red-700 focus:text-red-700 transition duration-200 ease-in-out"
-  >Login here</a
-  >
-</p>
-
-</body>
+</div>

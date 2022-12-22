@@ -1,7 +1,10 @@
-img {
-  cursor: auto;
+nav{
+  border-bottom: 1px solid white;
 }
 
-#welcome-user {
-  margin-right: 50px;
+.dragon{
+  height: 40px;
+  width: 40px;
+  margin-right: 10px ;
 }
+
