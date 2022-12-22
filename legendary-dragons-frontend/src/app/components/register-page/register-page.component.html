@@ -3,7 +3,7 @@
     <div class="row"> 
       <div class="col-md-4 col-sm-4 col-xs-2"></div>
       <div class="col-md-4 col-sm-4 col-xs-8">
-        <form class="" [formGroup]="form" (ngSubmit)="registerUser()">
+        <form class="" [formGroup]="form" (ngSubmit)="registerUser()" #f="ngForm" novalidate>
           <div class="row row-col-1 align-items-center white-background">
             <h1>Register</h1>
             <label class="form-label left-right-padding">Email</label>
@@ -15,26 +15,43 @@
                 placeholder="Your email"
                 [formControlName]="'email'"
               />
+              <div class="col-12" *ngIf="form.controls.email.errors?.['pattern']">
+                Email must be in this format: example@example.com
+              </div>
             </div>
             <label class="form-label left-right-padding">Nickname</label>
             <div class="spacing left-right-padding">
               <input
                 type="name"
                 name="name"
+                required minlength="3"
                 class="form-control"
                 placeholder="Your nickname"
                 [formControlName]="'name'"
               />
+              <div class="col-12" *ngIf="form.controls.name.errors?.['minlength']">
+                Name must be at least 3 characters long.
+              </div>
+              <div class="col-12" *ngIf="form.controls.name.errors?.['maxlength']">
+                Name must be shorter than 75 characters.
+              </div>
             </div>
             <label class="form-label left-right-padding">Password</label>
             <div class="spacing left-right-padding">
               <input
                 type="password"
                 name="password"
+                required minlength="10"
                 class="form-control"
                 placeholder="Password"
                 [formControlName]="'password'"
               />
+              <div class="col-12" *ngIf="form.controls.password.errors?.['minlength']">
+                Password must be at least 10 characters long.
+              </div>
+              <div class="col-12" *ngIf="form.controls.password.errors?.['pattern'] && this.form.get('password').length > 10">
+                Password must contain uppercase, numbers and symbols.
+              </div>
             </div>
             <label class="form-label left-right-padding">Confirm password</label>
             <div class="spacing left-right-padding">
@@ -43,14 +60,11 @@
                 name="confirm password"
                 class="form-control"
                 placeholder="Password"
-                [formControlName]="'password'"
+                [formControlName]="'confirmpassword'"
               />
             </div>
             <div *ngIf="registerFail" class="col-6">
               Email already exists!
-            </div>
-            <div *ngIf="registerFail" class="col-6">
-              Nickname must be atleast 3 characters long!
             </div>
             <div *ngIf="registerFail" class="col-6">
               Password must be atleast 10 characters long and contains uppercase, numbers and symbols!

@@ -17,9 +17,10 @@ export class RegisterPageComponent implements OnInit, OnDestroy {
   registerSuccess = false;
 
   form = new FormGroup({
-    name: new FormControl('', Validators.required),
-    email: new FormControl('', Validators.required),
-    password: new FormControl('', Validators.required)
+    name: new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(75)]),
+    email: new FormControl('', [Validators.required, Validators.pattern("[^ @]@[^ @]")]),
+    password: new FormControl('', [Validators.required, Validators.minLength(10), Validators.pattern(/(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*#?&^_-]).{8,}/)]),
+    confirmpassword: new FormControl('', [Validators.required, Validators.pattern(/(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*#?&^_-]).{8,}/)])
   })
 
   constructor(private router: Router, private appStore: Store<AppState>) { }
