@@ -1,51 +1,51 @@
-import { createAction, props } from '@ngrx/store'
-import { UserModel } from 'src/app/models/user.model';
+import { createAction, props } from '@ngrx/store';
+import { User, UserRegistration } from 'src/app/models/user.model';
 
 export const registerUser = createAction(
-  '[Login Page Component] Register',
-  props<{ user: UserModel }>()
+  '[Register Page Component] Register',
+  props<{ user: UserRegistration }>()
 );
 
 export const registerUserFail = createAction(
-  '[Login Page Component] Register Fail',
+  '[Register Page Component] Register Fail',
   props<{ error: boolean }>(),
 )
 
 export const registerUserSuccess = createAction(
-  '[Login Page Component] Register Success',
-  props<{ user: UserModel }>()
+  '[Register Page Component] Register Success',
+  props<{ user: User }>()
 )
 
-export const logoutUser = createAction(
-  '[Navbar Component] Logout'
-);
+// export const logoutUser = createAction(
+//   '[Navbar Component] Logout'
+// );
 
-export const loginUser = createAction(
-  '[Login Page Component] Login',
-  props<{ user: UserModel }>()
-)
+// export const loginUser = createAction(
+//   '[Login Page Component] Login',
+//   props<{ user: User }>()
+// )
 
-export const getUserByEmail = createAction(
-  '[Board Permission Page Component] Get User By Email',
-  props<{ email: string }>()
-)
+// export const getUserByEmail = createAction(
+//   '[Board Permission Page Component] Get User By Email',
+//   props<{ email: string }>()
+// )
 
-export const getUserByEmailFail = createAction(
-  '[Board Permission Page Component] Get User By Email Fail',
-  props<{ error: boolean }>()
-)
+// export const getUserByEmailFail = createAction(
+//   '[Board Permission Page Component] Get User By Email Fail',
+//   props<{ error: boolean }>()
+// )
 
-export const getUserByEmailSuccess = createAction(
-  '[Board Permission Page Component] Get User By Email Success',
-  props<{ user: UserModel }>()
-)
+// export const getUserByEmailSuccess = createAction(
+//   '[Board Permission Page Component] Get User By Email Success',
+//   props<{ user: User }>()
+// )
 
-export const loginUserFail = createAction(
-  '[Login Page Component] Login Fail',
-  props<{ error: boolean }>(),
-)
+// export const loginUserFail = createAction(
+//   '[Login Page Component] Login Fail',
+//   props<{ error: boolean }>(),
+// )
 
-export const loginUserSuccess = createAction(
-  '[Login Page Component] Login Success',
-  props<{ user: UserModel }>()
-)
+// export const loginUserSuccess = createAction(
+//   '[Login Page Component] Login Success',
+//   props<{ user: User }>()
+// )

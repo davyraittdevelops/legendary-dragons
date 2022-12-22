@@ -86,6 +86,8 @@
               </div>
             </div>
 
+            <p class="text-danger px-4" *ngIf="registrationError">An error has occurred! Please check the fields above.</p>
+
             <div class="px-4 d-grid mt-2">
               <button [disabled]="form.invalid" type="submit" class="btn btn-light spacing">Register</button>
             </div>

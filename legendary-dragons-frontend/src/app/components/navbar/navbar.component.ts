@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from "@angular/router";
 import { Store } from "@ngrx/store";
 import { AppState } from "../../app.state";
-import { logoutUser } from "../../ngrx/user/user.actions";
-import { Router } from "@angular/router";
 
 @Component({
   selector: 'app-navbar',
@@ -21,7 +20,7 @@ export class NavbarComponent implements OnInit {
   }
 
   logout() {
-    this.appStore.dispatch(logoutUser());
+    // this.appStore.dispatch(logoutUser());
     this.router.navigate(["/login"]);
   }
 }

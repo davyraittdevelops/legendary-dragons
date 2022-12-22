@@ -41,29 +41,28 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: npm run sonar -- -Dsonar.login=$SONAR_TOKEN
 
-      # - name: Tag the build version
-      #   run: |
-      #     git tag "legendary-dragons-frontend-v${GITHUB_RUN_NUMBER}"
-      #     git push origin "legendary-dragons-frontend-v${GITHUB_RUN_NUMBER}"
+      - name: Tag the build version
+        run: |
+          git tag "legendary-dragons-frontend-v${GITHUB_RUN_NUMBER}"
+          git push origin "legendary-dragons-frontend-v${GITHUB_RUN_NUMBER}"
 
-      # - name: Configure AWS Credentials
-      #   uses: aws-actions/configure-aws-credentials@v1
-      #   with:
-      #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      #     aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
-      #     aws-region: us-east-1
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
 
-      # - name: Sync Build files to AWS S3 Bucket
-      #   run: aws s3 sync dist/legendary-dragons-frontend s3://legendary-dragons-frontend
+      - name: Sync Build files to AWS S3 Bucket
+        run: aws s3 sync dist/legendary-dragons-frontend s3://legendary-dragons-frontend
 
-      # - name: Create Release
-      #   id: create_release
-      #   uses: actions/create-release@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GH_PAT }}
-      #   with:
-      #     tag_name: legendary-dragons-frontend-v${{ github.run_number }}
-      #     release_name: legendary-dragons-frontend-v${{ github.run_number }}
-      #     draft: false
-      #     prerelease: false
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: legendary-dragons-frontend-v${{ github.run_number }}
+          release_name: legendary-dragons-frontend-v${{ github.run_number }}
+          draft: false
+          prerelease: false

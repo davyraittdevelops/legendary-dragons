@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ValidationErrors, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import { Store } from "@ngrx/store";
+import { UserService } from 'src/app/services/user/user.service';
 import { AppState } from "../../app.state";
 
 export const validatePasswords = (control: AbstractControl): ValidationErrors | null => {
   if (control && control.get("password") && control.get("confirmpassword")) {
-    console.log(control)
     const password = control.get("password")?.value;
     const confirmPassword = control.get("confirmpassword")?.value;
     return (password != confirmPassword) ? { passwordsNotEqual: true } : null
@@ -14,15 +14,13 @@ export const validatePasswords = (control: AbstractControl): ValidationErrors | 
   return null;
 }
 
-
 @Component({
   selector: 'app-register-page',
   templateUrl: './register-page.component.html',
   styleUrls: ['./register-page.component.css']
 })
 export class RegisterPageComponent implements OnInit {
-  registerFail = false;
-  registerSuccess = false;
+  registrationError = false;
 
   form = new FormGroup({
     name: new FormControl(
@@ -39,35 +37,31 @@ export class RegisterPageComponent implements OnInit {
     )
   }, {validators: validatePasswords, updateOn: "blur"})
 
-  constructor(private router: Router, private appStore: Store<AppState>) { }
+  constructor(private router: Router, private appStore: Store<AppState>, private userService: UserService) {}
 
   ngOnInit(): void {
   }
 
   registerUser() {
-    console.log(this.form)
-    console.log("register")
-    // if (!this.form.valid) {
-    //   this.registerFail = true;
-    //   return;
-    // }
-    //
-    // this.appStore.dispatch(registerAccount({account: {email: this.form.get("email")?.getRawValue(), password: this.form.get("password")?.getRawValue(), name: this.form.get("name")?.getRawValue()}}));
-    //
-    // this.accountSubscription = this.appStore
-    //   .select('accountState')
-    //   .subscribe((state: AccountState) => {
-    //     this.registerFail = true;
-    //
-    //     if (!state.hasRegisterAccountError && !state.isRegisterAccountLoading) {
-    //       this.registerFail = false;
-    //       this.registerSuccess = true;
-    //
-    //       setTimeout(() => {
-    //         this.router.navigate(["/login"]);
-    //       }, 2000);
-    //     }
-    //   });
+    if (this.form.invalid) {
+      return;
+    }
+
+    const user = {
+      nickname: this.name.value!,
+      email: this.email.value!,
+      password: this.password.value!
+    }
+
+    this.userService.registerUser(user).subscribe({
+      next: () => {
+        this.registrationError = false;
+        this.router.navigate(["/login"])
+      },
+      error: () => {
+        this.registrationError = true;
+      }
+    });
   }
 
   get name() {

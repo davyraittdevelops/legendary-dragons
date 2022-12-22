@@ -1,46 +1,22 @@
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import { Injectable } from '@angular/core';
-import { HttpClient } from "@angular/common/http";
-import { Observable, of } from "rxjs";
-import { UserModel } from 'src/app/models/user.model';
+import { Observable } from "rxjs";
+import { User, UserRegistration } from 'src/app/models/user.model';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class UserService {
-  private user: UserModel = {
-    name: "",
-    email: ""
+  constructor(private http: HttpClient) {}
+
+  registerUser(user: UserRegistration): Observable<UserRegistration> {
+    return this.http.post<UserRegistration>(`/users/register`, user);
   }
 
-  constructor(private readonly http: HttpClient) {
-  }
-
-  registerUser(user: UserModel): Observable<UserModel> {
-    return this.http.post<UserModel>('/account/api/users', user);
-  }
-
-  loginUser(user: UserModel): Observable<UserModel> {
-    return this.http.post<UserModel>('/account/api/users/login', user);
-  }
-
-  getUserById(email: string): Observable<UserModel> {
-    return this.http.get<UserModel>('/account/api/user/' + email);
-  }
-
-  setUsername(userName: string) {
-    this.user.name = userName;
-  }
-
-  setUserEmail(email: string) {
-    this.user.email = email;
-  }
-
-  getUserEmail() {
-    return this.user.email;
-  }
-
-  getUsername() {
-    return of(this.user.name);
+  loginUser(email: string, password: string): Observable<User> {
+    return this.http.post<User>(`/users/login`,
+      {email, password});
   }
 }

@@ -1,20 +1,17 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
-import { AppState } from "../../app.state";
 import { Store } from "@ngrx/store";
-import { loginUser } from "../../ngrx/user/user.actions";
-import { UserState } from "../../ngrx/user/models/user-state.model";
+import { AppState } from "../../app.state";
+// import { loginUser } from "../../ngrx/user/user.actions";
 import { UserService } from "../../services/user/user.service";
-import { Subscription } from "rxjs";
 
 @Component({
   selector: 'app-login-page',
   templateUrl: './login-page.component.html',
   styleUrls: ['./login-page.component.css']
 })
-export class LoginPageComponent implements OnInit, OnDestroy {
-  userSubscription: Subscription | undefined;
+export class LoginPageComponent implements OnInit {
   loginFailed = false;
   loginSuccess = false;
 
@@ -29,11 +26,23 @@ export class LoginPageComponent implements OnInit, OnDestroy {
   }
 
   login() {
-    // if (!this.form.valid) {
-    //   this.loginFailed = true;
-    //   return;
-    // }
-    //
+    if (this.form.invalid) {
+      return;
+    }
+
+    const user = {
+      email: this.form.controls?.["email"].value!,
+      password: this.form.controls?.["password"].value!,
+      nickname: "yooo"
+    }
+
+    this.userService.loginUser(user.email, user.password).subscribe({
+      next: () => {
+        this.router.navigate(["dashboard"])
+      },
+      error: () => this.loginFailed = true
+    });
+
     // this.appStore.dispatch(loginUser({user: {email: this.form.get("email")?.getRawValue(), password: this.form.get("password")?.getRawValue(), name: ""}}));
     //
     // this.userService = this.appStore
@@ -54,9 +63,4 @@ export class LoginPageComponent implements OnInit, OnDestroy {
     //   });
   }
 
-  ngOnDestroy(): void {
-    if (this.userSubscription) {
-      this.userSubscription.unsubscribe();
-    }
-  }
 }
