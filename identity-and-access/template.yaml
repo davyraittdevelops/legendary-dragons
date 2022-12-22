@@ -1,0 +1,71 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  identity-and-access
+
+  SAM Template for identity-and-access context
+
+Parameters:
+  LegDragonsUserPoolClient:
+    Type: String
+    Default: "legendary-dragons-cognito-LegDragonUserPoolClient"
+
+Globals:
+  Function:
+    Handler: app.lambda_handler
+    Runtime: python3.9
+    Environment:
+        Variables:
+          COGNITO_CLIENT:
+            Fn::ImportValue:
+              !Sub "${LegDragonsUserPoolClient}"
+    Architectures:
+      - x86_64
+    Tracing: Active
+  Api:
+    TracingEnabled: True
+
+Resources:
+  IdentityAndAccessRestApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      DefinitionBody:
+        Fn::Transform:
+          Name: AWS::Include
+          Parameters:
+            Location: ./swagger-spec.json
+      MethodSettings:
+        - ResourcePath: "/*"
+          HttpMethod: "*"
+          LoggingLevel: INFO
+          MetricsEnabled: true
+      AccessLogSetting:
+        DestinationArn: !GetAtt AccessLogGroup.Arn
+        Format: '{"requestTime":"$context.requestTime","requestId":"$context.requestId","httpMethod":"$context.httpMethod","path":"$context.path","routeKey":"$context.routeKey","status":$context.status,"responseLatency":$context.responseLatency, "stage": $context.stage}'
+
+  AccessLogGroup:
+    Type: AWS::Logs::LogGroup
+
+  RegisterUserFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/register/
+      Events:
+        RegisterUser:
+          Type: Api
+          Properties:
+            RestApiId: !Ref IdentityAndAccessRestApi
+            Path: /users/register
+            Method: post
+
+Outputs:
+  IdentityAndAccessRestApi:
+    Description: "API Gateway endpoint URL for Prod stage"
+    Value: !Sub "https://${IdentityAndAccessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/users/"
+  RegisterUserFunction:
+    Description: "Register User Lambda Function ARN"
+    Value: !GetAtt RegisterUserFunction.Arn
+  RegisterUserFunctionIamRole:
+    Description: "Implicit IAM Role created for Register User function"
+    Value: !GetAtt RegisterUserFunctionRole.Arn
