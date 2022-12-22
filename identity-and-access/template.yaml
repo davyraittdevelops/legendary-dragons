@@ -58,6 +58,18 @@ Resources:
             RestApiId: !Ref IdentityAndAccessRestApi
             Path: /users/register
             Method: post
+            
+  LoginUserFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/login/
+      Events:
+        RegisterUser:
+          Type: Api
+          Properties:
+            RestApiId: !Ref IdentityAndAccessRestApi
+            Path: /users/login
+            Method: post
 
 Outputs:
   IdentityAndAccessRestApi:
@@ -69,3 +81,6 @@ Outputs:
   RegisterUserFunctionIamRole:
     Description: "Implicit IAM Role created for Register User function"
     Value: !GetAtt RegisterUserFunctionRole.Arn
+  LoginUserFunction:
+    Description: "Login User Lambda Function ARN"
+    Value: !GetAtt LoginUserFunction.Arn

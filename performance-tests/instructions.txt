@@ -1,0 +1,3 @@
+command to run tests from this folder:
+mvn gatling:test -Dsimulation=RegisterAccountSimulation  -Dduration=2 -DuserRate=4 -X
+you can change dsimulation, dduration, and duserrate
