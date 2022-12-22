@@ -20,10 +20,10 @@
       "parameters": [],
       "post": {
         "summary": "",
-        "operationId": "post-user",
+        "operationId": "register-user",
         "responses": {
           "201": {
-            "description": "Created",
+            "description": "User successfully registered",
             "schema": {
               "type": "object",
               "properties": {
@@ -49,6 +49,38 @@
           "passthroughBehavior": "when_no_match"
         },
         "description": "Register a new user"
+      }
+    },
+    "/users/login": {
+      "parameters": [],
+      "post": {
+        "summary": "",
+        "operationId": "login-user",
+        "responses": {
+          "200": {
+            "description": "User logged in",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string"
+                },
+                "password": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "httpMethod": "POST",
+          "type": "aws_proxy",
+          "uri": {
+            "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LoginUserFunction.Arn}/invocations"
+          },
+          "passthroughBehavior": "when_no_match"
+        },
+        "description": "Login an existing user"
       }
     }
   },
