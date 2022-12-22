@@ -15,7 +15,7 @@ export class UserService {
     return this.http.post<UserRegistration>(`${environment.users_api_url}/users/register`, user);
   }
 
-  loginUser(user: User): Observable<User> {
-    return this.http.post<User>(`${environment.users_api_url}/users/login`, user);
+  loginUser(email: string, password: string): Observable<User> {
+    return this.http.post<User>(`${environment.users_api_url}/users/login`, {email, password});
   }
 }
