@@ -7,12 +7,9 @@ import { UserService } from "src/app/services/user/user.service";
 import { AppState } from "../../app.state";
 
 import {
-  getUserByEmail,
-  getUserByEmailFail,
-  getUserByEmailSuccess,
-  loginUser,
-  loginUserFail,
-  loginUserSuccess,
+  // loginUser,
+  // loginUserFail,
+  // loginUserSuccess,
   registerUser,
   registerUserFail,
   registerUserSuccess
@@ -23,64 +20,57 @@ export class UserEffects {
 
   constructor(
     private readonly appStore: Store<AppState>,
-    private readonly actions: Actions,
+    private readonly actions$: Actions,
     private readonly userService: UserService,
   ) { }
 
-  public getUserByEmailEffect = createEffect(() =>
-    this.actions.pipe(
-      ofType(getUserByEmail),
-      withLatestFrom(this.appStore.select('userState')),
-      mergeMap(([payload, state]) => this.userService.getUserById(payload.email)
-        .pipe(
-          map(user => {
-            return ({
-              type: getUserByEmailSuccess.type,
-              user: user
-            });
-          }),
-          catchError(error => {
-            return of({ type: getUserByEmailFail.type, error: error });
-          })
-        ))
-    )
-  );
-
-  public loginUserEffect = createEffect(() =>
-    this.actions.pipe(
-      ofType(loginUser),
-      withLatestFrom(this.appStore.select('userState')),
-      mergeMap(([payload, state]) => this.userService.loginUser(payload.user)
-        .pipe(
-          map(user => {
-            return ({
-              type: loginUserSuccess.type,
-              user: user
-            });
-          }),
-          catchError(error => {
-            return of({ type: loginUserFail.type, error: error });
-          })
-        ))
-    )
-  );
+  // public loginUserEffect = createEffect(() =>
+  //   this.actions.pipe(
+  //     ofType(loginUser),
+  //     withLatestFrom(this.appStore.select('userState')),
+  //     mergeMap(([payload, state]) => this.userService.loginUser(payload.user)
+  //       .pipe(
+  //         map(user => {
+  //           return ({
+  //             type: loginUserSuccess.type,
+  //             user: user
+  //           });
+  //         }),
+  //         catchError(error => {
+  //           return of({ type: loginUserFail.type, error: error });
+  //         })
+  //       ))
+  //   )
+  // );
 
   public registerUserEffect = createEffect(() =>
-    this.actions.pipe(
+    this.actions$.pipe(
       ofType(registerUser),
-      withLatestFrom(this.appStore.select('userState')),
-      mergeMap(([payload, state]) => this.userService.registerUser(payload.user)
-        .pipe(
-          map(user => {
-            return ({
-              type: registerUserSuccess.type,
-              user: user
-            });
-          }),
-          catchError(error => {
-            return of({ type: registerUserFail.type, error: error });
+      mergeMap(({user}) => {
+        return this.userService.registerUser(user).pipe(
+          map(() => registerUserSuccess({user})),
+          catchError((error) => {
+            console.log(error);
+            return of(registerUserFail({error: true}))
           })
-        ))
+        )
+      })
     )
+    // this.actions.pipe(
+    //   ofType(registerUser),
+    //   withLatestFrom(this.appStore.select('userState')),
+    //   mergeMap(([payload, state]) => this.userService.registerUser(payload.user)
+    //     .pipe(
+    //       map(user => {
+    //         return ({
+    //           type: registerUserSuccess.type,
+    //           user: user
+    //         });
+    //       }),
+    //       catchError(error => {
+    //         return of({ type: registerUserFail.type, error: error });
+    //       })
+    //     ))
+    // )
   );
 }

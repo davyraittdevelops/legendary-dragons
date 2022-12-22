@@ -14,19 +14,21 @@ export class IsLoggedInGuard implements CanActivate {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
 
-    return this.userService.getUsername()
-      .pipe(
-        map((username: string) => {
-          if (username != "") {
-            return true;
-          }
+    return true;
+    // TODO: FIX ME
+    // return this.userService.getUsername()
+    //   .pipe(
+    //     map((username: string) => {
+    //       if (username != "") {
+    //         return true;
+    //       }
 
-          return this.router.parseUrl('/login');
-        }),
-        catchError((err) => {
-          this.router.parseUrl('/login');
-          return of(false);
-        })
-      );
+    //       return this.router.parseUrl('/login');
+    //     }),
+    //     catchError((err) => {
+    //       this.router.parseUrl('/login');
+    //       return of(false);
+    //     })
+    //   );
   }
 }
