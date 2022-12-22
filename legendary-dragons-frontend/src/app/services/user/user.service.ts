@@ -27,3 +27,4 @@ export class UserService {
       {email, password}, this.httpOptions);
   }
 }
+
