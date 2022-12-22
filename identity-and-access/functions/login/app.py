@@ -32,39 +32,48 @@ def lambda_handler(event, context):
         logger.info("Login failed: empty email received")
         return create_error_response(400, "Email cannot be empty.")
 
-    try:
-        response = client.initiate_auth(
-            ClientId=os.environ["COGNITO_CLIENT"],
-            AuthFlow='USER_PASSWORD_AUTH',
-            AuthParameters={
-                "USERNAME": email,
-                "PASSWORD": password
-            }
-        )
+    # try:
+    #     response = client.initiate_auth(
+    #         ClientId=os.environ["COGNITO_CLIENT"],
+    #         AuthFlow='USER_PASSWORD_AUTH',
+    #         AuthParameters={
+    #             "USERNAME": email,
+    #             "PASSWORD": password
+    #         }
+    #     )
 
-        print(response)
+    #     print(response)
 
-        token = response['AuthenticationResult']['IdToken']
+    #     token = response['AuthenticationResult']['IdToken']
         
-        output["headers"] = {
-            "Authorization": f"Bearer {token}"
-         } 
+    #     output["headers"] = {
+    #         "Authorization": f"Bearer {token}"
+    #      } 
 
-    except client.exceptions.UserNotFoundException as e:
-        error = str(e)[str(e).index(":") + 1:len(str(e))]
-        logger.info(f"Email/password combination is incorrect: {error}")
-        output = create_error_response(404, error.strip())
-    except client.exceptions.InvalidParameterException as e:
-        error = str(e)[str(e).index(":") + 1:len(str(e))]
-        logger.info(f"Login failed: {error}")
-        output = create_error_response(400, error.strip())
-    except client.exceptions.UserNotConfirmedException as e:
-        error = str(e)[str(e).index(":") + 1:len(str(e))]
-        logger.info(f"User not confirmed: {error}")
-        output = create_error_response(403, error.strip())
-    except client.exceptions.NotAuthorizedException as e:
-        error = str(e)[str(e).index(":") + 1:len(str(e))]
-        logger.info(f"Incorrect email or password: {error}")
-        output = create_error_response(403, error.strip())
+    # except client.exceptions.UserNotFoundException as e:
+    #     error = str(e)[str(e).index(":") + 1:len(str(e))]
+    #     logger.info(f"Email/password combination is incorrect: {error}")
+    #     output = create_error_response(404, error.strip())
+    # except client.exceptions.InvalidParameterException as e:
+    #     error = str(e)[str(e).index(":") + 1:len(str(e))]
+    #     logger.info(f"Login failed: {error}")
+    #     output = create_error_response(400, error.strip())
+    # except client.exceptions.UserNotConfirmedException as e:
+    #     error = str(e)[str(e).index(":") + 1:len(str(e))]
+    #     logger.info(f"User not confirmed: {error}")
+    #     output = create_error_response(403, error.strip())
+    # except client.exceptions.NotAuthorizedException as e:
+    #     error = str(e)[str(e).index(":") + 1:len(str(e))]
+    #     logger.info(f"Incorrect email or password: {error}")
+    #     output = create_error_response(403, error.strip())
 
-    return output
+    return {
+        'statusCode': 200,
+        'body': json.dumps('Hello from Lambda!'),
+        'headers': { 
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'POST, PUT, GET, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With'
+        }
+    }
+

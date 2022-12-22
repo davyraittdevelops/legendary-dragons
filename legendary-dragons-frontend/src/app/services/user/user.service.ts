@@ -25,8 +25,19 @@ export class UserService {
       user , this.httpOptions);
   }
 
-  loginUser(email: string, password: string): Observable<User> {
-    return this.http.post<User>(`${environment.users_api_url}/users/login`,
-      {email, password}, this.httpOptions);
+  // loginUser(email: string, password: string): Observable<User> {
+  //   console.log(email, password)
+  //   let object = {
+  //     "email": email,
+  //     "password": password
+  //   }
+  //   return this.http.post<User>(`${environment.users_api_url}/users/login`,
+  //     JSON.stringify(object), this.httpOptions);
+  // }
+
+  loginUser(user : User): Observable<User> {
+    console.log(user)
+    return this.http.post<User>(`${environment.users_api_url}/users/register`
+      , user);
   }
 }
