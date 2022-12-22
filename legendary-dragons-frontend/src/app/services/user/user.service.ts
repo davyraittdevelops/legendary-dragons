@@ -9,8 +9,6 @@ import { environment } from 'src/environments/environment';
 })
 
 export class UserService {
-  // Http Options
-
   constructor(private http: HttpClient) {}
 
   registerUser(user: UserRegistration): Observable<UserRegistration> {
