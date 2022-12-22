@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
 import { Observable, of } from "rxjs";
 import { UserModel } from 'src/app/models/user.model';
+import { RegisterModel } from 'src/app/models/register.model';
 
 @Injectable({
   providedIn: 'root'
@@ -16,12 +17,12 @@ export class UserService {
   constructor(private readonly http: HttpClient) {
   }
 
-  registerUser(user: UserModel): Observable<UserModel> {
-    return this.http.post<UserModel>('/account/api/users', user);
+  registerUser(register: RegisterModel): Observable<RegisterModel> {
+    return this.http.post<RegisterModel>('https://ml16d2y5s9.execute-api.us-east-1.amazonaws.com/Prod/users/register', register);
   }
 
   loginUser(user: UserModel): Observable<UserModel> {
-    return this.http.post<UserModel>('/account/api/users/login', user);
+    return this.http.post<UserModel>('https://ml16d2y5s9.execute-api.us-east-1.amazonaws.com/Prod/users/login', user);
   }
 
   getUserById(email: string): Observable<UserModel> {

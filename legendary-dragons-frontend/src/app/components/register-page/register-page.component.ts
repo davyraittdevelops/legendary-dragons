@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ValidationErrors, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import { Store } from "@ngrx/store";
+import { UserService } from 'src/app/services/user/user.service';
 import { AppState } from "../../app.state";
 
 export const validatePasswords = (control: AbstractControl): ValidationErrors | null => {
@@ -39,18 +40,20 @@ export class RegisterPageComponent implements OnInit {
     )
   }, {validators: validatePasswords, updateOn: "blur"})
 
-  constructor(private router: Router, private appStore: Store<AppState>) { }
+  constructor(private router: Router, private appStore: Store<AppState>, private userService: UserService) { }
 
   ngOnInit(): void {
   }
 
-  registerUser() {
+  registerUser(name: string, email: string, password: string) {
     console.log(this.form)
     console.log("register")
-    // if (!this.form.valid) {
-    //   this.registerFail = true;
-    //   return;
-    // }
+    if (!this.form.valid) {
+      this.registerFail = true;
+      return;
+    }
+
+    this.userService.registerUser(name, email, password);
     //
     // this.appStore.dispatch(registerAccount({account: {email: this.form.get("email")?.getRawValue(), password: this.form.get("password")?.getRawValue(), name: this.form.get("name")?.getRawValue()}}));
     //
