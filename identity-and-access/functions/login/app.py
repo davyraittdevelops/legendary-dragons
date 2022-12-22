@@ -12,15 +12,15 @@ if "DISABLE_XRAY" not in os.environ:
 
 client = boto3.client("cognito-idp")
 
+
 def create_error_response(code: int, message: str):
     return {
         "statusCode": code,
         "body": json.dumps({"message": message})
     }
 
-def lambda_handler(event, context):
-    print(event)
 
+def lambda_handler(event, context):
     """Login a new user with AWS Cognito."""
     body = json.loads(event["body"])
 
@@ -42,13 +42,11 @@ def lambda_handler(event, context):
             }
         )
 
-        print(response)
-
         token = response['AuthenticationResult']['IdToken']
-        
+
         output["headers"] = {
             "Authorization": f"Bearer {token}"
-         } 
+        }
 
     except client.exceptions.UserNotFoundException as e:
         error = str(e)[str(e).index(":") + 1:len(str(e))]
