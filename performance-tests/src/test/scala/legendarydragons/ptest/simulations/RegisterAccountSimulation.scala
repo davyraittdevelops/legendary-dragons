@@ -12,7 +12,7 @@ class RegisterAccountSimulation extends Simulation {
   val userRate = System.getProperty("userRate", "1").toDouble
 
   val environment = System.getProperty("environment", "local")
-  def httpProtocol = http.baseUrl("https://ml16d2y5s9.execute-api.us-east-1.amazonaws.com/Prod")
+  def httpProtocol = http.baseUrl("https://8l2xog7xkc.execute-api.us-east-1.amazonaws.com/Prod")
   .userAgentHeader("Gatling/test")
 
   setUp(RegisterAccountScenario()
@@ -22,4 +22,3 @@ class RegisterAccountSimulation extends Simulation {
     global.responseTime.max.lt(15000),
     global.successfulRequests.percent.gte(50))
 }
-
