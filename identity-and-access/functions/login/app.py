@@ -19,6 +19,8 @@ def create_error_response(code: int, message: str):
     }
 
 def lambda_handler(event, context):
+    print(event)
+
     """Login a new user with AWS Cognito."""
     body = json.loads(event["body"])
 
@@ -39,6 +41,8 @@ def lambda_handler(event, context):
                 "PASSWORD": password
             }
         )
+
+        print(response)
 
         token = response['AuthenticationResult']['IdToken']
         
