@@ -12,13 +12,11 @@ if "DISABLE_XRAY" not in os.environ:
 
 client = boto3.client("cognito-idp")
 
-
 def create_error_response(code: int, message: str):
     return {
         "statusCode": code,
         "body": json.dumps({"message": message})
     }
-
 
 def lambda_handler(event, context):
     """Register a new user with AWS Cognito."""
