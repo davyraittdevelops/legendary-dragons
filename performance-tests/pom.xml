@@ -3,7 +3,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>legendarydragons</groupId>
-  <artifactId>legendarydragonsfrontend</artifactId>
+  <artifactId>legendarydragons</artifactId>
   <version>1.0-SNAPSHOT</version>
 
   <properties>
@@ -31,7 +31,7 @@
         <version>${gatling-maven-plugin.version}</version>
         <configuration>
           <runMultipleSimulations>true</runMultipleSimulations>
-          <simulationClass>legendarydragonsfrontend.ptest.simulations.${simulation}</simulationClass>
+          <simulationClass>legendarydragons.ptest.simulations.${simulation}</simulationClass>
         </configuration>
       </plugin>
     </plugins>

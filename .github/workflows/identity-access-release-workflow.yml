@@ -57,7 +57,6 @@ jobs:
 
       - name: Build the serverless application
         run: |
-          pip3 install -r functions/register/requirements.txt
           sam build
 
       - name: Deploy the serverless application

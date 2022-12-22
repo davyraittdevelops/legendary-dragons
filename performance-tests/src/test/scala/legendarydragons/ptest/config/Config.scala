@@ -1,11 +1,11 @@
-package legendarydragonsfrontend.ptest.config
+package legendarydragons.ptest.config
 import com.typesafe.config.ConfigFactory
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
 
 object Config {
 
-    private val conf = ConfigFactory.load().getConfig("legendarydragonsfrontend")
+    private val conf = ConfigFactory.load().getConfig("legendarydragons")
 
     /** Get baseUrl for the given environment, as defined in the application.conf file
       *
