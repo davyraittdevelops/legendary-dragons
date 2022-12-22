@@ -36,7 +36,9 @@ export class LoginPageComponent implements OnInit {
     }
 
     this.userService.loginUser(user.email, user.password).subscribe({
-      next: () => this.router.navigate(["dashboard"]),
+      next: () => {
+        this.router.navigate(["dashboard"])
+      },
       error: () => this.loginFailed = true
     });
 
