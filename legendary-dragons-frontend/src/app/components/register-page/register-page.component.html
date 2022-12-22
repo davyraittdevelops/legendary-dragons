@@ -1,26 +1,33 @@
-<div class="page">
+<div class="page mt-3">
   <div class="container">
-    <div class="row"> 
+    <div class="row">
       <div class="col-md-4 col-sm-4 col-xs-2"></div>
       <div class="col-md-4 col-sm-4 col-xs-8">
         <form class="" [formGroup]="form" (ngSubmit)="registerUser()" #f="ngForm" novalidate>
-          <div class="row row-col-1 align-items-center white-background">
-            <h1>Register</h1>
-            <label class="form-label left-right-padding">Email</label>
-            <div class="spacing left-right-padding">
+          <div class="row row-col-1 align-items-center bg-light bg-opacity-75 rounded-1 shadow-sm text-dark pb-4 pt-2">
+            <h1 class="text-center">Register</h1>
+            <label class="form-label px-4">Email</label>
+            <div class="spacing px-4">
               <input
-                type="email"
-                name="email"
-                class="form-control"
-                placeholder="Your email"
-                [formControlName]="'email'"
+                  type="email"
+                  name="email"
+                  class="form-control"
+                  placeholder="example@example.com"
+                  [formControlName]="'email'"
               />
-              <div class="col-12" *ngIf="form.controls.email.errors?.['pattern']">
-                Email must be in this format: example@example.com
+              <div class="col-12" *ngIf="email.invalid && (email.dirty || email.touched)">
+                <span class="form-text text-danger fw-bold" *ngIf="email.errors?.['required']">
+                  Email is required.
+                </span>
+
+                <span class="form-text text-danger fw-bold" *ngIf="email.errors?.['email']">
+                  Email is not valid.
+                </span>
               </div>
+
             </div>
-            <label class="form-label left-right-padding">Nickname</label>
-            <div class="spacing left-right-padding">
+            <label class="form-label px-4">Nickname</label>
+            <div class="spacing px-4">
               <input
                 type="name"
                 name="name"
@@ -29,15 +36,21 @@
                 placeholder="Your nickname"
                 [formControlName]="'name'"
               />
-              <div class="col-12" *ngIf="form.controls.name.errors?.['minlength']">
-                Name must be at least 3 characters long.
-              </div>
-              <div class="col-12" *ngIf="form.controls.name.errors?.['maxlength']">
-                Name must be shorter than 75 characters.
+
+              <div class="col-12" *ngIf="name.invalid && (name.dirty || name.touched)">
+                <div class="form-text text-danger fw-bold" *ngIf="name.errors?.['required']">
+                  Name is required.
+                </div>
+                <div class="form-text text-danger fw-bold" *ngIf="name.errors?.['minlength']">
+                  Name must be at least 3 characters long.
+                </div>
+                <div class="form-text text-danger fw-bold" *ngIf="name.errors?.['maxlength']">
+                  Name must be shorter than 75 characters.
+                </div>
               </div>
             </div>
-            <label class="form-label left-right-padding">Password</label>
-            <div class="spacing left-right-padding">
+            <label class="form-label px-4">Password</label>
+            <div class="spacing px-4">
               <input
                 type="password"
                 name="password"
@@ -46,45 +59,40 @@
                 placeholder="Password"
                 [formControlName]="'password'"
               />
-              <div class="col-12" *ngIf="form.controls.password.errors?.['minlength']">
-                Password must be at least 10 characters long.
-              </div>
-              <div class="col-12" *ngIf="form.controls.password.errors?.['pattern'] && this.form.get('password').length > 10">
-                Password must contain uppercase, numbers and symbols.
+              <div class="col-12" *ngIf="password.invalid && (password.dirty || password.touched)">
+                <div class="form-text text-danger fw-bold" *ngIf="password.errors?.['required']">
+                  Password is required.
+                </div>
+                <div class="form-text text-danger fw-bold" *ngIf="password.errors?.['minlength']">
+                  Password must be at least 10 characters long.
+                </div>
+                <div class="form-text text-danger fw-bold" *ngIf="password.errors?.['pattern']">
+                  Password must contain lowercase letters, uppercase letters, numbers and special characters.
+                </div>
               </div>
             </div>
-            <label class="form-label left-right-padding">Confirm password</label>
-            <div class="spacing left-right-padding">
+            <label class="form-label px-4">Confirm password</label>
+            <div class="spacing px-4">
               <input
-                type="password"
-                name="confirm password"
-                class="form-control"
-                placeholder="Password"
-                [formControlName]="'confirmpassword'"
+                  type="password"
+                  name="confirm password"
+                  class="form-control"
+                  placeholder="Password"
+                  [formControlName]="'confirmpassword'"
               />
+
+              <div class="form-text text-danger fw-bold" *ngIf="confirmpassword.touched && form.errors?.['passwordsNotEqual']">
+                The repeated password does not match.
+              </div>
             </div>
-            <div *ngIf="registerFail" class="col-6">
-              Email already exists!
+
+            <div class="px-4 d-grid mt-2">
+              <button [disabled]="registerSuccess" type="submit" class="btn btn-light spacing">Register</button>
             </div>
-            <div *ngIf="registerFail" class="col-6">
-              Password must be atleast 10 characters long and contains uppercase, numbers and symbols!
-            </div>
-            <div *ngIf="registerFail" class="col-6">
-              The repeated password does not match!
-            </div>
-            <div *ngIf="registerSuccess" class="col-6">
-              Succesfully registered account!
-            </div>
-            <div class="col-6 left-right-padding">
-              <button [disabled]="registerSuccess" type="submit" class="btn btn-outline-light spacing">Register</button>
-            </div>
+
             <p class="text-center">
               Already have an account?
-              <a
-                routerLink="/login"
-                class="text-light"
-              >Login here</a
-              >
+              <a routerLink="/login" class="text-light">Login here</a>
             </p>
           </div>
         </form>
@@ -93,4 +101,3 @@
     </div>
   </div>
 </div>
-

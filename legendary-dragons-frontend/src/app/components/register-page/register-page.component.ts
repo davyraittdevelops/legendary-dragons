@@ -1,27 +1,43 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from "@angular/forms";
+import { Component, OnInit } from '@angular/core';
+import { AbstractControl, FormControl, FormGroup, ValidationErrors, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import { Store } from "@ngrx/store";
 import { AppState } from "../../app.state";
-import { Subscription } from "rxjs";
+
+export const validatePasswords = (control: AbstractControl): ValidationErrors | null => {
+  if (control && control.get("password") && control.get("confirmpassword")) {
+    console.log(control)
+    const password = control.get("password")?.value;
+    const confirmPassword = control.get("confirmpassword")?.value;
+    return (password != confirmPassword) ? { passwordsNotEqual: true } : null
+  }
+  return null;
+}
+
 
 @Component({
   selector: 'app-register-page',
   templateUrl: './register-page.component.html',
   styleUrls: ['./register-page.component.css']
 })
-export class RegisterPageComponent implements OnInit, OnDestroy {
-  userSubscription: Subscription | undefined;
-
+export class RegisterPageComponent implements OnInit {
   registerFail = false;
   registerSuccess = false;
 
   form = new FormGroup({
-    name: new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(75)]),
-    email: new FormControl('', [Validators.required, Validators.pattern("[^ @]@[^ @]")]),
-    password: new FormControl('', [Validators.required, Validators.minLength(10), Validators.pattern(/(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*#?&^_-]).{8,}/)]),
-    confirmpassword: new FormControl('', [Validators.required, Validators.pattern(/(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*#?&^_-]).{8,}/)])
-  })
+    name: new FormControl(
+      '', [Validators.required, Validators.minLength(3), Validators.maxLength(75)]
+    ),
+    email: new FormControl(
+      '', [Validators.required, Validators.email]
+    ),
+    password: new FormControl(
+      '', [Validators.required, Validators.minLength(10), Validators.pattern(/(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*#?&^_-]).{10,}/)]
+    ),
+    confirmpassword: new FormControl(
+      '', [Validators.required]
+    )
+  }, {validators: validatePasswords, updateOn: "blur"})
 
   constructor(private router: Router, private appStore: Store<AppState>) { }
 
@@ -29,6 +45,7 @@ export class RegisterPageComponent implements OnInit, OnDestroy {
   }
 
   registerUser() {
+    console.log(this.form)
     console.log("register")
     // if (!this.form.valid) {
     //   this.registerFail = true;
@@ -53,9 +70,19 @@ export class RegisterPageComponent implements OnInit, OnDestroy {
     //   });
   }
 
-  ngOnDestroy(): void {
-    if (this.userSubscription) {
-      this.userSubscription.unsubscribe();
-    }
+  get name() {
+    return this.form.controls?.['name'];
+  }
+
+  get email() {
+    return this.form.controls?.['email'];
+  }
+
+  get password() {
+    return this.form.controls?.['password'];
+  }
+
+  get confirmpassword() {
+    return this.form.controls?.['confirmpassword'];
   }
 }
