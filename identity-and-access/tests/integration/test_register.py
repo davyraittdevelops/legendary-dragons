@@ -26,10 +26,7 @@ def event():
     }
 
 
-@patch.dict(os.environ, OS_ENV, clear=True)
-@mock_cognitoidp
-def test_lambda_handler_successful(event):
-    # Arrange
+def cognito_pool():
     cognito_client = boto3.client("cognito-idp")
     user_pool_id = cognito_client.create_user_pool(
         PoolName="TestUserPool",
@@ -49,7 +46,18 @@ def test_lambda_handler_successful(event):
     pool_client = cognito_client.create_user_pool_client(
         UserPoolId=user_pool_id, ClientName="TestLegendaryDragonsClient"
     )
-    os.environ["COGNITO_CLIENT"] = pool_client["UserPoolClient"]["ClientId"]
+    return {
+        "cognito_client": cognito_client,
+        "pool_client": pool_client,
+        "user_pool_id": user_pool_id
+    }
+
+
+@patch.dict(os.environ, OS_ENV, clear=True)
+@mock_cognitoidp
+def test_lambda_handler_successful(event):
+    # Arrange
+    os.environ["COGNITO_CLIENT"] = cognito_pool()["pool_client"]["UserPoolClient"]["ClientId"]
 
     # Act
     from functions.register.app import lambda_handler
@@ -66,26 +74,7 @@ def test_lambda_handler_empty_email(event):
     body = json.loads(event["body"])
     body["email"] = ""
     event["body"] = json.dumps(body)
-    cognito_client = boto3.client("cognito-idp")
-    user_pool_id = cognito_client.create_user_pool(
-        PoolName="TestUserPool",
-        Policies={
-            "PasswordPolicy": {
-                'MinimumLength': 10,
-                'RequireUppercase': True,
-                'RequireLowercase': True,
-                'RequireNumbers': True,
-                'RequireSymbols': True,
-            }
-        },
-        AutoVerifiedAttributes=['email'],
-        UsernameAttributes=['email']
-    )["UserPool"]["Id"]
-
-    pool_client = cognito_client.create_user_pool_client(
-        UserPoolId=user_pool_id, ClientName="TestLegendaryDragonsClient"
-    )
-    os.environ["COGNITO_CLIENT"] = pool_client["UserPoolClient"]["ClientId"]
+    os.environ["COGNITO_CLIENT"] = cognito_pool()["pool_client"]["UserPoolClient"]["ClientId"]
 
     # Act
     from functions.register.app import lambda_handler
@@ -104,15 +93,7 @@ def test_lambda_handler_invalid_password(event):
     body = json.loads(event["body"])
     body["password"] = "invalidpassword"
     event["body"] = json.dumps(body)
-    cognito_client = boto3.client("cognito-idp")
-    user_pool_id = cognito_client.create_user_pool(
-        PoolName="TestUserPool"
-    )["UserPool"]["Id"]
-
-    pool_client = cognito_client.create_user_pool_client(
-        UserPoolId=user_pool_id, ClientName="TestLegendaryDragonsClient"
-    )
-    os.environ["COGNITO_CLIENT"] = pool_client["UserPoolClient"]["ClientId"]
+    os.environ["COGNITO_CLIENT"] = cognito_pool()["pool_client"]["UserPoolClient"]["ClientId"]
 
     # Act
     from functions.register.app import lambda_handler
@@ -132,30 +113,12 @@ def test_lambda_handler_user_exists(event):
     nickname = body["nickname"]
     email = body["email"]
     password = body["password"]
+    cognito = cognito_pool()
 
-    cognito_client = boto3.client("cognito-idp")
-    user_pool_id = cognito_client.create_user_pool(
-        PoolName="TestUserPool",
-        Policies={
-            "PasswordPolicy": {
-                'MinimumLength': 10,
-                'RequireUppercase': True,
-                'RequireLowercase': True,
-                'RequireNumbers': True,
-                'RequireSymbols': True,
-            }
-        },
-        AutoVerifiedAttributes=['email'],
-        UsernameAttributes=['email']
-    )["UserPool"]["Id"]
-
-    pool_client = cognito_client.create_user_pool_client(
-        UserPoolId=user_pool_id, ClientName="TestLegendaryDragonsClient"
-    )
-    client_id = pool_client["UserPoolClient"]["ClientId"]
+    client_id = cognito["pool_client"]["UserPoolClient"]["ClientId"]
     os.environ["COGNITO_CLIENT"] = client_id
 
-    cognito_client.sign_up(
+    cognito["cognito_client"].sign_up(
         ClientId=client_id,
         Username=email,
         Password=password,
@@ -165,8 +128,8 @@ def test_lambda_handler_user_exists(event):
         ]
     )
 
-    cognito_client.admin_confirm_sign_up(
-        UserPoolId=user_pool_id, Username=email
+    cognito["cognito_client"].admin_confirm_sign_up(
+        UserPoolId=cognito["user_pool_id"], Username=email
     )
 
     # Act
@@ -184,28 +147,7 @@ def test_lambda_handler_invalid_parameter(event):
     body = json.loads(event["body"])
     body["email"] = "test"
     event["body"] = json.dumps(body)
-
-    cognito_client = boto3.client("cognito-idp")
-    user_pool_id = cognito_client.create_user_pool(
-        PoolName="TestUserPool",
-        Policies={
-            "PasswordPolicy": {
-                'MinimumLength': 10,
-                'RequireUppercase': True,
-                'RequireLowercase': True,
-                'RequireNumbers': True,
-                'RequireSymbols': True,
-            }
-        },
-        AutoVerifiedAttributes=['email'],
-        UsernameAttributes=['email']
-    )["UserPool"]["Id"]
-
-    pool_client = cognito_client.create_user_pool_client(
-        UserPoolId=user_pool_id, ClientName="TestLegendaryDragonsClient"
-    )
-    client_id = pool_client["UserPoolClient"]["ClientId"]
-    os.environ["COGNITO_CLIENT"] = client_id
+    os.environ["COGNITO_CLIENT"] = cognito_pool()["pool_client"]["UserPoolClient"]["ClientId"]
 
     # Act
     from functions.register.app import lambda_handler
