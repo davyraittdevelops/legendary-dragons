@@ -10,11 +10,6 @@ import { environment } from 'src/environments/environment';
 
 export class UserService {
   // Http Options
-  httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/json',
-    }),
-  };
 
   constructor(private http: HttpClient) {}
 
@@ -24,7 +19,6 @@ export class UserService {
 
   loginUser(email: string, password: string): Observable<User> {
     return this.http.post<User>(`/users/login`,
-      {email, password}, this.httpOptions);
+      {email, password});
   }
 }
-
