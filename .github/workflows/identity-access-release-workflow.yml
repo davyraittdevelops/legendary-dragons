@@ -28,7 +28,7 @@ jobs:
 
       - name: Generate test report & rapport
         run: |
-          pip3 install -r tests/test-requirements.txt
+          pip3 install -r tests/requirements.txt
           coverage run --source=./ -m pytest -v -rap --junitxml target/testreport-tests.xml
           coverage xml -o target/coverage-identity-and-access.xml
 
@@ -57,7 +57,6 @@ jobs:
 
       - name: Build the serverless application
         run: |
-          pip3 install -r functions/register/requirements.txt
           sam build
 
       - name: Deploy the serverless application

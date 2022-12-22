@@ -1,0 +1,52 @@
+<div class="page mt-3">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4 col-sm-4 col-xs-2"></div>
+      <div class="col-md-4 col-sm-4 col-xs-8">
+        <form class="" [formGroup]="form" (ngSubmit)="login()">
+          <div class="row bg-light bg-opacity-75 rounded-3 shadow-sm text-dark pb-4 pt-2">
+            <h1 class="text-center">Log in</h1>
+            <label class="form-label px-4">Email</label>
+            <div class="spacing px-4">
+              <input
+                type="email"
+                name="email"
+                class="form-control spacing"
+                placeholder="Email address"
+                [formControlName]="'email'"
+              />
+            </div>
+            <label class="form-label px-4">Password</label>
+            <div class="spacing px-4">
+              <input
+                type="password"
+                name="password"
+                class="form-control spacing"
+                placeholder="Password"
+                [formControlName]="'password'"
+              />
+            </div>
+            <div *ngIf="loginFailed" class="col-6">
+              Email or password is incorrect.
+            </div>
+
+            <div *ngIf="loginSuccess" class="col-6">
+              Login correct, redirecting to dashboard!
+            </div>
+
+            <div class="d-grid px-4 button-padding">
+              <button [disabled]="loginSuccess" type="submit" class="btn btn-light spacing">Login</button>
+            </div>
+
+            <p class="text-center">
+              Don't have an account?
+              <a routerLink="/register" class="text-light">Register here</a>
+            </p>
+          </div>
+
+        </form>
+      </div>
+      <div class="col-md-4 col-sm-4 col-xs-2"></div>
+    </div>
+  </div>
+</div>
