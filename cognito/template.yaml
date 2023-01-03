@@ -2,6 +2,11 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: SAM Template for Cognito & SES Email Identity
 
+Parameters:
+  LegDragonsCognitoFromEmail:
+    Type: String
+    Default: "no-reply@legendarydragons.cloud-native-minor.it"
+
 Resources:
   LegDragonsEmailIdentity:
     Type: AWS::SES::EmailIdentity
@@ -38,12 +43,14 @@ Resources:
           StringAttributeConstraints:
             MinLength: "3"
             MaxLength: "75"
-      # EmailConfiguration:
-        # EmailSendingAccount: DEVELOPER
-        # From: "no-reply@legendarydragons.cloud-native-minor.it"
-        # SourceArn:
+      EmailConfiguration:
+        EmailSendingAccount: DEVELOPER
+        From: !Ref LegDragonsCognitoFromEmail
+        SourceArn: arn:aws:ses:us-east-1:861259332787:identity/legendarydragons.cloud-native-minor.it
       VerificationMessageTemplate:
         DefaultEmailOption: CONFIRM_WITH_LINK
+        EmailSubjectByLink: "Account verification Legendary Dragons"
+        EmailMessageByLink: "<h1>Legendary Dragons</h1> Thank you for registering! {##Click me##} to verify your emails address and to be able to start using the app."
 
   CognitoDomain:
     Type: AWS::Cognito::UserPoolDomain
