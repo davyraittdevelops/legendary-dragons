@@ -48,10 +48,9 @@ Resources:
   CognitoDomain:
     Type: AWS::Cognito::UserPoolDomain
     Properties:
-      # CustomDomainConfig:
-        # TODO: Update with template value (future)
-        # CertificateArn: arn:aws:acm:us-east-1:861259332787:certificate/8aa37323-aabd-47ef-b163-8e7a0532bdf4
-      Domain: "legendarydragons-cloud-native-minor-it"
+      CustomDomainConfig:
+        CertificateArn: arn:aws:acm:us-east-1:861259332787:certificate/992c61a9-772d-4e2a-b0d1-cbe4605b3510
+      Domain: "auth.legendarydragons.cloud-native-minor.it"
       UserPoolId: !Ref LegDragonsCognitoUserPool
 
   LegDragonsUserPoolClient:
