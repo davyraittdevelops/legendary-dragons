@@ -138,4 +138,7 @@ export class AddCardButtonComponent implements OnInit {
     }
   }
 
+  addCard(card: Card) {
+    console.log(card)
+  }
 }
