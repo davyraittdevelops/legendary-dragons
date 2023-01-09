@@ -11,13 +11,23 @@ import {
 import { UserState } from "./models/user-state.model";
 import jwt_decode from "jwt-decode";
 
+const token = localStorage.getItem('token');
+const user = {
+  email: '',
+  nickname: ''
+}
+
+// Init user details for logged in users (needed when a refresh happens)
+if (token != null) {
+  const decodedToken: any = jwt_decode(token);
+  user.email = decodedToken.email;
+  user.nickname = decodedToken.nickname;
+}
+
 const initialState: UserState = {
   isLoading: false,
   hasError: false,
-  user: {
-    email: "",
-    nickname: ""
-  }
+  user
 }
 
 export const userReducer = createReducer(
