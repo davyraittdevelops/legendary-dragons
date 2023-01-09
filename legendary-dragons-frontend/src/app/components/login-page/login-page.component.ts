@@ -36,7 +36,7 @@ export class LoginPageComponent implements OnInit {
       nickname: "yooo"
     }
 
-    this.userService.loginUser(user).subscribe({
+    this.userService.loginUser(user.email, user.password).subscribe({
       next: () => {
         this.router.navigate(["dashboard"])
       },

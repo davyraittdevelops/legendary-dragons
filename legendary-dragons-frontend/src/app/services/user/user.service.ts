@@ -9,35 +9,14 @@ import { environment } from 'src/environments/environment';
 })
 
 export class UserService {
-  // Http Options
-  httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/json',
-    }),
-  };
-
-
   constructor(private http: HttpClient) {}
 
   registerUser(user: UserRegistration): Observable<UserRegistration> {
-    console.log(user)
-    return this.http.post<UserRegistration>(`${environment.users_api_url}/users/register`,
-      user , this.httpOptions);
+    return this.http.post<UserRegistration>(`/users/register`, user);
   }
 
-  // loginUser(email: string, password: string): Observable<User> {
-  //   console.log(email, password)
-  //   let object = {
-  //     "email": email,
-  //     "password": password
-  //   }
-  //   return this.http.post<User>(`${environment.users_api_url}/users/login`,
-  //     JSON.stringify(object), this.httpOptions);
-  // }
-
-  loginUser(user : User): Observable<User> {
-    console.log(user)
-    return this.http.post<User>(`${environment.users_api_url}/users/register`
-      , user);
+  loginUser(email: string, password: string): Observable<User> {
+    return this.http.post<User>(`/users/login`,
+      {email, password});
   }
 }
