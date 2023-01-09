@@ -26,10 +26,17 @@
                 [formControlName]="'password'"
               />
             </div>
-            <p class="text-danger px-4" *ngIf="loginFailed">Incorrect email/password provided.</p>
+
+            <p class="text-danger px-4" *ngIf="hasError$ | async">Incorrect email/password provided.</p>
 
             <div class="d-grid px-4 button-padding">
-              <button [disabled]="form.invalid" type="submit" class="btn btn-light spacing">Login</button>
+              <button [disabled]="form.invalid || (isLoading$ | async)" type="submit"
+                      class="btn btn-light spacing">
+                <span *ngIf="isLoading$ | async"
+                      class="spinner-border spinner-border-sm" role="status" aria-hidden="true">
+                </span>
+                Login
+              </button>
             </div>
 
             <p class="text-center">
