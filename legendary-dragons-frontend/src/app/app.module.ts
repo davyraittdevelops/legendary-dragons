@@ -37,7 +37,7 @@ import { NgModule } from '@angular/core';
     ]),
 
     StoreModule.forRoot({
-      userState: userReducer
+      user: userReducer
     })
   ],
   providers: [],

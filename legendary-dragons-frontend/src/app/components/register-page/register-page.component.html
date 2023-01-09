@@ -94,10 +94,17 @@
               </div>
             </div>
 
-            <p class="text-danger px-4" *ngIf="registrationError">An error has occurred! Please check the fields above.</p>
+            <p class="text-danger px-4" *ngIf="hasError$ | async">An error has occurred! Please check the fields above.</p>
+
 
             <div class="px-4 d-grid mt-2">
-              <button [disabled]="form.invalid" type="submit" class="btn btn-light spacing">Register</button>
+              <button [disabled]="form.invalid || (isLoading$ | async)"
+                      type="submit" class="btn btn-light spacing">
+                <span *ngIf="isLoading$ | async"
+                      class="spinner-border spinner-border-sm" role="status" aria-hidden="true">
+                </span>
+                Register
+              </button>
             </div>
 
             <p class="text-center">

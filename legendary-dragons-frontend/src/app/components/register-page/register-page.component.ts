@@ -2,7 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ValidationErrors, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import { Store } from "@ngrx/store";
-import { UserService } from 'src/app/services/user/user.service';
+import { Observable } from 'rxjs';
+import { UserRegistration } from 'src/app/models/user.model';
+import { registerUser } from 'src/app/ngrx/user/user.actions';
+import { isLoadingSelector, userErrorSelector } from 'src/app/ngrx/user/user.selectors';
 import { AppState } from "../../app.state";
 
 export const validatePasswords = (control: AbstractControl): ValidationErrors | null => {
@@ -20,7 +23,8 @@ export const validatePasswords = (control: AbstractControl): ValidationErrors | 
   styleUrls: ['./register-page.component.css']
 })
 export class RegisterPageComponent implements OnInit {
-  registrationError = false;
+  isLoading$: Observable<boolean>;
+  hasError$: Observable<boolean>
 
   form = new FormGroup({
     name: new FormControl(
@@ -37,7 +41,10 @@ export class RegisterPageComponent implements OnInit {
     )
   }, {validators: validatePasswords, updateOn: "blur"})
 
-  constructor(private router: Router, private appStore: Store<AppState>, private userService: UserService) {}
+  constructor(private router: Router, private appStore: Store<AppState>) {
+    this.isLoading$ = this.appStore.select(isLoadingSelector);
+    this.hasError$ = this.appStore.select(userErrorSelector);
+  }
 
   ngOnInit(): void {
   }
@@ -47,21 +54,20 @@ export class RegisterPageComponent implements OnInit {
       return;
     }
 
-    const user = {
+    const user: UserRegistration = {
       nickname: this.name.value!,
       email: this.email.value!,
       password: this.password.value!
     }
 
-    this.userService.registerUser(user).subscribe({
-      next: () => {
-        this.registrationError = false;
-        this.router.navigate(["/login"])
-      },
-      error: () => {
-        this.registrationError = true;
+    this.appStore.dispatch(registerUser({user}))
+
+    this.appStore.select('user').subscribe({
+      next: (state) => {
+        if (!state.hasError && !state.isLoading)
+          this.router.navigate(["/login"])
       }
-    });
+    })
   }
 
   get name() {
