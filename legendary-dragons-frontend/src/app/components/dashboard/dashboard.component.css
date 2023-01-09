@@ -9,5 +9,21 @@ th {
 :host ::ng-deep .mat-tab-label {
   color: floralwhite;
   font-size: 20px;
+  /*width: 100%;*/
+  /*position: relative;*/
+  margin-top: 15px;
+  box-sizing: border-box;
 }
+
+:host ::ng-deep mat-tab-group .mat-tab-labels {
+  display: flex;
+  flex-direction: column!important;
+  height: 100%;
+}
+
+:host ::ng-deep mat-tab-group {
+  display: block;
+
+}
+
 
