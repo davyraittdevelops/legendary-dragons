@@ -33,6 +33,11 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: functions/stream_card_changes/
+      Policies:
+        - DynamoDBStreamReadPolicy:
+            TableName: !Ref CardTable
+            # Reason: https://github.com/aws/serverless-application-model/issues/289#issuecomment-939738271
+            StreamName: !Select [3, !Split ["/", !GetAtt CardTable.StreamArn]]
       Environment:
         Variables:
           EVENT_BUS_NAME: "connetions-event-bus"
@@ -102,6 +107,13 @@ Resources:
       IntegrationUri:
         Fn::Sub:
             arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${SearchCardByKeywordFunction.Arn}/invocations
+
+  SearchCardByKeywordPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref SearchCardByKeywordFunction
+      Principal: apigateway.amazonaws.com
 
 Outputs:
   SearchCardByKeywordFunction:
