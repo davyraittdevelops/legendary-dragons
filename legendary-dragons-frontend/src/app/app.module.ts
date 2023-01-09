@@ -15,6 +15,11 @@ import { HeaderComponent } from './components/header/header.component';
 import { userReducer } from './ngrx/user/user.reducer';
 import { UserEffects } from './ngrx/user/user.effect';
 import { NgModule } from '@angular/core';
+import { InventoryPageComponent } from './components/inventory-page/inventory-page.component';
+import { DecksPageComponent } from './components/decks-page/decks-page.component';
+import { WishlistPageComponent } from './components/wishlist-page/wishlist-page.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {MatTabsModule} from "@angular/material/tabs";
 
 @NgModule({
   declarations: [
@@ -23,7 +28,10 @@ import { NgModule } from '@angular/core';
     LoginPageComponent,
     DashboardComponent,
     NavbarComponent,
-    HeaderComponent
+    HeaderComponent,
+    InventoryPageComponent,
+    DecksPageComponent,
+    WishlistPageComponent
   ],
   imports: [
     BrowserModule,
@@ -38,7 +46,10 @@ import { NgModule } from '@angular/core';
 
     StoreModule.forRoot({
       userState: userReducer
-    })
+    }),
+
+    BrowserAnimationsModule,
+    MatTabsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

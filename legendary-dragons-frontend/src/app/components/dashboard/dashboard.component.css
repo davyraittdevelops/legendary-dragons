@@ -5,3 +5,9 @@
 th {
   cursor: pointer;
 }
+
+:host ::ng-deep .mat-tab-label {
+  color: floralwhite;
+  font-size: 20px;
+}
+
