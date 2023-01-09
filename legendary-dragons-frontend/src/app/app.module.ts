@@ -20,6 +20,8 @@ import { DecksPageComponent } from './components/decks-page/decks-page.component
 import { WishlistPageComponent } from './components/wishlist-page/wishlist-page.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MatTabsModule} from "@angular/material/tabs";
+import { AddCardButtonComponent } from './components/card/add-card-button/add-card-button.component';
+import { CardComponent } from './components/card/card/card.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +33,9 @@ import {MatTabsModule} from "@angular/material/tabs";
     HeaderComponent,
     InventoryPageComponent,
     DecksPageComponent,
-    WishlistPageComponent
+    WishlistPageComponent,
+    AddCardButtonComponent,
+    CardComponent
   ],
   imports: [
     BrowserModule,
