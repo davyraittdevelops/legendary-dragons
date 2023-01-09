@@ -1,8 +1,8 @@
 <div class="page mt-3">
   <div class="container">
     <div class="row">
-      <div class="col-md-4 col-sm-4 col-xs-2"></div>
-      <div class="col-md-4 col-sm-4 col-xs-8">
+      <div class="col-lg-4 col-md-2 col-sm-2 col-xs-2"></div>
+      <div class="col-lg-4 col-md-8 col-sm-8 col-xs-8">
         <form class="" [formGroup]="form" (ngSubmit)="login()">
           <div class="row bg-light bg-opacity-75 rounded-3 shadow-sm text-dark pb-4 pt-2">
             <h1 class="text-center">Log in</h1>
@@ -29,7 +29,7 @@
             <p class="text-danger px-4" *ngIf="loginFailed">Incorrect email/password provided.</p>
 
             <div class="d-grid px-4 button-padding">
-              <button [disabled]="form.invalid" type="submit" class="btn btn-light spacing">Login</button>
+              <button [disabled]="form.invalid" type="submit" class="btn btn-light spacing">Log in</button>
             </div>
 
             <p class="text-center">
@@ -40,7 +40,7 @@
 
         </form>
       </div>
-      <div class="col-md-4 col-sm-4 col-xs-2"></div>
+      <div class="col-lg-4 col-md-2 col-sm-2 col-xs-2"></div>
     </div>
   </div>
 </div>
