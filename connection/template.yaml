@@ -1,0 +1,64 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  connection
+
+  Sample SAM Template for connection
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 3
+    Tracing: Active
+    Handler: app.lambda_handler
+    Runtime: python3.9
+    Environment:
+        Variables:
+          COGNITO_CLIENT:
+            Fn::ImportValue:
+              !Sub "${LegDragonsUserPoolClient}"
+    Architectures:
+      - x86_64
+  Api:
+    TracingEnabled: True
+
+Resources:
+  onconnectFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      Role: #TODO: do we need a role?
+      CodeUri: functions/onconnect
+
+  disconnectFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      Role: #TODO: do we need a role?
+      CodeUri: functions/disconnect
+
+  connectionsDynaboDBTable:
+    Type: AWS::DynamoDB::Table
+    DeletionPolicy: Retain
+    Properties:
+      TableName: connections
+      AttributeDefinitions:
+        - AttributeName: PK
+          AttributeType: S
+        - AttributeName: SK
+          AttributeType: S
+      KeySchema:
+        - AttributeName: PK
+          KeyType: HASH
+        - AttributeName: SK
+          KeyType: RANGE
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+      BillingMode: PROVISIONED
+
+Outputs:
+  onconnectFunction:
+    Description: "On Connect Lambda Function ARN"
+    Value: !GetAtt onconnectFunction.Arn
+  disconnectFunction:
+    Description: "Disconnect Lambda Function ARN"
+    Value: !GetAtt disconnectFunction.Arn
