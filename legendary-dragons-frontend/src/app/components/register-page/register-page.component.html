@@ -1,8 +1,8 @@
 <div class="page mt-3">
   <div class="container">
     <div class="row">
-      <div class="col-md-4 col-sm-4 col-xs-2"></div>
-      <div class="col-md-4 col-sm-4 col-xs-8">
+      <div class="col-lg-4 col-md-2 col-sm-2 col-xs-2"></div>
+      <div class="col-lg-4 col-md-8 col-sm-8 col-xs-8">
         <form class="" [formGroup]="form" (ngSubmit)="registerUser()" #f="ngForm" novalidate>
           <div class="row row-col-1 align-items-center bg-light bg-opacity-75 rounded-3 shadow-sm text-dark pb-4 pt-2">
             <h1 class="text-center">Register</h1>
@@ -11,8 +11,10 @@
               <input
                   type="email"
                   name="email"
-                  class="form-control"
+                  class="form-control is-valid"
                   placeholder="example@example.com"
+                  [ngClass]="{'is-valid': email.valid && email.touched,
+                        'is-invalid': email.invalid && email.touched}"
                   [formControlName]="'email'"
               />
               <div class="col-12" *ngIf="email.invalid && (email.dirty || email.touched)">
@@ -29,12 +31,14 @@
             <label class="form-label px-4">Nickname</label>
             <div class="spacing px-4">
               <input
-                type="name"
-                name="name"
-                required minlength="3"
-                class="form-control"
-                placeholder="Your nickname"
-                [formControlName]="'name'"
+                  type="name"
+                  name="name"
+                  required minlength="3"
+                  class="form-control"
+                  placeholder="Your nickname"
+                  [formControlName]="'name'"
+                  [ngClass]="{'is-valid': name.valid && name.touched,
+                        'is-invalid': name.invalid && name.touched}"
               />
 
               <div class="col-12" *ngIf="name.invalid && (name.dirty || name.touched)">
@@ -52,12 +56,14 @@
             <label class="form-label px-4">Password</label>
             <div class="spacing px-4">
               <input
-                type="password"
-                name="password"
-                required minlength="10"
-                class="form-control"
-                placeholder="Password"
-                [formControlName]="'password'"
+                  type="password"
+                  name="password"
+                  required minlength="10"
+                  class="form-control"
+                  placeholder="Password"
+                  [formControlName]="'password'"
+                  [ngClass]="{'is-valid': password.valid && password.touched,
+                        'is-invalid': password.invalid && password.touched}"
               />
               <div class="col-12" *ngIf="password.invalid && (password.dirty || password.touched)">
                 <div class="form-text text-danger fw-bold" *ngIf="password.errors?.['required']">
@@ -79,6 +85,8 @@
                   class="form-control"
                   placeholder="Password"
                   [formControlName]="'confirmpassword'"
+                  [ngClass]="{'is-valid': confirmpassword.valid && confirmpassword.touched,
+                        'is-invalid': form.errors?.['passwordsNotEqual'] && confirmpassword.touched}"
               />
 
               <div class="form-text text-danger fw-bold" *ngIf="confirmpassword.touched && form.errors?.['passwordsNotEqual']">
@@ -106,7 +114,7 @@
           </div>
         </form>
       </div>
-      <div class="col-md-4 col-sm-4 col-xs-2"></div>
+      <div class="col-lg-4 col-md-2 col-sm-2 col-xs-2"></div>
     </div>
   </div>
 </div>
