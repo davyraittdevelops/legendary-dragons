@@ -48,7 +48,7 @@ export class UserEffects {
       ofType(registerUser),
       mergeMap(({user}) => {
         return this.userService.registerUser(user).pipe(
-          map(() => registerUserSuccess({user})),
+          map(() => registerUserSuccess()),
           catchError((error) => {
             console.log(error);
             return of(registerUserFail({error: true}))

@@ -12,13 +12,12 @@ export const registerUserFail = createAction(
 )
 
 export const registerUserSuccess = createAction(
-  '[Register Page Component] Register Success',
-  props<{ user: User }>()
+  '[Register Page Component] Register Success'
 )
 
-// export const logoutUser = createAction(
-//   '[Navbar Component] Logout'
-// );
+export const logoutUser = createAction(
+  '[Navbar Component] Logout'
+);
 
 // export const loginUser = createAction(
 //   '[Login Page Component] Login',

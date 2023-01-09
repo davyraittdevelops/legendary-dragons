@@ -12,46 +12,22 @@ import { UserState } from "./models/user-state.model";
 
 const initialState: UserState = {
   isLoading: false,
-  hasUserError: false,
-  isRegisterUserLoading: false,
-  hasRegisterUserError: false,
-  user: {
-    email: "",
-    nickname: ""
-  }
+  hasError: false,
+  // hasUserError: false,
+  // isRegisterUserLoading: false,
+  // hasRegisterUserError: false,
+  // user: {
+  //   email: "",
+  //   nickname: ""
+  // }
 }
 
 export const userReducer = createReducer(
   initialState,
-  on(registerUser, (state, {user}) => {
-    const newState: UserState = {
-      ...state,
-      isRegisterUserLoading: true,
-      hasRegisterUserError: false,
-      user: user
-    };
+  on(registerUser, (state, {user}) => ({...state, isLoading: true})),
+  on(registerUserSuccess, (state) => ({...state, isLoading: false, hasError: false})),
+  on(registerUserFail, (state) => ({...state, isLoading: false, hasError: true}))
 
-    return newState;
-  }),
-  on(registerUserSuccess, (state, {user}) => {
-    const newState: UserState = {
-      ...state,
-      user: user,
-      isRegisterUserLoading: false,
-      hasRegisterUserError: false,
-    };
-
-    return newState;
-  }),
-    on(registerUserFail, (state) => {
-    const newState: UserState = {
-      ...state,
-      isRegisterUserLoading: false,
-      hasRegisterUserError: true,
-    };
-
-    return newState;
-  }),
 )
 //   on(loginUser, (state, {user}) => {
 //     const newState: UserState = {
