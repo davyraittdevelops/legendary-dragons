@@ -11,8 +11,8 @@ def lambda_handler(event, context):
         connect_id = str(uuid.uuid4())
         domain = event["requestContext"]["domainName"]
         stage = event["requestContext"]["stage"]
-        #TODO: not sure about user_id
-        user_id = event['body']['user_id']
+        #TODO: dont forget to change user!
+        user_id = 123
         client = boto3.client("dynamodb")
 
         data = client.put_item(

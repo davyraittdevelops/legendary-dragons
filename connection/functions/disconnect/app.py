@@ -6,9 +6,9 @@ patch_all()
 def lambda_handler(event, context):
     print('Disconnect...')
     try: 
-        #TODO: not sure about connect_id and user_id
-        connect_id = event['body']['connect_id']
-        user_id = event['body']['user_id']
+        #TODO: dont forget to change user!
+        connect_id = event['requestContext']['connectId']
+        user_id = 123
 
         remove = boto3.client('dynamodb')
         remove.delete_item(
