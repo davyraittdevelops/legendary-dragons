@@ -5,7 +5,7 @@ import { StoreModule } from '@ngrx/store';
 import { LoginPageComponent } from './components/login-page/login-page.component';
 import { RouterOutlet } from "@angular/router";
 import { AppRoutingModule } from "./app-routing.module";
-import { ReactiveFormsModule } from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { EffectsModule } from '@ngrx/effects';
 import { HttpClientModule } from "@angular/common/http";
 import { DashboardComponent } from './components/dashboard/dashboard.component';
@@ -22,6 +22,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MatTabsModule} from "@angular/material/tabs";
 import { AddCardButtonComponent } from './components/card/add-card-button/add-card-button.component';
 import { CardComponent } from './components/card/card/card.component';
+import {MatTableModule} from "@angular/material/table";
+import {MatFormFieldModule} from "@angular/material/form-field";
+import { MatInputModule } from '@angular/material/input';
 
 @NgModule({
   declarations: [
@@ -53,7 +56,11 @@ import { CardComponent } from './components/card/card/card.component';
     }),
 
     BrowserAnimationsModule,
-    MatTabsModule
+    MatTabsModule,
+    FormsModule,
+    MatTableModule,
+    MatFormFieldModule,
+    MatInputModule
   ],
   providers: [],
   bootstrap: [AppComponent]
