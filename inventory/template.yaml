@@ -1,0 +1,78 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  inventory
+
+  SAM Template for inventory context
+
+Parameters:
+  LegDragonsWebSocketApi:
+    Type: String
+    Default: "legendary-dragons-ws-api-gateway-LegDragonsWebSocketApi"
+
+Globals:
+  Api:
+    TracingEnabled: True
+  Function:
+    Handler: app.lambda_handler
+    Runtime: python3.9
+    Environment:
+        Variables:
+          TABLE_NAME: !Ref InventoryTable
+    Architectures:
+      - x86_64
+    Tracing: Active
+
+Resources:
+  SteamInventoryChangesFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/stream_inventory_changes/
+      Policies:
+        - DynamoDBStreamReadPolicy:
+            TableName: !Ref InventoryTable
+            # Reason: https://github.com/aws/serverless-application-model/issues/289#issuecomment-939738271
+            StreamName: !Select [3, !Split ["/", !GetAtt InventoryTable.StreamArn]]
+      Environment:
+        Variables:
+          EVENT_BUS_NAME: "connections-event-bus"
+
+  EventSourceInventoryTableStream:
+    Type: AWS::Lambda::EventSourceMapping
+    Properties:
+      BatchSize: 1
+      Enabled: True
+      EventSourceArn: !GetAtt InventoryTable.StreamArn
+      FunctionName: !GetAtt SteamInventoryChangesFunction.Arn
+      StartingPosition: LATEST
+
+  InventoryTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: inventories
+      KeySchema:
+        - AttributeName: PK
+          KeyType: HASH
+        - AttributeName: SK
+          KeyType: RANGE
+      AttributeDefinitions:
+        - AttributeName: PK
+          AttributeType: S
+        - AttributeName: SK
+          AttributeType: S
+        - AttributeName: GSI1_PK
+          AttributeType: S
+        - AttributeName: GSI1_SK
+          AttributeType: S
+      BillingMode: PAY_PER_REQUEST
+      GlobalSecondaryIndexes:
+        - IndexName: "GSI1"
+          KeySchema:
+            - AttributeName: GSI1_PK
+              KeyType: HASH
+            - AttributeName: GSI1_SK
+              KeyType: RANGE
+          Projection:
+            ProjectionType: "ALL"
+      StreamSpecification:
+        StreamViewType: "NEW_AND_OLD_IMAGES"
