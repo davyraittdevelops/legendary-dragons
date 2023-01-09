@@ -1,19 +1,21 @@
+<div style="display: flex; flex-direction: row">
+  <mat-tab-group >
+    <mat-tab label="Inventory">
+      <app-inventory-page></app-inventory-page>
+    </mat-tab>
+    <mat-tab label="Decks" >
+      <ng-template matTabContent>
+        <app-decks-page></app-decks-page>
+      </ng-template>
+    </mat-tab>
+    <mat-tab label="Wishlist">
+      <ng-template matTabContent>
+        <app-wishlist-page></app-wishlist-page>
+      </ng-template>
+    </mat-tab>
+  </mat-tab-group>
+</div>
 
-<mat-tab-group>
-  <mat-tab label="Inventory">
-    <app-inventory-page></app-inventory-page>
-  </mat-tab>
-  <mat-tab label="Decks" >
-    <ng-template matTabContent>
-      <app-decks-page></app-decks-page>
-    </ng-template>
-  </mat-tab>
-  <mat-tab label="Wishlist">
-    <ng-template matTabContent>
-      <app-wishlist-page></app-wishlist-page>
-    </ng-template>
-  </mat-tab>
-</mat-tab-group>
 
 
 
