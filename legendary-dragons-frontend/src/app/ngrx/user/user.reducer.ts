@@ -11,7 +11,7 @@ import {
 import { UserState } from "./models/user-state.model";
 
 const initialState: UserState = {
-  isUserLoading: false,
+  isLoading: false,
   hasUserError: false,
   isRegisterUserLoading: false,
   hasRegisterUserError: false,
@@ -57,7 +57,7 @@ export const userReducer = createReducer(
 //     const newState: UserState = {
 //       ...state,
 //       user: user,
-//       isUserLoading: true,
+//       isLoading: true,
 //       hasUserError: false
 //     };
 
@@ -68,7 +68,7 @@ export const userReducer = createReducer(
 //     const newState: UserState = {
 //       ...state,
 //       user: user,
-//       isUserLoading: false,
+//       isLoading: false,
 //       hasUserError: false
 //     };
 
@@ -78,7 +78,7 @@ export const userReducer = createReducer(
 //   on(loginUserFail, (state) => {
 //     const newState: UserState = {
 //       ...state,
-//       isUserLoading: false,
+//       isLoading: false,
 //       hasUserError: true
 //     };
 
