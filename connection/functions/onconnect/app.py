@@ -1,13 +1,14 @@
 import boto3
-import uuid
 from boto3.dynamodb.conditions import Key, Attr
 from aws_xray_sdk.core import patch_all
 import logging
+import os
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-patch_all()
+if "DISABLE_XRAY" not in os.environ:
+    patch_all()
 
 def lambda_handler(event, context):
     logger.info('Onconnect...')
@@ -37,5 +38,6 @@ def lambda_handler(event, context):
         logger.error('Error: ', e)
 
     return {
-        "statusCode": 200
+        "statusCode": 200,
+        "body": "Connected."
     }
