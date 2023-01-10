@@ -6,7 +6,7 @@ import requests
 import boto3
 from aws_xray_sdk.core import patch_all
 
-CHUNCK_LIMIT = 50
+CHUNK_LIMIT = 50
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -55,7 +55,7 @@ def send_data_chunks(cards, endpoint, connection_id):
     half_length = len(cards) // 2
     output = {"event_type": "SEARCH_CARD_RESULT", "data": cards}
 
-    if half_length >= CHUNCK_LIMIT:
+    if half_length >= CHUNK_LIMIT:
         first_chunk, second_chunk = cards[:half_length], cards[half_length:]
 
         logger.info("Sending first chunk with size {len(first_chunk)}")

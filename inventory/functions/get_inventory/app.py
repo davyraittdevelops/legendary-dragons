@@ -17,6 +17,20 @@ table = dynamodb.Table(os.getenv("TABLE_NAME"))
 
 def lambda_handler(event, context):
     """Get a inventory entry for a specific user."""
+    connection_id = event["requestContext"]["connectionId"]
+    domain_name = event["requestContext"]["domainName"]
+    stage = event["requestContext"]["stage"]
+
+    endpoint = f"https://{domain_name}/{stage}"
+    output = {
+        "event_type": "GET_INVENTORY_RESULT",
+        "data": []
+    }
+
+    logger.info(f"Request will be made to {endpoint}")
+
+    apigateway = boto3.client("apigatewaymanagementapi", endpoint_url=endpoint)
+
     logger.info(event)
     body = json.loads(event["body"])
 
@@ -33,7 +47,12 @@ def lambda_handler(event, context):
 
     if "Item" not in inventory:
         logger.info(f"Inventory with id = {inventory_id} not found")
-        return {"statusCode": 400}
+        output["error"] = "NOT_FOUND"
+        apigateway.post_to_connection(
+            ConnectionId=connection_id,
+            Data=json.dumps(output)
+        )
+        return {"statusCode": 404}
 
     inventory_cards = table.query(
         KeyConditionExpression=Key("GSI1_PK").eq(f"INVENTORY#{inventory_id}") &
@@ -42,10 +61,14 @@ def lambda_handler(event, context):
     )["Items"]
 
     logger.info(f"Found {len(inventory_cards)} inventory cards")
-    inventory["Item"]["inventory_cards"] = inventory_cards
 
-    return {
-        "statusCode": 200,
-        "event_type": "GET_INVENTORY_RESULT",
-        "data": inventory["Item"]
-    }
+    inventory["Item"]["inventory_cards"] = inventory_cards
+    output["data"] = inventory["Item"]
+
+    logger.info(f"Sending inventory result to client with id: {connection_id}")
+
+    apigateway.post_to_connection(
+        ConnectionId=connection_id,
+        Data=json.dumps(output)
+    )
+    return {"statusCode": 200}
