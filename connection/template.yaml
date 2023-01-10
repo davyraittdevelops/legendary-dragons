@@ -5,7 +5,11 @@ Description: >
 
   Sample SAM Template for connection
 
-# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Parameters:   
+  LegDragonsWebSocketApi:     
+    Type: String     
+    Default: "legendary-dragons-ws-api-gateway-LegDragonsWebSocketApi"
+
 Globals:
   Function:
     Timeout: 3
@@ -23,6 +27,43 @@ Globals:
     TracingEnabled: True
 
 Resources:
+  onconnectFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: functions/onconnect
+  onconnectPermission:
+    Type: AWS::Lambda::Permission
+    DependsOn:
+      - LegDragonsWebSocketApi
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref onconnectFunction
+      Principal: apigateway.amazonaws.com
+  connectRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: 
+        Fn::ImportValue:
+          !Sub "${LegDragonsWebSocketApi}"
+      RouteKey: $connect
+      AuthorizationType: NONE
+      OperationName: connectRoute
+      Target: !Join
+        - '/'
+        - - 'integrations'
+          - !Ref connectInteg
+  connectInteg:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: 
+        Fn::ImportValue:
+          !Sub "${LegDragonsWebSocketApi}"
+      Description: Connect Integration
+      IntegrationType: AWS_PROXY
+      IntegrationUri: 
+        Fn::Sub:
+            arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${onconnectFunction.Arn}/invocations
+
   connectionsDynaboDBTable:
     Type: AWS::DynamoDB::Table
     DeletionPolicy: Retain
@@ -39,4 +80,3 @@ Resources:
         - AttributeName: SK
           KeyType: RANGE
       BillingMode: PAY_PER_REQUEST
-

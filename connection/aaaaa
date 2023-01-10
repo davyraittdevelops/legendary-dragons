@@ -1,0 +1,127 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  card
+
+  SAM Template for card context
+
+Parameters:
+  LegDragonsWebSocketApi:
+    Type: String
+    Default: "legendary-dragons-ws-api-gateway-LegDragonsWebSocketApi"
+
+Globals:
+  Api:
+    TracingEnabled: True
+  Function:
+    Handler: app.lambda_handler
+    Runtime: python3.9
+    Environment:
+        Variables:
+          TABLE_NAME: !Ref CardTable
+    Architectures:
+      - x86_64
+    Tracing: Active
+
+Resources:
+  SearchCardByKeywordFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/search_card_by_keyword/
+      Environment:
+        Variables:
+          SCRYFALL_URL: "https://api.scryfall.com"
+
+  SteamCardChangesFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/stream_card_changes/
+      Policies:
+        - DynamoDBStreamReadPolicy:
+            TableName: !Ref CardTable
+            # Reason: https://github.com/aws/serverless-application-model/issues/289#issuecomment-939738271
+            StreamName: !Select [3, !Split ["/", !GetAtt CardTable.StreamArn]]
+      Environment:
+        Variables:
+          EVENT_BUS_NAME: "connetions-event-bus"
+
+  EventSourceCardsTableStream:
+    Type: AWS::Lambda::EventSourceMapping
+    Properties:
+      BatchSize: 1
+      Enabled: True
+      EventSourceArn: !GetAtt CardTable.StreamArn
+      FunctionName: !GetAtt SteamCardChangesFunction.Arn
+      StartingPosition: LATEST
+
+  CardTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: cards
+      KeySchema:
+        - AttributeName: PK
+          KeyType: HASH
+        - AttributeName: SK
+          KeyType: RANGE
+      AttributeDefinitions:
+        - AttributeName: PK
+          AttributeType: S
+        - AttributeName: SK
+          AttributeType: S
+        - AttributeName: GSI1_PK
+          AttributeType: S
+        - AttributeName: GSI1_SK
+          AttributeType: S
+      BillingMode: PAY_PER_REQUEST
+      GlobalSecondaryIndexes:
+        - IndexName: "GSI1"
+          KeySchema:
+            - AttributeName: GSI1_PK
+              KeyType: HASH
+            - AttributeName: GSI1_SK
+              KeyType: RANGE
+          Projection:
+            ProjectionType: "ALL"
+      StreamSpecification:
+        StreamViewType: "NEW_AND_OLD_IMAGES"
+
+  SearchCardByKeywordRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Fn::ImportValue:
+          !Sub "${LegDragonsWebSocketApi}"
+      RouteKey: searchCardsByKeywordReq
+      AuthorizationType: NONE
+      OperationName: SearchCardByKeywordRoute
+      Target: !Join
+        - '/'
+        - - 'integrations'
+          - !Ref SearchCardByKeywordInteg
+
+  SearchCardByKeywordInteg:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Fn::ImportValue:
+          !Sub "${LegDragonsWebSocketApi}"
+      Description: Search chard by keyword integration
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::Sub:
+            arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${SearchCardByKeywordFunction.Arn}/invocations
+
+  SearchCardByKeywordPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref SearchCardByKeywordFunction
+      Principal: apigateway.amazonaws.com
+
+Outputs:
+  SearchCardByKeywordFunction:
+    Description: "Search Card By Keyword Lambda Function ARN"
+    Value: !GetAtt SearchCardByKeywordFunction.Arn
+  SearchCardByKeywordFunctionIamRole:
+    Description: "Implicit IAM Role created for Search Card By Keyword function"
+    Value: !GetAtt SearchCardByKeywordFunctionRole.Arn
