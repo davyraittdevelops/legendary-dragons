@@ -89,12 +89,12 @@ const CARD_DATA: Card[] = [
 ];
 
 @Component({
-  selector: 'app-add-card-button',
-  templateUrl: './add-card-button.html',
-  styleUrls: ['./add-card-button.scss']
+  selector: 'app-add-card-component',
+  templateUrl: './add-card-component.html',
+  styleUrls: ['./add-card-component.scss']
 })
 
-export class AddCardButton implements OnInit {
+export class AddCardComponent implements OnInit {
 
   private closeResult: string = '';
   displayedColumns: string[] = ['name', 'type', 'cost', 'imageUrl', 'addCard'];

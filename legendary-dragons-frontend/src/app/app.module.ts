@@ -20,7 +20,7 @@ import { DecksPageComponent } from './components/decks-page/decks-page.component
 import { WishlistPageComponent } from './components/wishlist-page/wishlist-page.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MatTabsModule} from "@angular/material/tabs";
-import { AddCardButton } from './components/card/add-card-button/add-card-button';
+import { AddCardComponent } from './components/card/add-card-button/add-card-component';
 import { CardComponent } from './components/card/card/card.component';
 import {MatTableModule} from "@angular/material/table";
 import {MatFormFieldModule} from "@angular/material/form-field";
@@ -37,7 +37,7 @@ import { MatInputModule } from '@angular/material/input';
     InventoryPageComponent,
     DecksPageComponent,
     WishlistPageComponent,
-    AddCardButton,
+    AddCardComponent,
     CardComponent
   ],
   imports: [
