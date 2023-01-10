@@ -1,7 +1,7 @@
 import json
 import logging
 import os
-import boto3
+import time
 import requests
 from aws_xray_sdk.core import patch_all
 
@@ -21,6 +21,8 @@ def lambda_handler(event, context):
     logger.info(f"Searching scryfall with query: {query}")
     payload = {"q": query, "unique": "prints"}
 
+    # Add small delay before sending requests as mentioned in API docs
+    time.sleep(0.1)
     cards_response = requests.get(
         f"{os.environ['SCRYFALL_URL']}/cards/search",
         params=payload
@@ -34,32 +36,21 @@ def lambda_handler(event, context):
 
 
 def card_entry(card):
+    """Map the API object to the DynamoDB entity."""
     is_multifaced = "card_faces" in card
-    colors = []
-    image = ""
     card_faces = []
+    multiverse = card["multiverse_ids"]
+    multiverse_len = len(multiverse)
 
-    # Loop through card_faces instead of mutliverse
-    for idx, multiverse_id in enumerate(card["multiverse_ids"]):
-        card_base = card
+    if is_multifaced:
+        for idx, face in enumerate(card["card_faces"]):
+            multiverse_id = multiverse[idx] if idx <= (multiverse_len- 1) else None
 
-        if is_multifaced:
-            card_base = card["card_faces"][idx]
-
-        if "image_uris" in card_base:
-            image = card_base["image_uris"]["png"]
-
-        card_face = {
-            "multiverse_id": multiverse_id,
-            "card_name": card_base["name"],
-            "oracle_text": card_base["oracle_text"],
-            "mana_cost": card_base["mana_cost"],
-            "colors": card_base["colors"] if "colors" in card_base else colors,
-            "type_line": card_base["type_line"],
-            "image_url": image
-        }
-
-        card_faces.append(card_face)
+            card_face = create_card_face(face, multiverse_id)
+            card_faces.append(card_face)
+    else:
+        multiverse_id = multiverse[0] if multiverse_len >= 1 else None
+        card_faces.append(create_card_face(card, multiverse_id))
 
     return {
         "scryfall_id": card["id"],
@@ -75,4 +66,23 @@ def card_entry(card):
         "released_at": card["released_at"],
         "card_name": card["name"],
         "card_faces": card_faces
+    }
+
+
+def create_card_face(card, multiverse_id):
+    """Map the card face object."""
+    colors = []
+    image = ""
+
+    if "image_uris" in card:
+        image = card["image_uris"]["png"]
+
+    return {
+        "multiverse_id": multiverse_id,
+        "card_name": card["name"],
+        "oracle_text": card["oracle_text"],
+        "mana_cost": card["mana_cost"],
+        "colors": card["colors"] if "colors" in card else colors,
+        "type_line": card["type_line"],
+        "image_url": image
     }
