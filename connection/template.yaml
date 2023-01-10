@@ -16,11 +16,6 @@ Globals:
     Tracing: Active
     Handler: app.lambda_handler
     Runtime: python3.9
-    Environment:
-        Variables:
-          COGNITO_CLIENT:
-            Fn::ImportValue:
-              !Sub "${LegDragonsUserPoolClient}"
     Architectures:
       - x86_64
   Api:
@@ -33,8 +28,6 @@ Resources:
       CodeUri: functions/onconnect
   onconnectPermission:
     Type: AWS::Lambda::Permission
-    DependsOn:
-      - LegDragonsWebSocketApi
     Properties:
       Action: lambda:InvokeFunction
       FunctionName: !Ref onconnectFunction
@@ -64,7 +57,7 @@ Resources:
         Fn::Sub:
             arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${onconnectFunction.Arn}/invocations
 
-  connectionsDynaboDBTable:
+  connectionsDynamoDBTable:
     Type: AWS::DynamoDB::Table
     DeletionPolicy: Retain
     Properties:
