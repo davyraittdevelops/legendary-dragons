@@ -1,91 +1,59 @@
 import { createReducer, on } from "@ngrx/store";
 import {
-  // loginUser,
-  // loginUserFail,
-  // loginUserSuccess,
-  // logoutUser,
+  loginUser,
+  loginUserFail,
+  loginUserSuccess,
+  logoutUser,
   registerUser,
   registerUserFail,
   registerUserSuccess
 } from "./user.actions";
 import { UserState } from "./models/user-state.model";
+import jwt_decode from "jwt-decode";
+
+const token = localStorage.getItem('token');
+const user = {
+  email: '',
+  nickname: ''
+}
+
+// Init user details for logged in users (needed when a refresh happens)
+if (token != null) {
+  const decodedToken: any = jwt_decode(token);
+  user.email = decodedToken.email;
+  user.nickname = decodedToken.nickname;
+}
 
 const initialState: UserState = {
-  isUserLoading: false,
-  hasUserError: false,
-  isRegisterUserLoading: false,
-  hasRegisterUserError: false,
-  user: {
-    email: "",
-    nickname: ""
-  }
+  isLoading: false,
+  hasError: false,
+  user
 }
 
 export const userReducer = createReducer(
   initialState,
-  on(registerUser, (state, {user}) => {
+  on(registerUser, (state) => ({...state, isLoading: true})),
+  on(registerUserSuccess, (state) => ({...state, isLoading: false, hasError: false})),
+  on(registerUserFail, (state) => ({...state, isLoading: false, hasError: true})),
+  on(loginUser, (state) => ({...state, isLoading: true})),
+  on(loginUserFail, (state) => ({...state, isLoading: false, hasError: true})),
+  on(loginUserSuccess, (state, {jwt}) => {
+    const decoded: any = jwt_decode(jwt);
     const newState: UserState = {
       ...state,
-      isRegisterUserLoading: true,
-      hasRegisterUserError: false,
-      user: user
+      isLoading: false,
+      hasError: false,
+      user: {
+        email: decoded.email,
+        nickname: decoded.nickname
+      }
     };
 
+    localStorage.setItem('token', jwt);
     return newState;
   }),
-  on(registerUserSuccess, (state, {user}) => {
-    const newState: UserState = {
-      ...state,
-      user: user,
-      isRegisterUserLoading: false,
-      hasRegisterUserError: false,
-    };
-
-    return newState;
-  }),
-    on(registerUserFail, (state) => {
-    const newState: UserState = {
-      ...state,
-      isRegisterUserLoading: false,
-      hasRegisterUserError: true,
-    };
-
-    return newState;
+  on(logoutUser, () => {
+    localStorage.removeItem('token');
+    return initialState;
   }),
 )
-//   on(loginUser, (state, {user}) => {
-//     const newState: UserState = {
-//       ...state,
-//       user: user,
-//       isUserLoading: true,
-//       hasUserError: false
-//     };
-
-//     return newState;
-//   }),
-
-//   on(loginUserSuccess, (state, {user}) => {
-//     const newState: UserState = {
-//       ...state,
-//       user: user,
-//       isUserLoading: false,
-//       hasUserError: false
-//     };
-
-//     return newState;
-//   }),
-
-//   on(loginUserFail, (state) => {
-//     const newState: UserState = {
-//       ...state,
-//       isUserLoading: false,
-//       hasUserError: true
-//     };
-
-//     return newState;
-//   }),
-
-//   on(logoutUser, () => {
-//     return initialState;
-//   }),
-// )

@@ -52,15 +52,8 @@ import { MatInputModule } from '@angular/material/input';
     ]),
 
     StoreModule.forRoot({
-      userState: userReducer
-    }),
-
-    BrowserAnimationsModule,
-    MatTabsModule,
-    FormsModule,
-    MatTableModule,
-    MatFormFieldModule,
-    MatInputModule
+      user: userReducer
+    })
   ],
   providers: [],
   bootstrap: [AppComponent]
