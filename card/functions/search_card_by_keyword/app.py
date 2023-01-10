@@ -31,8 +31,12 @@ def lambda_handler(event, context):
 
     mapped_cards = map(card_entry, api_body["data"])
     logger.info(f"Found {api_body['total_cards']} total cards")
+    logger.info(f"Returning {len(api_body['data'])} cards")
 
-    return {"statusCode": 200, "body": json.dumps(list(mapped_cards))}
+    return {
+        "event_type": "SEARCH_CARD_RESULT",
+        "body": json.dumps(list(mapped_cards))
+    }
 
 
 def card_entry(card):
@@ -44,7 +48,7 @@ def card_entry(card):
 
     if is_multifaced:
         for idx, face in enumerate(card["card_faces"]):
-            multiverse_id = multiverse[idx] if idx <= (multiverse_len- 1) else None
+            multiverse_id = multiverse[idx] if idx <= (multiverse_len - 1) else None
 
             card_face = create_card_face(face, multiverse_id)
             card_faces.append(card_face)
