@@ -9,8 +9,11 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "sonar": "sonar-scanner",
-    "cypress:open": "cypress open",
-    "cypress:run": "cypress run"
+    "cypress:open": "cypress open --env HTTP_PROXY=https://www.legendarydragons.cloud-native-minor.it",
+    "cypress:run": "cypress run --env HTTP_PROXY=https://www.legendarydragons.cloud-native-minor.it",
+    "e2e": "ng e2e",
+    "e2e:ci": "ng run legendary-dragons-frontend:e2e-ci",
+    "e2e:coverage": "npx nyc report --reporter=lcov --reporter=text-summary"
   },
   "private": true,
   "dependencies": {
@@ -28,24 +31,33 @@
     "@ngrx/store": "^14.3.2",
     "@popperjs/core": "^2.10.2",
     "angular-cors": "^1.0.0",
+    "aws-sdk": "^2.1290.0",
     "bootstrap": "^5.2.0",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.11.4"
   },
   "devDependencies": {
+    "@angular-builders/custom-webpack": "^15.0.0",
     "@angular-devkit/build-angular": "^14.2.4",
     "@angular/cli": "~14.2.4",
     "@angular/compiler-cli": "^14.2.0",
+    "@cypress/code-coverage": "^3.10.0",
+    "@cypress/schematic": "^2.4.0",
+    "@istanbuljs/nyc-config-typescript": "^1.0.2",
+    "@jsdevtools/coverage-istanbul-loader": "^3.0.5",
     "@types/jasmine": "~4.0.0",
-    "cypress": "^12.1.0",
+    "cypress": "^12.2.0",
+    "istanbul-lib-coverage": "^3.2.0",
     "jasmine-core": "~4.3.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.1.0",
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.0.0",
+    "nyc": "^15.1.0",
     "sonar-scanner": "^3.1.0",
-    "typescript": "~4.7.2"
+    "typescript": "~4.7.2",
+    "webpack": "^5.75.0"
   }
 }

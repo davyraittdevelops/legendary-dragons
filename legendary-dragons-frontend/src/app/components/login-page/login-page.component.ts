@@ -2,9 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import { Store } from "@ngrx/store";
-import { AppState } from "../../app.state";
-// import { loginUser } from "../../ngrx/user/user.actions";
 import { UserService } from "../../services/user/user.service";
+import {AppState} from "../../app.state";
 
 @Component({
   selector: 'app-login-page',
