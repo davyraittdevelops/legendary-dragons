@@ -3,7 +3,10 @@ import logging
 import os
 import time
 import requests
+import boto3
 from aws_xray_sdk.core import patch_all
+
+CHUNCK_LIMIT = 50
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -14,7 +17,6 @@ if "DISABLE_XRAY" not in os.environ:
 
 def lambda_handler(event, context):
     """Search for a card based on the given keyword."""
-    logger.info(event)
     body = json.loads(event["body"])
     query = body["query"]
 
@@ -33,10 +35,43 @@ def lambda_handler(event, context):
     logger.info(f"Found {api_body['total_cards']} total cards")
     logger.info(f"Returning {len(api_body['data'])} cards")
 
-    return {
-        "event_type": "SEARCH_CARD_RESULT",
-        "body": json.dumps(list(mapped_cards))
-    }
+    connection_id = event["requestContext"]["connectionId"]
+    domain_name = event["requestContext"]["domainName"]
+    stage = event["requestContext"]["stage"]
+    endpoint = f"https://{domain_name}/{stage}"
+
+    logger.info(f"Requests will be made to {endpoint}")
+
+    logger.info(f"Sending cards result to client with id: {connection_id}")
+    send_data_chunks(list(mapped_cards), endpoint, connection_id)
+
+    return {"statusCode": 200}
+
+
+def send_data_chunks(cards, endpoint, connection_id):
+    """Send the cards in chunks when needed to avoid large payloads."""
+    apigateway = boto3.client("apigatewaymanagementapi", endpoint_url=endpoint)
+
+    half_length = len(cards) // 2
+    output = {"event_type": "SEARCH_CARD_RESULT", "data": cards}
+
+    if half_length >= CHUNCK_LIMIT:
+        first_chunk, second_chunk = cards[:half_length], cards[half_length:]
+
+        logger.info("Sending first chunk with size {len(first_chunk)}")
+        output = {"event_type": "SEARCH_CARD_RESULT", "data": first_chunk}
+        apigateway.post_to_connection(
+            ConnectionId=connection_id,
+            Data=json.dumps(output)
+        )
+
+        output = {"event_type": "SEARCH_CARD_RESULT", "data": second_chunk}
+
+    logger.info("Sending last chunk with size {len(ouput['data'])}")
+    apigateway.post_to_connection(
+        ConnectionId=connection_id,
+        Data=json.dumps(output)
+    )
 
 
 def card_entry(card):
