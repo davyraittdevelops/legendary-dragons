@@ -9,6 +9,9 @@ Parameters:
   LegDragonsWebSocketApi:
     Type: String
     Default: "legendary-dragons-ws-api-gateway-LegDragonsWebSocketApi"
+  LegDragonsConnectionsEventBus:
+    Type: String
+    Default: "legendary-dragons-connection-event-bus-LegDragonsConnectionsEventBus"
 
 Globals:
   Api:
@@ -37,13 +40,19 @@ Resources:
     Properties:
       CodeUri: functions/stream_card_changes/
       Policies:
+        - EventBridgePutEventsPolicy:
+            EventBusName:
+              Fn::ImportValue:
+                !Sub "${LegDragonsConnectionsEventBus}"
         - DynamoDBStreamReadPolicy:
             TableName: !Ref CardTable
             # Reason: https://github.com/aws/serverless-application-model/issues/289#issuecomment-939738271
             StreamName: !Select [3, !Split ["/", !GetAtt CardTable.StreamArn]]
       Environment:
         Variables:
-          EVENT_BUS_NAME: "connetions-event-bus"
+          EVENT_BUS_NAME:
+            Fn::ImportValue:
+              !Sub "${LegDragonsConnectionsEventBus}"
 
   EventSourceCardsTableStream:
     Type: AWS::Lambda::EventSourceMapping
