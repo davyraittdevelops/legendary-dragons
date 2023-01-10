@@ -1,29 +1,32 @@
 import boto3
 from aws_xray_sdk.core import patch_all
+import logging
+
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 patch_all()
 
 def lambda_handler(event, context):
-    print('Disconnect...')
+    logger.info('Disconnect...')
     try: 
         #TODO: dont forget to change user!
-        connect_id = event['requestContext']['connectId']
-        user_id = 123
+        connect_id = event["requestContext"]["connectionId"]
+        user_id = "123"
 
-        remove = boto3.client('dynamodb')
-        remove.delete_item(
-            TableName = "connections",
+        client = boto3.resource("dynamodb")
+        table = client.Table("connections")
+        response = table.delete_item(
             Key = {
-                'PK': {'S' :f'Connection#{connect_id}'},
-                'SK': {'S' :f'User#{user_id}'}
+                "PK": "Connection#" + connect_id,
+                "SK": "User#" + user_id
             },
-            ConditionExpression = 'attribute_exists(connect_id)',
             ReturnValues = 'ALL_OLD'
         )
-        print('Succesfully removed connection from database.')
-        print(remove)
+        logger.info(response)
+        logger.info('Succesfully removed connection from database.')
     except Exception as e:
-        print(e)
+        logger.error('Error: ', e)
 
     return {
         "statusCode": 200

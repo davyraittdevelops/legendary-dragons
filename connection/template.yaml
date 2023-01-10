@@ -26,6 +26,9 @@ Resources:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
       CodeUri: functions/onconnect
+      Policies: 
+        - DynamoDBWritePolicy:
+            TableName: !Ref connectionsDynamoDBTable
   onconnectPermission:
     Type: AWS::Lambda::Permission
     Properties:
@@ -56,6 +59,44 @@ Resources:
       IntegrationUri: 
         Fn::Sub:
             arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${onconnectFunction.Arn}/invocations
+
+  disconnectFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: functions/disconnect
+      Policies: 
+        - DynamoDBCrudPolicy:
+            TableName: !Ref connectionsDynamoDBTable
+  disconnectPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref disconnectFunction
+      Principal: apigateway.amazonaws.com
+  disconnectRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: 
+        Fn::ImportValue:
+          !Sub "${LegDragonsWebSocketApi}"
+      RouteKey: $disconnect
+      AuthorizationType: NONE
+      OperationName: disconnectRoute
+      Target: !Join
+        - '/'
+        - - 'integrations'
+          - !Ref disconnectInteg
+  disconnectInteg:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: 
+        Fn::ImportValue:
+          !Sub "${LegDragonsWebSocketApi}"
+      Description: Disconnect Integration
+      IntegrationType: AWS_PROXY
+      IntegrationUri: 
+        Fn::Sub:
+            arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${disconnectFunction.Arn}/invocations
 
   connectionsDynamoDBTable:
     Type: AWS::DynamoDB::Table
