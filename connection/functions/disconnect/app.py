@@ -31,5 +31,6 @@ def lambda_handler(event, context):
         logger.error('Error: ', e)
 
     return {
-        "statusCode": 200
+        "statusCode": 200,
+        "body": "Disconnected."
     }

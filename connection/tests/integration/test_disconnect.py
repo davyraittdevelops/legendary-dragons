@@ -28,12 +28,12 @@ OS_ENV = {
 @patch.dict(os.environ, OS_ENV, clear=True)
 @mock_dynamodb
 def test_lambda_handler(event):
-    from functions.onconnect.app import lambda_handler
+    from functions.disconnect.app import lambda_handler
     # Arrange
     orig = botocore.client.BaseClient._make_api_call
 
     dynamodb = boto3.resource('dynamodb')
-    dynamodb.create_table(
+    connectionsTable = dynamodb.create_table(
         TableName='connections',
         AttributeDefinitions=[
             {
@@ -58,6 +58,18 @@ def test_lambda_handler(event):
         BillingMode='PAY_PER_REQUEST'
     )
 
+    connectionItemToInsert = {
+        "PK": "Connection#eiC3NdK8IAMCIYA=",
+        "SK": "User#123",
+        "entity_type": "Connection",
+        "domain": "3ghgk1q3mf.execute-api.us-east-1.amazonaws.com",
+        "stage": "Prod",
+        "connection_id": "eiC3NdK8IAMCIYA=",
+        "user_id": "123"
+    }
+
+    connectionsTable.put_item(Item=connectionItemToInsert)
+
     def mock_make_api_call(self, operation_name, kwarg):
         if operation_name == 'PostToConnection':
             return None
@@ -70,4 +82,4 @@ def test_lambda_handler(event):
         # # Assert
         assert response['statusCode'] == 200
         assert event["requestContext"]["connectionId"] == "eiC3NdK8IAMCIYA="
-        assert body == '"Connected."'
+        assert body == '"Disconnected."'
