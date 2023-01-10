@@ -81,15 +81,15 @@
             <div class="spacing px-4">
               <input
                   type="password"
-                  name="confirm password"
+                  name="confirmPassword"
                   class="form-control"
                   placeholder="Password"
-                  [formControlName]="'confirmpassword'"
-                  [ngClass]="{'is-valid': confirmpassword.valid && confirmpassword.touched,
-                        'is-invalid': form.errors?.['passwordsNotEqual'] && confirmpassword.touched}"
+                  [formControlName]="'confirmPassword'"
+                  [ngClass]="{'is-valid': confirmPassword.valid && confirmPassword.touched,
+                        'is-invalid': form.errors?.['passwordsNotEqual'] && confirmPassword.touched}"
               />
 
-              <div class="form-text text-danger fw-bold" *ngIf="confirmpassword.touched && form.errors?.['passwordsNotEqual']">
+              <div class="form-text text-danger fw-bold" *ngIf="confirmPassword.touched && form.errors?.['passwordsNotEqual']">
                 The repeated password does not match.
               </div>
             </div>
