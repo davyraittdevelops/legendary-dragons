@@ -34,6 +34,17 @@ Resources:
       Environment:
         Variables:
           SCRYFALL_URL: "https://api.scryfall.com"
+      Policies:
+        - Statement:
+          - Effect: Allow
+            Action:
+              - 'execute-api:ManageConnections'
+            Resource:
+              Fn::Sub:
+                - 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${WebSocketApi}/*'
+                - WebSocketApi:
+                    Fn::ImportValue:
+                      'Fn::Sub': "${LegDragonsWebSocketApi}"
 
   SteamCardChangesFunction:
     Type: AWS::Serverless::Function
