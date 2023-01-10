@@ -12,10 +12,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Use Node.js v16.15.1
+      - name: Use Node.js v18.13.0
         uses: actions/setup-node@v3
         with:
-          node-version: '16.15.1'
+          node-version: '18.13.0'
 
       - name: Clean install
         run: npm ci
@@ -30,12 +30,6 @@ jobs:
         run: npm run e2e:coverage
 
       - name: Run SonarQube scanner
-        uses: sonarsource/sonarqube-scan-action@master
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: http://sonar.cloud-native-minor.it
-        with:
-          args: >
-            -Dsonar.python.coverage.reportPaths=coverage/lcov.info
-            -Dsonar.tests=cypress/e2e/
-            -Dsonar.sources=/src/
+        run: npm run sonar -- -Dsonar.login=$SONAR_TOKEN
