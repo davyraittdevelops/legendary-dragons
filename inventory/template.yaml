@@ -31,6 +31,9 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: functions/get_inventory/
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref InventoryTable
 
   AddCardToInventoryFunction:
     Type: AWS::Serverless::Function
@@ -102,7 +105,7 @@ Resources:
       ApiId:
         Fn::ImportValue:
           !Sub "${LegDragonsWebSocketApi}"
-      RouteKey: searchCardsByKeywordReq
+      RouteKey: getInventoryReq
       AuthorizationType: NONE
       OperationName: GetInventoryRoute
       Target: !Join
@@ -128,7 +131,7 @@ Resources:
       ApiId:
         Fn::ImportValue:
           !Sub "${LegDragonsWebSocketApi}"
-      RouteKey: searchCardsByKeywordReq
+      RouteKey: addCardToInventoryReq
       AuthorizationType: NONE
       OperationName: AddCardToInventoryRoute
       Target: !Join
