@@ -1,11 +1,13 @@
 import boto3
 from aws_xray_sdk.core import patch_all
 import logging
+import os
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-patch_all()
+if "DISABLE_XRAY" not in os.environ:
+    patch_all()
 
 def lambda_handler(event, context):
     logger.info('Disconnect...')
@@ -29,5 +31,6 @@ def lambda_handler(event, context):
         logger.error('Error: ', e)
 
     return {
-        "statusCode": 200
+        "statusCode": 200,
+        "body": "Disconnected."
     }
