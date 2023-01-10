@@ -1,15 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-
-interface Card {
-  name: string;
-  type: string;
-  text: string;
-  cost: number;
-  power: number;
-  toughness: number;
-  imageUrl: string;
-}
-
+import {Card} from "../../models/card.model";
 
 @Component({
   selector: 'app-inventory-page',

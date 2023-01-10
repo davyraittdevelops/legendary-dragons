@@ -57,5 +57,4 @@ mat-tab-body {
 /* Styles for the active tab label */
 :host ::ng-deep.mat-tab-label {
   background-color: transparent;
-  /* background-color: lightgray; */
 }

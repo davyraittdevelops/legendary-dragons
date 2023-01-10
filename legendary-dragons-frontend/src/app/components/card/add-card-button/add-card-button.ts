@@ -1,17 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {ModalDismissReasons, NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {MatTableDataSource} from "@angular/material/table";
+import {Card} from "../../../models/card.model";
 
-
-interface Card {
-  name: string;
-  type: string;
-  text: string;
-  cost: number;
-  power: number;
-  toughness: number;
-  imageUrl: string;
-}
 
 const CARD_DATA: Card[] = [
   {
@@ -99,11 +90,11 @@ const CARD_DATA: Card[] = [
 
 @Component({
   selector: 'app-add-card-button',
-  templateUrl: './add-card-button.component.html',
-  styleUrls: ['./add-card-button.component.scss']
+  templateUrl: './add-card-button.html',
+  styleUrls: ['./add-card-button.scss']
 })
 
-export class AddCardButtonComponent implements OnInit {
+export class AddCardButton implements OnInit {
 
   private closeResult: string = '';
   displayedColumns: string[] = ['name', 'type', 'cost', 'imageUrl', 'addCard'];
