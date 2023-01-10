@@ -38,7 +38,8 @@ import { MatInputModule } from '@angular/material/input';
     DecksPageComponent,
     WishlistPageComponent,
     AddCardComponent,
-    CardComponent
+    CardComponent,
+
   ],
   imports: [
     BrowserModule,

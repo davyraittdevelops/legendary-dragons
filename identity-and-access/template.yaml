@@ -62,7 +62,12 @@ Resources:
             RestApiId: !Ref IdentityAndAccessRestApi
             Path: /users/register
             Method: post
-            
+  
+  AuthenticateUserFunction:
+      Type: AWS::Serverless::Function
+      Properties:
+        CodeUri: functions/authenticate/
+
   LoginUserFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -88,3 +93,8 @@ Outputs:
   LoginUserFunction:
     Description: "Login User Lambda Function ARN"
     Value: !GetAtt LoginUserFunction.Arn
+  AuthenticateUserFunction:
+    Description: "Legendary AuthenticateUserFunction for websocket"
+    Value: !GetAtt AuthenticateUserFunction.Arn
+    Export:
+      Name: !Sub "${AWS::StackName}-AuthenticateUserFunction"

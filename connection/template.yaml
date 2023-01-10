@@ -9,6 +9,9 @@ Parameters:
   LegDragonsWebSocketApi:     
     Type: String     
     Default: "legendary-dragons-ws-api-gateway-LegDragonsWebSocketApi"
+  AuthenticateUserFunction:     
+    Type: String     
+    Default: "legendary-dragons-identity-and-access-AuthenticateUserFunction"
 
 Globals:
   Function:
@@ -42,12 +45,46 @@ Resources:
         Fn::ImportValue:
           !Sub "${LegDragonsWebSocketApi}"
       RouteKey: $connect
-      AuthorizationType: NONE
+      AuthorizationType: CUSTOM
+      AuthorizerId: !Ref WebsocketAuthorizer
       OperationName: connectRoute
       Target: !Join
         - '/'
         - - 'integrations'
           - !Ref connectInteg
+
+  WebsocketAuthorizer:
+    Type: AWS::ApiGatewayV2::Authorizer
+    Properties:
+      ApiId:
+        Fn::ImportValue:
+          !Sub "${LegDragonsWebSocketApi}"
+      Name: WebsocketAuthorizer
+      AuthorizerType: REQUEST
+      IdentitySource: 
+        - route.request.querystring.token
+      AuthorizerUri: 
+        Fn::Sub:
+          - arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/${AuthenticateUserFunction}/invocations
+          - AuthenticateUserFunction:
+              Fn::ImportValue:
+                'Fn::Sub': "${AuthenticateUserFunction}"
+
+  WebsocketAuthorizerPermission:
+    Type: 'AWS::Lambda::Permission'
+    Properties:
+      Action: 'lambda:invokeFunction'
+      Principal: apigateway.amazonaws.com
+      FunctionName: 
+        Fn::ImportValue:
+          'Fn::Sub': "${AuthenticateUserFunction}"
+      SourceArn:
+        'Fn::Sub':
+          - >-
+            arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${__ApiId__}/${__Stage__}/$connect
+          - __Stage__: '*'
+            __ApiId__: 3ghgk1q3mf
+
   connectInteg:
     Type: AWS::ApiGatewayV2::Integration
     Properties:
