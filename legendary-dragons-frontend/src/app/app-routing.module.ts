@@ -17,13 +17,16 @@ const routes: Routes = [
     path: 'register', component: RegisterPageComponent
   },
   {
-    path: 'inventory', component: InventoryPageComponent
+    path: 'inventory', component: InventoryPageComponent,
+    canActivate: [IsLoggedInGuard]
   },
   {
-    path: 'decks', component: DecksPageComponent
+    path: 'decks', component: DecksPageComponent,
+    canActivate: [IsLoggedInGuard]
   },
   {
-    path: 'wishlist', component: WishlistPageComponent
+    path: 'wishlist', component: WishlistPageComponent,
+    canActivate: [IsLoggedInGuard]
   },
   {
     path: 'dashboard', component: DashboardComponent,

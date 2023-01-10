@@ -20,7 +20,7 @@ import { DecksPageComponent } from './components/decks-page/decks-page.component
 import { WishlistPageComponent } from './components/wishlist-page/wishlist-page.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MatTabsModule} from "@angular/material/tabs";
-import { AddCardButtonComponent } from './components/card/add-card-button/add-card-button.component';
+import { AddCardComponent } from './components/card/add-card-button/add-card-component';
 import { CardComponent } from './components/card/card/card.component';
 import {MatTableModule} from "@angular/material/table";
 import {MatFormFieldModule} from "@angular/material/form-field";
@@ -37,8 +37,8 @@ import { MatInputModule } from '@angular/material/input';
     InventoryPageComponent,
     DecksPageComponent,
     WishlistPageComponent,
-    AddCardButtonComponent,
-    CardComponent
+    AddCardComponent,
+    CardComponent,
   ],
   imports: [
     BrowserModule,
@@ -46,21 +46,18 @@ import { MatInputModule } from '@angular/material/input';
     RouterOutlet,
     ReactiveFormsModule,
     HttpClientModule,
-
     EffectsModule.forRoot([
       UserEffects
     ]),
-
-    StoreModule.forRoot({
-      userState: userReducer
-    }),
-
     BrowserAnimationsModule,
     MatTabsModule,
     FormsModule,
     MatTableModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    StoreModule.forRoot({
+      user: userReducer
+    })
   ],
   providers: [],
   bootstrap: [AppComponent]

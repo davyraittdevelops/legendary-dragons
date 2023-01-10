@@ -1,16 +1,9 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {ModalDismissReasons, NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import {Card} from "../../../models/card.model";
 
 
-interface Card {
-  name: string;
-  type: string;
-  text: string;
-  cost: number;
-  power: number;
-  toughness: number;
-  imageUrl: string;
-}
+
 
 @Component({
   selector: 'app-card',

@@ -9,8 +9,6 @@ th {
 :host ::ng-deep .mat-tab-label {
   color: floralwhite;
   font-size: 20px;
-  /*width: 100%;*/
-  /*position: relative;*/
   margin-top: 15px;
   box-sizing: border-box;
 }
@@ -57,7 +55,6 @@ mat-tab-body {
 /* Styles for the active tab label */
 :host ::ng-deep.mat-tab-label {
   background-color: transparent;
-  /* background-color: lightgray; */
 }
 
 
