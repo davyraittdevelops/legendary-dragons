@@ -25,6 +25,6 @@ export class HeaderComponent implements OnInit {
 
   logout(): void {
     this.appStore.dispatch(logoutUser());
-    this.router.navigate(['/login']);
+    this.router.navigate(['']);
   }
 }

@@ -25,10 +25,12 @@ import { CardComponent } from './components/card/card/card.component';
 import {MatTableModule} from "@angular/material/table";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import { MatInputModule } from '@angular/material/input';
+import {LandingPageComponent} from "./components/landing-page/landing-page.component";
 
 @NgModule({
   declarations: [
     AppComponent,
+    LandingPageComponent,
     RegisterPageComponent,
     LoginPageComponent,
     DashboardComponent,
