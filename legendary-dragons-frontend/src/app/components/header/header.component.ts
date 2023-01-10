@@ -1,34 +1,30 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { Store } from "@ngrx/store";
+import { Observable } from "rxjs";
+import { User } from 'src/app/models/user.model';
+import { logoutUser } from 'src/app/ngrx/user/user.actions';
+import { isLoggedInSelector, userSelector } from 'src/app/ngrx/user/user.selectors';
 import { AppState } from "../../app.state";
-import { UserState } from "../../ngrx/user/models/user-state.model";
-import { Subscription } from "rxjs";
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })
-export class HeaderComponent implements OnInit, OnDestroy {
-  // userSubscription: Subscription | undefined;
-  // userName: string | undefined
+export class HeaderComponent implements OnInit {
+  isLoggedIn$: Observable<boolean>;
+  user$: Observable<User>;
 
-  // constructor(private appStore: Store<AppState>) { }
-
-  ngOnInit(): void {
-  //   this.userSubscription = this.appStore
-  //     .select('userState')
-  //     .subscribe((state: UserState) => {
-
-  //       if (!state.hasUserError && !state.isUserLoading) {
-  //         this.userName = state.user.name;
-  //       }
-  //     });
+  constructor(private appStore: Store<AppState>, private router: Router) {
+    this.isLoggedIn$ = this.appStore.select(isLoggedInSelector);
+    this.user$ = this.appStore.select(userSelector);
   }
 
-  ngOnDestroy(): void {
-  //   if (this.userSubscription) {
-  //     this.userSubscription.unsubscribe();
-  //   }
+  ngOnInit(): void { }
+
+  logout(): void {
+    this.appStore.dispatch(logoutUser());
+    this.router.navigate(['/login']);
   }
 }

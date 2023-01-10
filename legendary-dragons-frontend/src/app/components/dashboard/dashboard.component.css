@@ -5,3 +5,56 @@
 th {
   cursor: pointer;
 }
+
+:host ::ng-deep .mat-tab-label {
+  color: floralwhite;
+  font-size: 20px;
+  /*width: 100%;*/
+  /*position: relative;*/
+  margin-top: 15px;
+  box-sizing: border-box;
+}
+
+
+:host {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+:host ::ng-deep .mat-tab-labels {
+  flex-direction: column;
+}
+
+mat-tab-group {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: row;
+}
+
+:host ::ng-deep .mat-tab-body-wrapper {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+mat-tab-body {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+:host ::ng-deep mat-ink-bar {
+  display: none;
+}
+
+/* Styles for the active tab label */
+:host ::ng-deep.mat-tab-label.mat-tab-label-active {
+  background-color: transparent;
+  color: white;
+  border-right: 2px solid white;
+}
+/* Styles for the active tab label */
+:host ::ng-deep.mat-tab-label {
+  background-color: transparent;
+}
