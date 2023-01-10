@@ -46,11 +46,15 @@ import { MatInputModule } from '@angular/material/input';
     RouterOutlet,
     ReactiveFormsModule,
     HttpClientModule,
-
     EffectsModule.forRoot([
       UserEffects
     ]),
-
+    BrowserAnimationsModule,
+    MatTabsModule,
+    FormsModule,
+    MatTableModule,
+    MatFormFieldModule,
+    MatInputModule,
     StoreModule.forRoot({
       user: userReducer
     })
