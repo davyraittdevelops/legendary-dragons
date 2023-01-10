@@ -28,6 +28,9 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: functions/search_card_by_keyword/
+      Environment:
+        Variables:
+          SCRYFALL_URL: "https://api.scryfall.com"
 
   SteamCardChangesFunction:
     Type: AWS::Serverless::Function
