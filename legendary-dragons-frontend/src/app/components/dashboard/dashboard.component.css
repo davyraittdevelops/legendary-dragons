@@ -57,5 +57,10 @@ mat-tab-body {
   background-color: transparent;
 }
 
-
+/* Styles for the sidebar menu list */
+@media only screen and (min-width: 960px) {
+  :host ::ng-deep .mat-tab-list {
+    width: 300px;
+  }
+}
 
