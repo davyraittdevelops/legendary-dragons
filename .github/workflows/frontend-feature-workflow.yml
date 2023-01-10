@@ -23,13 +23,19 @@ jobs:
       - name: Build the application
         run: npm run build
 
-      # - name: Run End To End Tests
-      #   run: npm run e2e:ci
+      - name: Run End To End Tests
+        run: npm run e2e:ci
 
-      # - name: Create Coverage Report
-      #   run:  npm run e2e:coverage
+      - name: Create Coverage Report
+        run: npm run e2e:coverage
 
       - name: Run SonarQube scanner
+        uses: sonarsource/sonarqube-scan-action@master
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: npm run sonar -- -Dsonar.login=$SONAR_TOKEN
+          SONAR_HOST_URL: http://sonar.cloud-native-minor.it
+        with:
+          args: >
+            -Dsonar.python.coverage.reportPaths=coverage/lcov.info
+            -Dsonar.tests=cypress/e2e/
+            -Dsonar.sources=/src/
