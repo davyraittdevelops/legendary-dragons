@@ -100,6 +100,51 @@ export class InventoryPageComponent implements OnInit {
       power: 0,
       toughness: 0,
       imageUrl: 'https://media.wizards.com/2017/xln/en_yIHG7SYDro.png'
+    },
+    {
+      name: 'Bloodbraid Elf',
+      type: 'Creature',
+      text: 'Haste. Cascade',
+      cost: 3,
+      power: 2,
+      toughness: 2,
+      imageUrl: 'https://images.saymedia-content.com/.image/t_share/MTc0NDYwNzc3ODAxODUyMjY0/top-magic-the-gathering-cards-of-all-time.jpg'
+    },
+    {
+      name: 'Bloodbraid Elf',
+      type: 'Creature',
+      text: 'Haste. Cascade',
+      cost: 3,
+      power: 2,
+      toughness: 2,
+      imageUrl: 'https://images.saymedia-content.com/.image/t_share/MTc0NDYwNzc3ODAxODUyMjY0/top-magic-the-gathering-cards-of-all-time.jpg'
+    },
+    {
+      name: 'Bloodbraid Elf',
+      type: 'Creature',
+      text: 'Haste. Cascade',
+      cost: 3,
+      power: 2,
+      toughness: 2,
+      imageUrl: 'https://images.saymedia-content.com/.image/t_share/MTc0NDYwNzc3ODAxODUyMjY0/top-magic-the-gathering-cards-of-all-time.jpg'
+    },
+    {
+      name: 'Bloodbraid Elf',
+      type: 'Creature',
+      text: 'Haste. Cascade',
+      cost: 3,
+      power: 2,
+      toughness: 2,
+      imageUrl: 'https://images.saymedia-content.com/.image/t_share/MTc0NDYwNzc3ODAxODUyMjY0/top-magic-the-gathering-cards-of-all-time.jpg'
+    },
+    {
+      name: 'Bloodbraid Elf',
+      type: 'Creature',
+      text: 'Haste. Cascade',
+      cost: 3,
+      power: 2,
+      toughness: 2,
+      imageUrl: 'https://images.saymedia-content.com/.image/t_share/MTc0NDYwNzc3ODAxODUyMjY0/top-magic-the-gathering-cards-of-all-time.jpg'
     }
   ];
 
