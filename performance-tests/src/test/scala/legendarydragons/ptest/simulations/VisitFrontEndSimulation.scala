@@ -6,7 +6,7 @@ import io.gatling.jdbc.Predef._
 import legendarydragons.ptest.config.Config.getBaseUrl
 import legendarydragons.ptest.scenarios.Scenarios._
 
-class VisitWebPageSimulation extends Simulation {
+class VisitFrontEndSimulation extends Simulation {
 
   val duration = System.getProperty("duration", "10").toInt seconds
   val userRate = System.getProperty("userRate", "1").toDouble

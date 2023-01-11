@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, ValidationErrors, Validators } from "@angular/forms";
+import { AbstractControl, FormControl, FormGroup, ValidationErrors,
+  Validators
+} from "@angular/forms";
 import { Router } from "@angular/router";
 import { Store } from "@ngrx/store";
 import { Observable } from 'rxjs';
@@ -9,9 +11,12 @@ import { isLoadingSelector, userErrorSelector } from 'src/app/ngrx/user/user.sel
 import { AppState } from "../../app.state";
 
 export const validatePasswords = (control: AbstractControl): ValidationErrors | null => {
-  if (control && control.get("password") && control.get("confirmpassword")) {
+  if (control && control.get("password") && control.get("confirmPassword")) {
     const password = control.get("password")?.value;
-    const confirmPassword = control.get("confirmpassword")?.value;
+    const confirmPassword = control.get("confirmPassword")?.value;
+    if (!password || !confirmPassword) {
+      return null
+    }
     return (password != confirmPassword) ? { passwordsNotEqual: true } : null
   }
   return null;
@@ -36,9 +41,9 @@ export class RegisterPageComponent implements OnInit {
     password: new FormControl(
       '', [Validators.required, Validators.minLength(10), Validators.pattern(/(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*#?&^_-]).{10,}/)]
     ),
-    confirmpassword: new FormControl(
+    confirmPassword: new FormControl(
       '', [Validators.required]
-    )
+    ),
   }, {validators: validatePasswords, updateOn: "blur"})
 
   constructor(private router: Router, private appStore: Store<AppState>) {
@@ -82,7 +87,7 @@ export class RegisterPageComponent implements OnInit {
     return this.form.controls?.['password'];
   }
 
-  get confirmpassword() {
-    return this.form.controls?.['confirmpassword'];
+  get confirmPassword() {
+    return this.form.controls?.['confirmPassword'];
   }
 }

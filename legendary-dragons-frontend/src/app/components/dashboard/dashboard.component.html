@@ -1,8 +1,17 @@
-<app-header></app-header>
-
-<div class="h-screen w-full bg-white relative flex overflow-auto">
-
-  <main class="max-w-full h-full flex relative overflow-hidden">
-    <app-navbar></app-navbar>
-  </main>
+<div style="display: flex; flex-direction: row">
+  <mat-tab-group >
+    <mat-tab label="Inventory">
+      <app-inventory-page></app-inventory-page>
+    </mat-tab>
+    <mat-tab label="Decks" >
+      <ng-template matTabContent>
+        <app-decks-page></app-decks-page>
+      </ng-template>
+    </mat-tab>
+    <mat-tab label="Wishlist">
+      <ng-template matTabContent>
+        <app-wishlist-page></app-wishlist-page>
+      </ng-template>
+    </mat-tab>
+  </mat-tab-group>
 </div>
