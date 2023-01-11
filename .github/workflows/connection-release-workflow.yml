@@ -2,7 +2,12 @@ name: Connection Release workflow
 
 on:
   push:
-    branches: ['feature**']
+    branches: [ "master" ]
+    paths:
+      - 'connection**'
+      - '.github/workflows/connection-release-workflow.yml'
+  workflow_dispatch:
+
 jobs:
   build:
     runs-on: ubuntu-latest
