@@ -11,9 +11,7 @@ logger.setLevel(logging.INFO)
 if "DISABLE_XRAY" not in os.environ:
     patch_all()
 
-
 events_client = boto3.client("events")
-
 
 def lambda_handler(event, context):
     """Convert DynamoDB streams into events for EventBridge."""
