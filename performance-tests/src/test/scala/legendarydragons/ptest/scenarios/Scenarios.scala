@@ -33,9 +33,12 @@ object Scenarios {
 
   def LoginThenConnectToWebSocketScenario() = scenario("LoginAccountScenario")
     .feed(emailFeeder)
-    .exec(Requests.loginAccount.check(header.saveAs("header")))
+    .exec(Requests.loginAccount.check(header("x-amzn-Remapped-Authorization").saveAs("token")))
     .exec { session =>
-      println(s"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ ${header}")
+      var token = session("token").as[String].replace("Bearer ", "")
+      println("@@@@@@@@@@@  " + token)
       session
     }
+    .exec(Requests.connectToWebsocket)
+
 }

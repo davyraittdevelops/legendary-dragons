@@ -2,6 +2,8 @@ package legendarydragons.ptest.requests
 import scala.concurrent.duration._
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
+import io.gatling.http.protocol.HttpProtocolBuilder
+import scala.concurrent.duration._
 
 // object are native Scala singletons
 object Requests {
@@ -19,4 +21,8 @@ object Requests {
     .post("/users/login")
     .headers(contentTypeHeader)
     .body(StringBody("""{"email":"${email}","password":"${password}"}""")).asJson
+
+    val connectToWebsocket = (ws("Connect to WebSocket").connect("wss://3ghgk1q3mf.execute-api.us-east-1.amazonaws.com/Prod?token=${token}"))
+    //   .onConnected(
+    //     println("@@@@@@@@@@@@@@@ succesfully connectd to websocket"))
 }
