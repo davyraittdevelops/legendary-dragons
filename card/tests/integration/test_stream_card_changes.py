@@ -65,7 +65,7 @@ def test_lambda_handler(stream_event):
     )
 
     # Act
-    from functions.stream_inventory_changes import app
+    from functions.stream_card_changes import app
     response = app.lambda_handler(stream_event, {})
     messages = queue.receive_messages(MaxNumberOfMessages=2)
     stream_message = json.loads(messages[0].body)

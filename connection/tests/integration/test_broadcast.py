@@ -90,7 +90,6 @@ def mock_make_api_call(self, operation_name, kwarg):
     return orig(self, operation_name, kwarg)
 
 
-
 @pytest.fixture()
 def table_definition():
     return {
@@ -123,14 +122,15 @@ def table_definition():
 @mock_dynamodb
 def test_lambda_handler(stream_event, table_definition):
     # Arrange
-    user_id = "47b398db-dac8-4ed9-8098-7018009c319e47b398db-dac8-4ed9-8098-7018009c319e"
+    user_id = "47b398db-dac8-4ed9-8098-7018009c319e"
     dynamodb = boto3.resource("dynamodb")
     table = dynamodb.create_table(**table_definition)
     for connection_id in CONNECTIONS:
-        table.put_item(
+        test = table.put_item(
             Item={
                 "PK": f"CONNECTION#{connection_id}",
                 "SK": f"USER#{user_id}",
+                "connection_id": connection_id,
                 "entity_type": "CONNECTION",
                 "domain": "localhost.websockets.com",
                 "stage": "Prod",

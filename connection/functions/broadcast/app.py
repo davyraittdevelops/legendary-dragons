@@ -31,8 +31,6 @@ def datatype_value(type_value):
 
 
 def lambda_handler(event, context):
-    logger.info(f"Incoming event: {event}")
-
     image_type = "NewImage"
 
     if "NewImage" not in event["detail"]["dynamodb"]:
