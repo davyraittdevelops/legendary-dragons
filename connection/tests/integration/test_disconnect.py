@@ -2,7 +2,6 @@ import json
 from unittest.mock import *
 import os
 import boto3
-import botocore
 import pytest
 from moto import mock_dynamodb
 
@@ -13,8 +12,10 @@ OS_ENV = {
     "AWS_SECURITY_TOKEN": "testing",
     "AWS_SESSION_TOKEN": "testing",
     "AWS_DEFAULT_REGION": "us-east-1",
-    "DISABLE_XRAY": "True"
+    "DISABLE_XRAY": "True",
+    "TABLE_NAME": TABLE_NAME
 }
+
 
 @pytest.fixture()
 def table_definition():
@@ -32,6 +33,7 @@ def table_definition():
         "BillingMode": "PAY_PER_REQUEST"
     }
 
+
 @pytest.fixture()
 def websocket_event():
     """Generates Websocket Event"""
@@ -42,18 +44,14 @@ def websocket_event():
             "apiId": "3ghgk1q3mf" ,
             "domainName": "3ghgk1q3mf.execute-api.us-east-1.amazonaws.com",
             "stage": "Prod",
+            "authorizer": {
+                "userId": "12324"
+            }
         },
         "body": json.dumps({
             "action": "disconnect"
         }),
     }
-
-orig = botocore.client.BaseClient._make_api_call
-
-def mock_make_api_call(self, operation_name, kwarg):
-    if operation_name == "PostToConnection":
-        return None
-    return orig(self, operation_name, kwarg)
 
 
 @patch.dict(os.environ, OS_ENV, clear=True)
@@ -63,23 +61,22 @@ def test_lambda_handler(websocket_event, table_definition):
     dynamodb = boto3.resource('dynamodb')
     table = dynamodb.create_table(**table_definition)
 
-    connectionItemToInsert = {
-        "PK": "Connection#eiC3NdK8IAMCIYA=",
-        "SK": "User#123",
+    connection_item_to_insert = {
+        "PK": "CONNECTION#eiC3NdK8IAMCIYA=",
+        "SK": "USER#12324",
         "entity_type": "CONNECTION",
         "domain": "3ghgk1q3mf.execute-api.us-east-1.amazonaws.com",
         "stage": "Prod",
         "connection_id": "eiC3NdK8IAMCIYA=",
-        "user_id": "123"
+        "user_id": "12324"
     }
 
-    table.put_item(Item=connectionItemToInsert)
+    table.put_item(Item=connection_item_to_insert)
 
-    with patch('botocore.client.BaseClient._make_api_call', new=mock_make_api_call):
-        # Act
-        from functions.disconnect import app
-        response = app.lambda_handler(websocket_event, {})
-        
-        # # Assert
-        assert response['statusCode'] == 200
-        assert response['body'] == 'Disconnected.'
+    # Act
+    from functions.disconnect import app
+    response = app.lambda_handler(websocket_event, {})
+
+    # # Assert
+    assert response['statusCode'] == 200
+    assert response['body'] == 'Disconnected.'

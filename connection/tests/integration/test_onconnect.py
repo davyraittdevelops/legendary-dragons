@@ -2,7 +2,6 @@ import json
 from unittest.mock import *
 import os
 import boto3
-import botocore
 import pytest
 from moto import mock_dynamodb
 
@@ -13,8 +12,10 @@ OS_ENV = {
     "AWS_SECURITY_TOKEN": "testing",
     "AWS_SESSION_TOKEN": "testing",
     "AWS_DEFAULT_REGION": "us-east-1",
-    "DISABLE_XRAY": "True"
+    "DISABLE_XRAY": "True",
+    "TABLE_NAME": TABLE_NAME
 }
+
 
 @pytest.fixture()
 def table_definition():
@@ -32,6 +33,7 @@ def table_definition():
         "BillingMode": "PAY_PER_REQUEST"
     }
 
+
 @pytest.fixture()
 def websocket_event():
     """Generates Websocket Event"""
@@ -39,21 +41,14 @@ def websocket_event():
         "requestContext": {
             "connectionId": "eiC3NdK8IAMCIYA=",
             "requestId": "eiC3OH_tIAMF9Mw=",
-            "apiId": "3ghgk1q3mf" ,
+            "apiId": "3ghgk1q3mf",
             "domainName": "3ghgk1q3mf.execute-api.us-east-1.amazonaws.com",
             "stage": "Prod",
-        },
-        "body": json.dumps({
-            "action": "connect"
-        }),
+            "authorizer": {
+                "userId": "12324"
+            }
+        }
     }
-
-orig = botocore.client.BaseClient._make_api_call
-
-def mock_make_api_call(self, operation_name, kwarg):
-    if operation_name == "PostToConnection":
-        return None
-    return orig(self, operation_name, kwarg)
 
 
 @patch.dict(os.environ, OS_ENV, clear=True)
@@ -63,12 +58,10 @@ def test_lambda_handler(websocket_event, table_definition):
     dynamodb = boto3.resource('dynamodb')
     dynamodb.create_table(**table_definition)
 
-    with patch('botocore.client.BaseClient._make_api_call', new=mock_make_api_call):
-        # Act
-        from functions.onconnect import app
-        response = app.lambda_handler(websocket_event, {})
-        
-        # # Assert
-        assert response['statusCode'] == 200
-        assert response['body'] == 'Connected.'
-        
+    # Act
+    from functions.onconnect import app
+    response = app.lambda_handler(websocket_event, {})
+
+    # Assert
+    assert response['statusCode'] == 200
+    assert response['body'] == 'Connected.'
