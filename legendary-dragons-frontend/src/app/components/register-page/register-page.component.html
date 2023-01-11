@@ -1,120 +1,122 @@
-<div class="page mt-3">
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-4 col-md-2 col-sm-2 col-xs-2"></div>
-      <div class="col-lg-4 col-md-8 col-sm-8 col-xs-8">
-        <form class="" [formGroup]="form" (ngSubmit)="registerUser()" #f="ngForm" novalidate>
-          <div class="row row-col-1 align-items-center bg-light bg-opacity-75 rounded-3 shadow-sm text-dark pb-4 pt-2">
-            <h1 class="text-center">Register</h1>
-            <label class="form-label px-4">Email</label>
-            <div class="spacing px-4">
-              <input
-                  type="email"
-                  name="email"
-                  class="form-control is-valid"
-                  placeholder="example@example.com"
-                  [ngClass]="{'is-valid': email.valid && email.touched,
+<div class="container py-5">
+  <div class="row">
+    <div class="col-lg-4 col-md-2 col-sm-2 col-xs-2"></div>
+    <div class="col-lg-4 col-md-8 col-sm-8 col-xs-8">
+      <form class="" [formGroup]="form" (ngSubmit)="registerUser()" #f="ngForm" novalidate>
+        <div
+          class="row row-col-1 align-items-center bg-light bg-opacity-75 rounded-3 shadow-sm text-dark pb-4 pt-2">
+          <h1 class="text-center">Register</h1>
+          <label class="form-label px-4">Email</label>
+          <div class="spacing px-4">
+            <input
+              type="email"
+              name="email"
+              class="form-control is-valid"
+              placeholder="example@example.com"
+              [ngClass]="{'is-valid': email.valid && email.touched,
                         'is-invalid': email.invalid && email.touched}"
-                  [formControlName]="'email'"
-              />
-              <div class="col-12" *ngIf="email.invalid && (email.dirty || email.touched)">
+              [formControlName]="'email'"
+            />
+            <div class="col-12" *ngIf="email.invalid && (email.dirty || email.touched)">
                 <span class="form-text text-danger fw-bold" *ngIf="email.errors?.['required']">
                   Email is required.
                 </span>
 
-                <span class="form-text text-danger fw-bold" *ngIf="email.errors?.['email']">
+              <span class="form-text text-danger fw-bold" *ngIf="email.errors?.['email']">
                   Email is not valid.
                 </span>
-              </div>
-
             </div>
-            <label class="form-label px-4">Nickname</label>
-            <div class="spacing px-4">
-              <input
-                  type="name"
-                  name="name"
-                  required minlength="3"
-                  class="form-control"
-                  placeholder="Your nickname"
-                  [formControlName]="'name'"
-                  [ngClass]="{'is-valid': name.valid && name.touched,
+
+          </div>
+          <label class="form-label px-4">Nickname</label>
+          <div class="spacing px-4">
+            <input
+              type="name"
+              name="name"
+              required minlength="3"
+              class="form-control"
+              placeholder="Your nickname"
+              [formControlName]="'name'"
+              [ngClass]="{'is-valid': name.valid && name.touched,
                         'is-invalid': name.invalid && name.touched}"
-              />
+            />
 
-              <div class="col-12" *ngIf="name.invalid && (name.dirty || name.touched)">
-                <div class="form-text text-danger fw-bold" *ngIf="name.errors?.['required']">
-                  Name is required.
-                </div>
-                <div class="form-text text-danger fw-bold" *ngIf="name.errors?.['minlength']">
-                  Name must be at least 3 characters long.
-                </div>
-                <div class="form-text text-danger fw-bold" *ngIf="name.errors?.['maxlength']">
-                  Name must be shorter than 75 characters.
-                </div>
+            <div class="col-12" *ngIf="name.invalid && (name.dirty || name.touched)">
+              <div class="form-text text-danger fw-bold" *ngIf="name.errors?.['required']">
+                Name is required.
+              </div>
+              <div class="form-text text-danger fw-bold" *ngIf="name.errors?.['minlength']">
+                Name must be at least 3 characters long.
+              </div>
+              <div class="form-text text-danger fw-bold" *ngIf="name.errors?.['maxlength']">
+                Name must be shorter than 75 characters.
               </div>
             </div>
-            <label class="form-label px-4">Password</label>
-            <div class="spacing px-4">
-              <input
-                  type="password"
-                  name="password"
-                  required minlength="10"
-                  class="form-control"
-                  placeholder="Password"
-                  [formControlName]="'password'"
-                  [ngClass]="{'is-valid': password.valid && password.touched,
+          </div>
+          <label class="form-label px-4">Password</label>
+          <div class="spacing px-4">
+            <input
+              type="password"
+              name="password"
+              required minlength="10"
+              class="form-control"
+              placeholder="Password"
+              [formControlName]="'password'"
+              [ngClass]="{'is-valid': password.valid && password.touched,
                         'is-invalid': password.invalid && password.touched}"
-              />
-              <div class="col-12" *ngIf="password.invalid && (password.dirty || password.touched)">
-                <div class="form-text text-danger fw-bold" *ngIf="password.errors?.['required']">
-                  Password is required.
-                </div>
-                <div class="form-text text-danger fw-bold" *ngIf="password.errors?.['minlength']">
-                  Password must be at least 10 characters long.
-                </div>
-                <div class="form-text text-danger fw-bold" *ngIf="password.errors?.['pattern']">
-                  Password must contain lowercase letters, uppercase letters, numbers and special characters.
-                </div>
+            />
+            <div class="col-12" *ngIf="password.invalid && (password.dirty || password.touched)">
+              <div class="form-text text-danger fw-bold" *ngIf="password.errors?.['required']">
+                Password is required.
+              </div>
+              <div class="form-text text-danger fw-bold" *ngIf="password.errors?.['minlength']">
+                Password must be at least 10 characters long.
+              </div>
+              <div class="form-text text-danger fw-bold" *ngIf="password.errors?.['pattern']">
+                Password must contain lowercase letters, uppercase letters, numbers and special
+                characters.
               </div>
             </div>
-            <label class="form-label px-4">Confirm password</label>
-            <div class="spacing px-4">
-              <input
-                  type="password"
-                  name="confirmPassword"
-                  class="form-control"
-                  placeholder="Password"
-                  [formControlName]="'confirmPassword'"
-                  [ngClass]="{'is-valid': confirmPassword.valid && confirmPassword.touched,
+          </div>
+          <label class="form-label px-4">Confirm password</label>
+          <div class="spacing px-4">
+            <input
+              type="password"
+              name="confirmPassword"
+              class="form-control"
+              placeholder="Password"
+              [formControlName]="'confirmPassword'"
+              [ngClass]="{'is-valid': confirmPassword.valid && confirmPassword.touched,
                         'is-invalid': form.errors?.['passwordsNotEqual'] && confirmPassword.touched}"
-              />
+            />
 
-              <div class="form-text text-danger fw-bold" *ngIf="confirmPassword.touched && form.errors?.['passwordsNotEqual']">
-                The repeated password does not match.
-              </div>
+            <div class="form-text text-danger fw-bold"
+                 *ngIf="confirmPassword.touched && form.errors?.['passwordsNotEqual']">
+              The repeated password does not match.
             </div>
+          </div>
 
-            <p class="text-danger px-4" *ngIf="hasError$ | async">An error has occurred! Please check the fields above.</p>
+          <p class="text-danger px-4" *ngIf="hasError$ | async">An error has occurred! Please check
+            the fields above.</p>
 
 
-            <div class="px-4 d-grid mt-2">
-              <button [disabled]="form.invalid || (isLoading$ | async)"
-                      type="submit" class="btn btn-light spacing">
+          <div class="px-4 d-grid mt-2">
+            <button [disabled]="form.invalid || (isLoading$ | async)"
+                    type="submit" class="btn btn-light spacing">
                 <span *ngIf="isLoading$ | async"
                       class="spinner-border spinner-border-sm" role="status" aria-hidden="true">
                 </span>
-                Register
-              </button>
-            </div>
-
-            <p class="text-center">
-              Already have an account?
-              <a routerLink="/login" class="text-light">Login here</a>
-            </p>
+              Register
+            </button>
           </div>
-        </form>
-      </div>
-      <div class="col-lg-4 col-md-2 col-sm-2 col-xs-2"></div>
+
+          <p class="text-center">
+            Already have an account?
+            <a [routerLink]="['/login']" class="text-light">Login here</a>
+          </p>
+        </div>
+      </form>
     </div>
+    <div class="col-lg-4 col-md-2 col-sm-2 col-xs-2"></div>
   </div>
 </div>
