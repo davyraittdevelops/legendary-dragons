@@ -29,6 +29,13 @@ object Scenarios {
 
   def LoginAccountScenario() = scenario("LoginAccountScenario")
     .feed(emailFeeder)
-    .exec(Requests.loginAccount.check(status.is(201)))
+    .exec(Requests.loginAccount.check(status.is(200)))
 
+  def LoginThenConnectToWebSocketScenario() = scenario("LoginAccountScenario")
+    .feed(emailFeeder)
+    .exec(Requests.loginAccount.check(header.saveAs("header")))
+    .exec { session =>
+      println(s"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ ${header}")
+      session
+    }
 }
