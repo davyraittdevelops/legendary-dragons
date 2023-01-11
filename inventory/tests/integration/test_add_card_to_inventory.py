@@ -55,7 +55,10 @@ def websocket_event():
         "requestContext": {
             "domainName": "localhost",
             "stage": "Prod",
-            "connectionId": CONNECTION_ID
+            "connectionId": CONNECTION_ID,
+            "authorizer": {
+                "userId": "user-123"
+            }
         },
         "body": json.dumps({
             "action": "addCardToInventoryReq",
@@ -70,15 +73,6 @@ def websocket_event():
     }
 
 
-orig = botocore.client.BaseClient._make_api_call
-
-
-def mock_make_api_call(self, operation_name, kwarg):
-    if operation_name == "PostToConnection":
-        return None
-    return orig(self, operation_name, kwarg)
-
-
 @patch.dict(os.environ, OS_ENV, clear=True)
 @mock_dynamodb
 def test_lamda_handler_success(websocket_event, table_definition):
@@ -87,18 +81,47 @@ def test_lamda_handler_success(websocket_event, table_definition):
     dynamodb = boto3.resource("dynamodb")
     table = dynamodb.create_table(**table_definition)
 
-    with patch("botocore.client.BaseClient._make_api_call", new=mock_make_api_call):
-        # Act
-        from functions.add_card_to_inventory import app
-        response = app.lambda_handler(websocket_event, {})
+    # Act
+    from functions.add_card_to_inventory import app
+    response = app.lambda_handler(websocket_event, {})
 
-        inventory_card = table.query(
-            KeyConditionExpression=Key("GSI1_PK").eq("INVENTORY#inv-12") &
-            Key("GSI1_SK").begins_with("INVENTORY_CARD"),
-            IndexName="GSI1"
-        )["Items"][0]
+    inventory_card = table.query(
+        KeyConditionExpression=Key("GSI1_PK").eq("INVENTORY#inv-12") &
+        Key("GSI1_SK").begins_with("INVENTORY_CARD"),
+        IndexName="GSI1"
+    )["Items"][0]
 
-        # Assert
-        assert response["statusCode"] == 200
-        assert inventory_card["inventory_id"] == "inv-12"
-        assert inventory_card["entity_type"] == "INVENTORY_CARD"
+    # Assert
+    assert response["statusCode"] == 200
+    assert inventory_card["inventory_id"] == "inv-12"
+    assert inventory_card["entity_type"] == "INVENTORY_CARD"
+
+
+@patch.dict(os.environ, OS_ENV, clear=True)
+@mock_dynamodb
+def test_lamda_handler_new_inventory(websocket_event, table_definition):
+    # Arrange
+    # 1. Create the DynamoDB Table
+    dynamodb = boto3.resource("dynamodb")
+    table = dynamodb.create_table(**table_definition)
+    body = json.loads(websocket_event["body"])
+    body["inventory_id"] = None
+    websocket_event["body"] = json.dumps(body)
+
+    # Act
+    from functions.add_card_to_inventory import app
+    response = app.lambda_handler(websocket_event, {})
+
+    items = []
+    done = False
+    start_key = None
+
+    while not done:
+        scan_response = table.scan()
+        items += scan_response["Items"]
+        start_key = scan_response.get("LastEvaluatedKey", None)
+        done = start_key is None
+
+    # Assert
+    assert response["statusCode"] == 200
+    assert len(items) == 2

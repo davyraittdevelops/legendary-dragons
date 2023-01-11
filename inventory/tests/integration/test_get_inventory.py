@@ -65,13 +65,14 @@ def websocket_event():
         "requestContext": {
             "domainName": "localhost",
             "stage": "Prod",
-            "connectionId": CONNECTION_ID
+            "connectionId": CONNECTION_ID,
+            "authorizer": {
+                "userId": "user-123"
+            }
         },
         "body": json.dumps({
             "action": "addCardToInventoryReq",
             "inventory_id": "inv-12",
-            # TODO: Check when authorization works with API Gateway
-            "user_id": "user-123"
         }),
     }
 
