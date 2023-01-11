@@ -10,7 +10,6 @@ def before_all(context):
     context.websocket_url = "wss://3ghgk1q3mf.execute-api.us-east-1.amazonaws.com/Prod"
 
 def after_feature(context, feature):
-    context.ws.close()
     client.admin_delete_user(
         UserPoolId="us-east-1_H1AyV4HD1",
         Username=context.detail["email"]
