@@ -141,7 +141,6 @@ Resources:
 
   connectionsDynamoDBTable:
     Type: AWS::DynamoDB::Table
-    DeletionPolicy: Retain
     Properties:
       TableName: connections
       AttributeDefinitions:

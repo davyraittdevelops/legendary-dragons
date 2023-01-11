@@ -56,12 +56,19 @@ def websocket_event():
 def test_lambda_handler(websocket_event, table_definition):
     # Arrange
     dynamodb = boto3.resource('dynamodb')
-    dynamodb.create_table(**table_definition)
+    table = dynamodb.create_table(**table_definition)
 
     # Act
     from functions.onconnect import app
     response = app.lambda_handler(websocket_event, {})
+    cid = f"CONNECTION#{websocket_event['requestContext']['connectionId']}"
+    user = f"USER#{websocket_event['requestContext']['authorizer']['userId']}"
+
+    item = table.get_item(
+        Key={"PK": cid, "SK": user}
+    )["Item"]
 
     # Assert
     assert response['statusCode'] == 200
     assert response['body'] == 'Connected.'
+    assert item["domain"] == websocket_event["requestContext"]["domainName"]
