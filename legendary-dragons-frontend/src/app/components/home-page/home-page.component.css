@@ -1,0 +1,9 @@
+img {
+  display: block;
+  max-width: 100%;
+  height: 25rem;
+}
+
+.bg-dark {
+  --bs-bg-opacity: .6;
+}

@@ -1,53 +1,52 @@
-<div class="page mt-3">
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-4 col-md-2 col-sm-2 col-xs-2"></div>
-      <div class="col-lg-4 col-md-8 col-sm-8 col-xs-8">
-        <form class="" [formGroup]="form" (ngSubmit)="login()">
-          <div class="row bg-light bg-opacity-75 rounded-3 shadow-sm text-dark pb-4 pt-2">
-            <h1 class="text-center">Log in</h1>
-            <label class="form-label px-4">Email</label>
-            <div class="spacing px-4">
-              <input
-                type="email"
-                name="email"
-                class="form-control spacing"
-                placeholder="Email address"
-                [formControlName]="'email'"
-              />
-            </div>
-            <label class="form-label px-4">Password</label>
-            <div class="spacing px-4">
-              <input
-                type="password"
-                name="password"
-                class="form-control spacing"
-                placeholder="Password"
-                [formControlName]="'password'"
-              />
-            </div>
+<div class="container py-5">
+  <div class="row">
+    <div class="col-lg-4 col-md-2 col-sm-2 col-xs-2"></div>
+    <div class="col-lg-4 col-md-8 col-sm-8 col-xs-8">
+      <form class="" [formGroup]="form" (ngSubmit)="login()">
+        <div class="row bg-light bg-opacity-75 rounded-3 shadow-sm text-dark pb-4 pt-2">
+          <h1 class="text-center">Log in</h1>
+          <label class="form-label px-4">Email</label>
+          <div class="spacing px-4">
+            <input
+              type="email"
+              name="email"
+              class="form-control spacing"
+              placeholder="Email address"
+              [formControlName]="'email'"
+            />
+          </div>
+          <label class="form-label px-4">Password</label>
+          <div class="spacing px-4">
+            <input
+              type="password"
+              name="password"
+              class="form-control spacing"
+              placeholder="Password"
+              [formControlName]="'password'"
+            />
+          </div>
 
-            <p class="text-danger px-4" *ngIf="hasError$ | async">Incorrect email/password provided.</p>
+          <p class="text-danger px-4" *ngIf="hasError$ | async">Incorrect email/password
+            provided.</p>
 
-            <div class="d-grid px-4 button-padding">
-              <button [disabled]="form.invalid || (isLoading$ | async)" type="submit"
-                      class="btn btn-light spacing">
+          <div class="d-grid px-4 button-padding">
+            <button [disabled]="form.invalid || (isLoading$ | async)" type="submit"
+                    class="btn btn-light spacing">
                 <span *ngIf="isLoading$ | async"
                       class="spinner-border spinner-border-sm" role="status" aria-hidden="true">
                 </span>
-                Log in
-              </button>
-            </div>
-
-            <p class="text-center">
-              Don't have an account?
-              <a routerLink="/register" class="text-light">Register here</a>
-            </p>
+              Log in
+            </button>
           </div>
 
-        </form>
-      </div>
-      <div class="col-lg-4 col-md-2 col-sm-2 col-xs-2"></div>
+          <p class="text-center">
+            Don't have an account?
+            <a routerLink="/register" class="text-light">Register here</a>
+          </p>
+        </div>
+
+      </form>
     </div>
+    <div class="col-lg-4 col-md-2 col-sm-2 col-xs-2"></div>
   </div>
 </div>
