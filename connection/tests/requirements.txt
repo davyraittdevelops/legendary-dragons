@@ -1,0 +1,6 @@
+pytest
+boto3
+requests
+coverage
+moto[all]
+aws-xray-sdk

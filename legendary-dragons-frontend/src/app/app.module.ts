@@ -40,7 +40,8 @@ import {HomePageComponent} from "./components/home-page/home-page.component";
     DecksPageComponent,
     WishlistPageComponent,
     AddCardComponent,
-    CardComponent
+    CardComponent,
+
   ],
   imports: [
     BrowserModule,
