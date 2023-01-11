@@ -31,12 +31,9 @@ def lambda_handler(event, context):
 
     apigateway = boto3.client("apigatewaymanagementapi", endpoint_url=endpoint)
 
-    logger.info(event)
     body = json.loads(event["body"])
-
-    # TODO: Check how to retrieve user id
     inventory_id = body["inventory_id"]
-    user_id = body["user_id"]
+    user_id = event["requestContext"]["authorizer"]["userId"]
 
     inventory = table.get_item(
         Key={
