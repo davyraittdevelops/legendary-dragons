@@ -28,6 +28,6 @@ export class HeaderComponent implements OnInit {
   logout(): void {
     this.websocketService.closeConnection();
     this.appStore.dispatch(logoutUser());
-    this.router.navigate(['/login']);
+    this.router.navigate(['']);
   }
 }

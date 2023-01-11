@@ -9,6 +9,9 @@ Parameters:
   LegDragonsUserPoolClient:
     Type: String
     Default: "legendary-dragons-cognito-LegDragonUserPoolClient"
+  LegDragonsUserPool:
+    Type: String
+    Default: "legendary-dragons-cognito-LegDragonUserPool"
 
 Globals:
   Api:
@@ -62,11 +65,19 @@ Resources:
             RestApiId: !Ref IdentityAndAccessRestApi
             Path: /users/register
             Method: post
-  
+
   AuthenticateUserFunction:
       Type: AWS::Serverless::Function
       Properties:
         CodeUri: functions/authenticate/
+        Environment:
+          Variables:
+            APP_CLIENT_ID:
+              Fn::ImportValue:
+                !Sub "${LegDragonsUserPoolClient}"
+            USERPOOL_ID:
+              Fn::ImportValue:
+                !Sub "${LegDragonsUserPool}"
 
   LoginUserFunction:
     Type: AWS::Serverless::Function
