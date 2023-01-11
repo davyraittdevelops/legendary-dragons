@@ -25,6 +25,13 @@
 :host ::ng-deep .card-img {
   width: 145px;
   height: 200px;
+  display: flex;
+}
+
+:host ::ng-deep .card-size {
+  width: 145px;
+  height: 200px;
+  display: flex;
 }
 
 
