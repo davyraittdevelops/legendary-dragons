@@ -67,7 +67,7 @@ def send_data_chunks(cards, endpoint, connection_id):
 
         output = {"event_type": "SEARCH_CARD_RESULT", "data": second_chunk}
 
-    logger.info("Sending last chunk with size {len(ouput['data'])}")
+    logger.info(f"Sending last chunk with size {len(output['data'])}")
     apigateway.post_to_connection(
         ConnectionId=connection_id,
         Data=json.dumps(output)
