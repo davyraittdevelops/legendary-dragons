@@ -7,9 +7,7 @@
 <ng-template #content let-modal>
   <div class="modal-header" [ngStyle]="{'background-color': 'gray'}">
     <h4 class="modal-title" id="modal-basic-title">Add Card</h4>
-    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
-      <span aria-hidden="true">&times;</span>
-    </button>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
   </div>
 
   <div class="modal-body" [ngStyle]="{'background-color': 'gray'}" >
@@ -28,12 +26,12 @@
         </ng-container>
 
         <ng-container matColumnDef="type">
-          <th mat-header-cell *matHeaderCellDef> type </th>
+          <th mat-header-cell *matHeaderCellDef> Type </th>
           <td mat-cell *matCellDef="let element"> {{element.type}} </td>
         </ng-container>
 
         <ng-container matColumnDef="cost">
-          <th mat-header-cell *matHeaderCellDef> cost </th>
+          <th mat-header-cell *matHeaderCellDef> Cost </th>
           <td mat-cell *matCellDef="let element"> {{element.cost}} </td>
         </ng-container>
 

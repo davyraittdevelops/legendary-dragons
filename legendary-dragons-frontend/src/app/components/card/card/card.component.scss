@@ -1,6 +1,17 @@
-img {
-  width: 250px;
+.card-modal {
+  background-color: gray;
+}
+
+.card-image {
+  width: 100%;
   height: 400px;
 }
 
+.collection-card {
+  display: grid;
+}
 
+.collection-card > img, div {
+  grid-column: 1;
+  grid-row: 1;
+}
