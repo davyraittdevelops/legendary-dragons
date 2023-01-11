@@ -5,17 +5,24 @@
                 <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
                   <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z"/>
                 </svg>
-              </button>
+            </button>
         </div>
-        <div class="card col-2 border border-dark m-2 bg-light bg-opacity-25 rounded-1" *ngFor="let deck of decks">
-            <!-- <div style="height: 30px;" class="overflow-hidden" *ngFor="let card of deck.cards"> -->
-                <img class="card-img-top" src="{{deck!.cards[0]!.imageUrl}}" alt="">
-            <!-- </div> -->
+        <div class="card col-2 border border-dark m-2 bg-light bg-opacity-25 rounded-1 p-0" *ngFor="let deck of decks">
+          <button type="button" class="btn btn-secondary transparent flex-grow-1">
+            <div *ngIf="deck.cards.length > 0">
+              <img class="card-img-top" src="{{deck!.cards[0]!.imageUrl}}" alt="">
+            </div>
+            <div class="blank-img" *ngIf="deck.cards.length == 0">
+              <img src="assets\blank.png" alt="">
+              <p class="text-center text-dark fw-lighter sizing">No cards available</p>
+            </div>
             <div class="card-body">
               <h3 class="card-title text-light-emphasis text-center">{{deck.name}}</h3>
               <h4 class="card-subtitle mb-2 text-dark">{{deck.deck_type}}</h4>
             </div>
-          </div>
+          </button>
+            
+        </div>
     </div>
 </div>
   
