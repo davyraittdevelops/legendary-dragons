@@ -24,27 +24,29 @@ export class AddCardComponent implements OnInit {
   }
 
   searchCardsByKeyword() {
-
     this.websocketService.sendSearchCardByKeywordMessage('searchCardsByKeywordReq', this.filterValue);
+  }
 
+  constructor(public modalService: NgbModal,  private websocketService : WebsocketService) { }
+
+  ngOnInit(): void {
     // todo when searching 2 times then the price is Undifined
-
     this.websocketService.dataUpdates$().subscribe((message) => {
       const eventType = message['event_type'];
       const eventData = message['data'];
       this.CARD_DATA = [];
-      
+
+      console.log('MSG', message)
+
       switch (eventType) {
         case 'SEARCH_CARD_RESULT':
           console.log('@@@@@@@@@' , this.CARD_DATA.length)
           for (const object of eventData) {
+            console.log(object)
+
             let priceArray = object.prices;
             let set = object.set_type;
             let price = "Price not available";
-
-            if (object.is_multifaced) {
-              console.log(object)
-            }
 
             if (priceArray.eur !== null) {
               price = "€" + priceArray.eur;
@@ -70,12 +72,6 @@ export class AddCardComponent implements OnInit {
           break;
       }
     });
-  }
-
-  constructor(public modalService: NgbModal,  private websocketService : WebsocketService) { }
-
-  ngOnInit(): void {
-
   }
 
   open({content}: { content: any }) {
