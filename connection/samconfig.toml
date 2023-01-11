@@ -1,0 +1,13 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "legendary-dragons-connection"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-he0au9dk38to"
+s3_prefix = "legendary-dragons-connection"
+region = "us-east-1"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+disable_rollback = true
+image_repositories = []
+parameter_overrides = "LegDragonsWebSocketApi=\"legendary-dragons-ws-api-gateway-LegDragonsWebSocketApi\""

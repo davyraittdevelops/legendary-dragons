@@ -18,16 +18,16 @@ jobs:
           node-version: '16.15.1'
 
       - name: Clean install
-        run: npm ci
+        run: npm ci --legacy-peer-deps
 
       - name: Build the application
         run: npm run build
 
-      # - name: Run End To End Tests
-      #   run: npm run e2e:ci
+      - name: Run End To End Tests
+        run: npm run e2e:ci
 
-      # - name: Create Coverage Report
-      #   run:  npm run e2e:coverage
+      - name: Create Coverage Report
+        run: npm run e2e:coverage
 
       - name: Run SonarQube scanner
         env:

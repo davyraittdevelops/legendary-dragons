@@ -1,17 +1,36 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { LoginPageComponent } from "./components/login-page/login-page.component";
-import { DashboardComponent } from "./components/dashboard/dashboard.component";
-import { RegisterPageComponent } from "./components/register-page/register-page.component";
-import { IsLoggedInGuard } from "./guard/is-logged-in.guard";
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
+import {LoginPageComponent} from "./components/login-page/login-page.component";
+import {DashboardComponent} from "./components/dashboard/dashboard.component";
+import {RegisterPageComponent} from "./components/register-page/register-page.component";
+import {IsLoggedInGuard} from "./guard/is-logged-in.guard";
+import {InventoryPageComponent} from "./components/inventory-page/inventory-page.component";
+import {DecksPageComponent} from "./components/decks-page/decks-page.component";
+import {WishlistPageComponent} from "./components/wishlist-page/wishlist-page.component";
+import {HomePageComponent} from "./components/home-page/home-page.component";
 
 const routes: Routes = [
   {
-    path: '', redirectTo: '/login', pathMatch: 'full',
+    path: '', redirectTo: '/home', pathMatch: 'full',
   },
-  { path: 'login', component: LoginPageComponent },
+  {
+    path: 'home', component: HomePageComponent
+  },
+  {path: 'login', component: LoginPageComponent},
   {
     path: 'register', component: RegisterPageComponent
+  },
+  {
+    path: 'inventory', component: InventoryPageComponent,
+    canActivate: [IsLoggedInGuard]
+  },
+  {
+    path: 'decks', component: DecksPageComponent,
+    canActivate: [IsLoggedInGuard]
+  },
+  {
+    path: 'wishlist', component: WishlistPageComponent,
+    canActivate: [IsLoggedInGuard]
   },
   {
     path: 'dashboard', component: DashboardComponent,
@@ -23,4 +42,5 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {
+}
