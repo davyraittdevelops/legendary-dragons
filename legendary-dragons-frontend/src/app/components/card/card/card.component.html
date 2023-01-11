@@ -2,13 +2,17 @@
   <img src={{card.imageUrl}}
        (click)="open({content : content}, card);"
        alt="image" class="card-image">
-  <button type="button" class="btn-close m-2 bg-light" aria-label="Close" (click)="removeCard()"></button>
+  <div class="d-flex justify-content-end">
+    <button type="button" class="btn-close m-2 bg-light" aria-label="Close"
+            (click)="removeCard()"></button>
+  </div>
 </div>
 
 <ng-template #content let-modal>
   <div class="modal-header card-modal">
     <h1 class="modal-title" id="modal-basic-title">{{card.name}}</h1>
-    <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    <button type="button" class="btn-close btn-close-white" aria-label="Close"
+            (click)="modal.dismiss('Cross click')"></button>
   </div>
 
   <div class="modal-body card-modal">

@@ -3,7 +3,7 @@
 }
 
 .card-image {
-  width: 250px;
+  width: 100%;
   height: 400px;
 }
 
@@ -11,7 +11,7 @@
   display: grid;
 }
 
-.collection-card > img, button {
+.collection-card > img, div {
   grid-column: 1;
   grid-row: 1;
 }
