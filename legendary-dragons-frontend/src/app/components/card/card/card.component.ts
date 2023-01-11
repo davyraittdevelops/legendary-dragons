@@ -14,12 +14,9 @@ import {Card} from "../../../models/card.model";
 
 export class CardComponent implements OnInit {
 
-  @Input()
-  card!: Card;
+  @Input() card!: Card;
   private closeResult: string = '';
   content: any;
-
-
 
   constructor(public modalService: NgbModal) {
   }

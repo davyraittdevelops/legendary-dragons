@@ -20,12 +20,12 @@ import {DecksPageComponent} from './components/decks-page/decks-page.component';
 import {WishlistPageComponent} from './components/wishlist-page/wishlist-page.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatTabsModule} from "@angular/material/tabs";
-import {AddCardComponent} from './components/card/add-card-button/add-card-component';
 import {CardComponent} from './components/card/card/card.component';
 import {MatTableModule} from "@angular/material/table";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from '@angular/material/input';
 import {HomePageComponent} from "./components/home-page/home-page.component";
+import { AddCardComponent } from './components/card/add-card-component/add-card-component';
 
 @NgModule({
   declarations: [
@@ -41,7 +41,6 @@ import {HomePageComponent} from "./components/home-page/home-page.component";
     WishlistPageComponent,
     AddCardComponent,
     CardComponent,
-
   ],
   imports: [
     BrowserModule,

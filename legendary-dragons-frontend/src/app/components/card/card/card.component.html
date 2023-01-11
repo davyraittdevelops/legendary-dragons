@@ -1,5 +1,5 @@
 <div class="collection-card">
-  <img src={{card.imageUrl}}
+  <img src={{card.card_faces[0].image_url}}
        (click)="open({content : content}, card);"
        alt="image" class="card-image">
   <div class="d-flex justify-content-end">
@@ -10,7 +10,7 @@
 
 <ng-template #content let-modal>
   <div class="modal-header card-modal">
-    <h1 class="modal-title" id="modal-basic-title">{{card.name}}</h1>
+    <h1 class="modal-title" id="modal-basic-title">{{card.card_name}}</h1>
     <button type="button" class="btn-close btn-close-white" aria-label="Close"
             (click)="modal.dismiss('Cross click')"></button>
   </div>
@@ -18,13 +18,11 @@
   <div class="modal-body card-modal">
     <div class="d-flex justify-content-between">
       <div>
-        <h2>Name: {{card.name}}</h2>
-        <h2>Text: {{card.text}}</h2>
-        <h2>Cost: {{card.cost}}</h2>
-        <h2>Power: {{card.power}}</h2>
-        <h2>Toughness: {{card.toughness}}</h2>
+        <h2>Name: {{card.card_name}}</h2>
+        <h2>Text: {{card.card_faces[0].oracle_text}}</h2>
+        <h2>Value: {{card.prices}}</h2>
       </div>
-      <img src={{card.imageUrl}}
+      <img src={{card.card_faces[0].image_url}}
            alt="image" class="card-image">
     </div>
   </div>

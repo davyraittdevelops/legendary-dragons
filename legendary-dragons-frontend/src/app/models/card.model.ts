@@ -1,9 +1,14 @@
 export interface Card {
-  name: string;
-  type: string;
-  text: string;
-  cost: number;
-  power: number;
-  toughness: number;
-  imageUrl: string;
+  card_name: string;
+  released_at: string;
+  set_type: string;
+  rarity: string;
+  prices: string;
+  is_multifaced: boolean;
+  card_faces: CardFace[];
+}
+
+export interface CardFace {
+  oracle_text: string;
+  image_url: string;
 }

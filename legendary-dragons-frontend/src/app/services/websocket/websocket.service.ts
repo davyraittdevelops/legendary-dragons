@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { environment } from 'src/environments/environment';
 import {HttpHeaders} from "@angular/common/http";
+import { Card } from 'src/app/models/card.model';
 
 @Injectable({
   providedIn: 'root'
@@ -32,6 +33,22 @@ export class WebsocketService {
   closeConnection() {
     console.log("closing websocket")
     this.connect().complete();
+  }
+
+  sendSearchCardByKeywordMessage(action: string, query?: string) {
+    if (!this.socket$) {
+      console.log('Sending WebSocket message while socket doesnt exist');
+      return;
+    }
+
+    console.log('Sending a WebSocket message');
+
+    const message = {
+      'action':action,
+      ...(query && { 'query': query }),
+    };
+
+    this.socket$.next(message);
   }
 
   constructor() { }
