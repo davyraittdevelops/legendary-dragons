@@ -1,28 +1,51 @@
 <div class="container">
     <div class="row">
-        <div class="col-2 d-flex border border-dark m-2 bg-light bg-opacity-25 rounded-1 p-0">
-            <button type="button" class="btn btn-secondary opacity-25 flex-grow-1">
-                <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
-                  <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z"/>
-                </svg>
-            </button>
-        </div>
-        <div class="card col-2 border border-dark m-2 bg-light bg-opacity-25 rounded-1 p-0" *ngFor="let deck of decks">
-          <button type="button" class="btn btn-secondary transparent flex-grow-1">
-            <div *ngIf="deck.cards.length > 0">
-              <img class="card-img-top" src="{{deck!.cards[0]!.imageUrl}}" alt="">
-            </div>
-            <div class="blank-img" *ngIf="deck.cards.length == 0">
-              <img src="assets\blank.png" alt="">
-              <p class="text-center text-dark fw-lighter sizing">No cards available</p>
-            </div>
-            <div class="card-body">
-              <h3 class="card-title text-light-emphasis text-center">{{deck.name}}</h3>
-              <h4 class="card-subtitle mb-2 text-dark">{{deck.deck_type}}</h4>
-            </div>
+      <div class="col-2 d-flex border border-dark m-2 bg-light bg-opacity-25 rounded-1 p-0">
+          <button type="button" data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-secondary opacity-25 flex-grow-1">
+              <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
+                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z"/>
+              </svg>
           </button>
-            
+      </div>
+
+      <div class="modal fade" id="exampleModal"tabindex="-1">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title fs-5" id="exampleModalLabel">Add Deck</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form [formGroup]="form">
+                <label class="form-label" for="name">Name:</label>
+                <input type="name" name="name" class="form-control" placeholder="ex. Mono Deck" [formControlName]="'name'">
+                <label class="form-label" for="decktype">Deck type:</label>
+                <input type="decktype" name="decktype" class="form-control" placeholder="ex. EDH/Commander" [formControlName]="'decktype'">
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary">Add Deck</button>
+            </div>
+          </div>
         </div>
+      </div>
+
+      <div class="card col-2 border border-dark m-2 bg-light bg-opacity-25 rounded-1 p-0" *ngFor="let deck of decks">
+        <button type="button" class="btn btn-secondary transparent flex-grow-1">
+          <div *ngIf="deck.cards.length > 0">
+            <img class="card-img-top" src="{{deck!.cards[0]!.imageUrl}}" alt="">
+          </div>
+          <div class="blank-img" *ngIf="deck.cards.length == 0">
+            <img src="assets\blank.png" alt="">
+            <p class="text-center text-dark fw-lighter sizing">No cards available</p>
+          </div>
+          <div class="card-body">
+            <h3 class="card-title text-light-emphasis text-center">{{deck.name}}</h3>
+            <h4 class="card-subtitle mb-2 text-dark">{{deck.deck_type}}</h4>
+          </div>
+        </button>
+      </div>
     </div>
 </div>
   

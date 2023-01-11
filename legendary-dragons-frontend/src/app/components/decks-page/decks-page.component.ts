@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {Deck} from "../../models/deck.model";
+import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-decks-page',
@@ -350,9 +352,32 @@ export class DecksPageComponent implements OnInit {
     }
   ]
 
-  constructor() { }
+  form = new FormGroup({
+    name: new FormControl('', Validators.required),
+    password: new FormControl('', Validators.required)
+  })
 
+  constructor(public modalService: NgbModal) { }
+  private closeResult: string = '';
+  
   ngOnInit(): void {
   }
 
+  open({content}: { content: any }) {
+    this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title', size: 'xl'}).result.then((result) => {
+      this.closeResult = `Closed with: ${result}`;
+    }, (reason) => {
+      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    });
+  }
+
+  private getDismissReason(reason: any): string {
+    if (reason === ModalDismissReasons.ESC) {
+      return 'by pressing ESC';
+    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
+      return 'by clicking on a backdrop';
+    } else {
+      return `with: ${reason}`;
+    }
+  }
 }
