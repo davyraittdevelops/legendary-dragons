@@ -1,7 +1,8 @@
 <div style="width: 250px; height: 400px;">
   <img src={{card.imageUrl}}
        (click)="open({content : content}, card);"
-       alt="image">
+       alt="image"
+       class="card-img">
 </div>
 
 <ng-template #content let-modal>

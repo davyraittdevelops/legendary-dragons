@@ -19,8 +19,7 @@
 <!--                <div *cdkVirtualFor="let deck of decks" class="example-item">-->
 <!--                    <button style="width: 50%;">{{deck.name}}</button>-->
 <!--                </div>-->
-                <app-add-card-component></app-add-card-component>
-                <app-card *ngFor="let deck of decks"
+                <app-card class="example-item" *ngFor="let deck of decks"
                           [card]="deck">
                 </app-card>
             </cdk-virtual-scroll-viewport>
