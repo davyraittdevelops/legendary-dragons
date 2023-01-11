@@ -71,7 +71,7 @@ def websocket_event():
             }
         },
         "body": json.dumps({
-            "action": "addCardToInventoryReq",
+            "action": "getInventoryReq",
             "inventory_id": "inv-12",
         }),
     }

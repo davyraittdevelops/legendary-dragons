@@ -29,7 +29,6 @@ def datatype_value(type_value):
     return type_value[next(iter(type_value))]
 
 
-
 def lambda_handler(event, context):
     image_type = "NewImage"
 

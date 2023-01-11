@@ -18,7 +18,7 @@ def registerUser(context, email, password):
         f"{context.base_url}/users/register",
         json.dumps(body)
     )
-    
+
     context.detail["email"] = email
     context.detail["password"] = password
     context.status_code = response.status_code
@@ -53,15 +53,15 @@ def step_impl(context):
     verifyUser(context)
     loginUser(context)
 
-@when("we have a request for searching cards")
-def step_impl(context):
+@when("we have a request for searching cards with keyword '{keyword}'")
+def step_impl(context, keyword):
     onConnect(context)
-    context.query = "Asmoranomardicadaistinaculdacar"
+    context.query = keyword
 
     context.ws.send(json.dumps({
         "action": "searchCardsByKeywordReq",
         "query": context.query
-    }))  
+    }))
 
 @then("there should be a result of cards")
 def step_impl(context):
