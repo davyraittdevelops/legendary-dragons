@@ -22,7 +22,5 @@ object Requests {
     .headers(contentTypeHeader)
     .body(StringBody("""{"email":"${email}","password":"${password}"}""")).asJson
 
-    val connectToWebsocket = (ws("Connect to WebSocket").connect("wss://3ghgk1q3mf.execute-api.us-east-1.amazonaws.com/Prod?token=${token}"))
-    //   .onConnected(
-    //     println("@@@@@@@@@@@@@@@ succesfully connectd to websocket"))
+    val connectToWebsocket = ws("Connect to WebSocket").connect("wss://3ghgk1q3mf.execute-api.us-east-1.amazonaws.com/Prod?token=${token}")
 }

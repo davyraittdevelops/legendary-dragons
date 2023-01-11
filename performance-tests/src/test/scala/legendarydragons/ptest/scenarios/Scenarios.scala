@@ -37,8 +37,9 @@ object Scenarios {
     .exec { session =>
       var token = session("token").as[String].replace("Bearer ", "")
       println("@@@@@@@@@@@  " + token)
-      session
+      session.set("token", token)
     }
     .exec(Requests.connectToWebsocket)
+
 
 }
