@@ -36,6 +36,7 @@ def lambda_handler(event, context):
         "SK": sk,
         "entity_type": "INVENTORY_CARD",
         "inventory_id": inventory_id,
+        "user_id": user_id,
         "card_id": card_id,
         "created_at": now,
         "last_modified": now,

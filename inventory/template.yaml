@@ -12,6 +12,9 @@ Parameters:
   LegDragonsConnectionsEventBus:
     Type: String
     Default: "legendary-dragons-connection-event-bus-LegDragonsConnectionsEventBus"
+  LegDragonsBroadcastArn:
+    Type: String
+    Default: "legendary-dragons-connection-LegDragonsBroadcastArn"
 
 Globals:
   Api:
@@ -54,15 +57,15 @@ Resources:
         - DynamoDBWritePolicy:
             TableName: !Ref InventoryTable
 
-  SteamInventoryChangesFunction:
+  StreamInventoryChangesFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: functions/stream_inventory_changes/
       Policies:
         - EventBridgePutEventsPolicy:
-            EventBusName:
-              Fn::ImportValue:
-                !Sub "${LegDragonsConnectionsEventBus}"
+            EventBusName: "connection-event-bus"
+              # Fn::ImportValue:
+                # !Sub "${LegDragonsConnectionsEventBus}"
         - DynamoDBStreamReadPolicy:
             TableName: !Ref InventoryTable
             # Reason: https://github.com/aws/serverless-application-model/issues/289#issuecomment-939738271
@@ -79,7 +82,7 @@ Resources:
       BatchSize: 1
       Enabled: True
       EventSourceArn: !GetAtt InventoryTable.StreamArn
-      FunctionName: !GetAtt SteamInventoryChangesFunction.Arn
+      FunctionName: !GetAtt StreamInventoryChangesFunction.Arn
       StartingPosition: LATEST
 
   InventoryTable:
@@ -112,6 +115,46 @@ Resources:
             ProjectionType: "ALL"
       StreamSpecification:
         StreamViewType: "NEW_AND_OLD_IMAGES"
+
+  InventoryEventRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Name: inventory-broadcast-rule
+      EventBusName: "connection-event-bus" # or arn
+      EventPattern:
+        source:
+          - "inventory.database"
+        detail-type:
+          - INSERT
+          - REMOVE
+          - MODIFY
+        detail:
+          dynamodb:
+            Keys:
+              SK:
+                S:
+                  - prefix: USER
+                  - prefix: INVENTORY
+              PK:
+                S:
+                  - prefix: INVENTORY
+                  - prefix: INVENTORY_CARD
+      State: ENABLED
+      Targets:
+        - Id: "broadcast-inventory-db-changes"
+          Arn:
+            Fn::ImportValue:
+              !Sub "${LegDragonsBroadcastArn}"
+
+  InventoryEventPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::ImportValue:
+          !Sub "${LegDragonsBroadcastArn}"
+      Principal: events.amazonaws.com
+      SourceArn: !GetAtt InventoryEventRule.Arn
 
   GetInventoryRoute:
     Type: AWS::ApiGatewayV2::Route
