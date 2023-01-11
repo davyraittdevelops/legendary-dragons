@@ -66,7 +66,7 @@ def extract_inventory_id(inventory_id, user_id):
             "user_id": user_id,
             "created_at": now,
             "last_modified": now,
-            "total_value": 0,
+            "total_value": "0",
             "GSI1_PK": sk,
             "GSI1_SK": pk
         })
