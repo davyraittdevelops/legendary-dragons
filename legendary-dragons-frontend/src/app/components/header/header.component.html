@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-dark">
   <div class="container-fluid">
-    <a routerLink="/dashboard" class="navbar-brand text-light"><img src="assets/dragon.png" class="dragon" alt="dragon">Legendary Dragon</a>
+    <a [routerLink]="(isLoggedIn$ | async) ? ['/dashboard'] : ['/home']" class="navbar-brand text-light"><img src="assets/dragon.png" class="dragon" alt="dragon">Legendary Dragon</a>
 
     <button class="navbar-toggler" type="button">
       <span class="navbar-toggler-icon"></span>
@@ -22,5 +22,5 @@
 </nav>
 
 <ng-template #loggedOut>
-  <a routerLink="/login" class="btn btn-outline-light me-2" type="submit">Log in</a>
+  <a [routerLink]="['/login']" class="btn btn-outline-light me-2" type="submit">Log in</a>
 </ng-template>

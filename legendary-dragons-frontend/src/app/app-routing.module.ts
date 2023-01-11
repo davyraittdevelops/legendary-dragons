@@ -7,14 +7,14 @@ import {IsLoggedInGuard} from "./guard/is-logged-in.guard";
 import {InventoryPageComponent} from "./components/inventory-page/inventory-page.component";
 import {DecksPageComponent} from "./components/decks-page/decks-page.component";
 import {WishlistPageComponent} from "./components/wishlist-page/wishlist-page.component";
-import {LandingPageComponent} from "./components/landing-page/landing-page.component";
+import {HomePageComponent} from "./components/home-page/home-page.component";
 
 const routes: Routes = [
   {
-    path: '', redirectTo: '/landing', pathMatch: 'full',
+    path: '', redirectTo: '/home', pathMatch: 'full',
   },
   {
-    path: 'landing', component: LandingPageComponent
+    path: 'home', component: HomePageComponent
   },
   {path: 'login', component: LoginPageComponent},
   {
