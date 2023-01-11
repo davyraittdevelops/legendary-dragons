@@ -17,6 +17,17 @@ object Scenarios {
     "password" ->  (s"Te!312-$randomString")
     )
   }
+
+  val inventoryCardDetailsFeeder = Iterator.continually {
+  val randomString = Random.alphanumeric.take(10).mkString
+  Map(
+    "rid1" -> (s"test-$randomString"),
+    "rid2" -> (s"test-$randomString"),
+    "rid3" -> (s"test-$randomString"),
+    "rid4" -> (s"test-$randomString")
+    )
+  }
+
   val emailFeeder = csv("data/accounts.csv").circular
 
   //Scenarios
@@ -40,6 +51,17 @@ object Scenarios {
       session.set("token", token)
     }
     .exec(Requests.connectToWebsocket)
+
+  def AddCardToInventoryScenario() = scenario("AddCardToInventoryScenario")
+    .feed(emailFeeder)
+    .exec(Requests.loginAccount.check(header("x-amzn-Remapped-Authorization").saveAs("token")))
+    .exec { session =>
+      var token = session("token").as[String].replace("Bearer ", "")
+      println("@@@@@@@@@@@  " + token)
+      session.set("token", token)
+    }
+    .feed(inventoryCardDetailsFeeder)
+    .exec(Requests.connectToWebsocketAndAddCardToInventory)
 
 
 }
