@@ -16,9 +16,13 @@
         <div class="col col-6 text-center" align="center">
             <h1>Decks</h1>
             <cdk-virtual-scroll-viewport appendOnly itemSize="50" class="example-viewport">
-                <div *cdkVirtualFor="let deck of decks" class="example-item">
-                    <button style="width: 50%;">{{deck.name}}</button>
-                </div>
+<!--                <div *cdkVirtualFor="let deck of decks" class="example-item">-->
+<!--                    <button style="width: 50%;">{{deck.name}}</button>-->
+<!--                </div>-->
+                <app-add-card-component></app-add-card-component>
+                <app-card *ngFor="let deck of decks"
+                          [card]="deck">
+                </app-card>
             </cdk-virtual-scroll-viewport>
         </div>
         <div class="col col-6 text-center" align="center">
