@@ -7,10 +7,7 @@ import io.gatling.http.Predef._
 object Requests {
 
     private val contentTypeHeader = Map("Content-Type" -> "application/json;charset=UTF-8")
-
-    /**
-      * Gatling action to make a GET request to the "/" endpoint of the baseUrl
-      */
+    
     val visitFrontEnd = http("visitFrontEnd").get("/")
 
     val registerAccount = http("registerAccount")
