@@ -24,7 +24,7 @@ export class AddCardComponent implements OnInit {
   }
 
   searchCardsByKeyword() {
-    this.CARD_DATA = [];
+
     this.websocketService.sendSearchCardByKeywordMessage('searchCardsByKeywordReq', this.filterValue);
 
     // todo when searching 2 times then the price is Undifined
@@ -32,9 +32,11 @@ export class AddCardComponent implements OnInit {
     this.websocketService.dataUpdates$().subscribe((message) => {
       const eventType = message['event_type'];
       const eventData = message['data'];
-
+      this.CARD_DATA = [];
+      
       switch (eventType) {
         case 'SEARCH_CARD_RESULT':
+          console.log('@@@@@@@@@' , this.CARD_DATA.length)
           for (const object of eventData) {
             let priceArray = object.prices;
             let set = object.set_type;

@@ -10,7 +10,7 @@
         <div class="card col-2 border border-dark m-2 bg-light bg-opacity-25 rounded-1 p-0" *ngFor="let deck of decks">
           <button type="button" class="btn btn-secondary transparent flex-grow-1">
             <div *ngIf="deck.cards.length > 0">
-              <img class="card-img-top" src="{{deck!.cards[0]!.image_url}}" alt="">
+<!--              <img class="card-img-top" src="{{deck!.cards_faces[0]!.image_url}}" alt="">-->
             </div>
             <div class="blank-img" *ngIf="deck.cards.length == 0">
               <img src="assets\blank.png" alt="">
