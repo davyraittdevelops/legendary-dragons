@@ -184,7 +184,7 @@ Resources:
       ApiId:
         Fn::ImportValue:
           !Sub "${LegDragonsWebSocketApi}"
-      Description: Search card by keyword integration
+      Description: Search chard by keyword integration
       IntegrationType: AWS_PROXY
       IntegrationUri:
         Fn::Sub:
@@ -210,7 +210,7 @@ Resources:
       ApiId:
         Fn::ImportValue:
           !Sub "${LegDragonsWebSocketApi}"
-      Description: Add card by keyword integration
+      Description: Search chard by keyword integration
       IntegrationType: AWS_PROXY
       IntegrationUri:
         Fn::Sub:
@@ -282,3 +282,4 @@ Outputs:
     Value: !GetAtt RemoveCardFromInventoryFunction.Arn
   RemoveCardFromInventoryFunctionIamRole:
     Description: "Implicit IAM Role created for Remove Card From Inventory Function"
+    Value: !GetAtt RemoveCardFromInventoryFunctionRole.Arn
