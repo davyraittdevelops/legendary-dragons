@@ -24,12 +24,23 @@ def table_definition():
         "AttributeDefinitions": [
             {"AttributeName": "PK", "AttributeType": "S"},
             {"AttributeName": "SK", "AttributeType": "S"},
+            {"AttributeName": "GSI1_PK", "AttributeType": "S"},
+            {"AttributeName": "GSI1_SK", "AttributeType": "S"},
         ],
         "KeySchema": [
             {"AttributeName": "PK", "KeyType": "HASH"},
             {"AttributeName": "SK", "KeyType": "RANGE"}
         ],
-
+        "GlobalSecondaryIndexes": [
+            {
+                "IndexName": "GSI1",
+                "Projection": {"ProjectionType": "ALL"},
+                "KeySchema": [
+                    {"AttributeName": "GSI1_PK", "KeyType": "HASH"},
+                    {"AttributeName": "GSI1_SK", "KeyType": "RANGE"}
+                ]
+            }
+        ],
         "BillingMode": "PAY_PER_REQUEST"
     }
 

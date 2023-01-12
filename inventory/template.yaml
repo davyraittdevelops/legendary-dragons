@@ -1,0 +1,238 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  inventory
+
+  SAM Template for inventory context
+
+Parameters:
+  LegDragonsWebSocketApi:
+    Type: String
+    Default: "legendary-dragons-ws-api-gateway-LegDragonsWebSocketApi"
+  LegDragonsConnectionsEventBus:
+    Type: String
+    Default: "legendary-dragons-connection-event-bus-LegDragonsConnectionsEventBus"
+  LegDragonsBroadcastArn:
+    Type: String
+    Default: "legendary-dragons-connection-LegDragonsBroadcastArn"
+
+Globals:
+  Api:
+    TracingEnabled: True
+  Function:
+    Handler: app.lambda_handler
+    Runtime: python3.9
+    Environment:
+        Variables:
+          TABLE_NAME: !Ref InventoryTable
+    Architectures:
+      - x86_64
+    Tracing: Active
+
+Resources:
+  GetInventoryFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/get_inventory/
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref InventoryTable
+        - Statement:
+          - Effect: Allow
+            Action:
+              - 'execute-api:ManageConnections'
+            Resource:
+              Fn::Sub:
+                - 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${WebSocketApi}/*'
+                - WebSocketApi:
+                    Fn::ImportValue:
+                      'Fn::Sub': "${LegDragonsWebSocketApi}"
+
+
+  AddCardToInventoryFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/add_card_to_inventory/
+      Policies:
+        - DynamoDBWritePolicy:
+            TableName: !Ref InventoryTable
+
+  StreamInventoryChangesFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/stream_inventory_changes/
+      Policies:
+        - EventBridgePutEventsPolicy:
+            EventBusName: "connection-event-bus"
+              # Fn::ImportValue:
+                # !Sub "${LegDragonsConnectionsEventBus}"
+        - DynamoDBStreamReadPolicy:
+            TableName: !Ref InventoryTable
+            # Reason: https://github.com/aws/serverless-application-model/issues/289#issuecomment-939738271
+            StreamName: !Select [3, !Split ["/", !GetAtt InventoryTable.StreamArn]]
+      Environment:
+        Variables:
+          EVENT_BUS_NAME:
+            Fn::ImportValue:
+                !Sub "${LegDragonsConnectionsEventBus}"
+
+  EventSourceInventoryTableStream:
+    Type: AWS::Lambda::EventSourceMapping
+    Properties:
+      BatchSize: 1
+      Enabled: True
+      EventSourceArn: !GetAtt InventoryTable.StreamArn
+      FunctionName: !GetAtt StreamInventoryChangesFunction.Arn
+      StartingPosition: LATEST
+
+  InventoryTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: inventories
+      KeySchema:
+        - AttributeName: PK
+          KeyType: HASH
+        - AttributeName: SK
+          KeyType: RANGE
+      AttributeDefinitions:
+        - AttributeName: PK
+          AttributeType: S
+        - AttributeName: SK
+          AttributeType: S
+        - AttributeName: GSI1_PK
+          AttributeType: S
+        - AttributeName: GSI1_SK
+          AttributeType: S
+      BillingMode: PAY_PER_REQUEST
+      GlobalSecondaryIndexes:
+        - IndexName: "GSI1"
+          KeySchema:
+            - AttributeName: GSI1_PK
+              KeyType: HASH
+            - AttributeName: GSI1_SK
+              KeyType: RANGE
+          Projection:
+            ProjectionType: "ALL"
+      StreamSpecification:
+        StreamViewType: "NEW_AND_OLD_IMAGES"
+
+  InventoryEventRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Name: inventory-broadcast-rule
+      EventBusName: "connection-event-bus" # or arn
+      EventPattern:
+        source:
+          - "inventory.database"
+        detail-type:
+          - INSERT
+          - REMOVE
+          - MODIFY
+        detail:
+          dynamodb:
+            Keys:
+              SK:
+                S:
+                  - prefix: USER
+                  - prefix: INVENTORY
+              PK:
+                S:
+                  - prefix: INVENTORY
+                  - prefix: INVENTORY_CARD
+      State: ENABLED
+      Targets:
+        - Id: "broadcast-inventory-db-changes"
+          Arn:
+            Fn::ImportValue:
+              !Sub "${LegDragonsBroadcastArn}"
+
+  InventoryEventPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::ImportValue:
+          !Sub "${LegDragonsBroadcastArn}"
+      Principal: events.amazonaws.com
+      SourceArn: !GetAtt InventoryEventRule.Arn
+
+  GetInventoryRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Fn::ImportValue:
+          !Sub "${LegDragonsWebSocketApi}"
+      RouteKey: getInventoryReq
+      AuthorizationType: NONE
+      OperationName: GetInventoryRoute
+      Target: !Join
+        - '/'
+        - - 'integrations'
+          - !Ref GetInventoryInteg
+
+  GetInventoryInteg:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Fn::ImportValue:
+          !Sub "${LegDragonsWebSocketApi}"
+      Description: Search chard by keyword integration
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::Sub:
+            arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GetInventoryFunction.Arn}/invocations
+
+  AddCardToInventoryRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Fn::ImportValue:
+          !Sub "${LegDragonsWebSocketApi}"
+      RouteKey: addCardToInventoryReq
+      AuthorizationType: NONE
+      OperationName: AddCardToInventoryRoute
+      Target: !Join
+        - '/'
+        - - 'integrations'
+          - !Ref AddCardToInventoryInteg
+
+  AddCardToInventoryInteg:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Fn::ImportValue:
+          !Sub "${LegDragonsWebSocketApi}"
+      Description: Search chard by keyword integration
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::Sub:
+            arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AddCardToInventoryFunction.Arn}/invocations
+
+  GetInventoryPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref GetInventoryFunction
+      Principal: apigateway.amazonaws.com
+
+  AddCardToInventoryPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref AddCardToInventoryFunction
+      Principal: apigateway.amazonaws.com
+
+
+Outputs:
+  GetInventoryFunction:
+    Description: "Get Inventory Function ARN"
+    Value: !GetAtt GetInventoryFunction.Arn
+  GetInventoryFunctionIamRole:
+    Description: "Implicit IAM Role created for Get Inventory Function"
+    Value: !GetAtt GetInventoryFunctionRole.Arn
+  AddCardToInventoryFunction:
+    Description: "Add Card To Inventory Function ARN"
+    Value: !GetAtt AddCardToInventoryFunction.Arn
+  AddCardToInventoryFunctionIamRole:
+    Description: "Implicit IAM Role created for Add Card To Inventory Function"
+    Value: !GetAtt AddCardToInventoryFunctionRole.Arn

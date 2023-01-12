@@ -40,6 +40,10 @@ export class CardComponent implements OnInit {
     });
   }
 
+  removeCard() {
+    // TODO;
+  }
+
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
       return 'by pressing ESC';

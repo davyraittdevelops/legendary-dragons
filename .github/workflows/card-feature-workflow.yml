@@ -1,0 +1,34 @@
+name: Card Feature workflow
+
+on:
+  push:
+    branches: ['feature**']
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./card
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+          cache: 'pip'
+          run: pip install -r tests/requirements.txt
+
+      - name: Generate test report & rapport
+        run: |
+          pip install -r tests/requirements.txt
+          coverage run --source=functions/ -m pytest tests -v -rap --junitxml target/testreport-card-consumer.xml
+          coverage xml -o target/coverage-card-consumer.xml
+
+      - name: Run scanner
+        uses: sonarsource/sonarqube-scan-action@master
+        with:
+          projectBaseDir: './card'
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
