@@ -3,8 +3,11 @@ import { ModalDismissReasons, NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { AppState } from 'src/app/app.state';
+import { InventoryCard } from 'src/app/models/inventory.model';
 import { searchCardByKeyword } from 'src/app/ngrx/card/card.actions';
 import { errorSelector, isLoadingSelector, searchedCardSelector } from 'src/app/ngrx/card/card.selectors';
+import { addCardtoInventory } from 'src/app/ngrx/inventory/inventory.actions';
+import { inventorySelector } from 'src/app/ngrx/inventory/inventory.selectors';
 import { Card } from "../../../models/card.model";
 
 @Component({
@@ -79,7 +82,9 @@ export class AddCardComponent implements OnInit {
     }
   }
 
-  addCardToInventory(card: Card) {
-    console.log(card)
+  addCardtoInventory(inventoryCard: InventoryCard) {
+    // Todo assign the right inventoryID
+    this.appStore.dispatch(addCardtoInventory({inventoryId: "", inventoryCard: inventoryCard}))
+    console.log(inventoryCard)
   }
 }
