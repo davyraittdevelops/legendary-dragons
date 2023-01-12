@@ -32,8 +32,6 @@ export class AddCardComponent implements OnInit {
   ngOnInit(): void {
 
   }
-
-
   applyFilter(event: Event): void {
     this.filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
   }

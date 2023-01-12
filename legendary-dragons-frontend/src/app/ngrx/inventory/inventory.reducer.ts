@@ -8,7 +8,6 @@ import {
   getInventorySuccess
 } from "./inventory.actions";
 import { InventoryState } from "./models/inventory-state.model";
-import jwt_decode from "jwt-decode";
 
 const initialState: InventoryState = {
     isLoading: false,
