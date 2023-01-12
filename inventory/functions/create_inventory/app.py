@@ -18,29 +18,24 @@ table = dynamodb.Table(os.getenv("TABLE_NAME"))
 
 def lambda_handler(event, context):
     """Create a new Inventory entry after account confirmation."""
-    body = json.loads(event["body"])
-
-    user_id = event["requestContext"]["authorizer"]["userId"]
-    inventory_id = body["inventory_id"]
-    card_id = str(uuid.uuid4())
-    card = body["inventory_card"]
+    user_id = event["detail"]["user_id"]
+    inventory_id = str(uuid.uuid4())
 
     now = datetime.utcnow().isoformat()
-    pk = f"INVENTORY_CARD#{card_id}"
-    sk = f"INVENTORY#{inventory_id}"
 
-    logger.info(f"Adding inventory card ({inventory_id}) to DynamoDB table")
+    logger.info("Creating new inventory with id: %s", inventory_id)
+    pk = f"INVENTORY#{inventory_id}"
+    sk = f"USER#{user_id}"
 
     table.put_item(Item={
         "PK": pk,
         "SK": sk,
-        "entity_type": "INVENTORY_CARD",
+        "entity_type": "INVENTORY",
         "inventory_id": inventory_id,
         "user_id": user_id,
-        "card_id": card_id,
         "created_at": now,
         "last_modified": now,
-        **card,
+        "total_value": "0",
         "GSI1_PK": sk,
         "GSI1_SK": pk
     })

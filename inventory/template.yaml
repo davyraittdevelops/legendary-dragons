@@ -116,6 +116,37 @@ Resources:
       StreamSpecification:
         StreamViewType: "NEW_AND_OLD_IMAGES"
 
+  CreateInventoryFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/create_inventory/
+      Policies:
+        - DynamoDBWritePolicy:
+            TableName: !Ref InventoryTable
+
+  CreateInventoryEventRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Name: inventory-create-rule
+      EventBusName: "connection-event-bus"
+      EventPattern:
+        source:
+          - "legdragons.identity-and-access.signup"
+        detail-type:
+          - "USER_REGISTERED"
+      State: ENABLED
+      Targets:
+        - Id: "create-inventory"
+          Arn: !GetAtt CreateInventoryFunction.Arn
+
+  CreateInventoryEventPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt CreateInventoryFunction.Arn
+      Principal: events.amazonaws.com
+      SourceArn: !GetAtt CreateInventoryEventRule.Arn
+
   InventoryEventRule:
     Type: AWS::Events::Rule
     Properties:
