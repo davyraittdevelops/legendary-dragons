@@ -12,6 +12,9 @@ Parameters:
   LegDragonsUserPool:
     Type: String
     Default: "legendary-dragons-cognito-LegDragonUserPool"
+  LegDragonsConnectionsEventBus:
+    Type: String
+    Default: "legendary-dragons-connection-event-bus-LegDragonsConnectionsEventBus"
 
 Globals:
   Api:
@@ -58,6 +61,14 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: functions/register/
+      Environment:
+        Variables:
+          EVENT_BUS_NAME:
+            Fn::ImportValue:
+                !Sub "${LegDragonsConnectionsEventBus}"
+      Policies:
+        - EventBridgePutEventsPolicy:
+            EventBusName: "connection-event-bus"
       Events:
         RegisterUser:
           Type: Api
