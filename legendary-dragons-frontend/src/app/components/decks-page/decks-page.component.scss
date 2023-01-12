@@ -47,3 +47,19 @@
 
 
 /* End Card Styles */
+
+
+/* Start Add Card Styling */
+:host ::ng-deep .add-card {
+  width: 145px;
+  height: 200px;
+  max-height: 195px;
+  opacity: 1;
+}
+
+.card-position {
+  display: contents;
+  padding: 2px 3px 2px 2px;
+}
+
+/* End Add Card Styling */
