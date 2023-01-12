@@ -19,6 +19,11 @@
   padding: 8px;
 
 }
+
+:host ::ng-deep .cdk-virtual-scroll-content-wrapper {
+  background: grey;
+}
+
 /* End Scrolling Styles */
 
 /* Start Card styles */
