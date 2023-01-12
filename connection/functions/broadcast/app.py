@@ -13,6 +13,7 @@ if "DISABLE_XRAY" not in os.environ:
 
 dynamodb = boto3.resource("dynamodb")
 table = dynamodb.Table(os.environ["TABLE_NAME"])
+deserializer = boto3.dynamodb.types.TypeDeserializer()
 
 
 def query_user_connections(user_id):
@@ -22,11 +23,6 @@ def query_user_connections(user_id):
         Key("GSI1_SK").begins_with("CONNECTION"),
         IndexName="GSI1"
     )["Items"]
-
-
-def datatype_value(type_value):
-    """Extract the value from the given Dynamodb data type."""
-    return type_value[next(iter(type_value))]
 
 
 def lambda_handler(event, context):
@@ -41,9 +37,7 @@ def lambda_handler(event, context):
     pk = event["detail"]["dynamodb"]["Keys"]["PK"]["S"]
 
     # Convert dynamodb new image format to useable frontend format
-    mapped_image = dict(
-        map(lambda kv: (kv[0], datatype_value(kv[1])), image.items())
-    )
+    mapped_image = {k: deserializer.deserialize(v) for k, v in image.items()}
 
     user_id = mapped_image["user_id"]
 

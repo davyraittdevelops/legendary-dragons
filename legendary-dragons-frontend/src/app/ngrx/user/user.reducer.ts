@@ -16,17 +16,20 @@ const user = {
   email: '',
   nickname: ''
 }
+let isLoggedIn = false;
 
 // Init user details for logged in users (needed when a refresh happens)
 if (token != null) {
   const decodedToken: any = jwt_decode(token);
   user.email = decodedToken.email;
   user.nickname = decodedToken.nickname;
+  isLoggedIn = true;
 }
 
 const initialState: UserState = {
   isLoading: false,
   hasError: false,
+  isLoggedIn,
   user
 }
 
@@ -54,6 +57,7 @@ export const userReducer = createReducer(
   }),
   on(logoutUser, () => {
     localStorage.removeItem('token');
-    return initialState;
+    const user = {email: '', nickname: ''};
+    return {...initialState, isLoggedIn: false, user};
   }),
 )

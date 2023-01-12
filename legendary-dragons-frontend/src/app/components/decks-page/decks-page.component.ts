@@ -246,5 +246,4 @@ export class DecksPageComponent implements OnInit {
   open({content}: { content: any }) {
     this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title', size: 'm'});
   }
-
 }
