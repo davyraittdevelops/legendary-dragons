@@ -3,7 +3,7 @@ import os
 import boto3
 import pytest
 from unittest.mock import patch
-from moto import mock_cognitoidp
+from moto import mock_cognitoidp, mock_events, mock_sqs
 
 OS_ENV = {
     "AWS_ACCESS_KEY_ID": "testing",
@@ -11,7 +11,8 @@ OS_ENV = {
     "AWS_SECURITY_TOKEN": "testing",
     "AWS_SESSION_TOKEN": "testing",
     "AWS_DEFAULT_REGION": "us-east-1",
-    "DISABLE_XRAY": "True"
+    "DISABLE_XRAY": "True",
+    "EVENT_BUS_NAME": "test-event-bus"
 }
 
 
@@ -55,20 +56,48 @@ def cognito_pool():
 
 @patch.dict(os.environ, OS_ENV, clear=True)
 @mock_cognitoidp
+@mock_events
+@mock_sqs
 def test_lambda_handler_successful(event):
     # Arrange
     os.environ["COGNITO_CLIENT"] = cognito_pool()["pool_client"]["UserPoolClient"]["ClientId"]
+    sqs = boto3.resource("sqs")
+    queue = sqs.create_queue(QueueName="test-output-queue")
+    client = boto3.client("events")
+    client.create_event_bus(Name=OS_ENV["EVENT_BUS_NAME"])
+    client.put_rule(
+        Name="test-rule", EventBusName=OS_ENV["EVENT_BUS_NAME"],
+        EventPattern=json.dumps(
+            {
+                "detail-type": ["USER_REGISTERED"],
+                "source": ["legdragons.identity-and-access.signup"]
+            }
+        )
+    )
+
+    client.put_targets(
+        Rule="test-rule", EventBusName=OS_ENV["EVENT_BUS_NAME"],
+        Targets=[{
+            "Id": "testing-target",
+            "Arn": queue.attributes.get("QueueArn")
+        }]
+    )
 
     # Act
     from functions.register.app import lambda_handler
     response = lambda_handler(event, {})
+    messages = queue.receive_messages(MaxNumberOfMessages=1)
+    event_message = json.loads(messages[0].body)
 
     # Assert
     assert response["statusCode"] == 201
+    assert len(messages) == 1
+    assert event_message["detail-type"] == "USER_REGISTERED"
 
 
 @patch.dict(os.environ, OS_ENV, clear=True)
 @mock_cognitoidp
+@mock_events
 def test_lambda_handler_empty_email(event):
     # Arrange
     body = json.loads(event["body"])
