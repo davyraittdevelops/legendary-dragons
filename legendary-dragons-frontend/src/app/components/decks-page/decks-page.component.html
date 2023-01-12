@@ -28,6 +28,9 @@
         <div class="col col-6 text-center" align="center">
             <h1>Side Deck</h1>
             <cdk-virtual-scroll-viewport appendOnly itemSize="50" class="example-viewport">
+                <div class="card-position">
+                    <app-add-card-component></app-add-card-component>
+                </div>
                 <app-card class="example-item" *ngFor="let sideDeck of sideDecks"
                           [card]="sideDeck">
                 </app-card>
@@ -39,9 +42,3 @@
 
     </div>
 </div>
-
-<!--<div *cdkVirtualFor="let sideDeck of sideDecks" class="example-item-sidedecks">-->
-<!--    <button text-center justify-content-center>-->
-<!--        <img [src]="sideDeck.imageUrl" alt="">-->
-<!--    </button>-->
-<!--</div>-->
