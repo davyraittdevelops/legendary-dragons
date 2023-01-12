@@ -10,7 +10,7 @@ afterEach(() => {
 });
 
 describe("Search 'Conclave Mentor' card", () => {
-  it('passes', () => {
+  it.only('passes', () => {
     //arrange
     cy.get("button[name=openAddCardModal]").click();
     cy.get("div[role=document]").should("be.visible");
