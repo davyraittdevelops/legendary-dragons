@@ -6,8 +6,8 @@
         </div>
         <div class="col col-4 text-center">
             <h1>Grixis Midrange</h1>
-            <p>85 cards</p>
-            <em>{{411.92 | currency }}</em>
+            <p style="font-size: 30px">85 cards</p>
+            <em style="font-size: 25px;">{{411.92 | currency }}</em>
         </div>
         <!--    For chart diagram    -->
         <div class="col col-3 text-center"></div>
@@ -17,6 +17,7 @@
         <div class="col col-6 text-center" align="center">
             <h1>Decks</h1>
             <cdk-virtual-scroll-viewport appendOnly itemSize="50" class="example-viewport">
+                
                 <app-card class="example-item" *ngFor="let deck of decks"
                           [card]="deck">
                 </app-card>
