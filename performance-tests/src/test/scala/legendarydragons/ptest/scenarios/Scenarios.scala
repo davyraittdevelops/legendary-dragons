@@ -21,10 +21,10 @@ object Scenarios {
   val inventoryCardDetailsFeeder = Iterator.continually {
   val randomString = Random.alphanumeric.take(10).mkString
   Map(
-    "rid1" -> (s"test-$randomString"),
-    "rid2" -> (s"test-$randomString"),
-    "rid3" -> (s"test-$randomString"),
-    "rid4" -> (s"test-$randomString")
+    "rid1" -> (s"$randomString"),
+    "rid2" -> (s"test_cardid-$randomString"),
+    "rid3" -> (s"test_oracleid-$randomString"),
+    "rid4" -> (s"test_scryfallid-$randomString")
     )
   }
 
@@ -57,7 +57,6 @@ object Scenarios {
     .exec(Requests.loginAccount.check(header("x-amzn-Remapped-Authorization").saveAs("token")))
     .exec { session =>
       var token = session("token").as[String].replace("Bearer ", "")
-      println("TOKEN  " + token)
       session.set("token", token)
     }
     .feed(inventoryCardDetailsFeeder)
