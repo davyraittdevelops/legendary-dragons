@@ -13,6 +13,7 @@ import {RegisterPageComponent} from './components/register-page/register-page.co
 import {NavbarComponent} from './components/navbar/navbar.component';
 import {HeaderComponent} from './components/header/header.component';
 import {userReducer} from './ngrx/user/user.reducer';
+import {cardReducer} from './ngrx/card/card.reducer';
 import {UserEffects} from './ngrx/user/user.effect';
 import { isDevMode, NgModule} from '@angular/core';
 import {InventoryPageComponent} from './components/inventory-page/inventory-page.component';
@@ -27,6 +28,7 @@ import {MatInputModule} from '@angular/material/input';
 import {HomePageComponent} from "./components/home-page/home-page.component";
 import { AddCardComponent } from './components/card/add-card-component/add-card-component';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { CardEffects } from './ngrx/card/card.effect';
 
 @NgModule({
   declarations: [
@@ -50,7 +52,7 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
     ReactiveFormsModule,
     HttpClientModule,
     EffectsModule.forRoot([
-      UserEffects
+      UserEffects, CardEffects
     ]),
     BrowserAnimationsModule,
     MatTabsModule,
@@ -59,7 +61,8 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
     MatFormFieldModule,
     MatInputModule,
     StoreModule.forRoot({
-      user: userReducer
+      user: userReducer,
+      card: cardReducer
     }),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() })
   ],

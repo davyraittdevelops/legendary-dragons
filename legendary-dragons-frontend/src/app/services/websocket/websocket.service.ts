@@ -3,6 +3,7 @@ import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { environment } from 'src/environments/environment';
 import {HttpHeaders} from "@angular/common/http";
 import { Card } from 'src/app/models/card.model';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +11,8 @@ import { Card } from 'src/app/models/card.model';
 export class WebsocketService {
 
   private socket$: WebSocketSubject<any> | undefined;
+
+  constructor() { }
 
   public connect(): WebSocketSubject<any> {
     const token = localStorage.getItem('token')  || '';
@@ -25,7 +28,7 @@ export class WebsocketService {
     return this.socket$;
   }
 
-  public dataUpdates$() {
+  public dataUpdates$(): Observable<any> {
     console.log("connecting observable")
     return this.connect().asObservable();
   }
@@ -35,7 +38,7 @@ export class WebsocketService {
     this.connect().complete();
   }
 
-  sendSearchCardByKeywordMessage(action: string, query?: string) {
+  sendSearchCardByKeywordMessage(query: string) {
     if (!this.socket$) {
       console.log('Sending WebSocket message while socket doesnt exist');
       return;
@@ -44,12 +47,28 @@ export class WebsocketService {
     console.log('Sending a WebSocket message');
 
     const message = {
-      'action':action,
+      'action': 'searchCardsByKeywordReq',
       ...(query && { 'query': query }),
     };
 
     this.socket$.next(message);
   }
 
-  constructor() { }
+  sendAddCardToInventoryMessage(action: string, inventory_id: string | null, card: any) {
+    if (!this.socket$) {
+      console.log('Sending WebSocket message while socket doesnt exist');
+      return;
+    }
+
+    console.log('Sending a WebSocket message');
+
+    const message = {
+      'action': action,
+      'inventory_id': inventory_id,
+      'inventory_card': card
+    };
+
+    this.socket$.next(message);
+  }
+
 }
