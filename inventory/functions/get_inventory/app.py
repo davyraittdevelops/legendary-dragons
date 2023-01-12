@@ -62,7 +62,6 @@ def lambda_handler(event, context):
     output["data"] = inventory[0]
 
     logger.info(f"Sending inventory result to client with id: {connection_id}")
-    logger.info(output)
 
     apigateway.post_to_connection(
         ConnectionId=connection_id,
