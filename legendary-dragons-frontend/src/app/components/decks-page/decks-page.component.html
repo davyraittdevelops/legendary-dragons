@@ -9,9 +9,9 @@
       </div>
 
       <ng-template #content let-modal>
-        <div class="modal-header">
-          <h4 class="modal-title text-dark fs-4 text" id="modal-basic-title">Add deck</h4>
-          <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+        <div class="modal-header bg-dark">
+          <h4 class="modal-title text-light fs-4 text" id="modal-basic-title">Add deck</h4>
+          <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
         </div>
         <div class="modal-body">
           <form [formGroup]="form">
@@ -22,7 +22,7 @@
           </form>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Add deck</button>
+          <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Add</button>
         </div>
       </ng-template>
       
