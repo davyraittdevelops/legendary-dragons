@@ -1,8 +1,18 @@
 <div class="container-fluid py-5">
   <div class="row row-cols-auto gy-4">
-    <app-add-card-component class="col"></app-add-card-component>
-    <app-card class="col" *ngFor="let card of CARD_DATA"
-              [card]="card">
-    </app-card>
+    <ng-container *ngIf="inventory$ | async as inventory">
+      <app-add-card-component [inventory_id]="inventory.inventory_id"
+                              class="col"></app-add-card-component>
+
+      <app-card class="col" *ngFor="let card of inventory.inventory_cards"
+                [card]="card">
+      </app-card>
+    </ng-container>
+
+    <div class="text-center">
+      <span *ngIf="isLoading$ | async"
+            class="spinner-border spinner-border" role="status" aria-hidden="true">
+      </span>
+    </div>
   </div>
 </div>

@@ -13,19 +13,24 @@ import {RegisterPageComponent} from './components/register-page/register-page.co
 import {NavbarComponent} from './components/navbar/navbar.component';
 import {HeaderComponent} from './components/header/header.component';
 import {userReducer} from './ngrx/user/user.reducer';
+import {cardReducer} from './ngrx/card/card.reducer';
 import {UserEffects} from './ngrx/user/user.effect';
-import {NgModule} from '@angular/core';
+import { isDevMode, NgModule} from '@angular/core';
 import {InventoryPageComponent} from './components/inventory-page/inventory-page.component';
 import {DecksPageComponent} from './components/decks-page/decks-page.component';
 import {WishlistPageComponent} from './components/wishlist-page/wishlist-page.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatTabsModule} from "@angular/material/tabs";
-import {AddCardComponent} from './components/card/add-card-button/add-card-component';
 import {CardComponent} from './components/card/card/card.component';
 import {MatTableModule} from "@angular/material/table";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from '@angular/material/input';
 import {HomePageComponent} from "./components/home-page/home-page.component";
+import { AddCardComponent } from './components/card/add-card-component/add-card-component';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { CardEffects } from './ngrx/card/card.effect';
+import { InventoryEffects } from './ngrx/inventory/inventory.effect';
+import { inventoryReducer } from './ngrx/inventory/inventory.reducer';
 
 @NgModule({
   declarations: [
@@ -41,7 +46,6 @@ import {HomePageComponent} from "./components/home-page/home-page.component";
     WishlistPageComponent,
     AddCardComponent,
     CardComponent,
-
   ],
   imports: [
     BrowserModule,
@@ -50,7 +54,9 @@ import {HomePageComponent} from "./components/home-page/home-page.component";
     ReactiveFormsModule,
     HttpClientModule,
     EffectsModule.forRoot([
-      UserEffects
+      UserEffects,
+      CardEffects,
+      InventoryEffects
     ]),
     BrowserAnimationsModule,
     MatTabsModule,
@@ -59,8 +65,11 @@ import {HomePageComponent} from "./components/home-page/home-page.component";
     MatFormFieldModule,
     MatInputModule,
     StoreModule.forRoot({
-      user: userReducer
-    })
+      user: userReducer,
+      card: cardReducer,
+      inventory: inventoryReducer
+    }),
+    StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() })
   ],
   providers: [],
   bootstrap: [AppComponent]

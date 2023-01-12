@@ -16,7 +16,7 @@ export const registerUserSuccess = createAction(
 )
 
 export const logoutUser = createAction(
-  '[Navbar Component] Logout'
+  '[Header Component] Logout'
 );
 
 export const loginUser = createAction(

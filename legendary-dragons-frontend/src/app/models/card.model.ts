@@ -1,9 +1,25 @@
 export interface Card {
-  name: string;
-  type: string;
-  text: string;
-  cost: number;
-  power: number;
-  toughness: number;
-  imageUrl: string;
+  scryfall_id: string;
+  collector_number: string;
+  cardmarked_id: number | null;
+  oracle_id: string;
+  card_name: string;
+  released_at: string;
+  set_id: string;
+  set_code: string;
+  set_type: string;
+  rarity: string;
+  prices: object;
+  is_multifaced: boolean;
+  card_faces: CardFace[];
+}
+
+export interface CardFace {
+  oracle_text: string;
+  image_url: string;
+  card_name: string;
+  multiverse_id: number | null;
+  mana_cost: string;
+  colors: string[];
+  type_line: string;
 }
