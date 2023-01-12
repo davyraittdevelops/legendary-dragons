@@ -50,7 +50,13 @@ object Requests {
               "GSI1_SK" : ""INVENTORY_CARD#${rid1}",
               "scryfall_id" : "${rid4}"
           }
-        }"""))
+        }""")))
 
-    )
+
+    
+    val connectToWebsocketAndGetInventory = ws("Connect to WebSocket").connect("wss://3ghgk1q3mf.execute-api.us-east-1.amazonaws.com/Prod?token=${token}")
+    .onConnected(
+      exec(ws("addCardToInventory")
+          .sendText("""{"action": "getInventoryReq"}""")
+            ))
 }

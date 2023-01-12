@@ -61,4 +61,14 @@ object Scenarios {
     }
     .feed(inventoryCardDetailsFeeder)
     .exec(Requests.connectToWebsocketAndAddCardToInventory)
+
+  def GetInventoryScenario() = scenario("GetInventoryScenario")
+    .feed(emailFeeder)
+    .exec(Requests.loginAccount.check(header("x-amzn-Remapped-Authorization").saveAs("token")))
+    .exec { session =>
+      var token = session("token").as[String].replace("Bearer ", "")
+      session.set("token", token)
+    }
+    .feed(inventoryCardDetailsFeeder)
+    .exec(Requests.connectToWebsocketAndGetInventory)
 }

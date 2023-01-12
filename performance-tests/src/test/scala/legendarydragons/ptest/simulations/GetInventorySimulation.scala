@@ -6,7 +6,7 @@ import io.gatling.jdbc.Predef._
 import legendarydragons.ptest.config.Config.getBaseUrl
 import legendarydragons.ptest.scenarios.Scenarios._
 
-class AddCardToInventorySimulation extends Simulation {
+class GetInventorySimulation extends Simulation {
 
   val duration = System.getProperty("duration", "10").toInt seconds
   val userRate = System.getProperty("userRate", "1").toDouble
@@ -14,7 +14,7 @@ class AddCardToInventorySimulation extends Simulation {
   def httpProtocol = http.baseUrl("https://8l2xog7xkc.execute-api.us-east-1.amazonaws.com/Prod")
   .userAgentHeader("Gatling/test")
 
-  setUp(AddCardToInventoryScenario()
+  setUp(GetInventoryScenario()
   .inject(constantUsersPerSec(userRate) during duration)
   .protocols(httpProtocol))
   .assertions(
