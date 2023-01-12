@@ -57,7 +57,7 @@ object Scenarios {
     .exec(Requests.loginAccount.check(header("x-amzn-Remapped-Authorization").saveAs("token")))
     .exec { session =>
       var token = session("token").as[String].replace("Bearer ", "")
-      println("@@@@@@@@@@@  " + token)
+      println("TOKEN  " + token)
       session.set("token", token)
     }
     .feed(inventoryCardDetailsFeeder)

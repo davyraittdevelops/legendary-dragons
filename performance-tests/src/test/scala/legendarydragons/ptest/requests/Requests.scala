@@ -24,32 +24,63 @@ object Requests {
 
     val connectToWebsocket = ws("Connect to WebSocket").connect("wss://3ghgk1q3mf.execute-api.us-east-1.amazonaws.com/Prod?token=${token}")
 
-    val connectToWebsocketAndAddCardToInventory = (ws("Connect to WebSocket").connect("wss://3ghgk1q3mf.execute-api.us-east-1.amazonaws.com/Prod?token=${token}")
+    val connectToWebsocketAndAddCardToInventory = ws("Connect to WebSocket").connect("wss://3ghgk1q3mf.execute-api.us-east-1.amazonaws.com/Prod?token=${token}")
      .onConnected(
-        exec(ws("Sending add card to inventory request")
-      .sendText("hi"))
-     ))
+      exec(ws("addCardToInventory")
+        .sendText("""{  
+          "inventory_id": null, 
+          "action": "addCardToInventoryReq",
+          "inventory_card":   
+          { 
+              "PK" : "INVENTORY_CARD#${rid1}"
+
+          }
+        }"""))
+        // .sendText("""{ 
+        //               "action": "addCardToInventoryReq",
+        //               "inventory_id": null,
+        //               "inventory_card": {
+        //                     "PK" : "INVENTORY_CARD#${rid1}",
+        //                     "SK" : "INVENTORY#1",
+        //                     "entity_type" : "INVENTORY_CARD",
+        //                     "inventory_id" : "1",
+        //                     "created_at" : "2023-01-11",
+        //                     "last_modified" : "2023-01-11",
+        //                     "card_id" : "${rid2}",
+        //                     "oracle_id" : "${rid3}",
+        //                     "card_name" : "testcard",
+        //                     "colors" : {"SS" : ["R"]},
+        //                     "prices" : { "usd" : "0.22"},
+        //                     "rarity" : "meta",
+        //                     "quality" : "uncommon",
+        //                     "deck_location" : "side",
+        //                     "GSI1_PK" : "INVENTORY#1",
+        //                     "GSI1_SK" : ""INVENTORY_CARD#${rid1}",
+        //                     "scryfall_id" : "${rid4}"
+        //                 }
+        //               }"""))
+    )
 }
 
 
 //  val card = {
-//             "PK" : """"INVENTORY_CARD#${rid1}""",
-//             "SK" : "INVENTORY#1",
-//             "entity_type" : "INVENTORY_CARD",
-//             "inventory_id" : "1",
-//             "created_at" : "2023-01-11",
-//             "last_modified" : "2023-01-11",
-//             "card_id" : "${rid2}",
-//             "oracle_id" : "${rid3}",
-//             "card_name" : "testcard",
-//             "colors" : {"SS" : ["R"]},
-//             "prices" : { "usd" : "0.22"},
-//             "rarity" : "meta",
-//             "quality" : "uncommon",
-//             "deck_location" : "side",
-//             "GSI1_PK" : "INVENTORY#1",
-//             "GSI1_SK" : """"INVENTORY_CARD#${rid1}""",
-//             "scryfall_id" : "${rid4}"
+            // "PK" : """"INVENTORY_CARD#${rid1}""",
+            // "SK" : "INVENTORY#1",
+            // "entity_type" : "INVENTORY_CARD",
+            // "inventory_id" : "1",
+            // "created_at" : "2023-01-11",
+            // "last_modified" : "2023-01-11",
+            // "card_id" : "${rid2}",
+            // "oracle_id" : "${rid3}",
+            // "card_name" : "testcard",
+            // "colors" : {"SS" : ["R"]},
+            // "prices" : { "usd" : "0.22"},
+            // "rarity" : "meta",
+            // "quality" : "uncommon",
+            // "deck_location" : "side",
+            // "GSI1_PK" : "INVENTORY#1",
+            // "GSI1_SK" : """"INVENTORY_CARD#${rid1}""",
+            // "scryfall_id" : "${rid4}"
 //         }
 //         val message = {
 //             "action": "addCardToInventory",
