@@ -79,7 +79,7 @@ export class AddCardComponent implements OnInit {
     }
   }
 
-  addCard(card: Card) {
+  addCardToInventory(card: Card) {
     console.log(card)
   }
 }
