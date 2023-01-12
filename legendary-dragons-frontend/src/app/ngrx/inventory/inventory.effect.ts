@@ -2,53 +2,41 @@ import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
-import { catchError, map, mergeMap, withLatestFrom } from 'rxjs/operators';
+import { catchError, map, mergeMap, tap, filter } from 'rxjs/operators';
 import { UserService } from "src/app/services/user/user.service";
+import { WebsocketService } from "src/app/services/websocket/websocket.service";
+
 import {
-  loginUser,
-  loginUserFail,
-  loginUserSuccess,
-  registerUser,
-  registerUserFail,
-  registerUserSuccess
-} from "./user.actions";
+  addCardtoInventory,
+  addCardtoInventoryFail,
+  addCardtoInventorySuccess,
+  getInventory,
+  getInventoryFail,
+  getInventorySuccess
+} from "./inventory.actions";
 
 @Injectable()
-export class UserEffects {
+export class InventoryEffects {
 
   constructor(
     private readonly actions$: Actions,
-    private readonly userService: UserService,
+    private readonly websocketService: WebsocketService,
   ) { }
 
-  public loginUserEffect = createEffect(() =>
+  public addCardtoInventoryEffect$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(loginUser),
-      mergeMap(({email, password}) => {
-        return this.userService.loginUser(email, password)
-          .pipe(
-            map((response) => {
-              const jwt = response.headers.get('x-amzn-remapped-authorization')!.replace('Bearer ', '')
-              return loginUserSuccess({jwt})
-            }),
-            catchError(error => {
-              console.log(error)
-              return of(loginUserFail({error: true}));
-            })
-          )
-      })
-    )
-  );
-
-  public registerUserEffect = createEffect(() =>
-    this.actions$.pipe(
-      ofType(registerUser),
-      mergeMap(({user}) => {
-        return this.userService.registerUser(user).pipe(
-          map(() => registerUserSuccess()),
+      ofType(addCardtoInventory),
+      tap(({inventoryCard, inventoryId}) => this.websocketService.sendAddCardToInventoryMessage(inventoryId, inventoryCard)),
+      mergeMap(() => {
+        return this.websocketService.dataUpdates$().pipe(
+          filter((event: any) => {
+            console.log("Incoming event: ", event);
+            return event['event_type'] === 'INSERT_INVENTORY_CARD_RESULT'
+          }),
+          map((event: any) => addCardtoInventorySuccess({inventoryCard: event["data"]})),
           catchError((error) => {
             console.log(error);
-            return of(registerUserFail({error: true}))
+            return of(addCardtoInventoryFail({error: true}))
           })
         )
       })

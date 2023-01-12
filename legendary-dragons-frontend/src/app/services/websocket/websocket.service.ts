@@ -54,7 +54,7 @@ export class WebsocketService {
     this.socket$.next(message);
   }
 
-  sendAddCardToInventoryMessage(action: string, inventory_id: string | null, card: any) {
+  sendAddCardToInventoryMessage(inventory_id: string, card: any) {
     if (!this.socket$) {
       console.log('Sending WebSocket message while socket doesnt exist');
       return;
@@ -63,7 +63,7 @@ export class WebsocketService {
     console.log('Sending a WebSocket message');
 
     const message = {
-      'action': action,
+      'action': 'addCardToInventoryReq',
       'inventory_id': inventory_id,
       'inventory_card': card
     };

@@ -29,6 +29,8 @@ import {HomePageComponent} from "./components/home-page/home-page.component";
 import { AddCardComponent } from './components/card/add-card-component/add-card-component';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { CardEffects } from './ngrx/card/card.effect';
+import { InventoryEffects } from './ngrx/inventory/inventory.effect';
+import { inventoryReducer } from './ngrx/inventory/inventory.reducer';
 
 @NgModule({
   declarations: [
@@ -52,7 +54,9 @@ import { CardEffects } from './ngrx/card/card.effect';
     ReactiveFormsModule,
     HttpClientModule,
     EffectsModule.forRoot([
-      UserEffects, CardEffects
+      UserEffects,
+      CardEffects,
+      InventoryEffects
     ]),
     BrowserAnimationsModule,
     MatTabsModule,
@@ -62,7 +66,8 @@ import { CardEffects } from './ngrx/card/card.effect';
     MatInputModule,
     StoreModule.forRoot({
       user: userReducer,
-      card: cardReducer
+      card: cardReducer,
+      inventory: inventoryReducer
     }),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() })
   ],
