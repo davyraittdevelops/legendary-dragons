@@ -1,6 +1,6 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {ModalDismissReasons, NgbModal} from "@ng-bootstrap/ng-bootstrap";
-import {Card} from "../../../models/card.model";
+import { Component, Input, OnInit } from '@angular/core';
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { InventoryCard } from 'src/app/models/inventory.model';
 @Component({
   selector: 'app-card',
   templateUrl: './card.component.html',
@@ -8,8 +8,7 @@ import {Card} from "../../../models/card.model";
 })
 
 export class CardComponent implements OnInit {
-  @Input() card!: Card;
-  private closeResult: string = '';
+  @Input() card!: InventoryCard;
   content: any;
 
   constructor(public modalService: NgbModal) {
@@ -18,30 +17,25 @@ export class CardComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  openDetails(card: Card) {
-    console.log('opening details...' , card)
+  open({content}: { content: any }) {
+    this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title', size: 'xl'});
   }
 
-  open({content}: { content: any }, card : Card) {
-    console.log(card)
-    this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title', size: 'xl'}).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-    });
+  displayAvailablePrice(prices: any): string {
+    let price = "Price not available";
+
+    if (prices.eur !== null) {
+      price = "€" + prices.eur;
+    } else if (prices.usd !== null) {
+      price = "$" + prices.usd;
+    } else if (prices.tix !== null) {
+      price = "TIX: " + prices.tix;
+    }
+
+    return price;
   }
 
   removeCard() {
     // TODO;
-  }
-
-  private getDismissReason(reason: any): string {
-    if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
-    } else {
-      return `with: ${reason}`;
-    }
   }
 }

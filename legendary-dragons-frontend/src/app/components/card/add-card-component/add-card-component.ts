@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ModalDismissReasons, NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { AppState } from 'src/app/app.state';
-import { InventoryCard } from 'src/app/models/inventory.model';
+import { InventoryCardRequest } from 'src/app/models/inventory.model';
 import { searchCardByKeyword } from 'src/app/ngrx/card/card.actions';
 import { errorSelector, isLoadingSelector, searchedCardSelector } from 'src/app/ngrx/card/card.selectors';
 import { addCardtoInventory } from 'src/app/ngrx/inventory/inventory.actions';
@@ -17,24 +17,25 @@ import { Card } from "../../../models/card.model";
 })
 
 export class AddCardComponent implements OnInit {
+  @Input('inventory_id') inventoryId: string = '';
+
   searchedCards$: Observable<Card[]>;
   isLoading$: Observable<boolean>;
   hasError$: Observable<boolean>;
 
-  private closeResult: string = '';
   private filterValue: string = '';
-
   displayedColumns: string[] = ['name', 'released', 'set', 'rarity', 'value', 'imageUrl', 'addCard'];
 
   constructor(public modalService: NgbModal, private appStore: Store<AppState>) {
     this.isLoading$ = this.appStore.select(isLoadingSelector);
     this.hasError$ = this.appStore.select(errorSelector);
+
     this.searchedCards$ = this.appStore.select(searchedCardSelector);
-  }
-
-  ngOnInit(): void {
 
   }
+
+  ngOnInit(): void {}
+
   applyFilter(event: Event): void {
     this.filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
   }
@@ -65,26 +66,27 @@ export class AddCardComponent implements OnInit {
   }
 
   open({content}: { content: any }): void {
-    this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title', size: 'xl'}).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-    });
+    this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title', size: 'xl'}).result.then(
+      () => {},
+      () => {
+        // Maybe clear search result with an ngrx action
+      }
+    );
   }
 
-  private getDismissReason(reason: any): string {
-    if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
-    } else {
-      return `with: ${reason}`;
+  addCardtoInventory(card: Card) {
+    const inventoryCard: InventoryCardRequest = {
+      scryfall_id: card.scryfall_id,
+      oracle_id: card.oracle_id,
+      card_name: card.card_name,
+      colors: card.card_faces[0].colors,
+      prices: card.prices,
+      rarity: card.rarity,
+      quality: "",
+      deck_location: "",
+      image_url: card.card_faces[0].image_url
     }
-  }
 
-  addCardtoInventory(inventoryCard: InventoryCard) {
-    // Todo assign the right inventoryID
-    this.appStore.dispatch(addCardtoInventory({inventoryId: "", inventoryCard: inventoryCard}))
-    console.log(inventoryCard)
+    this.appStore.dispatch(addCardtoInventory({inventoryId: this.inventoryId, inventoryCard}))
   }
 }
