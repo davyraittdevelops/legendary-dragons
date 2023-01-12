@@ -9,3 +9,4 @@ mvn gatling:test -Dsimulation=VisitFrontEndSimulation -Dduration=300 -DuserRate=
 mvn gatling:test -Dsimulation=LoginAccountSimulation -Dduration=5 -DuserRate=1 -X
 mvn gatling:test -Dsimulation=LoginThenConnectToWebSocketSimulation -Dduration=5 -DuserRate=1 -X
 mvn gatling:test -Dsimulation=AddCardToInventorySimulation -Dduration=5 -DuserRate=1 -X
+mvn gatling:test -Dsimulation=GetInventorySimulation -Dduration=5 -DuserRate=1 -X
