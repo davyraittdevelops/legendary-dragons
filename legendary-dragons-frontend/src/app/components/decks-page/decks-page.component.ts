@@ -356,15 +356,16 @@ export class DecksPageComponent implements OnInit {
     name: new FormControl('', Validators.required),
     password: new FormControl('', Validators.required)
   })
+  private closeResult: string = '';
 
   constructor(public modalService: NgbModal) { }
-  private closeResult: string = '';
+  
   
   ngOnInit(): void {
   }
 
   open({content}: { content: any }) {
-    this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title', size: 'xl'}).result.then((result) => {
+    this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title', size: 'm'}).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
