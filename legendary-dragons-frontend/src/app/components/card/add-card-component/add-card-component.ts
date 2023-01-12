@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import {ModalDismissReasons, NgbModal} from "@ng-bootstrap/ng-bootstrap";
-import {MatTableDataSource} from "@angular/material/table";
-import {Card} from "../../../models/card.model";
-import { WebsocketService } from 'src/app/services/websocket/websocket.service';
+import { ModalDismissReasons, NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { AppState } from 'src/app/app.state';
+import { searchCardByKeyword } from 'src/app/ngrx/card/card.actions';
+import { errorSelector, isLoadingSelector, searchedCardSelector } from 'src/app/ngrx/card/card.selectors';
+import { Card } from "../../../models/card.model";
 
 @Component({
   selector: 'app-add-card-component',
@@ -11,70 +14,56 @@ import { WebsocketService } from 'src/app/services/websocket/websocket.service';
 })
 
 export class AddCardComponent implements OnInit {
+  searchedCards$: Observable<Card[]>;
+  isLoading$: Observable<boolean>;
+  hasError$: Observable<boolean>;
 
   private closeResult: string = '';
   private filterValue: string = '';
 
-  CARD_DATA: Card[] = [];
   displayedColumns: string[] = ['name', 'released', 'set', 'rarity', 'value', 'imageUrl', 'addCard'];
-  dataSource = new MatTableDataSource(this.CARD_DATA);
 
-  applyFilter(event: Event) {
+  constructor(public modalService: NgbModal, private appStore: Store<AppState>) {
+    this.isLoading$ = this.appStore.select(isLoadingSelector);
+    this.hasError$ = this.appStore.select(errorSelector);
+    this.searchedCards$ = this.appStore.select(searchedCardSelector);
+  }
+
+  ngOnInit(): void {
+
+  }
+
+
+  applyFilter(event: Event): void {
     this.filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
   }
 
-  searchCardsByKeyword() {
-    this.websocketService.sendSearchCardByKeywordMessage('searchCardsByKeywordReq', this.filterValue);
+  searchCardsByKeyword(): void {
+    if (this.filterValue.trim() === '')
+      return;
+
+    this.appStore.dispatch(searchCardByKeyword({query: this.filterValue}))
   }
 
-  constructor(public modalService: NgbModal,  private websocketService : WebsocketService) { }
-
-  ngOnInit(): void {
-    // todo when searching 2 times then the price is Undifined
-    this.websocketService.dataUpdates$().subscribe((message) => {
-      const eventType = message['event_type'];
-      const eventData = message['data'];
-      this.CARD_DATA = [];
-
-      console.log('MSG', message)
-
-      switch (eventType) {
-        case 'SEARCH_CARD_RESULT':
-          console.log('@@@@@@@@@' , this.CARD_DATA.length)
-          for (const object of eventData) {
-            console.log(object)
-
-            let priceArray = object.prices;
-            let set = object.set_type;
-            let price = "Price not available";
-
-            if (priceArray.eur !== null) {
-              price = "€" + priceArray.eur;
-            } else if (priceArray.usd !== null) {
-              price = "$" + priceArray.usd;
-            } else if (priceArray.tix !== null) {
-              price = "TIX: " + priceArray.tix;
-            }
-
-            const splitSet = set.toLowerCase().replace("_", " ").split(" ");
-
-            for (let i = 0; i < splitSet.length; i++) {
-              splitSet[i] = splitSet[i].charAt(0).toUpperCase() + splitSet[i].substring(1);
-            }
-
-            object.set_type = splitSet.join(' ');
-            object.rarity = object.rarity.charAt(0).toUpperCase() + object.rarity.slice(1);;
-            object.prices = price;
-            this.CARD_DATA.push(object);
-          }
-
-          this.dataSource = new MatTableDataSource(this.CARD_DATA);
-          break;
-      }
-    });
+  formatSetType(setType: string): string {
+    return setType.toLowerCase().replace("_", " ");
   }
 
-  open({content}: { content: any }) {
+  displayAvailablePrice(prices: any): string {
+    let price = "Price not available";
+
+    if (prices.eur !== null) {
+      price = "€" + prices.eur;
+    } else if (prices.usd !== null) {
+      price = "$" + prices.usd;
+    } else if (prices.tix !== null) {
+      price = "TIX: " + prices.tix;
+    }
+
+    return price;
+  }
+
+  open({content}: { content: any }): void {
     this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title', size: 'xl'}).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
