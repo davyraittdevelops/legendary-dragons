@@ -1,9 +1,17 @@
-import {loginUser} from "../support/common";
+import {loginUser, logout} from "../support/common";
+
+beforeEach(() => {
+  loginUser();
+})
+
+afterEach(() => {
+  cy.get("button[aria-label=Close]").click();
+  logout();
+})
 
 describe("Search 'Conclave Mentor' card", () => {
-  it('passes', () => {
+  it.only('passes', () => {
     //arrange
-    loginUser();
     cy.get("button[name=openAddCardModal]").click();
     cy.get("div[role=document]").should("be.visible");
     let keywordSearchInput = cy.get("input[name=keywordSearch]");
@@ -27,7 +35,6 @@ describe("Search 'Conclave Mentor' card", () => {
 describe("Searching gibberish results in no found cards", () => {
   it('passes', () => {
     //arrange
-    loginUser();
     cy.get("button[name=openAddCardModal]").click();
     cy.get("div[role=document]").should("be.visible");
     let keywordSearchInput = cy.get("input[name=keywordSearch]");
@@ -42,7 +49,6 @@ describe("Searching gibberish results in no found cards", () => {
 describe("Searching twice refines search results", () => {
   it('passes', () => {
     //arrange
-    loginUser();
     cy.get("button[name=openAddCardModal]").click();
     cy.get("div[role=document]").should("be.visible");
     let keywordSearchInput = cy.get("input[name=keywordSearch]");
@@ -65,7 +71,6 @@ describe("Searching twice refines search results", () => {
 describe("Search both names of two sided card 'Spikefield Hazard // Spikefield Cave'", () => {
   it('passes', () => {
     //arrange
-    loginUser();
     cy.get("button[name=openAddCardModal]").click();
     cy.get("div[role=document]").should("be.visible");
     let keywordSearchInput = cy.get("input[name=keywordSearch]");
