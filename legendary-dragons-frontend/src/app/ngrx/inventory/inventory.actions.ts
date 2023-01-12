@@ -18,6 +18,7 @@ export const addCardtoInventorySuccess = createAction(
 
 export const getInventory = createAction(
   '[Inventory Component] Get Inventory',
+  props<{ inventoryId: string }>()
 );
 
 export const getInventoryFail = createAction(

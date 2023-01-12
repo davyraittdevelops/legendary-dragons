@@ -42,4 +42,24 @@ export class InventoryEffects {
       })
     )
   );
+
+  public getInventoryEffect$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(getInventory),
+      tap(({inventoryId}) => this.websocketService.sendGetInventoryMessage(inventoryId)),
+      mergeMap(() => {
+        return this.websocketService.dataUpdates$().pipe(
+          filter((event: any) => {
+            console.log("Incoming event: ", event);
+            return event['event_type'] === 'GET_INVENTORY_RESULT'
+          }),
+          map((event: any) => getInventorySuccess({inventory: event["data"]})),
+          catchError((error) => {
+            console.log(error);
+            return of(getInventoryFail({error: true}))
+          })
+        )
+      })
+    )
+  );
 }

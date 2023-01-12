@@ -71,4 +71,19 @@ export class WebsocketService {
     this.socket$.next(message);
   }
 
+  sendGetInventoryMessage(inventory_id: string) {
+    if (!this.socket$) {
+      console.log('Sending WebSocket message while socket doesnt exist');
+      return;
+    }
+
+    console.log('Sending a WebSocket message');
+
+    const message = {
+      'action': 'getInventoryReq',
+      'inventory_id': inventory_id,
+    };
+
+    this.socket$.next(message);
+  }
 }
