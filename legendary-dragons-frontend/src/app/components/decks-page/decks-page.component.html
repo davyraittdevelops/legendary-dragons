@@ -25,7 +25,7 @@
           <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Add</button>
         </div>
       </ng-template>
-      
+
 
       <div class="card col-2 border border-dark m-2 bg-light bg-opacity-25 rounded-1 p-0" *ngFor="let deck of decks">
         <button type="button" class="btn btn-secondary transparent flex-grow-1">
@@ -38,11 +38,9 @@
           </div>
           <div class="card-body">
             <h3 class="card-title text-light-emphasis text-center">{{deck.name}}</h3>
-            <h4 class="card-subtitle mb-2 text-dark">{{deck.deck_type}}</h4>
+            <h4 class="card-subtitle mb-2 text-light-emphasis">{{deck.deck_type}}</h4>
           </div>
         </button>
       </div>
     </div>
 </div>
-  
-
