@@ -20,6 +20,7 @@
 
 }
 
+///////////////////////////////////// Verbeteren
 :host ::ng-deep .cdk-virtual-scroll-content-wrapper {
   background: grey;
 }
@@ -30,7 +31,7 @@
 :host ::ng-deep .card-img {
   width: 145px;
   height: 200px;
-  padding: 2px;
+  padding: 2px; ///////////////////////////////////// Verbeteren
   //display: flex;
   //flex-direction: row;
 }
