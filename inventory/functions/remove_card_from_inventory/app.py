@@ -16,8 +16,9 @@ table = dynamodb.Table(os.getenv("TABLE_NAME"))
 
 
 def lambda_handler(event, context):
-    card_id = event["requestContext"]["card_id"]
-    inventory = event["body"]["inventory_id"]
+    body = json.loads(event["body"])
+    card_id = body["card_id"]
+    inventory = body["inventory_id"]
     try:
         logger.info("Trying to remove from card ")
         table.delete_item(

@@ -57,6 +57,14 @@ Resources:
         - DynamoDBWritePolicy:
             TableName: !Ref InventoryTable
 
+  RemoveCardFromInventoryFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/remove_card_from_inventory/
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref InventoryTable
+
   StreamInventoryChangesFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -176,7 +184,7 @@ Resources:
       ApiId:
         Fn::ImportValue:
           !Sub "${LegDragonsWebSocketApi}"
-      Description: Search chard by keyword integration
+      Description: Search card by keyword integration
       IntegrationType: AWS_PROXY
       IntegrationUri:
         Fn::Sub:
@@ -202,7 +210,7 @@ Resources:
       ApiId:
         Fn::ImportValue:
           !Sub "${LegDragonsWebSocketApi}"
-      Description: Search chard by keyword integration
+      Description: Add card by keyword integration
       IntegrationType: AWS_PROXY
       IntegrationUri:
         Fn::Sub:
@@ -223,6 +231,39 @@ Resources:
       Principal: apigateway.amazonaws.com
 
 
+  RemoveCardFromInventoryPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref RemoveCardFromInventoryFunction
+      Principal: apigateway.amazonaws.com
+  
+  RemoveCardFromInventoryRoute:
+    Type: AWS:ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Fn::ImportValue:
+          !Sub "${LegDragonsWebSocketApi}"
+      RouteKey: removeCardFromInventoryReq
+      AuthorizationType: NONE
+      OperationName: RemoveCardFromInventoryRoute
+      Target: !Join
+        - '/'
+        - - 'integrations'
+          - !Ref RemoveCardFromInventoryInteg
+
+  RemoveCardFromInventoryInteg:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Fn::ImportValue:
+          !Sub "${LegDragonsWebSocketApi}"
+      Description: Remove card by keyword integration
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::Sub:
+            arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${RemoveCardFromInventoryFunction.Arn}/invocations
+
 Outputs:
   GetInventoryFunction:
     Description: "Get Inventory Function ARN"
@@ -236,3 +277,8 @@ Outputs:
   AddCardToInventoryFunctionIamRole:
     Description: "Implicit IAM Role created for Add Card To Inventory Function"
     Value: !GetAtt AddCardToInventoryFunctionRole.Arn
+  RemoveCardFromInventoryFunction:
+    Description: "Remove Card From Inventory Function ARN"
+    Value: !GetAtt RemoveCardFromInventoryFunction.Arn
+  RemoveCardFromInventoryFunctionIamRole:
+    Description: "Implicit IAM Role created for Remove Card From Inventory Function"
