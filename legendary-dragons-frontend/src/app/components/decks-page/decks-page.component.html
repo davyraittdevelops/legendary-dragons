@@ -15,7 +15,7 @@
     <!-- Row 2  -->
     <div class="row">
         <div class="col col-6 text-center" align="center">
-            <h1>Decks</h1>
+            <h1>Deck</h1>
             <cdk-virtual-scroll-viewport appendOnly itemSize="50" class="example-viewport">
                 <div class="card-position">
                     <app-add-card-component></app-add-card-component>
@@ -26,7 +26,7 @@
             </cdk-virtual-scroll-viewport>
         </div>
         <div class="col col-6 text-center" align="center">
-            <h1>Sidedecks</h1>
+            <h1>Side Deck</h1>
             <cdk-virtual-scroll-viewport appendOnly itemSize="50" class="example-viewport">
                 <app-card class="example-item" *ngFor="let sideDeck of sideDecks"
                           [card]="sideDeck">
