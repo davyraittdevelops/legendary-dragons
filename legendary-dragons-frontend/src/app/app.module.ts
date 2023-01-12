@@ -14,7 +14,7 @@ import {NavbarComponent} from './components/navbar/navbar.component';
 import {HeaderComponent} from './components/header/header.component';
 import {userReducer} from './ngrx/user/user.reducer';
 import {UserEffects} from './ngrx/user/user.effect';
-import {NgModule} from '@angular/core';
+import { isDevMode, NgModule} from '@angular/core';
 import {InventoryPageComponent} from './components/inventory-page/inventory-page.component';
 import {DecksPageComponent} from './components/decks-page/decks-page.component';
 import {WishlistPageComponent} from './components/wishlist-page/wishlist-page.component';
@@ -26,6 +26,7 @@ import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from '@angular/material/input';
 import {HomePageComponent} from "./components/home-page/home-page.component";
 import { AddCardComponent } from './components/card/add-card-component/add-card-component';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
 @NgModule({
   declarations: [
@@ -59,7 +60,8 @@ import { AddCardComponent } from './components/card/add-card-component/add-card-
     MatInputModule,
     StoreModule.forRoot({
       user: userReducer
-    })
+    }),
+    StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() })
   ],
   providers: [],
   bootstrap: [AppComponent]
