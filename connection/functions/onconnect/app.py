@@ -30,7 +30,9 @@ def lambda_handler(event, context):
                 "domain": domain,
                 "stage": stage,
                 "connection_id": connection_id,
-                "user_id": user_id
+                "user_id": user_id,
+                "GSI1_PK": "USER#" + user_id,
+                "GSI1_SK": "CONNECTION#" + connection_id
             }
         )
 

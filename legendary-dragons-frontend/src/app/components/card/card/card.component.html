@@ -1,19 +1,22 @@
-<div style="width: 250px; height: 400px;">
+<div class="collection-card">
   <img src={{card.imageUrl}}
        (click)="open({content : content}, card);"
-       alt="image">
+       alt="image" class="card-image">
+  <div class="d-flex justify-content-end">
+    <button type="button" class="btn-close m-2 bg-light" aria-label="Close"
+            (click)="removeCard()"></button>
+  </div>
 </div>
 
 <ng-template #content let-modal>
-  <div class="modal-header" [ngStyle]="{'background-color': 'gray'}">
+  <div class="modal-header card-modal">
     <h1 class="modal-title" id="modal-basic-title">{{card.name}}</h1>
-    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
-      <span aria-hidden="true">&times;</span>
-    </button>
+    <button type="button" class="btn-close btn-close-white" aria-label="Close"
+            (click)="modal.dismiss('Cross click')"></button>
   </div>
 
-  <div class="modal-body" [ngStyle]="{'background-color': 'gray'}" >
-    <div [ngStyle]="{'display': 'flex', 'justify-content': 'space-between'}">
+  <div class="modal-body card-modal">
+    <div class="d-flex justify-content-between">
       <div>
         <h2>Name: {{card.name}}</h2>
         <h2>Text: {{card.text}}</h2>
@@ -21,10 +24,8 @@
         <h2>Power: {{card.power}}</h2>
         <h2>Toughness: {{card.toughness}}</h2>
       </div>
-      <div style="width: 250px; height: 400px;">
-        <img src={{card.imageUrl}}
-             alt="image">
-      </div>
+      <img src={{card.imageUrl}}
+           alt="image" class="card-image">
     </div>
   </div>
 
