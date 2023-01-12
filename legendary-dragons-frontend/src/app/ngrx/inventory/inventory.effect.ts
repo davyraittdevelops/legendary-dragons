@@ -1,9 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
-import { catchError, map, mergeMap, tap, filter } from 'rxjs/operators';
-import { UserService } from "src/app/services/user/user.service";
+import { catchError, filter, map, mergeMap, tap } from 'rxjs/operators';
 import { WebsocketService } from "src/app/services/websocket/websocket.service";
 
 import {
@@ -30,7 +28,6 @@ export class InventoryEffects {
       mergeMap(() => {
         return this.websocketService.dataUpdates$().pipe(
           filter((event: any) => {
-            console.log("Incoming event: ", event);
             return event['event_type'] === 'INSERT_INVENTORY_CARD_RESULT'
           }),
           map((event: any) => addCardtoInventorySuccess({inventoryCard: event["data"]})),
@@ -46,11 +43,10 @@ export class InventoryEffects {
   public getInventoryEffect$ = createEffect(() =>
     this.actions$.pipe(
       ofType(getInventory),
-      tap(({inventoryId}) => this.websocketService.sendGetInventoryMessage(inventoryId)),
+      tap(() => this.websocketService.sendGetInventoryMessage()),
       mergeMap(() => {
         return this.websocketService.dataUpdates$().pipe(
           filter((event: any) => {
-            console.log("Incoming event: ", event);
             return event['event_type'] === 'GET_INVENTORY_RESULT'
           }),
           map((event: any) => getInventorySuccess({inventory: event["data"]})),

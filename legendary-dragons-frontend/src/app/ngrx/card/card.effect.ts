@@ -1,13 +1,10 @@
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
-import { catchError, map, mergeMap, tap, filter } from 'rxjs/operators';
+import { catchError, filter, map, mergeMap, tap } from 'rxjs/operators';
 import { WebsocketService } from "src/app/services/websocket/websocket.service";
 import {
-  searchCardByKeyword,
-  searchCardByKeywordSuccess,
-  searchCardByKeywordFail,
+  searchCardByKeyword, searchCardByKeywordFail, searchCardByKeywordSuccess
 } from "./card.actions";
 
 @Injectable()
@@ -25,7 +22,6 @@ export class CardEffects {
       mergeMap(() => {
         return this.websocketService.dataUpdates$().pipe(
           filter((event: any) => {
-            console.log("Incoming event: ", event);
             return event['event_type'] === 'SEARCH_CARD_RESULT'
           }),
           map((event: any) => searchCardByKeywordSuccess({cards: event["data"]})),

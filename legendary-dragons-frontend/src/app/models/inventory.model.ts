@@ -18,4 +18,18 @@ export interface InventoryCard {
   rarity: string;
   quality: string;
   deck_location: string;
+  image_url: string;
+}
+
+
+export interface InventoryCardRequest {
+  scryfall_id: string;
+  oracle_id: string;
+  card_name: string;
+  colors: string[];
+  prices: object;
+  rarity: string;
+  quality: string;
+  deck_location: string;
+  image_url: string;
 }
