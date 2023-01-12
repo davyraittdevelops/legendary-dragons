@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+from decimal import Decimal
 import boto3
 from boto3.dynamodb.conditions import Key
 from aws_xray_sdk.core import patch_all
@@ -61,9 +62,18 @@ def lambda_handler(event, context):
     output["data"] = inventory[0]
 
     logger.info(f"Sending inventory result to client with id: {connection_id}")
+    logger.info(output)
 
     apigateway.post_to_connection(
         ConnectionId=connection_id,
-        Data=json.dumps(output)
+        Data=json.dumps(output, cls=DecimalEncoder)
     )
     return {"statusCode": 200}
+
+
+class DecimalEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, Decimal):
+            return str(obj)
+
+        return json.JSONEncoder.default(self, obj)
