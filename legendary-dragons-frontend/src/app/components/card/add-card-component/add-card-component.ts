@@ -55,11 +55,11 @@ export class AddCardComponent implements OnInit {
     let price = "Price not available";
 
     if (prices.eur !== null) {
-      price = "€" + prices.eur;
+      price = `€ ${prices.eur}`;
     } else if (prices.usd !== null) {
-      price = "$" + prices.usd;
+      price = `$ ${prices.usd}`;
     } else if (prices.tix !== null) {
-      price = "TIX: " + prices.tix;
+      price = `${prices.tix} TIX`;
     }
 
     return price;
