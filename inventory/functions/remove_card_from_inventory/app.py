@@ -19,6 +19,8 @@ def lambda_handler(event, context):
     body = json.loads(event["body"])
     card_id = body["card_id"]
     inventory = body["inventory_id"]
+    # Todo: retrieve user id
+    # user = body["user_id"]
     try:
         logger.info("Trying to remove from card ")
         table.delete_item(

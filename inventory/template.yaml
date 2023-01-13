@@ -277,9 +277,9 @@ Outputs:
   AddCardToInventoryFunctionIamRole:
     Description: "Implicit IAM Role created for Add Card To Inventory Function"
     Value: !GetAtt AddCardToInventoryFunctionRole.Arn
-  RemoveCardFromInventoryFunction:
-    Description: "Remove Card From Inventory Function ARN"
-    Value: !GetAtt RemoveCardFromInventoryFunction.Arn
-  RemoveCardFromInventoryFunctionIamRole:
-    Description: "Implicit IAM Role created for Remove Card From Inventory Function"
-    Value: !GetAtt RemoveCardFromInventoryFunctionRole.Arn
+  # RemoveCardFromInventoryFunction:
+  #   Description: "Remove Card From Inventory Function ARN"
+  #   Value: !GetAtt RemoveCardFromInventoryFunction.Arn
+  # RemoveCardFromInventoryFunctionIamRole:
+  #   Description: "Implicit IAM Role created for Remove Card From Inventory Function"
+  #   Value: !GetAtt RemoveCardFromInventoryFunctionRole.Arn
