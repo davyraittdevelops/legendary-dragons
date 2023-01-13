@@ -24,7 +24,7 @@ export class AddCardComponent implements OnInit {
   hasError$: Observable<boolean>;
 
   private filterValue: string = '';
-  displayedColumns: string[] = ['name', 'released', 'set', 'rarity', 'value', 'imageUrl', 'addCard'];
+  displayedColumns: string[] = ['name', 'setName', 'released', 'rarity', 'value','imageUrl', 'addCard'];
 
   constructor(public modalService: NgbModal, private appStore: Store<AppState>) {
     this.isLoading$ = this.appStore.select(isLoadingSelector);
@@ -45,10 +45,6 @@ export class AddCardComponent implements OnInit {
       return;
 
     this.appStore.dispatch(searchCardByKeyword({query: this.filterValue}))
-  }
-
-  formatSetType(setType: string): string {
-    return setType.toLowerCase().replace("_", " ");
   }
 
   displayAvailablePrice(prices: any): string {

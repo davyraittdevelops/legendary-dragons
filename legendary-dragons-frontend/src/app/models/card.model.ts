@@ -6,6 +6,7 @@ export interface Card {
   card_name: string;
   released_at: string;
   set_id: string;
+  set_name: string;
   set_code: string;
   set_type: string;
   rarity: string;
