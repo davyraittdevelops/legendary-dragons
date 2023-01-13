@@ -1,0 +1,91 @@
+asyncapi: 2.5.0
+info:
+  title: Legendary dragons websocket documentation
+  version: '0.1.0'
+  description: Websocket documentation for the legendary dragons websocket.
+
+servers:
+  public:
+    url: wss://3ghgk1q3mf.execute-api.us-east-1.amazonaws.com/Prod
+    protocol: wss
+
+channels:
+  $connect:
+    description: TODO ADD NICE DESCRIPTION
+    subscribe:
+      message:
+        $ref: '#/components/messages/$connect'
+
+  $disconnect:
+    description: TODO ADD NICE DESCRIPTION
+    publish:
+      message:
+        $ref: '#/components/messages/$disconnect'
+
+  addCardToInventoryReq:
+    description: TODO ADD NICE DESCRIPTION
+    subscribe:
+      message:
+        $ref: '#/components/messages/addCardToInventoryReq'
+
+  getInventoryReq:
+    description: TODO ADD NICE DESCRIPTION
+    subscribe:
+      message:
+        $ref: '#/components/messages/getInventoryReq'
+
+  searchCardsByKeywordReq:
+    description: TODO ADD NICE DESCRIPTION
+    subscribe:
+      message:
+        $ref: '#/components/messages/searchCardsByKeywordReq'
+
+# COMPONENTS ATTACHED TO THE CHANNELS
+
+components:
+  messages:
+    $connect:
+      payload:
+        type: object
+        properties:
+          action:
+            type: string
+            description: Action should be connect
+          token:
+            type: string
+            description: Token should be a valid jwt token retrieved from the /login function
+
+    $disconnect:
+      payload:
+        type: object
+        properties:
+          connectionId:
+            type: string
+            description: connectionId that will be terminated
+
+    addCardToInventoryReq:
+      payload:
+        type: object
+        properties:
+          inventory_id:
+            type: string
+            description: Inventory ID of the users inventory.
+          inventory_card:
+            type: string
+            description: Card that will be added to the inventory.
+
+    getInventoryReq:
+      payload:
+        type: object
+        properties:
+          user_id:
+            type: string
+            description: We need user_id to find the matching inventory.
+
+    searchCardsByKeywordReq:
+      payload:
+        type: object
+        properties:
+          query:
+            type: string
+            description: Keyword query that will be searched in the scryfall api.
