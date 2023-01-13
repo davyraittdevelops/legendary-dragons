@@ -253,6 +253,46 @@ Resources:
       FunctionName: !Ref AddCardToInventoryFunction
       Principal: apigateway.amazonaws.com
 
+  RemoveCardFromInventoryFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/remove_card_from_inventory/
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref InventoryTable
+
+  RemoveCardFromInventoryRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Fn::ImportValue:
+          !Sub "${LegDragonsWebSocketApi}"
+      RouteKey: removeCardFromInventoryReq
+      AuthorizationType: NONE
+      OperationName: RemoveCardFromInventoryRoute
+      Target: !Join
+        - '/'
+        - - 'integrations'
+          - !Ref RemoveCardFromInventoryInteg
+
+  RemoveCardFromInventoryInteg:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Fn::ImportValue:
+          !Sub "${LegDragonsWebSocketApi}"
+      Description: Remove card from inventory integration
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::Sub:
+            arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${RemoveCardFromInventoryFunction.Arn}/invocations
+
+  RemoveCardFromInventoryPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref RemoveCardFromInventoryFunction
+      Principal: apigateway.amazonaws.com
 
 Outputs:
   GetInventoryFunction:
