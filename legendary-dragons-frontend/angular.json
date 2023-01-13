@@ -90,6 +90,7 @@
         "serve-coverage": {
           "builder": "@angular-builders/custom-webpack:dev-server",
           "options": {
+            "proxyConfig": "src/proxy.conf.json",
             "browserTarget": "legendary-dragons-frontend:build:e2e"
           }
         },

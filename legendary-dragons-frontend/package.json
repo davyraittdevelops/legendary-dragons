@@ -9,8 +9,8 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "sonar": "sonar-scanner",
-    "cypress:open": "cypress open --env HTTP_PROXY=https://www.legendarydragons.cloud-native-minor.it",
-    "cypress:run": "cypress run --env HTTP_PROXY=https://www.legendarydragons.cloud-native-minor.it",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run",
     "e2e": "ng e2e",
     "e2e:ci": "ng run legendary-dragons-frontend:e2e-ci",
     "e2e:coverage": "npx nyc report --reporter=lcov --reporter=text-summary"
