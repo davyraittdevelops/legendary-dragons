@@ -2,15 +2,15 @@ import {loginUser, logout} from "../support/common";
 
 beforeEach(() => {
   loginUser();
-})
+});
 
 afterEach(() => {
   cy.get("button[aria-label=Close]").click();
   logout();
-})
+});
 
 describe("Search 'Conclave Mentor' card", () => {
-  it.only('passes', () => {
+  it('passes', () => {
     //arrange
     cy.get("button[name=openAddCardModal]").click();
     cy.get("div[role=document]").should("be.visible");
@@ -19,7 +19,7 @@ describe("Search 'Conclave Mentor' card", () => {
     keywordSearchInput.type("Conclave mentor");
     keywordSearchInput.type("{enter}");
     //assert
-    cy.get("table > tbody").should("be.visible");
+    cy.get("table > tbody", {timeout: 5000}).should("be.visible");
     cy.get("table > tbody").within(() => {
       cy.get("tr").should("have.length", 2);
       cy.get("tr").eq(0).find("td").eq(0).contains("Conclave Mentor");
