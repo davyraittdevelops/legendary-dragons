@@ -54,6 +54,12 @@ components:
           token:
             type: string
             description: Token should be a valid jwt token retrieved from the /login function
+      examples:
+        - name: TODO ADD NAME
+          summary: TODO ADD SUMMARY
+          payload:
+            action: searchCardsByKeywordReq
+            query: '____________'
 
     $disconnect:
       payload:
@@ -62,6 +68,11 @@ components:
           connectionId:
             type: string
             description: connectionId that will be terminated
+      examples:
+        - name: TODO ADD NAME
+          summary: TODO ADD SUMMARY
+          payload:
+
 
     addCardToInventoryReq:
       payload:
@@ -73,6 +84,14 @@ components:
           inventory_card:
             type: string
             description: Card that will be added to the inventory.
+      examples:
+        - name: TODO ADD NAME
+          summary: TODO ADD SUMMARY
+          payload:
+            action: addCardToInventoryReq
+            inventory_id: '128938129'
+            inventory_card: 'TODO ADD JSON CARD'
+
 
     getInventoryReq:
       payload:
@@ -81,6 +100,12 @@ components:
           user_id:
             type: string
             description: We need user_id to find the matching inventory.
+      examples:
+        - name: TODO ADD NAME
+          summary: TODO ADD SUMMARY
+          payload:
+            action: getInventoryReq
+
 
     searchCardsByKeywordReq:
       payload:
@@ -89,3 +114,9 @@ components:
           query:
             type: string
             description: Keyword query that will be searched in the scryfall api.
+      examples:
+        - name: TODO ADD NAME
+          summary: TODO ADD SUMMARY
+          payload:
+            action: searchCardsByKeywordReq
+            query: 'Obelisk the tormentor'
