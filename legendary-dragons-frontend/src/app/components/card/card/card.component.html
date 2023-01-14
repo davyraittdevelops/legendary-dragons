@@ -18,13 +18,11 @@
   <div class="modal-body card-modal text-black">
     <div class="d-flex justify-content-between">
       <div>
-        <h2>Colors:
-          <span *ngIf="card.colors.length === 0">Colorless</span>
-          {{card.colors}}
-        </h2>
         <h2>Value: {{displayAvailablePrice(card.prices)}}</h2>
-
+        <h2> Mana Costs:{{card.mana_cost}}</h2>
+        <h2>Card Text:{{card.oracle_text}}</h2>
         <h2>Rarity: {{card.rarity | titlecase}}</h2>
+        <h2>Quality: {{card.quality}}</h2>
         <h2>
           Deck location:
           <span *ngIf="card.deck_location !== ''" class="badge text-bg-info fw-normal">
@@ -33,6 +31,11 @@
           <span *ngIf="card.deck_location == ''" class="badge text-bg-info fw-normal">
             Unassigned
           </span>
+        </h2>
+        <h2>Set Name: {{card.set_name}}</h2>
+        <h2>Colors:
+          <span *ngIf="card.colors.length === 0">Colorless</span>
+          {{card.colors}}
         </h2>
         <h2>
           Added at: {{card.created_at | date:'dd/MM/yyyy HH:mm'}}
