@@ -1,11 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ModalDismissReasons, NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { Observable} from 'rxjs';
 import { AppState } from 'src/app/app.state';
 import { InventoryCardRequest } from 'src/app/models/inventory.model';
-import { searchCardByKeyword } from 'src/app/ngrx/card/card.actions';
-import { errorSelector, isLoadingSelector, searchedCardSelector } from 'src/app/ngrx/card/card.selectors';
+import { clearSearchResult, searchCardByKeyword } from 'src/app/ngrx/card/card.actions';
+import { errorSelector, isLoadingSelector, querySelector, searchedCardSelector } from 'src/app/ngrx/card/card.selectors';
+import { CardState } from 'src/app/ngrx/card/models/card-state.model';
 import { addCardtoInventory } from 'src/app/ngrx/inventory/inventory.actions';
 import { inventorySelector } from 'src/app/ngrx/inventory/inventory.selectors';
 import { Card } from "../../../models/card.model";
@@ -16,18 +17,16 @@ import { Card } from "../../../models/card.model";
   styleUrls: ['./add-card-component.scss']
 })
 
-
 export class AddCardComponent implements OnInit {
   @Input('inventory_id') inventoryId: string = '';
-
   searchedCards$: Observable<Card[]>;
   isLoading$: Observable<boolean>;
   hasError$: Observable<boolean>;
-
+  previousQuery$: Observable<string>;
+  previousQueryValue: string = "";
   qualityEmpty = false;
   quality: string = "";
   scryfall_id: string = "";
-
   qualityList: string[] = [
     "Mint",
     "Near Mint",
@@ -38,7 +37,7 @@ export class AddCardComponent implements OnInit {
     "Poor"
   ];
 
-  private filterValue: string = '';
+  filterValue: string = "";
   displayedColumns: string[] = ['name', 'setName', 'released', 'rarity', 'value','imageUrl', 'addCard'];
 
   constructor(public modalService: NgbModal, private appStore: Store<AppState>) {
@@ -46,17 +45,21 @@ export class AddCardComponent implements OnInit {
     this.hasError$ = this.appStore.select(errorSelector);
 
     this.searchedCards$ = this.appStore.select(searchedCardSelector);
-
+    this.previousQuery$ = this.appStore.select(querySelector);
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.previousQuery$.subscribe(value => {
+      this.previousQueryValue = value;
+    })
+  }
 
   applyFilter(event: Event): void {
     this.filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
   }
 
   searchCardsByKeyword(): void {
-    if (this.filterValue.trim() === '')
+    if (this.filterValue.trim() === '' || this.filterValue === this.previousQueryValue)
       return;
 
     this.appStore.dispatch(searchCardByKeyword({query: this.filterValue}))
@@ -77,15 +80,18 @@ export class AddCardComponent implements OnInit {
   }
 
   open({content}: { content: any }): void {
+    this.appStore.dispatch(clearSearchResult());
+
     this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title', size: 'xl'}).result.then(
       () => {},
       () => {
-        // Maybe clear search result with an ngrx action
       }
     );
   }
 
   addCardtoInventory(card: Card) {
+    console.log(this.quality)
+
     const inventoryCard: InventoryCardRequest = {
       scryfall_id: card.scryfall_id,
       oracle_id: card.oracle_id,
@@ -106,7 +112,6 @@ export class AddCardComponent implements OnInit {
     }
     this.appStore.dispatch(addCardtoInventory({inventoryId: this.inventoryId, inventoryCard}))
   }
-
 
   selectedQuality(value: any, element: any) {
     this.qualityEmpty = false;
