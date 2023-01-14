@@ -33,6 +33,7 @@ import { InventoryEffects } from './ngrx/inventory/inventory.effect';
 import { inventoryReducer } from './ngrx/inventory/inventory.reducer';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
+import { CardFooterComponent } from './components/card-footer/card-footer.component';
 
 @NgModule({
   declarations: [
@@ -48,6 +49,7 @@ import { MatOptionModule } from '@angular/material/core';
     WishlistPageComponent,
     AddCardComponent,
     CardComponent,
+    CardFooterComponent,
 
   ],
   imports: [

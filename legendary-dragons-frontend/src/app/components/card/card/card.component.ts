@@ -11,6 +11,7 @@ export class CardComponent implements OnInit {
   @Input() card!: InventoryCard;
   content: any;
 
+
   constructor(public modalService: NgbModal) {
   }
 

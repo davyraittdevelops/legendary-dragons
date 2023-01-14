@@ -19,13 +19,11 @@ def lambda_handler(event, context):
     """Extract inventory ID and card ID"""
     body = json.loads(event["body"])
     logger.info(f"Received body {body}")
-
     inventory_card_id = body['inventory_card_id']
     inventory_id = body['inventory_id']
 
-    logger.info(f"Removing inventory card from DynamoDB table")
-
     try:
+        logger.info(f"Removing inventory card from DynamoDB table")
         table = dynamodb.Table("inventories")
         result = table.delete_item(
         Key={
