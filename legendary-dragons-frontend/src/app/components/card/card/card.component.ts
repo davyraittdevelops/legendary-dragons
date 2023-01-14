@@ -40,8 +40,6 @@ export class CardComponent implements OnInit {
   }
 
   removeCardFromInventory(inventoryCardId: string) {
-    console.log(inventoryCardId);
-    console.log(this.inventoryId);
     this.appStore.dispatch(removeCardFromInventory({inventoryCardId: inventoryCardId, inventoryId: this.inventoryId}));
   }
 }
