@@ -41,12 +41,14 @@ export const inventoryReducer = createReducer(
   on(addCardtoInventoryFail, (state) => ({...state, isLoading: false, hasError: true})),
   on(removeCardFromInventory, (state) => ({...state, isLoading: true})),
   on(removeCardFromInventorySuccess, (state, {inventoryCard}) => {
-    const foundIndex = state.inventory.inventory_cards.findIndex((card) => card.card_id === inventoryCard.card_id);
+    const indexNotFound = state.inventory.inventory_cards.findIndex((card) => card.card_id === inventoryCard.card_id);
 
-    if (foundIndex)
+    if (indexNotFound)
+
+      return state.inventory.inventory_cards.filter(inventoryCard => inventoryCard.scryfall_id !== indexNotFound);
       return {...state, isLoading: false, hasError: false};
 
-    const cards = [...state.inventory.inventory_cards, inventoryCard];
+    const cards = [...state.inventory.inventory_cards.slice(inventoryCard.card_id)];
     const newInventory = {...state.inventory, inventory_cards: cards};
 
     return {...state, isLoading: false, hasError: false, inventory: newInventory};

@@ -11,6 +11,7 @@ import { removeCardFromInventory } from 'src/app/ngrx/inventory/inventory.action
 })
 
 export class CardComponent implements OnInit {
+  @Input('inventory_id') inventoryId: string = '';
   @Input() card!: InventoryCard;
   content: any;
 
@@ -40,6 +41,7 @@ export class CardComponent implements OnInit {
 
   removeCardFromInventory(inventoryCardId: string) {
     console.log(inventoryCardId);
-    this.appStore.dispatch(removeCardFromInventory({inventoryCardId: inventoryCardId}));
+    console.log(this.inventoryId);
+    this.appStore.dispatch(removeCardFromInventory({inventoryCardId: inventoryCardId, inventoryId: this.inventoryId}));
   }
 }

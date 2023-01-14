@@ -46,7 +46,7 @@ export class InventoryEffects {
   public removeCardFromInventoryEffect$ = createEffect(() =>
     this.actions$.pipe(
       ofType(removeCardFromInventory),
-      tap(({inventoryCardId}) => this.websocketService.sendRemoveCardFromInventoryMessage(inventoryCardId)),
+      tap(({inventoryCardId, inventoryId}) => this.websocketService.sendRemoveCardFromInventoryMessage(inventoryCardId, inventoryId)),
       mergeMap(() => {
         return this.websocketService.dataUpdates$().pipe(
           filter((event: any) => {
