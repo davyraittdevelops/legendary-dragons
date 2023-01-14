@@ -53,11 +53,17 @@ object Requests {
         }""")))
 
 
-    val checkReply = ws.checkTextMessage("").saveAs("response_body")
-    val connectToWebsocketAndGetInventory = ws("Connect to WebSocket").connect("wss://3ghgk1q3mf.execute-api.us-east-1.amazonaws.com/Prod?token=${token}")
+    val checkReply = ws.checkTextMessage("checkName")
+                          .check(
+                               jsonPath("").saveAs("body"),
+                          )
+    val connectToWebsocketAndGetInventory = 
+    ws("Connect to WebSocket")
+    .connect("wss://3ghgk1q3mf.execute-api.us-east-1.amazonaws.com/Prod?token=${token}")
     .onConnected(
       exec(ws("addCardToInventory")
           .sendText("""{"action": "getInventoryReq"}""")
-          .await(30 seconds)(checkReply)
           ))
+    .await(15)(checkReply)
+   
 }
