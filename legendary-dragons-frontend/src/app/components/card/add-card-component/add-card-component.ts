@@ -24,9 +24,6 @@ export class AddCardComponent implements OnInit {
   hasError$: Observable<boolean>;
   previousQuery$: Observable<string>;
   previousQueryValue: string = "";
-  qualityEmpty = false;
-  quality: string = "";
-  scryfall_id: string = "";
   qualityList: string[] = [
     "Mint",
     "Near Mint",
@@ -90,8 +87,6 @@ export class AddCardComponent implements OnInit {
   }
 
   addCardtoInventory(card: Card) {
-    console.log(this.quality)
-
     const inventoryCard: InventoryCardRequest = {
       scryfall_id: card.scryfall_id,
       oracle_id: card.oracle_id,
@@ -102,22 +97,15 @@ export class AddCardComponent implements OnInit {
       colors: card.card_faces[0].colors,
       prices: card.prices,
       rarity: card.rarity,
-      quality: this.quality,
+      quality: "",
       deck_location: "",
       image_url: card.card_faces[0].image_url
     }
 
-    this.scryfall_id = inventoryCard.scryfall_id;
-
-    if (!inventoryCard.quality) {
-      this.qualityEmpty = true;
-      return;
-    }
     this.appStore.dispatch(addCardtoInventory({inventoryId: this.inventoryId, inventoryCard}))
   }
 
   selectedQuality(value: any, element: any) {
-    this.qualityEmpty = false;
-    this.quality = value;
+    console.log(value);
   }
 }
