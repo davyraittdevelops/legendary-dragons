@@ -2,9 +2,7 @@ import os
 import json
 import botocore.client
 import pytest
-from moto import mock_dynamodb
 from unittest.mock import patch
-from boto3.dynamodb.conditions import Key
 import requests_mock
 
 CONNECTION_ID = "abcdefg"
