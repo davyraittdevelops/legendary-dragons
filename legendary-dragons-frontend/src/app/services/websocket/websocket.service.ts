@@ -54,6 +54,18 @@ export class WebsocketService {
     this.socket$.next(message);
   }
 
+  sendRemoveCardFromInventoryMessage(cardId: any) {
+    if (!this.socket$) {
+      return;
+    }
+
+    const message = {
+      'action': 'removeCardFromInventoryReq',
+      'inventory_card_id': cardId
+    };
+    this.socket$.next(message);
+  }
+
   sendGetInventoryMessage() {
     if (!this.socket$) {
       return;
