@@ -52,6 +52,7 @@ def searched_cards():
                 "oracle_text": "As long as you've discarded a card this turn, you may pay {B/R} to cast this spell.",
                 "set_id": "83491685-880d-41dd-a4af-47d2b3b17c10",
                 "set": "ust",
+                "set_name": "Unhinged",
                 "set_type": "funny",
                 "collector_number": "186",
                 "rarity": "rare",

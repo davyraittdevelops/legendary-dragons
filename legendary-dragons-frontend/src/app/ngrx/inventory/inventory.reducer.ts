@@ -45,6 +45,7 @@ export const inventoryReducer = createReducer(
       ...state,
       isLoading: false,
       hasError: false,
+
       inventory: {
         inventory_id: state.inventory.inventory_id,
         created_at: state.inventory.created_at,
@@ -53,7 +54,6 @@ export const inventoryReducer = createReducer(
         inventory_cards: state.inventory.inventory_cards.filter(card => card.card_id !== inventoryCard.card_id)
       }
     };
-
   }),
   on(addCardtoInventoryFail, (state) => ({...state, isLoading: false, hasError: true})),
   on(getInventory, (state) => ({...state, isLoading: true})),
