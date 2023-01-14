@@ -54,8 +54,6 @@ export class WebsocketService {
     this.socket$.next(message);
   }
 
-
-
   sendRemoveCardFromInventoryMessage(cardId: any) {
     if (!this.socket$) {
       return;

@@ -4,7 +4,7 @@
   <img src="{{card.image_url}}" alt="{{card.card_name}} image" class="card-image" />
   <div class="d-flex justify-content-end pointer" (click)="open({content : content});">
     <button type="button" class="btn-close m-2 bg-light" aria-label="Close"
-            (click)="removeCard()"></button>
+            (click)="removeCardFromInventory(card.card_id)"></button>
   </div>
 </div>
 

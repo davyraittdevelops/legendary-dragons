@@ -5,7 +5,10 @@ import {
   addCardtoInventorySuccess,
   getInventory,
   getInventoryFail,
-  getInventorySuccess
+  getInventorySuccess,
+  removeCardFromInventory,
+  removeCardFromInventoryFail,
+  removeCardFromInventorySuccess
 } from "./inventory.actions";
 import { InventoryState } from "./models/inventory-state.model";
 
@@ -28,6 +31,19 @@ export const inventoryReducer = createReducer(
     const foundIndex = state.inventory.inventory_cards.findIndex((card) => card.card_id === inventoryCard.card_id);
 
     if (foundIndex > -1)
+      return {...state, isLoading: false, hasError: false};
+
+    const cards = [...state.inventory.inventory_cards, inventoryCard];
+    const newInventory = {...state.inventory, inventory_cards: cards};
+
+    return {...state, isLoading: false, hasError: false, inventory: newInventory};
+  }),
+  on(addCardtoInventoryFail, (state) => ({...state, isLoading: false, hasError: true})),
+  on(removeCardFromInventory, (state) => ({...state, isLoading: true})),
+  on(removeCardFromInventorySuccess, (state, {inventoryCard}) => {
+    const foundIndex = state.inventory.inventory_cards.findIndex((card) => card.card_id === inventoryCard.card_id);
+
+    if (foundIndex)
       return {...state, isLoading: false, hasError: false};
 
     const cards = [...state.inventory.inventory_cards, inventoryCard];

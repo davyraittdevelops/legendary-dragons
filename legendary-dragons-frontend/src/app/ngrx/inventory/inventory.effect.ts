@@ -8,6 +8,9 @@ import {
   addCardtoInventory,
   addCardtoInventoryFail,
   addCardtoInventorySuccess,
+  removeCardFromInventory,
+  removeCardFromInventoryFail,
+  removeCardFromInventorySuccess,
   getInventory,
   getInventoryFail,
   getInventorySuccess
@@ -34,6 +37,25 @@ export class InventoryEffects {
           catchError((error) => {
             console.log(error);
             return of(addCardtoInventoryFail({error: true}))
+          })
+        )
+      })
+    )
+  );
+
+  public removeCardFromInventoryEffect$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(removeCardFromInventory),
+      tap(({inventoryCardId}) => this.websocketService.sendRemoveCardFromInventoryMessage(inventoryCardId)),
+      mergeMap(() => {
+        return this.websocketService.dataUpdates$().pipe(
+          filter((event: any) => {
+            return event['event_type'] === 'REMOVE_INVENTORY_CARD_RESULT'
+          }),
+          map((event: any) => removeCardFromInventorySuccess({inventoryCard: event["data"]})),
+          catchError((error) => {
+            console.log(error);
+            return of(removeCardFromInventoryFail({error: true}))
           })
         )
       })
