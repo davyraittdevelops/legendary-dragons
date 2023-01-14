@@ -62,7 +62,7 @@ Resources:
     Properties:
       CodeUri: functions/remove_card_from_inventory/
       Policies:
-        - DynamoDBWritePolicy:
+        - DynamoDBCrudPolicy:
             TableName: !Ref InventoryTable
 
   StreamInventoryChangesFunction:
