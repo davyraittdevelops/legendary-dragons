@@ -18,6 +18,12 @@ table {
   width: 90%;
 }
 
+.dropdown {
+  display: flex;
+  height: 100%;
+  width: 100%;
+}
+
 img {
   width: 150px;
   height: 200px;
@@ -30,4 +36,9 @@ img {
 
 .modal-background {
   background-color: #1a1d20 ;
+}
+
+::ng-deep .cdk-overlay-container {
+  // To show drop down menu in modal
+  z-index: 9999;
 }

@@ -77,10 +77,26 @@
               </td>
             </ng-container>
 
+
             <ng-container matColumnDef="addCard">
-              <th mat-header-cell *matHeaderCellDef> </th>
+              <th mat-header-cell *matHeaderCellDef>Add card</th>
               <td mat-cell *matCellDef="let element">
-                <button type="button" class="btn btn-dark" (click)="addCardtoInventory(element);" [ngStyle]="{'width': '100px', 'height': '50px'}"> + </button>
+                <div class="dropdown">
+                  <mat-form-field appearance="fill">
+                    <mat-label>Choose a quality</mat-label>
+                    <mat-select (selectionChange)="selectedQuality($event.value, element)">
+                      <mat-option *ngFor="let quality of qualityList" [value]="quality">
+                        {{quality}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+
+                  <button type="button" class="btn btn-dark" (click)="addCardtoInventory(element);" [ngStyle]="{'width': '100px', 'height': '50px'}"> + </button>
+                </div>
+
+                <div *ngIf="qualityEmpty && element.scryfall_id == scryfall_id" class="text-danger" class="alert alert-warning" role="alert">
+                  A quality must be selected!
+                </div>
               </td>
             </ng-container>
 

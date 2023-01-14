@@ -10,6 +10,7 @@ export interface Card {
   set_code: string;
   set_type: string;
   rarity: string;
+  quality: string;
   prices: object;
   is_multifaced: boolean;
   card_faces: CardFace[];

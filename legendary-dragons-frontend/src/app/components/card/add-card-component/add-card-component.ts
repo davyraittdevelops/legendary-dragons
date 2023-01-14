@@ -16,12 +16,27 @@ import { Card } from "../../../models/card.model";
   styleUrls: ['./add-card-component.scss']
 })
 
+
 export class AddCardComponent implements OnInit {
   @Input('inventory_id') inventoryId: string = '';
 
   searchedCards$: Observable<Card[]>;
   isLoading$: Observable<boolean>;
   hasError$: Observable<boolean>;
+
+  qualityEmpty = false;
+  quality: string = "";
+  scryfall_id: string = "";
+
+  qualityList: string[] = [
+    "Mint",
+    "Near Mint",
+    "Excellent",
+    "Good",
+    "Light Played",
+    "Played",
+    "Poor"
+  ];
 
   private filterValue: string = '';
   displayedColumns: string[] = ['name', 'setName', 'released', 'rarity', 'value','imageUrl', 'addCard'];
@@ -78,11 +93,23 @@ export class AddCardComponent implements OnInit {
       colors: card.card_faces[0].colors,
       prices: card.prices,
       rarity: card.rarity,
-      quality: "",
+      quality: this.quality,
       deck_location: "",
       image_url: card.card_faces[0].image_url
     }
 
+    this.scryfall_id = inventoryCard.scryfall_id;
+
+    if (!inventoryCard.quality) {
+      this.qualityEmpty = true;
+      return;
+    }
     this.appStore.dispatch(addCardtoInventory({inventoryId: this.inventoryId, inventoryCard}))
+  }
+
+
+  selectedQuality(value: any, element: any) {
+    this.qualityEmpty = false;
+    this.quality = value;
   }
 }
