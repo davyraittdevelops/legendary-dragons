@@ -1,0 +1,56 @@
+name: Layered Stack Release workflow
+
+on:
+  push:
+    branches: [ "master" ]
+    paths:
+      - 'cognito**'
+      - 'connection-event-bus**'
+      - 'websocket-api-gateway**'
+      - '.github/workflows/layered-stack-release-workflow.yml'
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        stack: [cognito, connection-event-bus, websocket-api-gateway]
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./${{ matrix.stack }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Tag the build version
+        run: |
+          git tag "${{ matrix.stack }}-v${GITHUB_RUN_NUMBER}"
+          git push origin "${{ matrix.stack }}-v${GITHUB_RUN_NUMBER}"
+
+      - name: Set up SAM CLI
+        uses: aws-actions/setup-sam@v2
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1-node16
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Build the serverless application
+        run: |
+          sam build
+
+      - name: Deploy the serverless application
+        run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ matrix.stack }}-v${{ github.run_number }}
+          release_name: ${{ matrix.stack }}-v${{ github.run_number }}
+          draft: false
+          prerelease: false

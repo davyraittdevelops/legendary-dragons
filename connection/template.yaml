@@ -1,0 +1,194 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  connection
+
+  Sample SAM Template for connection
+
+Parameters:
+  LegDragonsWebSocketApi:
+    Type: String
+    Default: "legendary-dragons-ws-api-gateway-LegDragonsWebSocketApi"
+  AuthenticateUserFunction:
+    Type: String
+    Default: "legendary-dragons-identity-and-access-AuthenticateUserFunction"
+
+Globals:
+  Function:
+    Timeout: 3
+    Tracing: Active
+    Handler: app.lambda_handler
+    Runtime: python3.9
+    Architectures:
+      - x86_64
+    Environment:
+      Variables:
+        TABLE_NAME: !Ref connectionsDynamoDBTable
+  Api:
+    TracingEnabled: True
+
+Resources:
+  onconnectFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/onconnect
+      Policies:
+        - DynamoDBWritePolicy:
+            TableName: !Ref connectionsDynamoDBTable
+  onconnectPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref onconnectFunction
+      Principal: apigateway.amazonaws.com
+  connectRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Fn::ImportValue:
+          !Sub "${LegDragonsWebSocketApi}"
+      RouteKey: $connect
+      AuthorizationType: CUSTOM
+      AuthorizerId: !Ref WebsocketAuthorizer
+      OperationName: connectRoute
+      Target: !Join
+        - '/'
+        - - 'integrations'
+          - !Ref connectInteg
+
+  WebsocketAuthorizer:
+    Type: AWS::ApiGatewayV2::Authorizer
+    Properties:
+      ApiId:
+        Fn::ImportValue:
+          !Sub "${LegDragonsWebSocketApi}"
+      Name: WebsocketAuthorizer
+      AuthorizerType: REQUEST
+      IdentitySource:
+        - route.request.querystring.token
+      # AuthorizerCredentialsArn: arn:aws:iam::861259332787:role/LambdaAuthorizerRole
+      AuthorizerUri:
+        Fn::Sub:
+          - arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/${AuthenticateUserFunction}/invocations
+          - AuthenticateUserFunction:
+              Fn::ImportValue:
+                'Fn::Sub': "${AuthenticateUserFunction}"
+
+  WebsocketAuthorizerPermission:
+    Type: 'AWS::Lambda::Permission'
+    Properties:
+      Action: 'lambda:invokeFunction'
+      Principal: apigateway.amazonaws.com
+      FunctionName:
+        Fn::ImportValue:
+          'Fn::Sub': "${AuthenticateUserFunction}"
+      SourceArn:
+        Fn::Sub:
+          - "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${__ApiId__}/*/$connect"
+          - __ApiId__:
+              Fn::ImportValue:
+                'Fn::Sub': "${LegDragonsWebSocketApi}"
+
+  connectInteg:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Fn::ImportValue:
+          !Sub "${LegDragonsWebSocketApi}"
+      Description: Connect Integration
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::Sub:
+            arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${onconnectFunction.Arn}/invocations
+
+  disconnectFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/disconnect
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref connectionsDynamoDBTable
+
+  disconnectPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref disconnectFunction
+      Principal: apigateway.amazonaws.com
+  disconnectRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Fn::ImportValue:
+          !Sub "${LegDragonsWebSocketApi}"
+      RouteKey: $disconnect
+      AuthorizationType: NONE
+      OperationName: disconnectRoute
+      Target: !Join
+        - '/'
+        - - 'integrations'
+          - !Ref disconnectInteg
+  disconnectInteg:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Fn::ImportValue:
+          !Sub "${LegDragonsWebSocketApi}"
+      Description: Disconnect Integration
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::Sub:
+            arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${disconnectFunction.Arn}/invocations
+
+  connectionsDynamoDBTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: connections
+      AttributeDefinitions:
+        - AttributeName: PK
+          AttributeType: S
+        - AttributeName: SK
+          AttributeType: S
+        - AttributeName: GSI1_PK
+          AttributeType: S
+        - AttributeName: GSI1_SK
+          AttributeType: S
+      KeySchema:
+        - AttributeName: PK
+          KeyType: HASH
+        - AttributeName: SK
+          KeyType: RANGE
+      BillingMode: PAY_PER_REQUEST
+      GlobalSecondaryIndexes:
+        - IndexName: "GSI1"
+          KeySchema:
+            - AttributeName: GSI1_PK
+              KeyType: HASH
+            - AttributeName: GSI1_SK
+              KeyType: RANGE
+          Projection:
+            ProjectionType: "ALL"
+
+  BroadcastFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/broadcast
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref connectionsDynamoDBTable
+        - Statement:
+          - Effect: Allow
+            Action:
+              - 'execute-api:ManageConnections'
+            Resource:
+              Fn::Sub:
+                - 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${WebSocketApi}/*'
+                - WebSocketApi:
+                    Fn::ImportValue:
+                      'Fn::Sub': "${LegDragonsWebSocketApi}"
+Outputs:
+  BroadcastFunctionArn:
+    Description: "Broadcast Function ARN"
+    Value: !GetAtt BroadcastFunction.Arn
+    Export:
+      Name: !Sub "${AWS::StackName}-LegDragonsBroadcastArn"

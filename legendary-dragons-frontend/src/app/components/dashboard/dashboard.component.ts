@@ -1,23 +1,15 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Store } from "@ngrx/store";
-import { AppState } from "../../app.state";
-import { Router } from "@angular/router";
-import { UserService } from "../../services/user/user.service";
-import { Subscription } from "rxjs";
+import { Component, OnInit } from '@angular/core';
+import { WebsocketService } from "../../services/websocket/websocket.service";
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
-export class DashboardComponent implements OnInit, OnDestroy {
+export class DashboardComponent implements OnInit{
 
-  constructor(private appStore: Store<AppState>, private router: Router, private userService: UserService) { }
-  
+  constructor(private websocketService : WebsocketService) { }
+
   ngOnInit(): void {
-
-  }
-
-  ngOnDestroy(): void {
-
+    this.websocketService.dataUpdates$().subscribe(() => {})
   }
 }

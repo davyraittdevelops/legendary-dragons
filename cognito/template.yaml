@@ -77,3 +77,8 @@ Outputs:
     Value: !Ref LegDragonsUserPoolClient
     Export:
       Name: !Sub "${AWS::StackName}-LegDragonUserPoolClient"
+  LegDragonsUserPool:
+    Description: "Legendary Dragons Cognito User Pool ID"
+    Value: !Ref LegDragonsCognitoUserPool
+    Export:
+      Name: !Sub "${AWS::StackName}-LegDragonUserPool"

@@ -1,0 +1,24 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: SAM Template for connection Event Bus
+
+Resources:
+  ConnectionEventBus:
+    Type: AWS::Events::EventBus
+    Properties:
+      Name: "connection-event-bus"
+
+  ConnectionEventArchive:
+    Type: AWS::Events::Archive
+    DependsOn:
+      - ConnectionEventBus
+    Properties:
+      ArchiveName: "legendary-dragons-archive"
+      SourceArn: !GetAtt ConnectionEventBus.Arn
+
+Outputs:
+  LegDragonsConnectionsEventBus:
+    Description: "Legendary Dragons Connection Event Bus"
+    Value: !GetAtt ConnectionEventBus.Arn
+    Export:
+      Name: !Sub "${AWS::StackName}-LegDragonsConnectionsEventBus"

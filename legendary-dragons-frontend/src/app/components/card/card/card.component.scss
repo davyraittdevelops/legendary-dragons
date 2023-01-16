@@ -1,5 +1,4 @@
-img {
-  width: 250px;
+.card-image {
   height: 400px;
 }
 
@@ -8,4 +7,15 @@ img {
   height: 400px;
 }
 
+.collection-card {
+  display: grid;
+}
 
+.collection-card > img, div {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.pointer {
+  cursor: pointer !important;
+}

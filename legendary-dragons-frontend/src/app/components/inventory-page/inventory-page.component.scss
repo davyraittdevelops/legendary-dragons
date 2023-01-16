@@ -4,18 +4,15 @@
 
 .container {
   padding-top: 20px;
-  display: flex;
-  flex-direction: row;
+  //display: flex;
+  //flex-direction: row;
   justify-content: center; /* align elements to the left */
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
 }
 
 .container > * {
   margin: 0 10px;
-}
-/* specify the number of columns */
-.container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
 }
 
 /* add padding between the elements */

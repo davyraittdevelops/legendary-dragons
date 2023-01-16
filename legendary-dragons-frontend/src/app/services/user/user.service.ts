@@ -1,7 +1,7 @@
-import { HttpClient, HttpHeaders, HttpResponse } from "@angular/common/http";
-import { Injectable } from '@angular/core';
-import { Observable } from "rxjs";
-import { User, UserRegistration } from 'src/app/models/user.model';
+import {HttpClient, HttpResponse} from "@angular/common/http";
+import {Injectable} from '@angular/core';
+import {Observable} from "rxjs";
+import {User, UserRegistration} from 'src/app/models/user.model';
 
 @Injectable({
   providedIn: 'root'
