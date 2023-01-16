@@ -3,6 +3,9 @@ name: Connection Feature workflow
 on:
   push:
     branches: ['feature**']
+    paths:
+      - 'connection**'
+      - '.github/workflows/connection-feature-workflow.yml'
 jobs:
   build:
     runs-on: ubuntu-latest

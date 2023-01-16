@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-
+import { ScrollingModule } from '@angular/cdk/scrolling';
 import { HttpClientModule } from "@angular/common/http";
 import { isDevMode, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
@@ -20,6 +20,7 @@ import { CardFooterComponent } from './components/card-footer/card-footer.compon
 import { AddCardComponent } from './components/card/add-card-component/add-card-component';
 import { CardComponent } from './components/card/card/card.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { DecksDetailsPageComponent } from './components/decks-details-page/decks-details-page.component';
 import { DecksPageComponent } from './components/decks-page/decks-page.component';
 import { HeaderComponent } from './components/header/header.component';
 import { HomePageComponent } from "./components/home-page/home-page.component";
@@ -45,6 +46,7 @@ import { userReducer } from './ngrx/user/user.reducer';
     NavbarComponent,
     HeaderComponent,
     InventoryPageComponent,
+    DecksDetailsPageComponent,
     DecksPageComponent,
     WishlistPageComponent,
     AddCardComponent,
@@ -73,6 +75,7 @@ import { userReducer } from './ngrx/user/user.reducer';
     MatFormFieldModule,
     MatInputModule,
     NgbToastModule,
+    ScrollingModule,
     StoreModule.forRoot({
         user: userReducer,
         card: cardReducer,

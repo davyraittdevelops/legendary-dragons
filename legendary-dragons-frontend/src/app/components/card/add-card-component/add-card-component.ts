@@ -98,7 +98,6 @@ export class AddCardComponent implements OnInit {
       deck_location: "",
       image_url: card.card_faces[0].image_url
     }
-
     this.appStore.dispatch(addCardtoInventory({inventoryId: this.inventoryId, inventoryCard}))
     this.toastService.showSuccess(`${inventoryCard.card_name} successfully added to the inventory!`);
   }
