@@ -1,4 +1,4 @@
-<div class="container-fluid py-5">
+<div class="container-fluid py-5" aria-label="collection">
   <div class="row row-cols-auto gy-4">
     <ng-container *ngIf="inventory$ | async as inventory">
       <app-add-card-component [inventory_id]="inventory.inventory_id"
