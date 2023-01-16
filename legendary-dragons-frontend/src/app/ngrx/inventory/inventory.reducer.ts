@@ -6,9 +6,7 @@ import {
   getInventory,
   getInventoryFail,
   getInventorySuccess,
-  removeCardFromInventory,
-  removeCardFromInventoryFail,
-  removeCardFromInventorySuccess
+  removeCardFromInventory, removeCardFromInventorySuccess,
 } from "./inventory.actions";
 import { InventoryState } from "./models/inventory-state.model";
 

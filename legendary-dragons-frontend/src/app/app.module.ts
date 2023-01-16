@@ -73,10 +73,11 @@ import { CardFooterComponent } from './components/card-footer/card-footer.compon
     MatFormFieldModule,
     MatInputModule,
     StoreModule.forRoot({
-      user: userReducer,
-      card: cardReducer,
-      inventory: inventoryReducer
-    }),
+        user: userReducer,
+        card: cardReducer,
+        inventory: inventoryReducer
+      },
+      ),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() })
   ],
   providers: [],

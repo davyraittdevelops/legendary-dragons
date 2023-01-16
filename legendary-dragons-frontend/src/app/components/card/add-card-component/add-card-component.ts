@@ -3,12 +3,12 @@ import { ModalDismissReasons, NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Store } from '@ngrx/store';
 import { Observable} from 'rxjs';
 import { AppState } from 'src/app/app.state';
-import { InventoryCardRequest } from 'src/app/models/inventory.model';
+import {InventoryCard, InventoryCardRequest} from 'src/app/models/inventory.model';
 import { QualityEnum } from 'src/app/models/quality.enum';
-import { clearSearchResult, searchCardByKeyword } from 'src/app/ngrx/card/card.actions';
+import {clearSearchResult, searchCardByKeyword, updateCardQuality} from 'src/app/ngrx/card/card.actions';
 import { errorSelector, isLoadingSelector, querySelector, searchedCardSelector } from 'src/app/ngrx/card/card.selectors';
 import { CardState } from 'src/app/ngrx/card/models/card-state.model';
-import { addCardtoInventory } from 'src/app/ngrx/inventory/inventory.actions';
+import {addCardtoInventory} from 'src/app/ngrx/inventory/inventory.actions';
 import { inventorySelector } from 'src/app/ngrx/inventory/inventory.selectors';
 import { Card } from "../../../models/card.model";
 
@@ -25,6 +25,8 @@ export class AddCardComponent implements OnInit {
   hasError$: Observable<boolean>;
   previousQueryValue: string = "";
   qualityList = QualityEnum;
+
+  selectedQualityValue: string = '';
 
   filterValue: string = "";
   displayedColumns: string[] = ['name', 'setName', 'released', 'rarity', 'value','imageUrl', 'addCard'];
@@ -79,26 +81,32 @@ export class AddCardComponent implements OnInit {
   }
 
   addCardtoInventory(card: Card) {
-    const inventoryCard: InventoryCardRequest = {
-      scryfall_id: card.scryfall_id,
-      oracle_id: card.oracle_id,
-      card_name: card.card_name,
-      mana_cost: card.mana_cost,
-      oracle_text: card.oracle_text,
-      set_name: card.set_name,
-      colors: card.card_faces[0].colors,
-      prices: card.prices,
-      rarity: card.rarity,
-      quality: "",
-      deck_location: "",
-      image_url: card.card_faces[0].image_url
-    }
+    console.log(card)
+    return;
 
-    this.appStore.dispatch(addCardtoInventory({inventoryId: this.inventoryId, inventoryCard}))
+    // const inventoryCard: InventoryCardRequest = {
+    //   scryfall_id: card.scryfall_id,
+    //   oracle_id: card.oracle_id,
+    //   card_name: card.card_name,
+    //   mana_cost: card.mana_cost,
+    //   oracle_text: card.oracle_text,
+    //   set_name: card.set_name,
+    //   colors: card.card_faces[0].colors,
+    //   prices: card.prices,
+    //   rarity: card.rarity,
+    //   quality: "" ,
+    //   deck_location: "",
+    //   image_url: card.card_faces[0].image_url
+    // }
+    //
+    // this.appStore.dispatch(addCardtoInventory({inventoryId: this.inventoryId, inventoryCard}))
   }
 
-  selectedQuality(value: any, element: any) {
-    console.log(value);
+  selectedQuality(event: any, foundCard: Card) {
+    console.log(foundCard)
+    console.log(event)
+    this.appStore.dispatch(updateCardQuality({card: foundCard, quality: event.value}))
+
   }
 }
 

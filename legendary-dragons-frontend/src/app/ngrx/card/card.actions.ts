@@ -1,6 +1,11 @@
 import { createAction, props } from '@ngrx/store';
 import { Card } from 'src/app/models/card.model';
+import {InventoryCard} from "../../models/inventory.model";
 
+export const updateCardQuality = createAction(
+  '[Add Card Component] Update Card Quality',
+  props<{ card : Card, quality: string}>()
+);
 export const searchCardByKeyword = createAction(
   '[Add Card Component] Search',
   props<{ query: string }>()
