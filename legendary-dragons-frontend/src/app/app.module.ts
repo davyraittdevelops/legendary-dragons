@@ -6,6 +6,7 @@ import {LoginPageComponent} from './components/login-page/login-page.component';
 import {RouterOutlet} from "@angular/router";
 import {AppRoutingModule} from "./app-routing.module";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {DecksDetailsPageComponent} from './components/decks-details-page/decks-details-page.component';
 import {EffectsModule} from '@ngrx/effects';
 import {HttpClientModule} from "@angular/common/http";
 import {DashboardComponent} from './components/dashboard/dashboard.component';
@@ -24,6 +25,7 @@ import {MatTabsModule} from "@angular/material/tabs";
 import {CardComponent} from './components/card/card/card.component';
 import {MatTableModule} from "@angular/material/table";
 import {MatFormFieldModule} from "@angular/material/form-field";
+import { ScrollingModule } from '@angular/cdk/scrolling';
 import {MatInputModule} from '@angular/material/input';
 import {HomePageComponent} from "./components/home-page/home-page.component";
 import { AddCardComponent } from './components/card/add-card-component/add-card-component';
@@ -45,6 +47,7 @@ import { CardFooterComponent } from './components/card-footer/card-footer.compon
     NavbarComponent,
     HeaderComponent,
     InventoryPageComponent,
+    DecksDetailsPageComponent,
     DecksPageComponent,
     WishlistPageComponent,
     AddCardComponent,
@@ -72,6 +75,7 @@ import { CardFooterComponent } from './components/card-footer/card-footer.compon
     MatTableModule,
     MatFormFieldModule,
     MatInputModule,
+    ScrollingModule,
     StoreModule.forRoot({
       user: userReducer,
       card: cardReducer,

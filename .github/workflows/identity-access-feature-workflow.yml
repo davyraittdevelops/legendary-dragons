@@ -3,6 +3,9 @@ name: Identity & Access Feature workflow
 on:
   push:
     branches: ['feature**']
+    paths:
+      - 'identity-and-access**'
+      - '.github/workflows/identity-access-feature-workflow.yml'
 jobs:
   build:
     runs-on: ubuntu-latest
