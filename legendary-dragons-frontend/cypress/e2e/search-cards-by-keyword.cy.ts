@@ -23,11 +23,13 @@ describe("Search 'Conclave Mentor' card", () => {
     cy.get("table > tbody").within(() => {
       cy.get("tr").should("have.length", 2);
       cy.get("tr").eq(0).find("td").eq(0).contains("Conclave Mentor");
-      cy.get("tr").eq(0).find("td").eq(1).contains("2022-07-08");
-      cy.get("tr").eq(0).find("td").eq(2).contains("Masters");
+      cy.get("tr").eq(0).find("td").eq(1).contains("Double Masters 2022");
+      cy.get("tr").eq(0).find("td").eq(2).contains("08/07/2022");
+      cy.get("tr").eq(0).find("td").eq(3).contains("Uncommon");
       cy.get("tr").eq(1).find("td").eq(0).contains("Conclave Mentor");
-      cy.get("tr").eq(1).find("td").eq(1).contains("2020-07-03");
-      cy.get("tr").eq(1).find("td").eq(2).contains("Core");
+      cy.get("tr").eq(1).find("td").eq(1).contains("Core Set 2021");
+      cy.get("tr").eq(1).find("td").eq(2).contains("03/07/2020");
+      cy.get("tr").eq(1).find("td").eq(3).contains("Uncommon");
     });
   })
 });
@@ -42,7 +44,7 @@ describe("Searching gibberish results in no found cards", () => {
     keywordSearchInput.type("abcdefghijklmnopqrstuvwxyz");
     keywordSearchInput.type("{enter}");
     //assert
-    cy.get("table > tbody").should("not.be.visible");
+    cy.get("div[role=document]").should("not.contain", "table");
   })
 });
 
@@ -82,8 +84,8 @@ describe("Search both names of two sided card 'Spikefield Hazard // Spikefield C
     cy.get("table > tbody").within(() => {
       cy.get("tr").should("have.length", 1);
       cy.get("tr").eq(0).find("td").eq(0).contains("Spikefield Hazard // Spikefield Cave");
-      cy.get("tr").eq(0).find("td").eq(1).contains("2020-09-25");
-      cy.get("tr").eq(0).find("td").eq(2).contains("Expansion");
+      cy.get("tr").eq(0).find("td").eq(1).contains("Zendikar Rising");
+      cy.get("tr").eq(0).find("td").eq(2).contains("25/09/2020");
       cy.get("tr").eq(0).find("td").eq(3).contains("Uncommon");
     });
     //act
@@ -95,8 +97,8 @@ describe("Search both names of two sided card 'Spikefield Hazard // Spikefield C
     cy.get("table > tbody").within(() => {
       cy.get("tr").should("have.length", 1);
       cy.get("tr").eq(0).find("td").eq(0).contains("Spikefield Hazard // Spikefield Cave");
-      cy.get("tr").eq(0).find("td").eq(1).contains("2020-09-25");
-      cy.get("tr").eq(0).find("td").eq(2).contains("Expansion");
+      cy.get("tr").eq(0).find("td").eq(1).contains("Zendikar Rising");
+      cy.get("tr").eq(0).find("td").eq(2).contains("25/09/2020");
       cy.get("tr").eq(0).find("td").eq(3).contains("Uncommon");
     });
   })
