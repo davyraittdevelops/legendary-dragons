@@ -93,7 +93,6 @@ export class AddCardComponent implements OnInit {
       deck_location: "",
       image_url: card.card_faces[0].image_url
     }
-
     this.appStore.dispatch(addCardtoInventory({inventoryId: this.inventoryId, inventoryCard}))
   }
 

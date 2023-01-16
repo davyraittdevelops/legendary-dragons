@@ -1,4 +1,4 @@
-<button type="button" (click)="open({content : content});" class="btn btn-secondary add-card">
+<button type="button" (click)="open({content : content});" class="btn btn-secondary add-card" name="openAddCardModal">
   <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
     <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z"/>
   </svg>
@@ -16,7 +16,7 @@
       <mat-form-field class="full-width fs-5">
         <mat-label>Search for a card</mat-label>
         <div (keyup.enter)="searchCardsByKeyword()">
-          <input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium" #input>
+          <input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium" name="keywordSearch" #input>
         </div>
       </mat-form-field>
 
@@ -91,7 +91,7 @@
                     </mat-select>
                   </mat-form-field>
 
-                  <button type="button" class="btn btn-dark" (click)="addCardtoInventory(element)"> + </button>
+                  <button type="button" class="btn btn-dark" (click)="addCardtoInventory(element)" name="addCardToInventory"> + </button>
                 </div>
 
 <!--                <div *ngIf="" class="text-danger" class="alert alert-warning" role="alert">-->
