@@ -3,6 +3,9 @@ name: Inventory Feature workflow
 on:
   push:
     branches: ['feature**']
+    paths:
+      - 'inventory**'
+      - '.github/workflows/inventory-feature-workflow.yml'
 jobs:
   build:
     runs-on: ubuntu-latest
