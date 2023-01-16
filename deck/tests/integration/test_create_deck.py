@@ -80,6 +80,16 @@ def test_lamda_handler_success(websocket_event, table_definition):
     from functions.create_deck import app
     response = app.lambda_handler(websocket_event, {})
 
+    deck = table.query(
+        KeyConditionExpression=Key("GSI1_PK").eq("USER#user-123") &
+        Key("GSI1_SK").begins_with("DECK"),
+        IndexName="GSI1"
+    )["Items"][0]
+
     # Assert
+    print(deck)
     assert response["statusCode"] == 200
-    
+    assert deck["user_id"] == "user-123"
+    assert deck["entity_type"] == "DECK"
+    assert deck["deck_name"] == "White-Blue: Azorius"
+    assert deck["deck_type"] == "COMMANDER"
