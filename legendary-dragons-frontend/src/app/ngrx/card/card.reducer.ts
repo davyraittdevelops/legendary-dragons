@@ -24,17 +24,14 @@ export const cardReducer = createReducer(
   }),
   on(clearSearchResult, (state) => ({...state, searchedCards: []})),
   on(updateCardQuality, (state, { card, quality }) => {
-    let newState:any;
     let foundCard = state.searchedCards.find(c => c.scryfall_id === card.scryfall_id)
-    if (foundCard){
-      let updatedCard = {...foundCard, quality: quality};
-      let updatedCards = state.searchedCards.map(c => c.scryfall_id === updatedCard.scryfall_id ? updatedCard : c);
-      newState = {
+
+    let updatedCard = {...foundCard!, quality: quality};
+    let updatedCards = state.searchedCards.map(c => c.scryfall_id === updatedCard.scryfall_id ? updatedCard : c);
+
+    return {
         ...state,
         searchedCards: updatedCards
       };
-
-    }
-    return newState;
   }),
 )
