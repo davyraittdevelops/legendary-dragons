@@ -87,13 +87,13 @@ export class WebsocketService {
     this.socket$.next(message);
   }
 
-  sendDeleteDeckMessage(deck_id: string) {
+  sendRemoveDeckMessage(deck_id: string) {
     if (!this.socket$) {
       return;
     }
 
     const message = {
-      'action': 'deleteDeckReq',
+      'action': 'removeDeckReq',
       'deck_id': deck_id,
     };
     this.socket$.next(message);

@@ -8,9 +8,9 @@ import {
   createDeck,
   createDeckSuccess,
   createDeckFail,
-  deleteDeck,
-  deleteDeckSuccess,
-  deleteDeckFail
+  removeDeck,
+  removeDeckSuccess,
+  removeDeckFail
 } from "./deck.actions";
 
 @Injectable()
@@ -42,17 +42,17 @@ export class DeckEffects {
 
   public removeDeckEffect$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(deleteDeck),
-      tap(({deck_id}) => this.websocketService.sendDeleteDeckMessage(deck_id)),
+      ofType(removeDeck),
+      tap(({deck_id}) => this.websocketService.sendRemoveDeckMessage(deck_id)),
       mergeMap(() => {
         return this.websocketService.dataUpdates$().pipe(
           filter((event: any) => {
-            return event['event_type'] === 'DELETE_DECK_RESULT'
+            return event['event_type'] === 'REMOVE_DECK_RESULT'
           }),
-          map((event: any) => deleteDeckSuccess({deck: event["data"]})),
+          map((event: any) => removeDeckSuccess({deck: event["data"]})),
           catchError((error) => {
             console.log(error);
-            return of(deleteDeckFail({error: true}))
+            return of(removeDeckFail({error: true}))
           })
         )
       })

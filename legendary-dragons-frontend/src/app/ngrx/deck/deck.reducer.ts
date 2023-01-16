@@ -3,9 +3,9 @@ import {
   createDeck,
   createDeckSuccess,
   createDeckFail,
-  deleteDeck,
-  deleteDeckSuccess,
-  deleteDeckFail
+  removeDeck,
+  removeDeckSuccess,
+  removeDeckFail
 } from "./deck.actions";
 import { DeckState } from "./models/deck-state.model";
 
@@ -20,13 +20,13 @@ export const deckReducer = createReducer(
   on(createDeck, (state, {deck_name, deck_type}) => ({...state, isLoading: true})),
   on(createDeckSuccess, (state, {deck}) => ({...state, isLoading: false, hasError: false, decks: [...state.decks, deck]})),
   on(createDeckFail, (state) => ({...state, isLoading: false, hasError: true})),
-  on(deleteDeck, (state, {deck_id}) => ({...state, isLoading: true})),
-  on(deleteDeckSuccess, (state, {deck}) => ({
+  on(removeDeck, (state, {deck_id}) => ({...state, isLoading: true})),
+  on(removeDeckSuccess, (state, {deck}) => ({
     ...state,
     isLoading: false,
     hasError: false,
     decks: state.decks.filter(deck => deck !== deck)
 
   })),
-  on(deleteDeckFail, (state) => ({...state, isLoading: false, hasError: true})),
+  on(removeDeckFail, (state) => ({...state, isLoading: false, hasError: true})),
 )
