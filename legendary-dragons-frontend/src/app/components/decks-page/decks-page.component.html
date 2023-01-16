@@ -20,8 +20,8 @@
                 <div class="card-position">
                     <app-add-card-component></app-add-card-component>
                 </div>
-                <app-card class="example-item" *ngFor="let deck of decks"
-                          [card]="deck">
+                <app-card class="example-item" *ngFor="let deckCard of decks"
+                          [card]="deckCard">
                 </app-card>
             </cdk-virtual-scroll-viewport>
         </div>
