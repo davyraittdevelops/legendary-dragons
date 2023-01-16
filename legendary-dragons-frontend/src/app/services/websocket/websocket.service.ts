@@ -54,11 +54,23 @@ export class WebsocketService {
     this.socket$.next(message);
   }
 
-  sendGetInventoryMessage() {
+  sendRemoveCardFromInventoryMessage(inventory_card_id: any, inventory_id: any) {
     if (!this.socket$) {
       return;
     }
 
+    const message = {
+      'action': 'removeCardFromInventoryReq',
+      'inventory_card_id': inventory_card_id,
+      'inventory_id': inventory_id
+    };
+    this.socket$.next(message);
+  }
+
+  sendGetInventoryMessage() {
+    if (!this.socket$) {
+      return;
+    }
     this.socket$.next({'action': 'getInventoryReq'});
   }
 }

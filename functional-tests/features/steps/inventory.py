@@ -1,7 +1,8 @@
+import time
+
 from behave import given, when, then
 import requests
 import logging
-import uuid
 import json
 import boto3
 import websocket
@@ -52,14 +53,48 @@ def onConnect(context):
     context.ws.connect(url=context.websocket_url + "?token=" + context.token)
 
 
-@given("I have an inventory")
+def onDiscconect(context):
+    context.ws.close()
+
+def getInventory(context):
+    context.ws.send(json.dumps({
+        "action": "getInventoryReq",
+    }))
+
+    context.detail["get_inventory"] = json.loads(context.ws.recv())
+
+def addCardtoInventory(context):
+    context.ws.send(json.dumps({
+        "action": "addCardToInventoryReq",
+        "inventory_id": context.detail["get_inventory"]["data"]["inventory_id"],
+        "inventory_card": context.card
+    }))
+
+    context.detail["add_card_to_inventory"] = json.loads(context.ws.recv())
+
+def removeCardFromInventory(context):
+    context.ws.send(json.dumps({
+        "action": "removeCardFromInventoryReq",
+        'inventory_card_id': context.detail["add_card_to_inventory"]["data"]["card_id"],
+        'inventory_id': context.detail["get_inventory"]["data"]["inventory_id"]
+    }))
+    
+    context.detail["remove_card_from_inventory"] = json.loads(context.ws.recv())
+
+    print(context.detail["remove_card_from_inventory"])
+
+
+@given("there is an existing user and the user is logged in")
 def step_impl(context):
     registerUser(context, "LegendaryDragonsMinor@gmail.com", "Eindopdracht3!")
 
     if not context.detail["verified"]:
         verifyUser(context)
+        context.detail["verified"] = True
 
     loginUser(context)
+    onConnect(context)
+
     context.card = {
         "oracle_id": "44b8eb8f-fa23-401a-98b5-1fbb9871128e",
         "card_name": "Swords To Plowshares",
@@ -76,39 +111,33 @@ def step_impl(context):
 
 @when("we add the card with the received data to the inventory")
 def step_impl(context):
-    onConnect(context)
-    context.ws.send(json.dumps({
-        "action": "addCardToInventoryReq",
-        "inventory_id": None,
-        "inventory_card": context.card
-    }))
-
+    getInventory(context)
+    addCardtoInventory(context)
 
 @when("I request for my inventory")
 def step_impl(context):
-    onConnect(context)
-    context.ws.send(json.dumps({
-        "action": "getInventoryReq",
-    }))
+    getInventory(context)
 
+
+@when("we remove the card with the received data from the inventory")
+def step_impl(context):
+    getInventory(context)
+    addCardtoInventory(context)
+    removeCardFromInventory(context)
 
 @then("the inventory should contain a new card")
 def step_impl(context):
-    result = json.loads(context.ws.recv())
-    second_result = json.loads(context.ws.recv())
-
-    if result["event_type"] == "INSERT_INVENTORY_RESULT":
-        tmp = result
-        result = second_result
-        second_result = tmp
-
-    assert result["event_type"] == "INSERT_INVENTORY_CARD_RESULT"
-    assert result["data"]["card_name"] == context.card["card_name"]
-    context.detail["verified"] = True
+    assert context.detail["add_card_to_inventory"]["event_type"] == "INSERT_INVENTORY_CARD_RESULT"
+    assert context.detail["add_card_to_inventory"]["data"]["card_name"] == context.card["card_name"]
 
 
 @then("I should be able to see my collection")
 def step_impl(context):
-    result = json.loads(context.ws.recv())
-    assert result["event_type"] == "GET_INVENTORY_RESULT"
-    assert result["data"]["entity_type"] == "INVENTORY"
+    assert context.detail["get_inventory"]["event_type"] == "GET_INVENTORY_RESULT"
+    assert context.detail["get_inventory"]["data"]["entity_type"] == "INVENTORY"
+
+
+@then("the card should be removed from the inventory")
+def step_impl(context):
+    assert context.detail["remove_card_from_inventory"]["event_type"] == "REMOVE_INVENTORY_CARD_RESULT"
+    assert context.detail["remove_card_from_inventory"]["data"]["inventory_id"] == context.detail["get_inventory"]["data"]["inventory_id"]

@@ -5,7 +5,7 @@
                               class="col"></app-add-card-component>
 
       <app-card class="col" *ngFor="let card of inventory.inventory_cards"
-                [card]="card">
+                [card]="card" [inventory_id]="inventory.inventory_id">
       </app-card>
     </ng-container>
 

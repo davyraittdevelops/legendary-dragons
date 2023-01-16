@@ -100,6 +100,7 @@ def card_entry(card):
         "is_multifaced": is_multifaced,
         "oracle_id": card["oracle_id"],
         "set_id": card["set_id"],
+        "set_name": card["set_name"],
         "set_code": card["set"],
         "set_type": card["set_type"],
         "released_at": card["released_at"],
