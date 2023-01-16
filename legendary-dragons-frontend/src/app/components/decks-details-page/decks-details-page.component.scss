@@ -3,21 +3,20 @@
 }
 
 /* Start Scrolling Styles */
-.example-viewport {
+.deck-viewport {
   height: 350px;
   width: 100%;
   border: 3px solid black;
 }
 
-.example-item {
+.deck-item {
   height: 50px;
 }
 
-.example-item-sidedecks {
+.sidedeck-item {
   height: 100%;
   width: 60px;
   padding: 8px;
-
 }
 
 :host ::ng-deep .cdk-virtual-scroll-content-wrapper {
