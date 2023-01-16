@@ -1,15 +1,14 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ModalDismissReasons, NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Store } from '@ngrx/store';
-import { Observable} from 'rxjs';
+import { Observable } from 'rxjs';
 import { AppState } from 'src/app/app.state';
-import {InventoryCard, InventoryCardRequest} from 'src/app/models/inventory.model';
+import { InventoryCardRequest } from 'src/app/models/inventory.model';
 import { QualityEnum } from 'src/app/models/quality.enum';
-import {clearSearchResult, searchCardByKeyword, updateCardQuality} from 'src/app/ngrx/card/card.actions';
+import { clearSearchResult, searchCardByKeyword, updateCardQuality } from 'src/app/ngrx/card/card.actions';
 import { errorSelector, isLoadingSelector, querySelector, searchedCardSelector } from 'src/app/ngrx/card/card.selectors';
-import { CardState } from 'src/app/ngrx/card/models/card-state.model';
-import {addCardtoInventory} from 'src/app/ngrx/inventory/inventory.actions';
-import { inventorySelector } from 'src/app/ngrx/inventory/inventory.selectors';
+import { addCardtoInventory } from 'src/app/ngrx/inventory/inventory.actions';
+import { ToastService } from 'src/app/services/toast/toast.service';
 import { Card } from "../../../models/card.model";
 
 @Component({
@@ -25,7 +24,6 @@ export class AddCardComponent implements OnInit {
   hasError$: Observable<boolean>;
   previousQueryValue: string = "";
   qualityList = QualityEnum;
-  cardAddedToInventory: boolean = false;
 
   selectedQualityValue: string = '';
   scryfall_id: string = ""
@@ -33,7 +31,8 @@ export class AddCardComponent implements OnInit {
   filterValue: string = "";
   displayedColumns: string[] = ['name', 'setName', 'released', 'rarity', 'value','imageUrl', 'addCard'];
 
-  constructor(public modalService: NgbModal, private appStore: Store<AppState>) {
+  constructor(public modalService: NgbModal, private appStore: Store<AppState>,
+              private toastService: ToastService) {
     this.isLoading$ = this.appStore.select(isLoadingSelector);
     this.hasError$ = this.appStore.select(errorSelector);
 
@@ -84,7 +83,6 @@ export class AddCardComponent implements OnInit {
 
   addCardtoInventory(card: Card) {
     this.scryfall_id = card.scryfall_id;
-    this.cardAddedToInventory = false;
 
     const inventoryCard: InventoryCardRequest = {
       scryfall_id: card.scryfall_id,
@@ -102,11 +100,10 @@ export class AddCardComponent implements OnInit {
     }
 
     this.appStore.dispatch(addCardtoInventory({inventoryId: this.inventoryId, inventoryCard}))
-    this.cardAddedToInventory = true;
+    this.toastService.showSuccess(`${inventoryCard.card_name} successfully added to the inventory!`);
   }
 
   selectedQuality(event: any, foundCard: Card) {
     this.appStore.dispatch(updateCardQuality({card: foundCard, quality: event.value}));
   }
 }
-
