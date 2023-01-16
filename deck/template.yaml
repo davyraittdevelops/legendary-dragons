@@ -38,15 +38,13 @@ Resources:
         - DynamoDBWritePolicy:
             TableName: !Ref DeckTable
 
-  CreateDeckEventPermission:
+  CreateDeckPermission:
     Type: AWS::Lambda::Permission
     Properties:
       Action: lambda:InvokeFunction
-      FunctionName:
-        Fn::ImportValue:
-          !Sub "${LegDragonsBroadcastArn}"
-      Principal: events.amazonaws.com
-      SourceArn: !GetAtt DeckEventRule.Arn
+      FunctionName: !Ref CreateDeckFunction
+      Principal: apigateway.amazonaws.com
+
 
   CreateDeckRoute:
     Type: AWS::ApiGatewayV2::Route
@@ -160,6 +158,16 @@ Resources:
           Arn:
             Fn::ImportValue:
               !Sub "${LegDragonsBroadcastArn}"
+
+  DeckEventPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::ImportValue:
+          !Sub "${LegDragonsBroadcastArn}"
+      Principal: events.amazonaws.com
+      SourceArn: !GetAtt DeckEventRule.Arn
 
 Outputs:
   CreateDeckFunction:
