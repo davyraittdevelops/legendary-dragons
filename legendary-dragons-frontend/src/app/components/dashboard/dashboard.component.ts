@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ToastService } from 'src/app/services/toast/toast.service';
 import { WebsocketService } from "../../services/websocket/websocket.service";
 @Component({
   selector: 'app-dashboard',
@@ -7,7 +8,7 @@ import { WebsocketService } from "../../services/websocket/websocket.service";
 })
 export class DashboardComponent implements OnInit{
 
-  constructor(private websocketService : WebsocketService) { }
+  constructor(private websocketService : WebsocketService, public toastService: ToastService) { }
 
   ngOnInit(): void {
     this.websocketService.dataUpdates$().subscribe(() => {})
