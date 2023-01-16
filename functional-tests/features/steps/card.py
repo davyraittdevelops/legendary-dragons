@@ -44,7 +44,6 @@ def loginUser(context):
     context.token = response.headers["x-amzn-Remapped-Authorization"].replace('Bearer ', '')
 
 def onConnect(context):
-    context.ws = websocket.WebSocket()
     context.ws.connect(url=context.websocket_url + "?token=" + context.token)
 
 @given("there is an user and the user is logged in")
@@ -68,4 +67,4 @@ def step_impl(context):
     result = json.loads(context.ws.recv())
     assert result['event_type'] == 'SEARCH_CARD_RESULT'
     assert result['data'][0]['card_name'] == context.query
-    context.ws.close()
+
