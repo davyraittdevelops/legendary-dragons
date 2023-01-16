@@ -19,6 +19,8 @@ describe("Search, add and delete 'Swords to plowshares' to/from the inventory", 
     //act - add
     keywordSearchInput.type("Swords to plowshares");
     keywordSearchInput.type("{enter}");
+    cy.get("#mat-select-0").click()
+    cy.get("#mat-option-0").click()
     cy.get("button[name=addCardToInventory]").eq(0).click();
     cy.get("button[aria-label=Close]").click();
     //assert - add

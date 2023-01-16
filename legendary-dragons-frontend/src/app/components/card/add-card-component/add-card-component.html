@@ -91,7 +91,9 @@
                     </mat-select>
                   </mat-form-field>
                   <button type="button" class="btn btn-dark" [disabled]="!element.quality"
-                          (click)="addCardtoInventory(element)"> + </button>
+                          name="addCardToInventory" (click)="addCardtoInventory(element)">
+                    +
+                  </button>
                 </div>
               </td>
             </ng-container>
