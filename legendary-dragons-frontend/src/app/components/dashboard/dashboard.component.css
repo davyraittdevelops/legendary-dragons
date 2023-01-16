@@ -9,8 +9,6 @@ th {
 :host ::ng-deep .mat-tab-label {
   color: floralwhite;
   font-size: 20px;
-  /*width: 100%;*/
-  /*position: relative;*/
   margin-top: 15px;
   box-sizing: border-box;
 }
@@ -58,3 +56,11 @@ mat-tab-body {
 :host ::ng-deep.mat-tab-label {
   background-color: transparent;
 }
+
+/* Styles for the sidebar menu list */
+@media only screen and (min-width: 960px) {
+  :host ::ng-deep .mat-tab-list {
+    width: 300px;
+  }
+}
+

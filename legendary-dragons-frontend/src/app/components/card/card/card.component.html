@@ -1,22 +1,18 @@
 <div card>
+  <div class="collection-card card-size" aria-label="collection-card">
+    <img src="{{card.image_url}}" alt="{{card.card_name}} image" class="card-image" />
+    <div class="d-flex justify-content-end pointer" (click)="open({content : content});">
+    </div>
+  </div>
 
-<div class="collection-card" aria-label="collection-card">
-  <img src="{{card.image_url}}" alt="{{card.card_name}} image" class="card-image" />
-  <div class="d-flex justify-content-end pointer" (click)="open({content : content});">
+  <div class="btn-group" role="group" aria-label="Basic example">
+    <button type="button" (click)="open({content : content});" class="btn btn-dark">Details</button>
+    <button type="button" class="btn btn-dark">Add card to deck</button>
+    <button type="button"  (click)="removeCardFromInventory(card.card_id)" class="btn btn-dark" name="removeCardFromInventory"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
+      <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+    </svg></button>
   </div>
 </div>
-
-<div class="btn-group" role="group" aria-label="Basic example">
-  <button type="button" (click)="open({content : content});" class="btn btn-dark">Details</button>
-  <button type="button" class="btn btn-dark">Add card to deck</button>
-  <button type="button"  (click)="removeCardFromInventory(card.card_id)" class="btn btn-dark" name="removeCardFromInventory"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
-    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
-  </svg></button>
-</div>
-
-</div>
-
-
 
 <ng-template #content let-modal>
   <div class="modal-header card-modal bg-dark">

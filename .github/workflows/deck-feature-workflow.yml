@@ -3,6 +3,9 @@ name: Deck Feature workflow
 on:
   push:
     branches: ['feature**']
+    paths:
+      - 'deck**'
+      - '.github/workflows/deck-feature-workflow.yml'
 jobs:
   build:
     runs-on: ubuntu-latest
