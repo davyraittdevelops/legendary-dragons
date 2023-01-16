@@ -50,7 +50,7 @@ object Requests {
         |"meta","quality" : "uncommon", "deck_location" : "side","scryfall_id" : "${rid4}"}}
         |""".stripMargin
     )
-    .await(30)(checkAddCardToInventoryReply)
+    .await(15)(checkAddCardToInventoryReply)
 
   val checkRemoveCardFromInventoryReply = ws.checkTextMessage("Remove Card From Inventory Check")
     .check(
