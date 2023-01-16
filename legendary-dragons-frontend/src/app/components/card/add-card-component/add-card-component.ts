@@ -25,8 +25,10 @@ export class AddCardComponent implements OnInit {
   hasError$: Observable<boolean>;
   previousQueryValue: string = "";
   qualityList = QualityEnum;
+  cardAddedToInventory: boolean = false;
 
   selectedQualityValue: string = '';
+  scryfall_id: string = ""
 
   filterValue: string = "";
   displayedColumns: string[] = ['name', 'setName', 'released', 'rarity', 'value','imageUrl', 'addCard'];
@@ -81,7 +83,8 @@ export class AddCardComponent implements OnInit {
   }
 
   addCardtoInventory(card: Card) {
-    console.log(card)
+    this.scryfall_id = card.scryfall_id;
+    this.cardAddedToInventory = false;
 
     const inventoryCard: InventoryCardRequest = {
       scryfall_id: card.scryfall_id,
@@ -99,13 +102,11 @@ export class AddCardComponent implements OnInit {
     }
 
     this.appStore.dispatch(addCardtoInventory({inventoryId: this.inventoryId, inventoryCard}))
+    this.cardAddedToInventory = true;
   }
 
   selectedQuality(event: any, foundCard: Card) {
-    console.log(foundCard)
-    console.log(event)
-    this.appStore.dispatch(updateCardQuality({card: foundCard, quality: event.value}))
-
+    this.appStore.dispatch(updateCardQuality({card: foundCard, quality: event.value}));
   }
 }
 
