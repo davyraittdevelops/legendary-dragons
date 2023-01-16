@@ -7,7 +7,10 @@ import { WebsocketService } from "src/app/services/websocket/websocket.service";
 import {
   createDeck,
   createDeckSuccess,
-  createDeckFail
+  createDeckFail,
+  deleteDeck,
+  deleteDeckSuccess,
+  deleteDeckFail
 } from "./deck.actions";
 
 @Injectable()
@@ -31,6 +34,25 @@ export class DeckEffects {
           catchError((error) => {
             console.log(error);
             return of(createDeckFail({error: true}))
+          })
+        )
+      })
+    )
+  );
+
+  public removeDeckEffect$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(deleteDeck),
+      tap(({deck_id}) => this.websocketService.sendDeleteDeckMessage(deck_id)),
+      mergeMap(() => {
+        return this.websocketService.dataUpdates$().pipe(
+          filter((event: any) => {
+            return event['event_type'] === 'DELETE_DECK_RESULT'
+          }),
+          map((event: any) => deleteDeckSuccess({deck: event["data"]})),
+          catchError((error) => {
+            console.log(error);
+            return of(deleteDeckFail({error: true}))
           })
         )
       })
