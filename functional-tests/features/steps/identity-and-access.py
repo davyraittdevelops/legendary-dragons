@@ -56,4 +56,4 @@ def step_impl(context):
     assert context.status_code == 200
 
     # Assertion for headers
-    
+

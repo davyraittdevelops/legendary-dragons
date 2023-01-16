@@ -15,3 +15,7 @@ export const searchCardByKeywordSuccess = createAction(
   '[Add Card Component] Search Success',
   props<{ cards: Card[] }>()
 )
+
+export const clearSearchResult = createAction(
+  '[Add Card Component] Clear Search Result',
+)

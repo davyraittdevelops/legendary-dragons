@@ -1,12 +1,22 @@
+<div card>
+
 <div class="collection-card">
-
   <img src="{{card.image_url}}" alt="{{card.card_name}} image" class="card-image" />
-
   <div class="d-flex justify-content-end pointer" (click)="open({content : content});">
-    <button type="button" class="btn-close m-2 bg-light" aria-label="Close"
-            (click)="removeCard()"></button>
   </div>
 </div>
+
+<div class="btn-group" role="group" aria-label="Basic example">
+  <button type="button" (click)="open({content : content});" class="btn btn-dark">Details</button>
+  <button type="button" class="btn btn-dark">Add card to deck</button>
+  <button type="button"  (click)="removeCardFromInventory(card.card_id)" class="btn btn-dark"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
+    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+  </svg></button>
+</div>
+
+</div>
+
+
 
 <ng-template #content let-modal>
   <div class="modal-header card-modal bg-dark">
@@ -18,13 +28,11 @@
   <div class="modal-body card-modal text-black">
     <div class="d-flex justify-content-between">
       <div>
-        <h2>Colors:
-          <span *ngIf="card.colors.length === 0">Colorless</span>
-          {{card.colors}}
-        </h2>
         <h2>Value: {{displayAvailablePrice(card.prices)}}</h2>
-
+        <h2>Mana Costs: {{card.mana_cost}}</h2>
+        <h2>Card Text: {{card.oracle_text}}</h2>
         <h2>Rarity: {{card.rarity | titlecase}}</h2>
+        <h2>Quality: {{card.quality}}</h2>
         <h2>
           Deck location:
           <span *ngIf="card.deck_location !== ''" class="badge text-bg-info fw-normal">
@@ -33,6 +41,11 @@
           <span *ngIf="card.deck_location == ''" class="badge text-bg-info fw-normal">
             Unassigned
           </span>
+        </h2>
+        <h2>Set Name: {{card.set_name}}</h2>
+        <h2>Colors:
+          <span *ngIf="card.colors.length === 0">Colorless</span>
+          {{card.colors}}
         </h2>
         <h2>
           Added at: {{card.created_at | date:'dd/MM/yyyy HH:mm'}}

@@ -1,6 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from '@ngrx/store';
+import { AppState } from 'src/app/app.state';
 import { InventoryCard } from 'src/app/models/inventory.model';
+import { removeCardFromInventory } from 'src/app/ngrx/inventory/inventory.actions';
 @Component({
   selector: 'app-card',
   templateUrl: './card.component.html',
@@ -8,10 +11,11 @@ import { InventoryCard } from 'src/app/models/inventory.model';
 })
 
 export class CardComponent implements OnInit {
+  @Input('inventory_id') inventoryId: string = '';
   @Input() card!: InventoryCard;
   content: any;
 
-  constructor(public modalService: NgbModal) {
+  constructor(public modalService: NgbModal, private appStore: Store<AppState>) {
   }
 
   ngOnInit(): void {
@@ -35,7 +39,7 @@ export class CardComponent implements OnInit {
     return price;
   }
 
-  removeCard() {
-    // TODO;
+  removeCardFromInventory(inventoryCardId: string) {
+    this.appStore.dispatch(removeCardFromInventory({inventoryCardId: inventoryCardId, inventoryId: this.inventoryId}));
   }
 }

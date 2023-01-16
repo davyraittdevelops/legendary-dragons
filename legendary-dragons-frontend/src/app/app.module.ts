@@ -31,6 +31,9 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { CardEffects } from './ngrx/card/card.effect';
 import { InventoryEffects } from './ngrx/inventory/inventory.effect';
 import { inventoryReducer } from './ngrx/inventory/inventory.reducer';
+import { MatSelectModule } from '@angular/material/select';
+import { MatOptionModule } from '@angular/material/core';
+import { CardFooterComponent } from './components/card-footer/card-footer.component';
 
 @NgModule({
   declarations: [
@@ -46,6 +49,8 @@ import { inventoryReducer } from './ngrx/inventory/inventory.reducer';
     WishlistPageComponent,
     AddCardComponent,
     CardComponent,
+    CardFooterComponent,
+
   ],
   imports: [
     BrowserModule,
@@ -53,6 +58,9 @@ import { inventoryReducer } from './ngrx/inventory/inventory.reducer';
     RouterOutlet,
     ReactiveFormsModule,
     HttpClientModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatInputModule,
     EffectsModule.forRoot([
       UserEffects,
       CardEffects,
