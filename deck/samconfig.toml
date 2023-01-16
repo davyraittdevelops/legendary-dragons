@@ -1,0 +1,12 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "legendary-dragons-deck"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-he0au9dk38to"
+s3_prefix = "legendary-dragons-deck"
+region = "us-east-1"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+parameter_overrides = "LegDragonsWebSocketApi=\"legendary-dragons-ws-api-gateway-LegDragonsWebSocketApi\" LegDragonsConnectionsEventBus=\"legendary-dragons-connection-event-bus-LegDragonsConnectionsEventBus\" LegDragonsBroadcastArn=\"legendary-dragons-connection-LegDragonsBroadcastArn\""
+image_repositories = []

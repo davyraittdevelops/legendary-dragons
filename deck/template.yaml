@@ -1,0 +1,118 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  deck
+
+  SAM Template for deck context
+
+Parameters:
+  LegDragonsWebSocketApi:
+    Type: String
+    Default: "legendary-dragons-ws-api-gateway-LegDragonsWebSocketApi"
+  LegDragonsConnectionsEventBus:
+    Type: String
+    Default: "legendary-dragons-connection-event-bus-LegDragonsConnectionsEventBus"
+  LegDragonsBroadcastArn:
+    Type: String
+    Default: "legendary-dragons-connection-LegDragonsBroadcastArn"
+
+Globals:
+  Api:
+    TracingEnabled: True
+  Function:
+    Handler: app.lambda_handler
+    Runtime: python3.9
+    Environment:
+        Variables:
+          TABLE_NAME: !Ref DeckTable
+    Architectures:
+      - x86_64
+    Tracing: Active
+
+Resources:
+  StreamDeckChangesFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/stream_deck_changes/
+      Policies:
+        - EventBridgePutEventsPolicy:
+            EventBusName: "connection-event-bus"
+        - DynamoDBStreamReadPolicy:
+            TableName: !Ref DeckTable
+            # Reason: https://github.com/aws/serverless-application-model/issues/289#issuecomment-939738271
+            StreamName: !Select [3, !Split ["/", !GetAtt DeckTable.StreamArn]]
+      Environment:
+        Variables:
+          EVENT_BUS_NAME:
+            Fn::ImportValue:
+                !Sub "${LegDragonsConnectionsEventBus}"
+
+  EventSourceDeckTableStream:
+    Type: AWS::Lambda::EventSourceMapping
+    Properties:
+      BatchSize: 1
+      Enabled: True
+      EventSourceArn: !GetAtt DeckTable.StreamArn
+      FunctionName: !GetAtt StreamDeckChangesFunction.Arn
+      StartingPosition: LATEST
+
+  DeckTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: decks
+      KeySchema:
+        - AttributeName: PK
+          KeyType: HASH
+        - AttributeName: SK
+          KeyType: RANGE
+      AttributeDefinitions:
+        - AttributeName: PK
+          AttributeType: S
+        - AttributeName: SK
+          AttributeType: S
+        - AttributeName: GSI1_PK
+          AttributeType: S
+        - AttributeName: GSI1_SK
+          AttributeType: S
+      BillingMode: PAY_PER_REQUEST
+      GlobalSecondaryIndexes:
+        - IndexName: "GSI1"
+          KeySchema:
+            - AttributeName: GSI1_PK
+              KeyType: HASH
+            - AttributeName: GSI1_SK
+              KeyType: RANGE
+          Projection:
+            ProjectionType: "ALL"
+      StreamSpecification:
+        StreamViewType: "NEW_AND_OLD_IMAGES"
+
+  DeckEventRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Name: deck-broadcast-rule
+      EventBusName: "connection-event-bus" # or arn
+      EventPattern:
+        source:
+          - "deck.database"
+        detail-type:
+          - INSERT
+          - REMOVE
+          - MODIFY
+        detail:
+          dynamodb:
+            Keys:
+              SK:
+                S:
+                  - prefix: USER
+                  - prefix: DECK
+              PK:
+                S:
+                  - prefix: DECK
+                  - prefix: DECK_CARD
+      State: ENABLED
+      Targets:
+        - Id: "broadcast-deck-db-changes"
+          Arn:
+            Fn::ImportValue:
+              !Sub "${LegDragonsBroadcastArn}"
