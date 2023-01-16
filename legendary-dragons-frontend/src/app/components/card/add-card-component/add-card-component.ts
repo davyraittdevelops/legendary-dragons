@@ -4,6 +4,7 @@ import { Store } from '@ngrx/store';
 import { Observable} from 'rxjs';
 import { AppState } from 'src/app/app.state';
 import { InventoryCardRequest } from 'src/app/models/inventory.model';
+import { QualityEnum } from 'src/app/models/quality.enum';
 import { clearSearchResult, searchCardByKeyword } from 'src/app/ngrx/card/card.actions';
 import { errorSelector, isLoadingSelector, querySelector, searchedCardSelector } from 'src/app/ngrx/card/card.selectors';
 import { CardState } from 'src/app/ngrx/card/models/card-state.model';
@@ -22,17 +23,8 @@ export class AddCardComponent implements OnInit {
   searchedCards$: Observable<Card[]>;
   isLoading$: Observable<boolean>;
   hasError$: Observable<boolean>;
-  previousQuery$: Observable<string>;
   previousQueryValue: string = "";
-  qualityList: string[] = [
-    "Mint",
-    "Near Mint",
-    "Excellent",
-    "Good",
-    "Light Played",
-    "Played",
-    "Poor"
-  ];
+  qualityList = QualityEnum;
 
   filterValue: string = "";
   displayedColumns: string[] = ['name', 'setName', 'released', 'rarity', 'value','imageUrl', 'addCard'];
@@ -42,13 +34,12 @@ export class AddCardComponent implements OnInit {
     this.hasError$ = this.appStore.select(errorSelector);
 
     this.searchedCards$ = this.appStore.select(searchedCardSelector);
-    this.previousQuery$ = this.appStore.select(querySelector);
+    this.appStore.select(querySelector).subscribe(value => {
+      this.previousQueryValue = value
+    });
   }
 
   ngOnInit(): void {
-    this.previousQuery$.subscribe(value => {
-      this.previousQueryValue = value;
-    })
   }
 
   applyFilter(event: Event): void {
@@ -77,6 +68,7 @@ export class AddCardComponent implements OnInit {
   }
 
   open({content}: { content: any }): void {
+    this.previousQueryValue = "";
     this.appStore.dispatch(clearSearchResult());
 
     this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title', size: 'xl'}).result.then(
@@ -109,3 +101,4 @@ export class AddCardComponent implements OnInit {
     console.log(value);
   }
 }
+

@@ -85,13 +85,13 @@
                   <mat-form-field appearance="fill">
                     <mat-label>Choose a quality</mat-label>
                     <mat-select (selectionChange)="selectedQuality($event.value, element)">
-                      <mat-option *ngFor="let quality of qualityList" [value]="quality">
-                        {{quality}}
+                      <mat-option *ngFor="let quality of qualityList | keyvalue" [value] = quality>
+                        {{quality.value}}
                       </mat-option>
                     </mat-select>
                   </mat-form-field>
 
-                  <button type="button" class="btn btn-dark" (click)="addCardtoInventory(element);" [ngStyle]="{'width': '100px', 'height': '50px'}"> + </button>
+                  <button type="button" class="btn btn-dark" (click)="addCardtoInventory(element)"> + </button>
                 </div>
 
 <!--                <div *ngIf="" class="text-danger" class="alert alert-warning" role="alert">-->
@@ -102,7 +102,7 @@
 
             <!--HEAD FOOTER INFORMATION-->
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
           </table>
         </ng-container>
 
