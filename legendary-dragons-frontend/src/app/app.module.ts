@@ -36,6 +36,8 @@ import { inventoryReducer } from './ngrx/inventory/inventory.reducer';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { CardFooterComponent } from './components/card-footer/card-footer.component';
+import { DeckEffects } from './ngrx/deck/deck.effect';
+import { deckReducer } from './ngrx/deck/deck.reducer';
 
 @NgModule({
   declarations: [
@@ -67,7 +69,8 @@ import { CardFooterComponent } from './components/card-footer/card-footer.compon
     EffectsModule.forRoot([
       UserEffects,
       CardEffects,
-      InventoryEffects
+      InventoryEffects,
+      DeckEffects
     ]),
     BrowserAnimationsModule,
     MatTabsModule,
@@ -79,7 +82,8 @@ import { CardFooterComponent } from './components/card-footer/card-footer.compon
     StoreModule.forRoot({
       user: userReducer,
       card: cardReducer,
-      inventory: inventoryReducer
+      inventory: inventoryReducer,
+      deck: deckReducer
     }),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() })
   ],
