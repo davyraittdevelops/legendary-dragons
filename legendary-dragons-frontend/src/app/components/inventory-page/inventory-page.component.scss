@@ -12,13 +12,13 @@
 .container > * {
   margin: 0 10px;
 }
-
+/* specify the number of columns */
 .container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* specify the number of columns */
-  //grid-gap: 74px; /* add padding between the elements */
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
 }
 
+/* add padding between the elements */
 @media only screen and (min-width: 960px) {
   .container{
     grid-gap: 20px;
