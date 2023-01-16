@@ -59,8 +59,14 @@ object Scenarios {
       var token = session("token").as[String].replace("Bearer ", "")
       session.set("token", token)
     }
+    .exec(Requests.connectToWebsocket)
+    .pause(2)
+    .exec(Requests.getInventory)
+    .pause(1)
     .feed(inventoryCardDetailsFeeder)
-    .exec(Requests.connectToWebsocketAndAddCardToInventory)
+    .exec(Requests.addCardToInventory)
+    .pause(2)
+    .exec(Requests.removeCardFromInventory)
 
   def GetInventoryScenario() = scenario("GetInventoryScenario")
     .feed(emailFeeder)
@@ -69,6 +75,8 @@ object Scenarios {
       var token = session("token").as[String].replace("Bearer ", "")
       session.set("token", token)
     }
+    .exec(Requests.connectToWebsocket)
+    .pause(2)
     .feed(inventoryCardDetailsFeeder)
-    .exec(Requests.connectToWebsocketAndGetInventory)
+    .exec(Requests.getInventory)
 }
