@@ -83,7 +83,7 @@
               <td mat-cell *matCellDef="let element">
                 <div class="dropdown">
                   <mat-form-field appearance="fill">
-                    <mat-label>Choose a quality {{element.quality}}</mat-label>
+                    <mat-label>{{element.quality ? element.quality : 'Please select a quality'}}</mat-label>
                     <mat-select (selectionChange)="selectedQuality($event.value, element)">
                       <mat-option *ngFor="let quality of qualityList | keyvalue" [value] = "quality">
                         {{quality.value}}

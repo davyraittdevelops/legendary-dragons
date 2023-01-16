@@ -82,24 +82,23 @@ export class AddCardComponent implements OnInit {
 
   addCardtoInventory(card: Card) {
     console.log(card)
-    return;
 
-    // const inventoryCard: InventoryCardRequest = {
-    //   scryfall_id: card.scryfall_id,
-    //   oracle_id: card.oracle_id,
-    //   card_name: card.card_name,
-    //   mana_cost: card.mana_cost,
-    //   oracle_text: card.oracle_text,
-    //   set_name: card.set_name,
-    //   colors: card.card_faces[0].colors,
-    //   prices: card.prices,
-    //   rarity: card.rarity,
-    //   quality: "" ,
-    //   deck_location: "",
-    //   image_url: card.card_faces[0].image_url
-    // }
-    //
-    // this.appStore.dispatch(addCardtoInventory({inventoryId: this.inventoryId, inventoryCard}))
+    const inventoryCard: InventoryCardRequest = {
+      scryfall_id: card.scryfall_id,
+      oracle_id: card.oracle_id,
+      card_name: card.card_name,
+      mana_cost: card.mana_cost,
+      oracle_text: card.oracle_text,
+      set_name: card.set_name,
+      colors: card.card_faces[0].colors,
+      prices: card.prices,
+      rarity: card.rarity,
+      quality: card.quality ,
+      deck_location: "",
+      image_url: card.card_faces[0].image_url
+    }
+
+    this.appStore.dispatch(addCardtoInventory({inventoryId: this.inventoryId, inventoryCard}))
   }
 
   selectedQuality(event: any, foundCard: Card) {
