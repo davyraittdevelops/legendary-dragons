@@ -13,6 +13,7 @@ if "DISABLE_XRAY" not in os.environ:
     patch_all()
 
 dynamodb = boto3.resource("dynamodb")
+table = dynamodb.Table(os.getenv("TABLE_NAME"))
 
 
 def lambda_handler(event, context):
@@ -24,7 +25,6 @@ def lambda_handler(event, context):
 
     try:
         logger.info(f"Removing inventory card from DynamoDB table")
-        table = dynamodb.Table("inventories")
         result = table.delete_item(
         Key={
             "PK": 'INVENTORY_CARD#' + inventory_card_id,
@@ -35,8 +35,7 @@ def lambda_handler(event, context):
         logger.info(f"Deleted card from table, result is  {result}")
         
     except Exception as error:
-        print(error)
-        print('Error deleting card with ID ' + 'd305e5e8-763d-4c6f-83be-7e5eb39bd2f9')
+        logger.info('Error deleting card from database ' , error)
    
     return {
         "statusCode": 200,
