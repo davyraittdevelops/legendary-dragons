@@ -5,7 +5,7 @@ import { DashboardComponent } from "./components/dashboard/dashboard.component";
 import { RegisterPageComponent } from "./components/register-page/register-page.component";
 import { IsLoggedInGuard } from "./guard/is-logged-in.guard";
 import {InventoryPageComponent} from "./components/inventory-page/inventory-page.component";
-import {DecksPageComponent} from "./components/decks-page/decks-page.component";
+import {DecksDetailsPageComponent} from "./components/decks-details-page/decks-details-page.component";
 import {WishlistPageComponent} from "./components/wishlist-page/wishlist-page.component";
 
 const routes: Routes = [
@@ -21,7 +21,7 @@ const routes: Routes = [
     canActivate: [IsLoggedInGuard]
   },
   {
-    path: 'decks', component: DecksPageComponent,
+    path: 'decks', component: DecksDetailsPageComponent,
     canActivate: [IsLoggedInGuard]
   },
   {

@@ -16,7 +16,9 @@ import { userReducer } from './ngrx/user/user.reducer';
 import { UserEffects } from './ngrx/user/user.effect';
 import { NgModule } from '@angular/core';
 import { InventoryPageComponent } from './components/inventory-page/inventory-page.component';
-import { DecksPageComponent } from './components/decks-page/decks-page.component';
+import {
+  DecksDetailsPageComponent
+} from './components/decks-details-page/decks-details-page.component';
 import { WishlistPageComponent } from './components/wishlist-page/wishlist-page.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MatTabsModule} from "@angular/material/tabs";
@@ -36,7 +38,7 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
     NavbarComponent,
     HeaderComponent,
     InventoryPageComponent,
-    DecksPageComponent,
+    DecksDetailsPageComponent,
     WishlistPageComponent,
     AddCardComponent,
     CardComponent,

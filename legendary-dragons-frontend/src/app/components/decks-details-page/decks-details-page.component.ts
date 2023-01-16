@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import {Card} from "../../models/card.model";
 
 @Component({
-  selector: 'app-decks-page',
-  templateUrl: './decks-page.component.html',
-  styleUrls: ['./decks-page.component.scss']
+  selector: 'app-decks-details-page',
+  templateUrl: './decks-details-page.component.html',
+  styleUrls: ['./decks-details-page.component.scss']
 })
-export class DecksPageComponent implements OnInit {
+export class DecksDetailsPageComponent implements OnInit {
 
   constructor() { }
 
