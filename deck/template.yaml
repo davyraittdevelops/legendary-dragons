@@ -47,6 +47,47 @@ Resources:
             Fn::ImportValue:
                 !Sub "${LegDragonsConnectionsEventBus}"
 
+  DeleteDeckFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/delete_deck/
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DeckTable
+
+  DeleteDeckPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref DeleteDeckFunction
+      Principal: apigateway.amazonaws.com
+
+  DeleteDeckRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Fn::ImportValue:
+          !Sub "${LegDragonsWebSocketApi}"
+      RouteKey: deleteDeckReq
+      AuthorizationType: NONE
+      OperationName: DeleteDeckRoute
+      Target: !Join
+        - '/'
+        - - 'integrations'
+          - !Ref DeleteDeckInteg
+
+  DeleteDeckInteg:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Fn::ImportValue:
+          !Sub "${LegDragonsWebSocketApi}"
+      Description: Delete Deck
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::Sub:
+          arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${DeleteDeckFunction.Arn}/invocations
+
   EventSourceDeckTableStream:
     Type: AWS::Lambda::EventSourceMapping
     Properties:
@@ -116,3 +157,22 @@ Resources:
           Arn:
             Fn::ImportValue:
               !Sub "${LegDragonsBroadcastArn}"
+
+  DeckEventPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::ImportValue:
+          !Sub "${LegDragonsBroadcastArn}"
+      Principal: events.amazonaws.com
+      SourceArn: !GetAtt DeckEventRule.Arn
+
+
+Outputs:
+  DeleteDeckFunction:
+    Description: "Delete Deck Function ARN"
+    Value: !GetAtt DeleteDeckFunction.Arn
+  DeleteDeckFunctionIamRole:
+    Description: "Implicit IAM Role created for Delete Deck Function"
+    Value: !GetAtt DeleteDeckFunctionRole.Arn
