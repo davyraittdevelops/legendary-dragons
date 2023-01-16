@@ -1,0 +1,165 @@
+asyncapi: 2.5.0
+info:
+  title: Legendary dragons websocket documentation
+  version: '0.1.0'
+  description: Legendary Dragons is a Magic The Gathering collection management tool that allows users to track and organize their cards. Users can add, delete, and update cards in their collection, view detailed information about each card, and search for specific cards.  Additionally, it has a deck building feature that allows players to create and manage custom decks. It also includes a wishlist feature that allows users to keep track of cards they want to acquire. The tool is available as a web application and as a mobile application.
+
+
+servers:
+  public:
+    url: wss://3ghgk1q3mf.execute-api.us-east-1.amazonaws.com/Prod
+    protocol: wss
+
+channels:
+  $connect:
+    description: AWS Lambda function that creates a new item in a DynamoDB table to store WebSocket connections. It uses Boto3 library to interact with DynamoDB, and X-Ray SDK to trace and debug requests. The function extracts connection and user information from the event object and adds it to the table as an item with primary and sort keys and a Global Secondary Index. It also logs messages using the logging module and returns a JSON object with a status code of 200 on success.
+    subscribe:
+      message:
+        $ref: '#/components/messages/$connect'
+
+  $disconnect:
+    description: AWS Lambda function that deletes an item from a DynamoDB table storing WebSocket connections. It uses Boto3 library to interact with DynamoDB, and X-Ray SDK to trace and debug requests. The function extracts the connection ID and user ID from the event object and uses it to delete the item from the table. It also logs messages using the logging module and returns a JSON object with a status code of 200 on success.
+    publish:
+      message:
+        $ref: '#/components/messages/$disconnect'
+
+  addCardToInventoryReq:
+    description: AWS Lambda function that creates a new item in a DynamoDB table to store Magic The Gathering cards as part of an inventory. It uses Boto3 library to interact with DynamoDB, and X-Ray SDK to trace and debug requests. The function extracts the card information and the inventory and user ID from the event object, generates a unique card ID and adds it to the table as an item with primary and sort keys and a Global Secondary Index. It also logs messages using the logging module and returns a JSON object with a status code of 200 on success.
+    publish:
+      message:
+        $ref: '#/components/messages/addCardToInventoryReq'
+
+  getInventoryReq:
+    description: The function extracts the user ID from the event object, and queries the DynamoDB table using the user ID and a Global Secondary Index (GSI1) to retrieve the inventory for that user. It then queries the table again using the inventory ID and GSI1 to retrieve the inventory cards for that inventory. If the inventory is not found it returns a status code of 404, otherwise it returns a JSON object with a status code of 200 on success and sends the inventory data to the client via the AWS Api Gateway Management Api.
+    subscribe:
+      message:
+        $ref: '#/components/messages/getInventoryReq'
+
+  searchCardsByKeywordReq:
+    description: AWS Lambda function that queries the Scryfall API for Magic The Gathering cards based on a keyword given in the request. It uses the requests library to make GET requests to the Scryfall API, with a small delay before each request as recommended by the API docs. It maps the response to a specific format and logs the total number of cards found and the number of cards returned. It then sends the data in chunks, to avoid large payloads, using the AWS Api Gateway Management Api to a connected client specified by the connection ID. The function also uses the AWS X-Ray SDK to trace and debug requests. It returns a JSON object with a status code of 200 on success.
+    publish:
+      message:
+        $ref: '#/components/messages/searchCardsByKeywordReq'
+
+  removeCardFromInventoryReq:
+    description: removeCardFromInventoryReq is an AWS Lambda function that removes a card from a DynamoDB table based on the provided inventory ID and card ID. It is triggered by a websocket event and it extracts the inventory ID and card ID from the event. It initializes a DynamoDB resource and table, and then uses the provided inventory ID and card ID to construct the primary key and sort key of the card item to be deleted. Then it uses the DynamoDB delete_item method to remove the card from the table. It returns a 200 status code if the deletion was successful.
+    publish:
+      message:
+        $ref: '#/components/messages/removeCardFromInventoryReq'
+
+
+# COMPONENTS ATTACHED TO THE CHANNELS
+
+components:
+  messages:
+    $connect:
+      payload:
+        type: object
+        properties:
+          action:
+            type: string
+            description: Action should be connect
+          token:
+            type: string
+            description: Token should be a valid jwt token retrieved from the /login function
+      examples:
+        - name:  $connect
+          payload:
+            action/route: $connect
+            token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0Ijox'
+
+    $disconnect:
+      payload:
+        type: object
+        properties:
+          connectionId:
+            type: string
+            description: connectionId that will be terminated
+      examples:
+        - name:  $disconnect
+          payload:
+            action/route: $disconnect
+
+
+    addCardToInventoryReq:
+      payload:
+        type: object
+        properties:
+          inventory_id:
+            type: string
+            description: Inventory ID of the users inventory.
+          inventory_card:
+            type: string
+            description: Card that will be added to the inventory.
+      examples:
+        - name: TODO ADD NAME
+          summary: TODO ADD SUMMARY
+          payload:
+            action: addCardToInventoryReq
+            inventory_id: '128938129'
+            inventory_card: '   { 
+              "PK" : "INVENTORY_CARD#${rid1}",
+              "SK" : "INVENTORY#1",
+              "entity_type" : "INVENTORY_CARD",
+              "inventory_id" : "1",
+              "created_at" : "2023-01-12",
+              "last_modified" : "2023-01-12",
+              "card_id" : "${rid2}",
+              "oracle_id" : "${rid3}",
+              "card_name" : "${rid2}",
+              "colors" : {"SS":["R"]},
+              "prices": {"usd":"0.27"},
+              "rarity" : "meta",
+              "quality" : "uncommon",
+              "deck_location" : "side",
+              "GSI1_PK" : "INVENTORY#1",
+              "GSI1_SK" : ""INVENTORY_CARD#${rid1}",
+              "scryfall_id" : "${rid4}"
+          }'
+
+
+    getInventoryReq:
+      payload:
+        type: object
+        properties:
+          user_id:
+            type: string
+            description: We need user_id to find the matching inventory.
+      examples:
+        - name: getInventoryReq
+          payload:
+            action: getInventoryReq
+
+
+    searchCardsByKeywordReq:
+      payload:
+        type: object
+        properties:
+          query:
+            type: string
+            description: Keyword query that will be searched in the scryfall api.
+      examples:
+        - name: searchCardsByKeywordReq
+          payload:
+            action: searchCardsByKeywordReq
+            query: 'Obelisk the tormentor'
+
+    removeCardFromInventoryReq:
+      payload:
+        type: object
+        properties:
+          action:
+            type: string
+            description: Websocket action/route
+          card_id:
+            type: string
+            description: Card_id of the card that should be removed.
+          inventory_id:
+            type: string
+            description: Inventory ID of the user.
+      examples:
+        - name: removeCardFromInventoryReq
+          payload:
+            action: removeCardFromInventoryReq
+            card_id: 01230-213123-422111-2312
+            inventory_id: AFA3212-ASDFADF33-AFDFDA344-GFRD54

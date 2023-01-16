@@ -1,0 +1,6 @@
+AsyncAPI is a specification for describing and documenting asynchronous APIs. It is similar to OpenAPI, which is used for describing and documenting RESTful APIs. AsyncAPI provides a way to describe message-driven APIs, including the messages that are exchanged, the channels over which they are sent, and the event-driven nature of the communication.
+
+AsyncAPI Generator is a tool that generates code, documentation, and other artifacts from an AsyncAPI specification. It can generate code for different programming languages and frameworks, and it can also generate documentation in various formats such as HTML, PDF, and JSON. The generated code and documentation can be used to build and test asynchronous APIs, and to communicate their structure and behavior to developers and other stakeholders.
+
+Please run this code from the terminal in the current folder to generate htmls docs:
+ag legendary_dragons_websocket.yml @asyncapi/html-template -o output
