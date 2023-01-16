@@ -17,6 +17,17 @@ object Scenarios {
     "password" ->  (s"Te!312-$randomString")
     )
   }
+
+  val inventoryCardDetailsFeeder = Iterator.continually {
+  val randomString = Random.alphanumeric.take(10).mkString
+  Map(
+    "rid1" -> (s"$randomString"),
+    "rid2" -> (s"test_cardid-$randomString"),
+    "rid3" -> (s"test_oracleid-$randomString"),
+    "rid4" -> (s"test_scryfallid-$randomString")
+    )
+  }
+
   val emailFeeder = csv("data/accounts.csv").circular
 
   //Scenarios
@@ -29,6 +40,43 @@ object Scenarios {
 
   def LoginAccountScenario() = scenario("LoginAccountScenario")
     .feed(emailFeeder)
-    .exec(Requests.loginAccount.check(status.is(201)))
+    .exec(Requests.loginAccount.check(status.is(200)))
 
+  def LoginThenConnectToWebSocketScenario() = scenario("LoginAccountScenario")
+    .feed(emailFeeder)
+    .exec(Requests.loginAccount.check(header("x-amzn-Remapped-Authorization").saveAs("token")))
+    .exec { session =>
+      var token = session("token").as[String].replace("Bearer ", "")
+      println("@@@@@@@@@@@  " + token)
+      session.set("token", token)
+    }
+    .exec(Requests.connectToWebsocket)
+
+  def AddCardToInventoryScenario() = scenario("AddCardToInventoryScenario")
+    .feed(emailFeeder)
+    .exec(Requests.loginAccount.check(header("x-amzn-Remapped-Authorization").saveAs("token")))
+    .exec { session =>
+      var token = session("token").as[String].replace("Bearer ", "")
+      session.set("token", token)
+    }
+    .exec(Requests.connectToWebsocket)
+    .pause(2)
+    .exec(Requests.getInventory)
+    .pause(1)
+    .feed(inventoryCardDetailsFeeder)
+    .exec(Requests.addCardToInventory)
+    .pause(2)
+    .exec(Requests.removeCardFromInventory)
+
+  def GetInventoryScenario() = scenario("GetInventoryScenario")
+    .feed(emailFeeder)
+    .exec(Requests.loginAccount.check(header("x-amzn-Remapped-Authorization").saveAs("token")))
+    .exec { session =>
+      var token = session("token").as[String].replace("Bearer ", "")
+      session.set("token", token)
+    }
+    .exec(Requests.connectToWebsocket)
+    .pause(2)
+    .feed(inventoryCardDetailsFeeder)
+    .exec(Requests.getInventory)
 }
