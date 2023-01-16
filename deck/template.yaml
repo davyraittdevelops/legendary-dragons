@@ -30,6 +30,47 @@ Globals:
     Tracing: Active
 
 Resources:
+  CreateDeckFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/create_deck/
+      Policies:
+        - DynamoDBWritePolicy:
+            TableName: !Ref DeckTable
+
+  CreateDeckPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref CreateDeckFunction
+      Principal: apigateway.amazonaws.com
+  
+  CreateDeckRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Fn::ImportValue:
+          !Sub "${LegDragonsWebSocketApi}"
+      RouteKey: createDeckReq
+      AuthorizationType: NONE
+      OperationName: CreateDeckRoute
+      Target: !Join
+        - '/'
+        - - 'integrations'
+          - !Ref CreateDeckInteg
+
+  CreateDeckInteg:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Fn::ImportValue:
+          !Sub "${LegDragonsWebSocketApi}"
+      Description: Create Deck
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::Sub:
+            arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${CreateDeckFunction.Arn}/invocations
+
   StreamDeckChangesFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -116,3 +157,12 @@ Resources:
           Arn:
             Fn::ImportValue:
               !Sub "${LegDragonsBroadcastArn}"
+
+
+Outputs:
+  CreateDeckFunction:
+    Description: "Create Deck Function ARN"
+    Value: !GetAtt CreateDeckFunction.Arn
+  CreateDeckFunctionIamRole:
+    Description: "Implicit IAM Role created for Create Deck Function"
+    Value: !GetAtt CreateDeckFunctionRole.Arn
