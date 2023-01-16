@@ -81,8 +81,8 @@ export class WebsocketService {
 
     const message = {
       'action': 'createDeckReq',
-      "deck_name": deck_name,
-      "deck_type": deck_type
+      'deck_name': deck_name,
+      'deck_type': deck_type
     };
     this.socket$.next(message);
   }
