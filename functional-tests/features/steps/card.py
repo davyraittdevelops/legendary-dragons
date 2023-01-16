@@ -47,7 +47,7 @@ def onConnect(context):
     context.ws = websocket.WebSocket()
     context.ws.connect(url=context.websocket_url + "?token=" + context.token)
 
-@given("there is an existing user and the user is logged in")
+@given("there is an user and the user is logged in")
 def step_impl(context):
     registerUser(context, "LegendaryDragonsMinor@gmail.com", "Eindopdracht3!")
     verifyUser(context)
