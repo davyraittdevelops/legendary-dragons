@@ -20,5 +20,5 @@
     *ngFor="let toast of toastService.toasts"
     class="bg-success text-light"
     [autohide]="true" [delay]="toast.delay || 5000"
-    (hiddden)="toastService.remove(toast)"
+    (hidden)="toastService.remove(toast)"
 >{{toast.body}}</ngb-toast>

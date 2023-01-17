@@ -19,31 +19,29 @@ table = dynamodb.Table(os.environ["TABLE_NAME"])
 def lambda_handler(event, context):
     """Get the most recent card update from Scryfall and update our database."""
  
-    """Retrieve all bulk data items URI"""
     logger.info("Retrieve all bulk data items")
-    response = requests.get("https://api.scryfall.com/bulk-data")
-    bulk_data_items = response.json()
+    bulk_data_items = requests.get("https://api.scryfall.com/bulk-data").json()
 
-    """Retrieve A JSON file containing every card object on Scryfall in English or the printed language if the card is only available in one language."""
     logger.info("Downloading the bulk_data_items")
-    response = requests.get(bulk_data_items['data'][2]['download_uri'])
-    bulk_data= response.json()
+    bulk_data = requests.get(bulk_data_items['data'][2]['download_uri']).json()
 
-    """Mapping the bulk data to our dynamodb objects"""
     logger.info("Mapping the bulk data to our dynamodb objects")
     mapped_cards = map(card_entry, bulk_data)
     mapped_card_faces = map(card_face_entry, bulk_data)
 
-    """Converting the maps to lists"""
     logger.info("Converting the maps to lists")
     card_faces_list = list(mapped_card_faces)
     card_list = list(mapped_cards)
 
     logger.info("Lenght of the lists: " ,  len(card_faces_list) , '                   ' , len(card_list) )
 
+    write_to_database(card_list, card_faces_list)
+    
+    return {"statusCode": 200}
+
+def write_to_database(card_list, card_faces_list):
     """Import the update objects in the database"""
     logger.info("Import the update objects in the database")
-
     counter = 0
     overwrite_keys = ['PK', 'SK']
     with table.batch_writer(overwrite_by_pkeys=overwrite_keys) as writer:
@@ -54,10 +52,7 @@ def lambda_handler(event, context):
             for card_face in card_faces:
                 counter = counter + 1
                 writer.put_item(Item=card_face)
-
-    logger.info('Done inserting / updating ' , counter , ' entries :-)')
-    
-    return {"statusCode": 200}
+    logger.info('Done inserting / updating ' , counter , ' entries')
 
 
 def card_entry(card):
