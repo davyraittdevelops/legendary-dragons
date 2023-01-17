@@ -6,11 +6,13 @@
         </div>
         <div class="col col-4 text-center">
             <h1>Grixis Midrange</h1>
-            <p class="card-counts">85 cards</p>
+          <p class="card-counts">85 cards</p>
             <em class="card-price">{{411.92 | currency }}</em>
         </div>
-        <!--    For chart diagram    -->
+      <!--    For chart diagram    -->
         <div class="col col-3 text-center"></div>
+      <app-add-card-from-inventory></app-add-card-from-inventory>
+
     </div>
     <!-- Row 2  -->
     <div class="row">
@@ -18,24 +20,14 @@
             <h1>Deck</h1>
             <cdk-virtual-scroll-viewport appendOnly itemSize="50" class="deck-viewport">
                 <div class="card-position">
-                    <app-add-card-component></app-add-card-component>
                 </div>
-                    <!-- Hier moet echte data komen te staan en het datatype Card klopt niet meer  -->
-<!--                <app-card class="deck-item" *ngFor="let deckCard of decks"-->
-<!--                          [card]="deckCard">-->
-<!--                </app-card>-->
             </cdk-virtual-scroll-viewport>
         </div>
         <div class="col col-6 text-center">
             <h1>Side Deck</h1>
             <cdk-virtual-scroll-viewport appendOnly itemSize="50" class="deck-viewport">
                 <div class="card-position">
-                    <app-add-card-component></app-add-card-component>
                 </div>
-                <!-- Hier moet echte data komen te staan en het datatype Card klopt niet meer  -->
-<!--                <app-card class="deck-item" *ngFor="let sideDeckCrad of sideDecks"-->
-<!--                          [card]="sideDeckCrad">-->
-<!--                </app-card>-->
             </cdk-virtual-scroll-viewport>
         </div>
     </div>

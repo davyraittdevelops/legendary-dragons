@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import {Card} from "../../models/card.model";
+import {Observable} from "rxjs";
+import {Inventory} from "../../models/inventory.model";
+import {inventorySelector} from "../../ngrx/inventory/inventory.selectors";
+
 
 @Component({
   selector: 'app-decks-details-page',
@@ -8,7 +12,8 @@ import {Card} from "../../models/card.model";
 })
 export class DecksDetailsPageComponent implements OnInit {
 
-  constructor() { }
+  constructor() {
+  }
 
   ngOnInit(): void {
   }
