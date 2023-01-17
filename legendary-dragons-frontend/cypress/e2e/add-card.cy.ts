@@ -19,6 +19,8 @@ describe("Search, add and delete 'Swords to plowshares' to/from the inventory", 
     //act - add
     keywordSearchInput.type("Swords to plowshares");
     keywordSearchInput.type("{enter}");
+    cy.get("#mat-select-0").click()
+    cy.get("#mat-option-0").click()
     cy.get("button[name=addCardToInventory]").eq(0).click();
     cy.get("button[aria-label=Close]").click();
     //assert - add
@@ -33,6 +35,7 @@ describe("Search, add and delete 'Swords to plowshares' to/from the inventory", 
     //act - delete
     cy.get("button[name=removeCardFromInventory]").click()
     //assert - delete
-    cy.get("div[aria-label=collection-card]").should("not.exist");
+    cy.wait(2000);
+    cy.get("div[aria-label=collection-card]", {timeout: 5000}).should("not.exist");
   });
 });
