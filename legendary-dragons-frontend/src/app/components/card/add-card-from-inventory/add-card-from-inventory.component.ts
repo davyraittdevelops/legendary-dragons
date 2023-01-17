@@ -9,6 +9,7 @@ import {errorSelector, inventorySelector, isLoadingSelector} from "../../../ngrx
 import {getInventory} from "../../../ngrx/inventory/inventory.actions";
 import {MatTableDataSource} from "@angular/material/table";
 import {Card} from "../../../models/card.model";
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-add-card-from-inventory',
@@ -20,10 +21,10 @@ export class AddCardFromInventoryComponent {
   isLoading$: Observable<boolean>;
   hasError$: Observable<boolean>;
   displayedColumns: string[] = ['Image', 'Name', 'AddButton'];
-  dataSource:any;
+  dataSource : any ;
 
 
-  constructor(private appStore: Store<AppState>, public modalService: NgbModal) {
+  constructor(private appStore: Store<AppState>, public modalService: NgbModal, private router: Router) {
     this.isLoading$ = this.appStore.select(isLoadingSelector);
     this.hasError$ = this.appStore.select(errorSelector);
     this.inventory$ = this.appStore.select(inventorySelector);
@@ -32,6 +33,9 @@ export class AddCardFromInventoryComponent {
 
   ngOnInit(): void {
     this.appStore.dispatch(getInventory())
+    let deckID = this.router.url.replace("/decks/", "");
+    console.log(deckID);
+
   }
 
   open({content}: { content: any }): void {
