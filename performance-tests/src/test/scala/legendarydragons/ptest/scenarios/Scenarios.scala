@@ -28,6 +28,14 @@ object Scenarios {
     )
   }
 
+  val deckFeeder = Iterator.continually {
+    val randomString = Random.alphanumeric.take(15).mkString
+    Map(
+      "deckName" -> (s"deck-$randomString"),
+      "deckType" -> (s"EDH-$randomString")
+    )
+  }
+
   val emailFeeder = csv("data/accounts.csv").circular
 
   //Scenarios
@@ -79,4 +87,20 @@ object Scenarios {
     .pause(2)
     .feed(inventoryCardDetailsFeeder)
     .exec(Requests.getInventory)
+
+  def CreateDeckScenario() = scenario("CreateDeckScenario")
+    .feed(emailFeeder)
+    .exec(Requests.loginAccount.check(header("x-amzn-Remapped-Authorization").saveAs("token")))
+    .exec { session =>
+      var token = session("token").as[String].replace("Bearer ", "")
+      session.set("token", token)
+    }
+    .exec(Requests.connectToWebsocket)
+    .pause(2)
+    .feed(deckFeeder)
+    .exec(Requests.createDeck)
+    .pause(1)
+    .exec(Requests.getDeck)
+    .pause(1)
+    .exec(Requests.removeDeck)
 }
