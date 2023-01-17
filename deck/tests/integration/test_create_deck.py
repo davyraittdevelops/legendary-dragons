@@ -87,7 +87,6 @@ def test_lamda_handler_success(websocket_event, table_definition):
     )["Items"][0]
 
     # Assert
-    print(deck)
     assert response["statusCode"] == 200
     assert deck["user_id"] == "user-123"
     assert deck["entity_type"] == "DECK"

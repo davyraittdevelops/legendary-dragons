@@ -18,7 +18,7 @@ table = dynamodb.Table(os.getenv("TABLE_NAME"))
 
 
 def lambda_handler(event, context):
-    deck = str(uuid.uuid4())
+    deck_id = str(uuid.uuid4())
     body = json.loads(event["body"])
     print(event)
     user_id = event["requestContext"]["authorizer"]["userId"]
@@ -27,20 +27,20 @@ def lambda_handler(event, context):
     deck_name = body["deck_name"]
     deck_type = body["deck_type"]
 
-    logger.info("Creating new deck with id: %s", deck)
+    logger.info("Creating new deck with id: %s", deck_id)
 
     table.put_item(Item={
-        "PK": "DECK#" + deck,
+        "PK": "DECK#" + deck_id,
         "SK": "USER#" + user_id,
         "entity_type": "DECK",
         "created_at": now,
         "last_modified": now,
-        "deck_id": deck,
+        "deck_id": deck_id,
         "deck_name": deck_name,
         "deck_type": deck_type,
         "user_id": user_id,
         "GSI1_PK": "USER#" + user_id,
-        "GSI1_SK": "DECK#" + deck,
+        "GSI1_SK": "DECK#" + deck_id,
         "total_value": "0"
     })
 
