@@ -81,6 +81,59 @@ Resources:
         Fn::Sub:
             arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GetDeckFunction.Arn}/invocations
 
+  GetCardsFromDeckFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/get_cards_from_deck/
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref DeckTable
+        - Statement:
+          - Effect: Allow
+            Action:
+              - 'execute-api:ManageConnections'
+            Resource:
+              Fn::Sub:
+                - 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${WebSocketApi}/*'
+                - WebSocketApi:
+                    Fn::ImportValue:
+                      'Fn::Sub': "${LegDragonsWebSocketApi}"
+
+  GetCardsFromDeckPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref GetCardsFromDeckFunction
+      Principal: apigateway.amazonaws.com
+
+  GetCardsFromDeckRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Fn::ImportValue:
+          !Sub "${LegDragonsWebSocketApi}"
+      RouteKey: getCardsFromDeckReq
+      AuthorizationType: NONE
+      OperationName: GetCardsFromDeckRoute
+      Target: !Join
+        - '/'
+        - - 'integrations'
+          - !Ref GetCardsFromDeckInteg
+
+  GetCardsFromDeckInteg:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Fn::ImportValue:
+          !Sub "${LegDragonsWebSocketApi}"
+      Description: GetCardsFromDeck
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::Sub:
+            arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GetCardsFromDeckFunction.Arn}/invocations
+
+
+
   CreateDeckFunction:
     Type: AWS::Serverless::Function
     Properties:
