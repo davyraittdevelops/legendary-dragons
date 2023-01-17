@@ -1,5 +1,6 @@
 import { createAction, props } from '@ngrx/store';
-import { Deck } from 'src/app/models/deck.model';
+import {Deck, DeckCard} from 'src/app/models/deck.model';
+import {Card} from "../../models/card.model";
 
 export const createDeck = createAction(
   '[Deck Component] Create Deck',
@@ -43,4 +44,19 @@ export const getDecksFail = createAction(
 export const getDecksSuccess = createAction(
   '[Deck Component] Get Decks Success',
   props<{decks: Deck[]}>(),
+);
+
+export const getCardsFromDeck = createAction(
+  '[Deck Component] Get Cards From Deck',
+  props<{ deck_id: string}>(),
+);
+
+export const getCardsFromDeckFail = createAction(
+  '[Deck Component]  Get Cards From Deck Fail',
+  props<{ error: boolean }>(),
+);
+
+export const getCardsFromDeckSuccess = createAction(
+  '[Deck Component] Get Cards From Deck Success',
+  props<{deck_cards: DeckCard[]}>(),
 );

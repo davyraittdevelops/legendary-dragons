@@ -8,7 +8,7 @@ import {
   removeDeckFail,
   getDecks,
   getDecksSuccess,
-  getDecksFail
+  getDecksFail, getCardsFromDeck, getCardsFromDeckFail, getCardsFromDeckSuccess
 } from "./deck.actions";
 import { DeckState } from "./models/deck-state.model";
 
@@ -35,4 +35,7 @@ export const deckReducer = createReducer(
   on(getDecks, (state) => ({...state, isLoading: true})),
   on(getDecksFail, (state) => ({...state, isLoading: false, hasError: true})),
   on(getDecksSuccess, (state, {decks}) => ({...state, isLoading: false, hasError: false, decks: decks})),
+  on(getCardsFromDeck, (state, {deck_id}) => ({...state, isLoading: true})),
+  on(getCardsFromDeckFail, (state) => ({...state, isLoading: false, hasError: true})),
+  on(getCardsFromDeckSuccess, (state, {deck_cards}) => ({...state, isLoading: false, hasError: false, cards: deck_cards})),
 )

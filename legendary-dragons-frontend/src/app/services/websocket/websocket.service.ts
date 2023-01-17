@@ -79,6 +79,13 @@ export class WebsocketService {
     this.socket$.next({'action': 'getInventoryReq'});
   }
 
+  sendGetCardsFromDeckMessage(deck_id : string) {
+    if (!this.socket$) {
+      return;
+    }
+    this.socket$.next({'action': 'getCardsFromDeckReq', 'deck_id': deck_id});
+  }
+
   sendCreateDeckMessage(deck_name: string, deck_type: string) {
     if (!this.socket$) {
       return;

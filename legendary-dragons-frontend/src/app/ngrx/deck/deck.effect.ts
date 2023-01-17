@@ -13,7 +13,7 @@ import {
   removeDeckFail,
   getDecks,
   getDecksSuccess,
-  getDecksFail,
+  getDecksFail, getCardsFromDeck,
 } from "./deck.actions";
 
 @Injectable()
@@ -67,6 +67,26 @@ export class DeckEffects {
     this.actions$.pipe(
       ofType(getDecks),
       tap(() => this.websocketService.sendGetDecksMessage()),
+      mergeMap(() => {
+        return this.websocketService.dataUpdates$().pipe(
+          filter((event: any) => {
+            console.log(event);
+            return event['event_type'] === 'GET_DECK_RESULT'
+          }),
+          map((event: any) => getDecksSuccess({decks: event["data"]})),
+          catchError((error) => {
+            console.log(error);
+            return of(getDecksFail({error: true}))
+          })
+        )
+      })
+    )
+  );
+
+  public getCardsFromDeck = createEffect(() =>
+    this.actions$.pipe(
+      ofType(getCardsFromDeck),
+      tap(({deck_id}) => this.websocketService.sendGetCardsFromDeckMessage(deck_id),
       mergeMap(() => {
         return this.websocketService.dataUpdates$().pipe(
           filter((event: any) => {
