@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {clearSearchResult} from "../../../ngrx/card/card.actions";
 import {Observable} from "rxjs";
-import {Inventory} from "../../../models/inventory.model";
+import {Inventory, InventoryCard} from "../../../models/inventory.model";
 import {Store} from "@ngrx/store";
 import {AppState} from "../../../app.state";
 import {errorSelector, inventorySelector, isLoadingSelector} from "../../../ngrx/inventory/inventory.selectors";
@@ -10,6 +10,7 @@ import {getInventory} from "../../../ngrx/inventory/inventory.actions";
 import {MatTableDataSource} from "@angular/material/table";
 import {Card} from "../../../models/card.model";
 import { Router } from '@angular/router';
+import {addCardToDeck, createDeck} from "../../../ngrx/deck/deck.actions";
 
 @Component({
   selector: 'app-add-card-from-inventory',
@@ -22,7 +23,7 @@ export class AddCardFromInventoryComponent {
   hasError$: Observable<boolean>;
   displayedColumns: string[] = ['Image', 'Name', 'AddButton'];
   dataSource : any ;
-
+  deck_id : string = '';
 
   constructor(private appStore: Store<AppState>, public modalService: NgbModal, private router: Router) {
     this.isLoading$ = this.appStore.select(isLoadingSelector);
@@ -33,9 +34,7 @@ export class AddCardFromInventoryComponent {
 
   ngOnInit(): void {
     this.appStore.dispatch(getInventory())
-    let deckID = this.router.url.replace("/decks/", "");
-    console.log(deckID);
-
+    this.deck_id = this.router.url.replace("/decks/", "");
   }
 
   open({content}: { content: any }): void {
@@ -52,9 +51,9 @@ export class AddCardFromInventoryComponent {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
-  addCardToDeck(card: Card) {
+  addCardToDeck(card: InventoryCard) {
     console.log('selected card, card', card)
-
+    this.appStore.dispatch(addCardToDeck({deck_id: this.deck_id, inventory_card: card}))
   }
 
   addCardToSideDeck(card: Card) {

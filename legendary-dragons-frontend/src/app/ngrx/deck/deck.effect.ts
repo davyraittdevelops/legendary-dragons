@@ -13,7 +13,13 @@ import {
   removeDeckFail,
   getDecks,
   getDecksSuccess,
-  getDecksFail, getCardsFromDeck, getCardsFromDeckFail, getCardsFromDeckSuccess,
+  getDecksFail,
+  getCardsFromDeck,
+  getCardsFromDeckFail,
+  getCardsFromDeckSuccess,
+  addCardToDeck,
+  addCardToDeckFail,
+  addCardToDeckSuccess,
 } from "./deck.actions";
 
 @Injectable()
@@ -24,7 +30,7 @@ export class DeckEffects {
     private readonly websocketService: WebsocketService,
   ) { }
 
-  public addCardtoInventoryEffect$ = createEffect(() =>
+  public createDeckEffect$ = createEffect(() =>
     this.actions$.pipe(
       ofType(createDeck),
       tap(({deck_name, deck_type}) => this.websocketService.sendCreateDeckMessage(deck_name, deck_type)),
@@ -37,6 +43,25 @@ export class DeckEffects {
           catchError((error) => {
             console.log(error);
             return of(createDeckFail({error: true}))
+          })
+        )
+      })
+    )
+  );
+
+  public addCardToDeckEffect$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(addCardToDeck),
+      tap(({deck_id, inventory_card}) => this.websocketService.sendAddCardToDeckMessage(deck_id, inventory_card)),
+      mergeMap(() => {
+        return this.websocketService.dataUpdates$().pipe(
+          filter((event: any) => {
+            return event['event_type'] === 'CARD_ADDED_TO_DECK'
+          }),
+          map((event: any) => addCardToDeckSuccess({deck: event["data"]})),
+          catchError((error) => {
+            console.log(error);
+            return of(addCardToDeckFail({error: true}))
           })
         )
       })

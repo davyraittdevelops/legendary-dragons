@@ -96,7 +96,7 @@ export class WebsocketService {
       return;
     }
     this.socket$.next({
-      'action': 'getCardsFromDeckReq',
+      'action': 'addCardToDeckReq',
       'deck_id': deck_id,
       'inventory_card': inventory_card
     });
