@@ -56,6 +56,37 @@ Resources:
       Policies:
         - DynamoDBWritePolicy:
             TableName: !Ref InventoryTable
+
+  UpdateInventoryCardFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/update_inventory_card/
+      Policies:
+        - DynamoDBWritePolicy:
+            TableName: !Ref InventoryTable
+
+  UpdateInventoryCardEventRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Name: update-inventory-card-rule
+      EventBusName: "connection-event-bus"
+      EventPattern:
+        source:
+          - "legdragons.decks.add_card_to_deck"
+        detail-type:
+          - "CARD_ADDED_TO_DECK"
+      State: ENABLED
+      Targets:
+        - Id: "update-inventory-card"
+          Arn: !GetAtt UpdateInventoryCardFunction.Arn
+
+  UpdateInventoryCardEventPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt UpdateInventoryCardFunction.Arn
+      Principal: events.amazonaws.com
+      SourceArn: !GetAtt UpdateInventoryCardEventRule.Arn
   
   RemoveCardFromInventoryFunction:
     Type: AWS::Serverless::Function
