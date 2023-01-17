@@ -41,7 +41,6 @@ def lambda_handler(event, context):
         Key("GSI1_SK").begins_with("DECK#"),
         IndexName="GSI1"
     )
-    logger.info(decks["Items"])
     output["data"] = decks["Items"]
     apigateway.post_to_connection(
         ConnectionId=connection_id,

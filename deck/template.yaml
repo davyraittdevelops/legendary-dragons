@@ -57,20 +57,20 @@ Resources:
 
   GetDeckRoute:
     Type: AWS::ApiGatewayV2::Route
-      Properties:
-        ApiId:
-          Fn::ImportValue:
-            !Sub "${LegDragonsWebSocketApi}"
-        RouteKey: getDeckReq
-        AuthorizationType: NONE
-        OperationName: GetDeckRoute
-        Target: !Join
-          - '/'
-          - - 'integrations'
-            - !Ref GetDeckInteg
+    Properties:
+      ApiId:
+        Fn::ImportValue:
+          !Sub "${LegDragonsWebSocketApi}"
+      RouteKey: getDeckReq
+      AuthorizationType: NONE
+      OperationName: GetDeckRoute
+      Target: !Join
+        - '/'
+        - - 'integrations'
+          - !Ref GetDeckInteg
 
   GetDeckInteg:
-      Type: AWS::ApiGatewayV2::Integration
+    Type: AWS::ApiGatewayV2::Integration
     Properties:
       ApiId:
         Fn::ImportValue:
