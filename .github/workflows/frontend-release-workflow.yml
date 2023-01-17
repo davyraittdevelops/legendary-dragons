@@ -11,7 +11,7 @@ on:
 jobs:
   build:
     name: Build
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: ./legendary-dragons-frontend

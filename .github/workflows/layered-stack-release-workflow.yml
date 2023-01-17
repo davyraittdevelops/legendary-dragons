@@ -15,18 +15,12 @@ jobs:
     strategy:
       matrix:
         stack: [cognito, connection-event-bus, websocket-api-gateway]
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: ./${{ matrix.stack }}
     steps:
       - uses: actions/checkout@v3
-
-      - name: Set up Python 3.9
-        uses: actions/setup-python@v4
-        with:
-          python-version: 3.9
-          cache: 'pip'
 
       - name: Tag the build version
         run: |

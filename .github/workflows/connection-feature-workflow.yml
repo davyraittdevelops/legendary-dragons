@@ -8,7 +8,7 @@ on:
       - '.github/workflows/connection-feature-workflow.yml'
 jobs:
   build:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: ./connection
