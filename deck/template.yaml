@@ -25,6 +25,10 @@ Globals:
     Environment:
         Variables:
           TABLE_NAME: !Ref DeckTable
+          EVENT_BUS_NAME:
+            Fn::ImportValue:
+                !Sub "${LegDragonsConnectionsEventBus}"
+
     Architectures:
       - x86_64
     Tracing: Active
@@ -219,8 +223,10 @@ Resources:
   AddCardToDeckFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: functions/create_deck/
+      CodeUri: functions/add_card_to_deck/
       Policies:
+        - EventBridgePutEventsPolicy:
+            EventBusName: "connection-event-bus"
         - DynamoDBWritePolicy:
             TableName: !Ref DeckTable
 
@@ -373,6 +379,12 @@ Outputs:
   CreateDeckFunctionIamRole:
     Description: "Implicit IAM Role created for Create Deck Function"
     Value: !GetAtt CreateDeckFunctionRole.Arn
+  GetCardsFromDeckFunction:
+    Description: "Get Cards From Deck Function ARN"
+    Value: !GetAtt GetCardsFromDeckFunction.Arn
+  GetCardsFromDeckFunctionIamRole:
+    Description: "Implicit IAM Role created for Get Cards From Deck Function Function"
+    Value: !GetAtt GetCardsFromDeckFunctionRole.Arn
   AddCardToDeckFunction:
     Description: "Add Card To Deck Function ARN"
     Value: !GetAtt AddCardToDeckFunction.Arn
