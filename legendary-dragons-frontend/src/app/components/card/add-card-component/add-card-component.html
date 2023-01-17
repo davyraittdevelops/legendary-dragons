@@ -83,20 +83,18 @@
               <td mat-cell *matCellDef="let element">
                 <div class="dropdown">
                   <mat-form-field appearance="fill">
-                    <mat-label>Choose a quality</mat-label>
+                    <mat-label>{{element.quality ? element.quality : 'Please select a quality'}}</mat-label>
                     <mat-select (selectionChange)="selectedQuality($event.value, element)">
-                      <mat-option *ngFor="let quality of qualityList | keyvalue" [value] = quality>
+                      <mat-option *ngFor="let quality of qualityList | keyvalue" [value] = "quality">
                         {{quality.value}}
                       </mat-option>
                     </mat-select>
                   </mat-form-field>
-
-                  <button type="button" class="btn btn-dark" (click)="addCardtoInventory(element)" name="addCardToInventory"> + </button>
+                  <button type="button" class="btn btn-dark" [disabled]="!element.quality"
+                          name="addCardToInventory" (click)="addCardtoInventory(element)">
+                    +
+                  </button>
                 </div>
-
-<!--                <div *ngIf="" class="text-danger" class="alert alert-warning" role="alert">-->
-<!--                  A quality must be selected!-->
-<!--                </div>-->
               </td>
             </ng-container>
 
