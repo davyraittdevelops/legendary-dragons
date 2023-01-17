@@ -1,4 +1,3 @@
-import { BrowserModule } from '@angular/platform-browser';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { HttpClientModule } from "@angular/common/http";
 import { isDevMode, NgModule } from '@angular/core';
@@ -8,6 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from "@angular/material/table";
 import { MatTabsModule } from "@angular/material/tabs";
+import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterOutlet } from "@angular/router";
 import { NgbToastModule } from '@ng-bootstrap/ng-bootstrap';
@@ -31,6 +31,8 @@ import { RegisterPageComponent } from './components/register-page/register-page.
 import { WishlistPageComponent } from './components/wishlist-page/wishlist-page.component';
 import { CardEffects } from './ngrx/card/card.effect';
 import { cardReducer } from './ngrx/card/card.reducer';
+import { DeckEffects } from './ngrx/deck/deck.effect';
+import { deckReducer } from './ngrx/deck/deck.reducer';
 import { InventoryEffects } from './ngrx/inventory/inventory.effect';
 import { inventoryReducer } from './ngrx/inventory/inventory.reducer';
 import { UserEffects } from './ngrx/user/user.effect';
@@ -66,7 +68,8 @@ import { userReducer } from './ngrx/user/user.reducer';
     EffectsModule.forRoot([
       UserEffects,
       CardEffects,
-      InventoryEffects
+      InventoryEffects,
+      DeckEffects
     ]),
     BrowserAnimationsModule,
     MatTabsModule,
@@ -77,11 +80,11 @@ import { userReducer } from './ngrx/user/user.reducer';
     NgbToastModule,
     ScrollingModule,
     StoreModule.forRoot({
-        user: userReducer,
-        card: cardReducer,
-        inventory: inventoryReducer
-      },
-      ),
+      user: userReducer,
+      card: cardReducer,
+      inventory: inventoryReducer,
+      deck: deckReducer
+    }),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() })
   ],
   providers: [],
