@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { InventoryCard } from 'src/app/models/inventory.model';
 import { environment } from 'src/environments/environment';
+import {InventoryCard} from "../../models/inventory.model";
 
 @Injectable({
   providedIn: 'root'
@@ -61,10 +62,25 @@ export class WebsocketService {
   }
 
   sendGetCardsFromDeckMessage(deck_id : string) {
+
+    console.log('sendGetCardsFromDeckMessage', deck_id)
+
     if (!this.socket$) {
       return;
     }
     this.socket$.next({'action': 'getCardsFromDeckReq', 'deck_id': deck_id});
+  }
+
+  sendAddCardToDeckMessage(deck_id : string, inventory_card : InventoryCard) {
+    console.log('sendAddCardToDeckMessage', inventory_card, deck_id)
+    if (!this.socket$) {
+      return;
+    }
+    this.socket$.next({
+      'action': 'getCardsFromDeckReq',
+      'deck_id': deck_id,
+      'inventory_card': inventory_card
+    });
   }
 
   sendCreateDeckMessage(deck_name: string, deck_type: string) {
