@@ -46,6 +46,9 @@ Resources:
                     Fn::ImportValue:
                       'Fn::Sub': "${LegDragonsWebSocketApi}"
 
+
+  
+
   UpdateCardsFromScryfallFunction:
     Type: AWS::Serverless::Function
     Properties:

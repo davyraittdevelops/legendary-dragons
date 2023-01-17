@@ -18,44 +18,44 @@ table = dynamodb.Table(os.environ["TABLE_NAME"])
 
 def lambda_handler(event, context):
     """Get the most recent card update from Scryfall and update our database."""
-    # Make GET request to JSON file
  
-    """Retrieve all bulk data items:"""
+    """Retrieve all bulk data items URI"""
+    logger.info("Retrieve all bulk data items")
     response = requests.get("https://api.scryfall.com/bulk-data")
     bulk_data_items = response.json()
-    print(bulk_data_items)
-    print(bulk_data_items['data'])
-    print(bulk_data_items['data'][2])
-    print(bulk_data_items['data'][2]['download_uri'])
 
     """Retrieve A JSON file containing every card object on Scryfall in English or the printed language if the card is only available in one language."""
+    logger.info("Downloading the bulk_data_items")
     response = requests.get(bulk_data_items['data'][2]['download_uri'])
     bulk_data= response.json()
 
+    """Mapping the bulk data to our dynamodb objects"""
+    logger.info("Mapping the bulk data to our dynamodb objects")
     mapped_cards = map(card_entry, bulk_data)
     mapped_card_faces = map(card_face_entry, bulk_data)
 
-    """Convert to set, to avoid duplicates"""
+    """Converting the maps to lists"""
+    logger.info("Converting the maps to lists")
     card_faces_list = list(mapped_card_faces)
     card_list = list(mapped_cards)
-    print("Lengths: " ,  len(card_faces_list) , '                   ' , len(card_list))
+
+    logger.info("Lenght of the lists: " ,  len(card_faces_list) , '                   ' , len(card_list) )
 
     """Import the update objects in the database"""
-    print('Start of batch writing function')
+    logger.info("Import the update objects in the database")
+
     counter = 0
     overwrite_keys = ['PK', 'SK']
     with table.batch_writer(overwrite_by_pkeys=overwrite_keys) as writer:
         for card in card_list:
             counter = counter + 1
-            # print('Writing card... ' , card)
             writer.put_item(Item=card)
         for card_faces in card_faces_list:
             for card_face in card_faces:
                 counter = counter + 1
-                # print('Writing card face... ' , card_face)
                 writer.put_item(Item=card_face)
 
-    print('Done inserting ' , counter , ' entries :-)')
+    logger.info('Done inserting / updating ' , counter , ' entries :-)')
     
     return {"statusCode": 200}
 
@@ -125,12 +125,10 @@ def card_face_entry(card):
             multiverse_id = multiverse[idx] if idx <= (multiverse_len - 1) else None
             card_face = create_card_face(face, multiverse_id, oracle_id, scryfall_id, type_line )
             card_faces.append(card_face)
-        # print('Card faces is multi faced looks like...' , card_faces)
 
     else:
         multiverse_id = multiverse[0] if multiverse_len >= 1 else None
         card_faces.append(create_card_face(card, multiverse_id, oracle_id,scryfall_id, type_line))
-        # print('Card faces is single faced looks like...' , card_faces)
 
     
     return card_faces
