@@ -100,5 +100,7 @@ object Scenarios {
     .feed(deckFeeder)
     .exec(Requests.createDeck)
     .pause(1)
+    .exec(Requests.getDeck)
+    .pause(1)
     .exec(Requests.removeDeck)
 }
