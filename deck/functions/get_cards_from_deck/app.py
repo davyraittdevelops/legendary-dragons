@@ -43,10 +43,14 @@ def lambda_handler(event, context):
     except Exception as e:
         logger.info(f"Exception retrieving cards! {e}")
     
+    output = {
+        "event_type": "GET_CARDS_FROM_DECK_RESULT",
+        "data": decks
+    }
 
     apigateway.post_to_connection(
         ConnectionId=connection_id,
-        Data=json.dumps(decks, cls=DecimalEncoder)
+        Data=json.dumps(output, cls=DecimalEncoder)
     )
     return {"statusCode": 200}
 
