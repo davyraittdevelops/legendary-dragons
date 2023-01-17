@@ -37,6 +37,7 @@ import { InventoryEffects } from './ngrx/inventory/inventory.effect';
 import { inventoryReducer } from './ngrx/inventory/inventory.reducer';
 import { UserEffects } from './ngrx/user/user.effect';
 import { userReducer } from './ngrx/user/user.reducer';
+import { AddDeckCardComponent } from './components/add-deck-card/add-deck-card.component';
 
 @NgModule({
   declarations: [
@@ -54,6 +55,7 @@ import { userReducer } from './ngrx/user/user.reducer';
     AddCardComponent,
     CardComponent,
     CardFooterComponent,
+    AddDeckCardComponent,
 
   ],
   imports: [
