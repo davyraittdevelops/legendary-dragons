@@ -73,4 +73,29 @@ export class WebsocketService {
     }
     this.socket$.next({'action': 'getInventoryReq'});
   }
+
+  sendCreateDeckMessage(deck_name: string, deck_type: string) {
+    if (!this.socket$) {
+      return;
+    }
+
+    const message = {
+      'action': 'createDeckReq',
+      'deck_name': deck_name,
+      'deck_type': deck_type
+    };
+    this.socket$.next(message);
+  }
+
+  sendRemoveDeckMessage(deck_id: string) {
+    if (!this.socket$) {
+      return;
+    }
+
+    const message = {
+      'action': 'removeDeckReq',
+      'deck_id': deck_id,
+    };
+    this.socket$.next(message);
+  }
 }

@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import {Deck} from "../../models/deck.model";
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Store } from '@ngrx/store';
+import { AppState } from 'src/app/app.state';
+import { createDeck, removeDeck } from 'src/app/ngrx/deck/deck.actions';
 
 @Component({
   selector: 'app-decks-page',
@@ -17,7 +20,12 @@ export class DecksPageComponent implements OnInit {
       created_at: new Date("2019-01-16"),
       last_modified: new Date("2019-01-16"),
       image_url: 'https://www.bazaargames.nl/images/cards/l/zen/goblin_guide.jpg',
-      cards: []
+      deck_cards: [],
+      side_deck: {
+        deck_cards: [],
+        last_modified: new Date("2019-01-16"),
+        created_at: new Date("2019-01-16")
+      }
     },
     {
       name: 'Grixis Midrange',
@@ -26,7 +34,12 @@ export class DecksPageComponent implements OnInit {
       created_at: new Date("2019-01-16"),
       last_modified: new Date("2019-01-16"),
       image_url: 'https://www.bazaargames.nl/images/cards/l/zen/goblin_guide.jpg',
-      cards: []
+      deck_cards: [],
+      side_deck: {
+        deck_cards: [],
+        last_modified: new Date("2019-01-16"),
+        created_at: new Date("2019-01-16")
+      }
     },
     {
       name: 'Mono Deck',
@@ -35,7 +48,12 @@ export class DecksPageComponent implements OnInit {
       created_at: new Date("2019-01-16"),
       last_modified: new Date("2019-01-16"),
       image_url: 'https://www.bazaargames.nl/images/cards/l/zen/goblin_guide.jpg',
-      cards: []
+      deck_cards: [],
+      side_deck: {
+        deck_cards: [],
+        last_modified: new Date("2019-01-16"),
+        created_at: new Date("2019-01-16")
+      }
     },
     {
       name: 'Vampire Deck',
@@ -44,7 +62,12 @@ export class DecksPageComponent implements OnInit {
       created_at: new Date("2019-01-16"),
       last_modified: new Date("2019-01-16"),
       image_url: 'https://www.bazaargames.nl/images/cards/l/zen/goblin_guide.jpg',
-      cards: []
+      deck_cards: [],
+      side_deck: {
+        deck_cards: [],
+        last_modified: new Date("2019-01-16"),
+        created_at: new Date("2019-01-16")
+      }
     },
     {
       name: 'Grixis Midrange',
@@ -53,7 +76,12 @@ export class DecksPageComponent implements OnInit {
       created_at: new Date("2019-01-16"),
       last_modified: new Date("2019-01-16"),
       image_url: 'https://www.bazaargames.nl/images/cards/l/zen/goblin_guide.jpg',
-      cards: []
+      deck_cards: [],
+      side_deck: {
+        deck_cards: [],
+        last_modified: new Date("2019-01-16"),
+        created_at: new Date("2019-01-16")
+      }
     },
     {
       name: 'Mono Deck',
@@ -62,7 +90,12 @@ export class DecksPageComponent implements OnInit {
       created_at: new Date("2019-01-16"),
       last_modified: new Date("2019-01-16"),
       image_url: 'https://www.bazaargames.nl/images/cards/l/zen/goblin_guide.jpg',
-      cards: []
+      deck_cards: [],
+      side_deck: {
+        deck_cards: [],
+        last_modified: new Date("2019-01-16"),
+        created_at: new Date("2019-01-16")
+      }
     },
     {
       name: 'Vampire Deck',
@@ -71,7 +104,12 @@ export class DecksPageComponent implements OnInit {
       created_at: new Date("2019-01-16"),
       last_modified: new Date("2019-01-16"),
       image_url: 'https://www.bazaargames.nl/images/cards/l/zen/goblin_guide.jpg',
-      cards: []
+      deck_cards: [],
+      side_deck: {
+        deck_cards: [],
+        last_modified: new Date("2019-01-16"),
+        created_at: new Date("2019-01-16")
+      }
     }
   ]
 
@@ -80,12 +118,32 @@ export class DecksPageComponent implements OnInit {
     decktype: new FormControl('', Validators.required)
   })
 
-  constructor(public modalService: NgbModal) { }
+  constructor(public modalService: NgbModal, private appStore: Store<AppState>) { }
 
   ngOnInit(): void {
   }
 
   open({content}: { content: any }) {
     this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title', size: 'm'});
+  }
+
+  get name() {
+    return this.form.controls?.['name'];
+  }
+
+  get type() {
+    return this.form.controls?.['decktype'];
+  }
+
+  addDeck(): void {
+    if (this.form.invalid) {
+      return;
+    }
+
+    this.appStore.dispatch(createDeck({deck_name: this.name.value!, deck_type: this.type.value!}))
+  }
+
+  removeDeck(): void {
+    this.appStore.dispatch(removeDeck({deck_id: "1"}))
   }
 }

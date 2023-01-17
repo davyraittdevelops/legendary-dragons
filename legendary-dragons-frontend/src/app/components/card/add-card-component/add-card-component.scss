@@ -47,3 +47,7 @@ img {
   width: 100px;
   height: 50px;
 }
+
+.btn-dark:disabled {
+  opacity: 0.5;
+}
