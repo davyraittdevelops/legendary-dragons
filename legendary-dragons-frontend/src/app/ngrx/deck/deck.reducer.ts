@@ -5,8 +5,10 @@ import {
   createDeckFail,
   removeDeck,
   removeDeckSuccess,
-  removeDeckFail
-
+  removeDeckFail,
+  getDecks,
+  getDecksSuccess,
+  getDecksFail
 } from "./deck.actions";
 import { DeckState } from "./models/deck-state.model";
 
@@ -30,4 +32,7 @@ export const deckReducer = createReducer(
 
   })),
   on(removeDeckFail, (state) => ({...state, isLoading: false, hasError: true})),
+  on(getDecks, (state) => ({...state, isLoading: true})),
+  on(getDecksFail, (state) => ({...state, isLoading: false, hasError: true})),
+  on(getDecksSuccess, (state, {decks}) => ({...state, isLoading: false, hasError: false, decks: decks})),
 )
