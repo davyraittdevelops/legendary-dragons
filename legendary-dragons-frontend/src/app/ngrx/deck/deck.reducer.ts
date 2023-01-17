@@ -28,7 +28,7 @@ export const deckReducer = createReducer(
     ...state,
     isLoading: false,
     hasError: false,
-    decks: state.decks.filter(deck => deck !== deck)
+    decks: state.decks.filter(currentDeck => currentDeck.deck_id !== deck.deck_id)
 
   })),
   on(removeDeckFail, (state) => ({...state, isLoading: false, hasError: true})),
