@@ -45,5 +45,4 @@ def loginUser(context):
 
 
 def onConnect(context):
-    context.ws = websocket.WebSocket()
     context.ws.connect(url=context.websocket_url + "?token=" + context.token)

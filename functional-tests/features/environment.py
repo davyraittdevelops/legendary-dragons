@@ -9,8 +9,9 @@ def before_all(context):
         "verified": False
     }
 
-    context.ws = websocket.WebSocket()
     context.nickname = ""
+
+    context.ws = websocket.WebSocket()
     context.websocket_url = "wss://3ghgk1q3mf.execute-api.us-east-1.amazonaws.com/Prod"
 
 def after_feature(context, feature):
