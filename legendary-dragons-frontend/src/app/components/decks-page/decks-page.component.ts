@@ -4,7 +4,7 @@ import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { AppState } from 'src/app/app.state';
-import { createDeck } from 'src/app/ngrx/deck/deck.actions';
+import { createDeck, removeDeck } from 'src/app/ngrx/deck/deck.actions';
 
 @Component({
   selector: 'app-decks-page',
@@ -141,5 +141,9 @@ export class DecksPageComponent implements OnInit {
     }
 
     this.appStore.dispatch(createDeck({deck_name: this.name.value!, deck_type: this.type.value!}))
+  }
+
+  removeDeck(): void {
+    this.appStore.dispatch(removeDeck({deck_id: "1"}))
   }
 }

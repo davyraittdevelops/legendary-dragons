@@ -62,4 +62,36 @@ object Requests {
       """{"action": "removeCardFromInventoryReq", "inventory_id": "${inventoryId}",
         | "inventory_card_id": "${inventoryCardId}" }""".stripMargin)
     .await(25)(checkRemoveCardFromInventoryReply)
+
+  val checkCreateDeckReply = ws.checkTextMessage("Create Deck Check")
+    .check(
+      regex("INSERT_DECK_RESULT"),
+      jsonPath("$.data.deck_id").saveAs("deckId"),
+    )
+
+  val createDeck = ws("createDeckReq")
+    .sendText(
+      """{"action": "createDeckReq", "deck_name": "${deckName}", "deck_type": "${deckType}"}"""
+    ).await(20)(checkCreateDeckReply)
+
+  val checkGetDeckReply = ws.checkTextMessage("Get Deck Check")
+    .check(
+      regex("GET_DECK_RESULT")
+    )
+
+  val getDeck = ws("getDeck")
+    .sendText("""{"action": "getDeckReq"}""")
+    .await(25)(checkGetDeckReply)
+
+  val checkRemoveDeckReply = ws.checkTextMessage("Remove Deck Check")
+    .check(
+      regex("REMOVE_DECK_RESULT"),
+      jsonPath("$.data.deck_id").saveAs("deckId"),
+    )
+
+  val removeDeck = ws("removeDeckReq")
+    .sendText(
+      """{"action": "removeDeckReq", "deck_id": "${deckId}" } """
+    ).await(20)(checkRemoveDeckReply)
+
 }

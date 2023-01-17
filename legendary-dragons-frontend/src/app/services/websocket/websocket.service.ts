@@ -86,4 +86,16 @@ export class WebsocketService {
     };
     this.socket$.next(message);
   }
+
+  sendRemoveDeckMessage(deck_id: string) {
+    if (!this.socket$) {
+      return;
+    }
+
+    const message = {
+      'action': 'removeDeckReq',
+      'deck_id': deck_id,
+    };
+    this.socket$.next(message);
+  }
 }

@@ -7,7 +7,10 @@ import { WebsocketService } from "src/app/services/websocket/websocket.service";
 import {
   createDeck,
   createDeckSuccess,
-  createDeckFail
+  createDeckFail,
+  removeDeck,
+  removeDeckSuccess,
+  removeDeckFail
 } from "./deck.actions";
 
 @Injectable()
@@ -18,7 +21,7 @@ export class DeckEffects {
     private readonly websocketService: WebsocketService,
   ) { }
 
-  public createDeckEffect$ = createEffect(() =>
+  public addCardtoInventoryEffect$ = createEffect(() =>
     this.actions$.pipe(
       ofType(createDeck),
       tap(({deck_name, deck_type}) => this.websocketService.sendCreateDeckMessage(deck_name, deck_type)),
@@ -31,6 +34,25 @@ export class DeckEffects {
           catchError((error) => {
             console.log(error);
             return of(createDeckFail({error: true}))
+          })
+        )
+      })
+    )
+  );
+
+  public removeDeckEffect$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(removeDeck),
+      tap(({deck_id}) => this.websocketService.sendRemoveDeckMessage(deck_id)),
+      mergeMap(() => {
+        return this.websocketService.dataUpdates$().pipe(
+          filter((event: any) => {
+            return event['event_type'] === 'REMOVE_DECK_RESULT'
+          }),
+          map((event: any) => removeDeckSuccess({deck: event["data"]})),
+          catchError((error) => {
+            console.log(error);
+            return of(removeDeckFail({error: true}))
           })
         )
       })

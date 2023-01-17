@@ -16,3 +16,17 @@ export const createDeckSuccess = createAction(
   props<{deck: Deck}>(),
 );
 
+export const removeDeck = createAction(
+  '[Deck Component] Delete Deck',
+  props<{ deck_id: string }>(),
+);
+
+export const removeDeckFail = createAction(
+  '[Deck Component] Delete Deck Fail',
+  props<{ error: boolean }>(),
+);
+
+export const removeDeckSuccess = createAction(
+  '[Deck Component] Delete Deck Success',
+  props<{deck: Deck}>(),
+);
