@@ -55,7 +55,7 @@ Resources:
       CodeUri:  functions/update_cards_from_scryfall/
       Environment:
         Variables:
-          SCRYFALL_URL: "https://data.scryfall.io/default-cards/default-cards-20230116100518.json"
+          SCRYFALL_BULK_DATA_URL: "https://api.scryfall.com/bulk-data"
           TABLE_NAME: "cards"
       Policies:
         - DynamoDBCrudPolicy:

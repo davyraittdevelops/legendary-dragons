@@ -20,7 +20,7 @@ def lambda_handler(event, context):
     """Get the most recent card update from Scryfall and update our database."""
  
     logger.info("Retrieve all bulk data items")
-    bulk_data_items = requests.get("https://api.scryfall.com/bulk-data").json()
+    bulk_data_items = requests.get(os.environ["SCRYFALL_BULK_DATA_URL"]).json()
 
     logger.info("Downloading the bulk_data_items")
     bulk_data = requests.get(bulk_data_items['data'][2]['download_uri']).json()
@@ -32,8 +32,6 @@ def lambda_handler(event, context):
     logger.info("Converting the maps to lists")
     card_faces_list = list(mapped_card_faces)
     card_list = list(mapped_cards)
-
-    logger.info("Lenght of the lists: " ,  len(card_faces_list) , '                   ' , len(card_list) )
 
     write_to_database(card_list, card_faces_list)
     
@@ -89,10 +87,6 @@ def card_entry(card):
     }
 
 
-
-
-
-
 def card_face_entry(card):
     is_multifaced = "card_faces" in card
     card_faces = []
@@ -124,11 +118,8 @@ def card_face_entry(card):
     else:
         multiverse_id = multiverse[0] if multiverse_len >= 1 else None
         card_faces.append(create_card_face(card, multiverse_id, oracle_id,scryfall_id, type_line))
-
     
     return card_faces
-
-    
 
 
 def create_card_face(card, multiverse_id, oracle_id, scryfall_id, type_line):
