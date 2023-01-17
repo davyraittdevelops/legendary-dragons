@@ -37,5 +37,12 @@ export const deckReducer = createReducer(
   on(getDecksSuccess, (state, {decks}) => ({...state, isLoading: false, hasError: false, decks: decks})),
   on(getCardsFromDeck, (state, {deck_id}) => ({...state, isLoading: true})),
   on(getCardsFromDeckFail, (state) => ({...state, isLoading: false, hasError: true})),
-  on(getCardsFromDeckSuccess, (state, {deck_cards}) => ({...state, isLoading: false, hasError: false, cards: deck_cards})),
+  on(getCardsFromDeckSuccess, (state, {deck_cards}) => (
+    {
+      ...state,
+      isLoading: false,
+      hasError: false,
+      cards: deck_cards
+
+    })),
 )

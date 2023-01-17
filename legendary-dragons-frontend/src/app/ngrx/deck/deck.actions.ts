@@ -58,5 +58,5 @@ export const getCardsFromDeckFail = createAction(
 
 export const getCardsFromDeckSuccess = createAction(
   '[Deck Component] Get Cards From Deck Success',
-  props<{deck_cards: DeckCard[]}>(),
+  props<{deck_cards: DeckCard[], deck_id: string}>(),
 );
