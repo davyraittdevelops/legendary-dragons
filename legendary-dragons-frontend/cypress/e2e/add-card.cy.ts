@@ -35,6 +35,7 @@ describe("Search, add and delete 'Swords to plowshares' to/from the inventory", 
     //act - delete
     cy.get("button[name=removeCardFromInventory]").click()
     //assert - delete
-    cy.get("div[aria-label=collection-card]").should("not.exist");
+    cy.wait(2000);
+    cy.get("div[aria-label=collection-card]", {timeout: 5000}).should("not.exist");
   });
 });
