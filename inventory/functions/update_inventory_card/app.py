@@ -17,6 +17,8 @@ def lambda_handler(event, context):
   """Updates Inventory Card entry"""
   inventory_card = event["detail"]["inventory_card"]
 
-  table.put_item(Item=inventory_card)
+  table.put_item(Item=inventory_card,
+    ConditionExpression='attribute_exists(inventory_card_id)'
+  )
 
   return {"statusCode": 200}
