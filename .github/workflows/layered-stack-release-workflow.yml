@@ -15,7 +15,7 @@ jobs:
     strategy:
       matrix:
         stack: [cognito, connection-event-bus, websocket-api-gateway]
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     defaults:
       run:
         working-directory: ./${{ matrix.stack }}
