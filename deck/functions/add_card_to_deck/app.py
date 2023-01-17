@@ -22,7 +22,6 @@ def lambda_handler(event, context):
   """Creates a new Deck_Card entry"""
   body = json.loads(event["body"])
 
-  deck_name = body["deck_name"]
   deck_id = body["deck_id"]
   inventory_card = body["inventory_card"]
   deck_card_id = str(uuid.uuid4())
@@ -32,8 +31,6 @@ def lambda_handler(event, context):
   sk = f"DECK#{deck_id}"
 
   try:
-    logger.info(f"Changing inventory card deck location to ({deck_name}) in DynamoDB table")
-
     update_inventory_card_deck_location(inventory_card)
 
     logger.info(f"Adding deck card ({deck_card_id}) to DynamoDB table")
