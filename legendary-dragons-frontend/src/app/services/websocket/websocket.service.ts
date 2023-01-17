@@ -29,6 +29,11 @@ export class WebsocketService {
     this.connect().complete();
   }
 
+  private sendMessage(action: string, payload: any): void {
+    if (!this.socket$) return;
+    this.socket$.next({action, ...payload});
+  }
+
   sendSearchCardByKeywordMessage(query: string) {
     if (!this.socket$) {
       return;
@@ -97,5 +102,9 @@ export class WebsocketService {
       'deck_id': deck_id,
     };
     this.socket$.next(message);
+  }
+
+  sendGetDecksMessage(): void {
+    this.sendMessage("getDeckReq", {});
   }
 }

@@ -5,7 +5,8 @@
 
 .add-deck-button {
   opacity: 0.7;
-  width: 218px;
+  width: 287px;
+  height: 230px;
 }
 
 .transparent {
@@ -48,12 +49,19 @@
     color: #637777;
 }
 
-.remove-card-button:hover {
-    background-color: #dc3545 !important;
-    color: #edf2f7;
+.action-button {
+  color: #edf2f7;
 }
 
-.delete-icon {
-    margin-left: 1.5rem;
-    font-size: 1.5rem;
+.action-button:hover {
+  color: gray;
+}
+
+
+.delete-icon:hover {
+  color: #dc3545 !important;
+}
+
+.deck-card {
+  width: 18rem;
 }
