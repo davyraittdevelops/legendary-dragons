@@ -113,8 +113,6 @@ export class DecksPageComponent implements OnInit {
     }
   ]
 
-  deckAdded: boolean = false;
-
   form = new FormGroup({
     name: new FormControl('', Validators.required),
     decktype: new FormControl('', Validators.required)
