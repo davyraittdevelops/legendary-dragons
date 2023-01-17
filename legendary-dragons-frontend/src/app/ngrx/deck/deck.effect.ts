@@ -70,7 +70,6 @@ export class DeckEffects {
       mergeMap(() => {
         return this.websocketService.dataUpdates$().pipe(
           filter((event: any) => {
-            console.log(event);
             return event['event_type'] === 'GET_DECK_RESULT'
           }),
           map((event: any) => getDecksSuccess({decks: event["data"]})),
