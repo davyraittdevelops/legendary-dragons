@@ -2,7 +2,7 @@ from behave import given, when, then
 import logging
 import json
 import boto3
-from setup import registerUser, verifyUser, loginUser, onConnect
+from setup import registerVerifyLoginConnectUser
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -11,13 +11,10 @@ client = boto3.client("cognito-idp", region_name="us-east-1")
 
 @given("there is an user and the user is logged in")
 def step_impl(context):
-    registerUser(context, "LegendaryDragonsMinor@gmail.com", "Eindopdracht3!")
-    verifyUser(context)
-    loginUser(context)
+    registerVerifyLoginConnectUser(context)
 
 @when("we have a request for searching cards with keyword '{keyword}'")
 def step_impl(context, keyword):
-    onConnect(context)
     context.query = keyword
 
     context.ws.send(json.dumps({
