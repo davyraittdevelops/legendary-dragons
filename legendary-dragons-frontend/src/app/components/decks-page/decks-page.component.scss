@@ -1,6 +1,6 @@
 .blank-img {
-    height: 269.67px;
-    width: 194px;
+  height: 269.67px;
+  width: 194px;
 }
 
 .add-deck-button {
@@ -10,43 +10,43 @@
 }
 
 .transparent {
-    background-color: transparent;
-    border: none;
+  background-color: transparent;
+  border: none;
 }
 
 .sizing {
-    font-size: 13px;
+  font-size: 13px;
 }
 
 .gap {
-    margin-top: 15px;
+  margin-top: 15px;
 }
 
 .container {
-    padding-top: 20px;
-    //display: flex;
-    //flex-direction: row;
-    justify-content: center; /* align elements to the left */
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  padding-top: 20px;
+  //display: flex;
+  //flex-direction: row;
+  justify-content: center; /* align elements to the left */
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
 }
 
 .container > * {
-    margin: 0 10px;
+  margin: 0 10px;
 }
 
 /* add padding between the elements */
 @media only screen and (min-width: 960px) {
-    .container{
-        grid-gap: 20px;
-    }
+  .container{
+    grid-gap: 20px;
+  }
 }
 
 .remove-card-button {
-    background-color: #eea6a6 !important;
-    box-shadow: inset 0 3px 5px rgba(0,0,0,0.125);
-    border-color: indianred;
-    color: #637777;
+  background-color: #eea6a6 !important;
+  box-shadow: inset 0 3px 5px rgba(0,0,0,0.125);
+  border-color: indianred;
+  color: #637777;
 }
 
 .action-button {
@@ -56,7 +56,6 @@
 .action-button:hover {
   color: gray;
 }
-
 
 .delete-icon:hover {
   color: #dc3545 !important;
