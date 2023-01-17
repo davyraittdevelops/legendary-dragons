@@ -142,7 +142,7 @@ export class DecksPageComponent implements OnInit {
       return;
     }
 
-    this.appStore.dispatch(createDeck({deck_name: this.form.get("name")?.getRawValue(), deck_type: this.form.get("decktype")?.getRawValue()}))
+    this.appStore.dispatch(createDeck({deck_name: this.name.value!, deck_type: this.type.value!}))
   }
 
   removeDeck(): void {

@@ -15,3 +15,10 @@
     </mat-tab>
   </mat-tab-group>
 </div>
+
+<ngb-toast
+    *ngFor="let toast of toastService.toasts"
+    class="bg-success text-light"
+    [autohide]="true" [delay]="toast.delay || 5000"
+    (hiddden)="toastService.remove(toast)"
+>{{toast.body}}</ngb-toast>

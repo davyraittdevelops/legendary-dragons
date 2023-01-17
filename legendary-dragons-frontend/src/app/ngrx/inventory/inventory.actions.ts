@@ -1,6 +1,7 @@
 import { createAction, props } from '@ngrx/store';
 import { Inventory, InventoryCard, InventoryCardRequest } from 'src/app/models/inventory.model';
 
+
 export const addCardtoInventory = createAction(
   '[Add Card Component] Add To Inventory',
   props<{ inventoryCard: InventoryCardRequest, inventoryId: string }>()
@@ -15,6 +16,7 @@ export const addCardtoInventorySuccess = createAction(
   '[Add Card Component] Add To Inventory Success',
   props<{ inventoryCard: InventoryCard}>()
 );
+
 
 export const removeCardFromInventory = createAction(
   '[Add Card Component] Remove Card From Inventory',

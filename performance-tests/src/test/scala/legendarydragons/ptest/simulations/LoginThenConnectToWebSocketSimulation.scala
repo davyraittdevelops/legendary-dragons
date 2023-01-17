@@ -6,7 +6,7 @@ import io.gatling.jdbc.Predef._
 import legendarydragons.ptest.config.Config.getRestApiUrl
 import legendarydragons.ptest.scenarios.Scenarios._
 
-class LoginAccountSimulation extends Simulation {
+class LoginThenConnectToWebSocketSimulation extends Simulation {
 
   val duration = System.getProperty("duration", "10").toInt seconds
   val userRate = System.getProperty("userRate", "1").toDouble
@@ -14,7 +14,7 @@ class LoginAccountSimulation extends Simulation {
   def httpProtocol = http.baseUrl(getRestApiUrl(environment))
     .userAgentHeader("Gatling/test")
 
-  setUp(LoginAccountScenario()
+  setUp(LoginThenConnectToWebSocketScenario()
   .inject(constantUsersPerSec(userRate) during duration)
   .protocols(httpProtocol))
   .assertions(
