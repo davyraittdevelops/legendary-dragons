@@ -1,4 +1,4 @@
-<div style="display: flex; flex-direction: row">
+<div class="d-flex flex-row">
   <mat-tab-group >
     <mat-tab label="Inventory">
       <app-inventory-page></app-inventory-page>
@@ -15,3 +15,10 @@
     </mat-tab>
   </mat-tab-group>
 </div>
+
+<ngb-toast
+    *ngFor="let toast of toastService.toasts"
+    class="bg-success text-light"
+    [autohide]="true" [delay]="toast.delay || 5000"
+    (hiddden)="toastService.remove(toast)"
+>{{toast.body}}</ngb-toast>

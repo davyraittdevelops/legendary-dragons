@@ -3,6 +3,9 @@ name: Frontend Feature workflow
 on:
   push:
     branches: ['feature**']
+    paths:
+      - 'legendary-dragons-frontend**'
+      - '.github/workflows/frontend-feature-workflow.yml'
 jobs:
   build:
     runs-on: ubuntu-latest

@@ -1,3 +1,12 @@
 command to run tests from this folder:
 mvn gatling:test -Dsimulation=RegisterAccountSimulation  -Dduration=2 -DuserRate=4 -X
 you can change dsimulation, dduration, and duserrate
+
+SIMULATIONS:
+
+mvn gatling:test -Dsimulation=RegisterAccountSimulation -Dduration=5 -DuserRate=1 -X
+mvn gatling:test -Dsimulation=VisitFrontEndSimulation -Dduration=300 -DuserRate=30 -X
+mvn gatling:test -Dsimulation=LoginAccountSimulation -Dduration=5 -DuserRate=1 -X
+mvn gatling:test -Dsimulation=LoginThenConnectToWebSocketSimulation -Dduration=5 -DuserRate=1 -X
+mvn gatling:test -Dsimulation=AddCardToInventorySimulation -Dduration=5 -DuserRate=1 -X
+mvn gatling:test -Dsimulation=GetInventorySimulation -Dduration=5 -DuserRate=1 -X

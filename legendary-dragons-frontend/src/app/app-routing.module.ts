@@ -5,9 +5,10 @@ import {DashboardComponent} from "./components/dashboard/dashboard.component";
 import {RegisterPageComponent} from "./components/register-page/register-page.component";
 import {IsLoggedInGuard} from "./guard/is-logged-in.guard";
 import {InventoryPageComponent} from "./components/inventory-page/inventory-page.component";
-import {DecksPageComponent} from "./components/decks-page/decks-page.component";
+import {DecksDetailsPageComponent} from "./components/decks-details-page/decks-details-page.component";
 import {WishlistPageComponent} from "./components/wishlist-page/wishlist-page.component";
 import {HomePageComponent} from "./components/home-page/home-page.component";
+import {DecksPageComponent} from "./components/decks-page/decks-page.component";
 
 const routes: Routes = [
   {
@@ -27,6 +28,10 @@ const routes: Routes = [
   {
     path: 'decks', component: DecksPageComponent,
     canActivate: [IsLoggedInGuard]
+  },
+  {
+    path: 'decks/:id',
+    component: DecksDetailsPageComponent
   },
   {
     path: 'wishlist', component: WishlistPageComponent,
