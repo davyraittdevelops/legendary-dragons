@@ -1,5 +1,3 @@
-import { Card } from "./card.model";
-
 export interface Deck {
   deck_id: string;
   deck_name: string;

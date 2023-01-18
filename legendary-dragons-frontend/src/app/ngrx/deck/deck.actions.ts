@@ -1,5 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 import {Deck, DeckCard} from 'src/app/models/deck.model';
+import { InventoryCard } from 'src/app/models/inventory.model';
 import {Card} from "../../models/card.model";
 
 export const createDeck = createAction(
@@ -47,16 +48,32 @@ export const getDecksSuccess = createAction(
 );
 
 export const getCardsFromDeck = createAction(
-  '[Deck Component] Get Cards From Deck',
+  '[Deck Detail Component] Get Cards From Deck',
   props<{ deck_id: string}>(),
 );
 
 export const getCardsFromDeckFail = createAction(
-  '[Deck Component]  Get Cards From Deck Fail',
+  '[Deck Detail Component]  Get Cards From Deck Fail',
   props<{ error: boolean }>(),
 );
 
 export const getCardsFromDeckSuccess = createAction(
-  '[Deck Component] Get Cards From Deck Success',
-  props<{deck_cards: DeckCard[], deck_id: string}>(),
+  '[Deck Detail Component] Get Cards From Deck Success',
+  props<{deck_id: string, deck_cards: DeckCard[]}>(),
 );
+
+export const addCardToDeck = createAction(
+  '[Deck Detail Component] Add Card To Deck',
+  props<{ deck_id: string, inventory_card: InventoryCard }>(),
+);
+
+export const addCardToDeckFail = createAction(
+  '[Deck Detail Component] Add Card To Deck Fail',
+  props<{ error: boolean }>(),
+);
+
+export const addCardToDeckSuccess = createAction(
+  '[Deck Detail Component]Add Card To Deck Success',
+  props<{deck: Deck}>(),
+);
+
