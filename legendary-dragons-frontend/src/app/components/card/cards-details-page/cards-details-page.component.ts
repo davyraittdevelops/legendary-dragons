@@ -5,12 +5,12 @@ import { AppState } from 'src/app/app.state';
 import { InventoryCard } from 'src/app/models/inventory.model';
 import { removeCardFromInventory } from 'src/app/ngrx/inventory/inventory.actions';
 @Component({
-  selector: 'app-card',
-  templateUrl: './card.component.html',
-  styleUrls: ['./card.component.scss']
+  selector: 'app-cards-details-page',
+  templateUrl: './cards-details-page.component.html',
+  styleUrls: ['./cards-details-page.component.scss']
 })
 
-export class CardComponent implements OnInit {
+export class CardsDetailsPageComponent {
   @Input('inventory_id') inventoryId: string = '';
   @Input() card!: InventoryCard;
   content: any;
@@ -18,8 +18,6 @@ export class CardComponent implements OnInit {
   constructor(public modalService: NgbModal, private appStore: Store<AppState>) {
   }
 
-  ngOnInit(): void {
-  }
 
   open({content}: { content: any }) {
     this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title', size: 'xl'});

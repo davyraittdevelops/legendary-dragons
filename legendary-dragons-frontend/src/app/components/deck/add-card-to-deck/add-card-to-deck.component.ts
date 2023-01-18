@@ -12,17 +12,17 @@ import { Router } from '@angular/router';
 import { addCardToDeck } from 'src/app/ngrx/deck/deck.actions';
 
 @Component({
-  selector: 'app-add-card-from-inventory',
-  templateUrl: './add-card-from-inventory.component.html',
-  styleUrls: ['./add-card-from-inventory.component.scss']
+  selector: 'app-add-card-to-deck',
+  templateUrl: './add-card-to-deck.component.html',
+  styleUrls: ['./add-card-to-deck.component.scss']
 })
-export class AddCardFromInventoryComponent {
+export class AddCardToDeckComponent {
   inventory$: Observable<Inventory>;
   isLoading$: Observable<boolean>;
   hasError$: Observable<boolean>;
   displayedColumns: string[] = ['Image', 'Name', 'AddButton'];
   dataSource : any ;
-  deckId = this.router.url.replace("/decks/", "");
+  deck_id = this.router.url.replace("/decks/", "");
 
 
   constructor(private appStore: Store<AppState>, public modalService: NgbModal, private router: Router) {
@@ -33,7 +33,7 @@ export class AddCardFromInventoryComponent {
 
 
   ngOnInit(): void {
-    this.appStore.dispatch(getInventory())
+    // this.appStore.dispatch(getInventory())
   }
 
   open({content}: { content: any }): void {
@@ -51,10 +51,10 @@ export class AddCardFromInventoryComponent {
   }
 
   addCardToDeck(card: InventoryCard) {
-    this.appStore.dispatch(addCardToDeck({deck_id: this.deckId, deck_type: "main_deck", inventory_card: card}))
+    this.appStore.dispatch(addCardToDeck({deck_id: this.deck_id, deck_type: "main_deck", inventory_card: card}))
   }
 
   addCardToSideDeck(card: InventoryCard) {
-    this.appStore.dispatch(addCardToDeck({deck_id: this.deckId, deck_type: "side_deck", inventory_card: card}))
+    this.appStore.dispatch(addCardToDeck({deck_id: this.deck_id, deck_type: "side_deck", inventory_card: card}))
   }
 }

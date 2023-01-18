@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 import { AppState } from 'src/app/app.state';
 import { createDeck, getDecks, removeDeck } from 'src/app/ngrx/deck/deck.actions';
 import { decksSelector, errorSelector, isLoadingSelector } from 'src/app/ngrx/deck/deck.selectors';
-import { Deck } from "../../models/deck.model";
+import { Deck } from "../../../models/deck.model";
 
 @Component({
   selector: 'app-decks-page',

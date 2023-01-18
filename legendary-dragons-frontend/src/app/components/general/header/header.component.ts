@@ -5,8 +5,8 @@ import { Observable } from "rxjs";
 import { User } from 'src/app/models/user.model';
 import { logoutUser } from 'src/app/ngrx/user/user.actions';
 import { isLoggedInSelector, userSelector } from 'src/app/ngrx/user/user.selectors';
-import { AppState } from "../../app.state";
-import {WebsocketService} from "../../services/websocket/websocket.service";
+import { AppState } from "../../../app.state";
+import {WebsocketService} from "../../../services/websocket/websocket.service";
 
 @Component({
   selector: 'app-header',

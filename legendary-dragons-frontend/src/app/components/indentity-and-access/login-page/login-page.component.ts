@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import { Store } from "@ngrx/store";
-import { AppState } from "../../app.state";
+import { AppState } from "../../../app.state";
 import { Observable } from 'rxjs';
 import { isLoadingSelector, userErrorSelector } from 'src/app/ngrx/user/user.selectors';
 import { loginUser } from 'src/app/ngrx/user/user.actions';

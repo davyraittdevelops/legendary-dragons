@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ToastService } from 'src/app/services/toast/toast.service';
-import { WebsocketService } from "../../services/websocket/websocket.service";
+import { WebsocketService } from "../../../services/websocket/websocket.service";
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',

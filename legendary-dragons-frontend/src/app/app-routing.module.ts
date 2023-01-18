@@ -1,14 +1,14 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {LoginPageComponent} from "./components/login-page/login-page.component";
-import {DashboardComponent} from "./components/dashboard/dashboard.component";
-import {RegisterPageComponent} from "./components/register-page/register-page.component";
+import {LoginPageComponent} from "./components/indentity-and-access/login-page/login-page.component";
+import {DashboardComponent} from "./components/general/dashboard/dashboard.component";
+import {RegisterPageComponent} from "./components/indentity-and-access/register-page/register-page.component";
 import {IsLoggedInGuard} from "./guard/is-logged-in.guard";
-import {InventoryPageComponent} from "./components/inventory-page/inventory-page.component";
-import {DecksDetailsPageComponent} from "./components/decks-details-page/decks-details-page.component";
-import {WishlistPageComponent} from "./components/wishlist-page/wishlist-page.component";
-import {HomePageComponent} from "./components/home-page/home-page.component";
-import {DecksPageComponent} from "./components/decks-page/decks-page.component";
+import {InventoryPageComponent} from "./components/inventory/inventory-page/inventory-page.component";
+import {DecksDetailsPageComponent} from "./components/deck/decks-details-page/decks-details-page.component";
+import {WishlistPageComponent} from "./components/wishlist/wishlist-page/wishlist-page.component";
+import {HomePageComponent} from "./components/general/home-page/home-page.component";
+import {DecksPageComponent} from "./components/deck/decks-page/decks-page.component";
 
 const routes: Routes = [
   {
