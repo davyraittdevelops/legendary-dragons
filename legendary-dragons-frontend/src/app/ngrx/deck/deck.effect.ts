@@ -10,7 +10,10 @@ import {
   createDeckFail,
   removeDeck,
   removeDeckSuccess,
-  removeDeckFail
+  removeDeckFail,
+  getDecks,
+  getDecksSuccess,
+  getDecksFail,
 } from "./deck.actions";
 
 @Injectable()
@@ -53,6 +56,26 @@ export class DeckEffects {
           catchError((error) => {
             console.log(error);
             return of(removeDeckFail({error: true}))
+          })
+        )
+      })
+    )
+  );
+
+
+  public getDecksEffect$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(getDecks),
+      tap(() => this.websocketService.sendGetDecksMessage()),
+      mergeMap(() => {
+        return this.websocketService.dataUpdates$().pipe(
+          filter((event: any) => {
+            return event['event_type'] === 'GET_DECK_RESULT'
+          }),
+          map((event: any) => getDecksSuccess({decks: event["data"]})),
+          catchError((error) => {
+            console.log(error);
+            return of(getDecksFail({error: true}))
           })
         )
       })

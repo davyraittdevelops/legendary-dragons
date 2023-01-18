@@ -21,7 +21,6 @@ eventbus = os.getenv("EVENT_BUS_NAME")
 def lambda_handler(event, context):
   """Creates a new Deck_Card entry"""
   body = json.loads(event["body"])
-
   deck_id = body["deck_id"]
   inventory_card = body["inventory_card"]
 
