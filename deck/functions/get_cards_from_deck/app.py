@@ -44,6 +44,7 @@ def lambda_handler(event, context):
     
     output = {
         "event_type": "GET_DECK_CARDS_RESULT",
+        "deck_id": deck_id,
         "data": decks
     }
 
