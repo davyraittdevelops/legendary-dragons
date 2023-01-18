@@ -1,3 +1,4 @@
+import json
 import logging
 import os
 
@@ -17,6 +18,16 @@ def lambda_handler(event, context):
   """Updates Inventory Card entry"""
   inventory_card = event["detail"]["inventory_card"]
 
-  table.put_item(Item=inventory_card)
+  try:
+    table.put_item(Item=inventory_card,
+      ConditionExpression='attribute_exists(PK) AND attribute_exists(SK)'
+    )
+  except dynamodb.meta.client.exceptions.ConditionalCheckFailedException as e:
+    error = str(e)[str(e).index(":") + 1:len(str(e))]
+    logger.info(f"Registration failed: {error}")
+    return {
+      "statusCode": 400,
+      "body": json.dumps({"message": error.strip()})
+    }
 
   return {"statusCode": 200}

@@ -7,5 +7,5 @@ export interface AppState {
   readonly user: UserState;
   readonly card: CardState;
   readonly inventory: InventoryState;
-  readonly  deck: DeckState;
+  readonly deck: DeckState;
 }

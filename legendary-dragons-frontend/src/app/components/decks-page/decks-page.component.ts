@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import {Deck} from "../../models/deck.model";
-import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
 import { AppState } from 'src/app/app.state';
-import { createDeck, removeDeck } from 'src/app/ngrx/deck/deck.actions';
+import { createDeck, getDecks, removeDeck } from 'src/app/ngrx/deck/deck.actions';
+import { decksSelector, errorSelector, isLoadingSelector } from 'src/app/ngrx/deck/deck.selectors';
+import { Deck } from "../../models/deck.model";
 
 @Component({
   selector: 'app-decks-page',
@@ -12,113 +14,22 @@ import { createDeck, removeDeck } from 'src/app/ngrx/deck/deck.actions';
   styleUrls: ['./decks-page.component.scss']
 })
 export class DecksPageComponent implements OnInit {
-  public decks: Deck[] = [
-    {
-      name: 'Grixis Midrange',
-      deck_type: 'Commander',
-      total_value: '1000000',
-      created_at: new Date("2019-01-16"),
-      last_modified: new Date("2019-01-16"),
-      image_url: 'https://www.bazaargames.nl/images/cards/l/zen/goblin_guide.jpg',
-      deck_cards: [],
-      side_deck: {
-        deck_cards: [],
-        last_modified: new Date("2019-01-16"),
-        created_at: new Date("2019-01-16")
-      }
-    },
-    {
-      name: 'Grixis Midrange',
-      deck_type: 'Commander',
-      total_value: '1000000',
-      created_at: new Date("2019-01-16"),
-      last_modified: new Date("2019-01-16"),
-      image_url: 'https://www.bazaargames.nl/images/cards/l/zen/goblin_guide.jpg',
-      deck_cards: [],
-      side_deck: {
-        deck_cards: [],
-        last_modified: new Date("2019-01-16"),
-        created_at: new Date("2019-01-16")
-      }
-    },
-    {
-      name: 'Mono Deck',
-      deck_type: 'Commanders',
-      total_value: '10',
-      created_at: new Date("2019-01-16"),
-      last_modified: new Date("2019-01-16"),
-      image_url: 'https://www.bazaargames.nl/images/cards/l/zen/goblin_guide.jpg',
-      deck_cards: [],
-      side_deck: {
-        deck_cards: [],
-        last_modified: new Date("2019-01-16"),
-        created_at: new Date("2019-01-16")
-      }
-    },
-    {
-      name: 'Vampire Deck',
-      deck_type: 'EDG',
-      total_value: '60000',
-      created_at: new Date("2019-01-16"),
-      last_modified: new Date("2019-01-16"),
-      image_url: 'https://www.bazaargames.nl/images/cards/l/zen/goblin_guide.jpg',
-      deck_cards: [],
-      side_deck: {
-        deck_cards: [],
-        last_modified: new Date("2019-01-16"),
-        created_at: new Date("2019-01-16")
-      }
-    },
-    {
-      name: 'Grixis Midrange',
-      deck_type: 'Commander',
-      total_value: '1000000',
-      created_at: new Date("2019-01-16"),
-      last_modified: new Date("2019-01-16"),
-      image_url: 'https://www.bazaargames.nl/images/cards/l/zen/goblin_guide.jpg',
-      deck_cards: [],
-      side_deck: {
-        deck_cards: [],
-        last_modified: new Date("2019-01-16"),
-        created_at: new Date("2019-01-16")
-      }
-    },
-    {
-      name: 'Mono Deck',
-      deck_type: 'EDH',
-      total_value: '10',
-      created_at: new Date("2019-01-16"),
-      last_modified: new Date("2019-01-16"),
-      image_url: 'https://www.bazaargames.nl/images/cards/l/zen/goblin_guide.jpg',
-      deck_cards: [],
-      side_deck: {
-        deck_cards: [],
-        last_modified: new Date("2019-01-16"),
-        created_at: new Date("2019-01-16")
-      }
-    },
-    {
-      name: 'Vampire Deck',
-      deck_type: 'EDH',
-      total_value: '60000',
-      created_at: new Date("2019-01-16"),
-      last_modified: new Date("2019-01-16"),
-      image_url: 'https://www.bazaargames.nl/images/cards/l/zen/goblin_guide.jpg',
-      deck_cards: [],
-      side_deck: {
-        deck_cards: [],
-        last_modified: new Date("2019-01-16"),
-        created_at: new Date("2019-01-16")
-      }
-    }
-  ]
+  decks$: Observable<Deck[]>;
+  isLoading$: Observable<boolean>;
+  hasError$: Observable<boolean>;
 
   form = new FormGroup({
     name: new FormControl('', Validators.required),
     decktype: new FormControl('', Validators.required)
   })
 
-  constructor(public modalService: NgbModal, private appStore: Store<AppState>) { }
+  constructor(public modalService: NgbModal, private appStore: Store<AppState>) {
+    this.decks$ = this.appStore.select(decksSelector);
+    this.isLoading$ = this.appStore.select(isLoadingSelector);
+    this.hasError$ = this.appStore.select(errorSelector);
+
+    this.appStore.dispatch(getDecks());
+  }
 
   ngOnInit(): void {
   }
@@ -140,10 +51,12 @@ export class DecksPageComponent implements OnInit {
       return;
     }
 
-    this.appStore.dispatch(createDeck({deck_name: this.name.value!, deck_type: this.type.value!}))
+    this.appStore.dispatch(createDeck({deck_name: this.name.value!, deck_type: this.type.value!}));
+    this.modalService.dismissAll();
+    this.form.reset();
   }
 
-  removeDeck(): void {
-    this.appStore.dispatch(removeDeck({deck_id: "1"}))
+  removeDeck(deckId: string): void {
+    this.appStore.dispatch(removeDeck({deck_id: deckId}));
   }
 }
