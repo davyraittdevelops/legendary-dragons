@@ -50,8 +50,6 @@ def write_to_database(card_list, card_faces_list):
             for card_face in card_faces:
                 counter = counter + 1
                 writer.put_item(Item=card_face)
-    logger.info('Done inserting / updating ' , counter , ' entries')
-
 
 def card_entry(card):
     """Map the API object to the DynamoDB entity."""
@@ -62,13 +60,16 @@ def card_entry(card):
         oracle_id = card['oracle_id']
     else:
         oracle_id = card['card_faces'][0]['oracle_id']
+    
+    card_id = "CARD#" + card["id"]
+    card_face_oracle_id = "CARD_FACE#" + oracle_id
 
     return {
-        "PK": "CARD#" + card["id"],
-        "SK": "CARD_FACE#" + oracle_id,
+        "PK": card_id,
+        "SK": card_face_oracle_id,
         "entity_type": "CARD",
-        "GSI1_PK": "CARD_FACE#" + oracle_id,
-        "GSI1_SK": "CARD#" + card["id"],
+        "GSI1_PK": card_face_oracle_id,
+        "GSI1_SK": card_id,
         "scryfall_id": card["id"],
         "collector_number": card["collector_number"],
         "rarity": card["rarity"],
@@ -92,23 +93,13 @@ def card_face_entry(card):
     card_faces = []
     multiverse = card["multiverse_ids"]
     multiverse_len = len(multiverse)
-
-    oracle_id = ''
-    if 'oracle_id' in card:
-        oracle_id = card['oracle_id']
-    
-    scryfall_id = ''
-    if 'id' in card:  
-        scryfall_id = card["id"]
-
-    type_line = ''
-    if 'type_line' in card:
-        type_line = card["type_line"]
+    oracle_id = card.get('oracle_id', '')
+    scryfall_id = card.get('id', '')
+    type_line = card.get('type_line', '')
 
     if is_multifaced:
         for idx, face in enumerate(card["card_faces"]):
-            if 'type_line' in face:
-                type_line = face["type_line"]
+            type_line = face.get('type_line', '')
             if oracle_id == '':
                 oracle_id = face['oracle_id']
             multiverse_id = multiverse[idx] if idx <= (multiverse_len - 1) else None
@@ -130,9 +121,12 @@ def create_card_face(card, multiverse_id, oracle_id, scryfall_id, type_line):
     if "image_uris" in card:
         image = card["image_uris"]["png"]
 
+    card_scryfall_id = "CARD#" + scryfall_id
+    card_face_oracle_id = "CARD_FACE#" + oracle_id
+
     return {
-        "PK": "CARD_FACE#" + oracle_id,
-        "SK": "CARD#" + scryfall_id,
+        "PK": card_face_oracle_id,
+        "SK": card_scryfall_id,
         "entity_type": "CARD_FACE",
         "scryfall_id": scryfall_id,
         "oracle_id": oracle_id,
@@ -143,8 +137,8 @@ def create_card_face(card, multiverse_id, oracle_id, scryfall_id, type_line):
         "colors": card["colors"] if "colors" in card else colors,
         "type_line": type_line, 
         "image_url": image,
-        "GSI1_PK": "CARD#" + scryfall_id,
-        "GSI1_SK": "CARD_FACE#" + oracle_id,
+        "GSI1_PK":card_scryfall_id,
+        "GSI1_SK": card_face_oracle_id,
         "created_at":  datetime.utcnow().isoformat(),
         "last_modified":  datetime.utcnow().isoformat(),
     }
