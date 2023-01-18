@@ -2,14 +2,14 @@ import { Component } from '@angular/core';
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {clearSearchResult} from "../../../ngrx/card/card.actions";
 import {Observable} from "rxjs";
-import {Inventory} from "../../../models/inventory.model";
+import {Inventory, InventoryCard} from "../../../models/inventory.model";
 import {Store} from "@ngrx/store";
 import {AppState} from "../../../app.state";
 import {errorSelector, inventorySelector, isLoadingSelector} from "../../../ngrx/inventory/inventory.selectors";
 import {getInventory} from "../../../ngrx/inventory/inventory.actions";
 import {MatTableDataSource} from "@angular/material/table";
-import {Card} from "../../../models/card.model";
 import { Router } from '@angular/router';
+import { addCardToDeck } from 'src/app/ngrx/deck/deck.actions';
 
 @Component({
   selector: 'app-add-card-from-inventory',
@@ -22,6 +22,7 @@ export class AddCardFromInventoryComponent {
   hasError$: Observable<boolean>;
   displayedColumns: string[] = ['Image', 'Name', 'AddButton'];
   dataSource : any ;
+  deckId = this.router.url.replace("/decks/", "");
 
 
   constructor(private appStore: Store<AppState>, public modalService: NgbModal, private router: Router) {
@@ -33,9 +34,6 @@ export class AddCardFromInventoryComponent {
 
   ngOnInit(): void {
     this.appStore.dispatch(getInventory())
-    let deckID = this.router.url.replace("/decks/", "");
-    console.log(deckID);
-
   }
 
   open({content}: { content: any }): void {
@@ -47,17 +45,18 @@ export class AddCardFromInventoryComponent {
   }
 
   applyFilter(event: Event) {
-    console.log('event', event)
+    // console.log('event', event)
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
-  addCardToDeck(card: Card) {
-    console.log('selected card, card', card)
-
+  addCardToDeck(card: InventoryCard) {
+    this.appStore.dispatch(addCardToDeck({deck_id: this.deckId, inventory_card: card}))
   }
 
-  addCardToSideDeck(card: Card) {
-    console.log('selected card, card', card)
+  addCardToSideDeck(card: InventoryCard) {
+    // console.log('selected card, card', card)
   }
 }
+
+

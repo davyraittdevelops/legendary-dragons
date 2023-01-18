@@ -62,9 +62,6 @@ export class WebsocketService {
   }
 
   sendGetCardsFromDeckMessage(deck_id : string) {
-
-    console.log('sendGetCardsFromDeckMessage', deck_id)
-
     if (!this.socket$) {
       return;
     }
