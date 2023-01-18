@@ -58,7 +58,7 @@ def websocket_event():
             "stage": "Prod",
             "connectionId": CONNECTION_ID,
             "authorizer": {
-                "userId": "user-123"
+                "userId": "1"
             }
         },
         "body": json.dumps({
@@ -66,12 +66,14 @@ def websocket_event():
         }),
     }
 
+
 orig = botocore.client.BaseClient._make_api_call
 
 def mock_make_api_call(self, operation_name, kwarg):
     if operation_name == "PostToConnection":
         return None
     return orig(self, operation_name, kwarg)
+
 
 @patch.dict(os.environ, OS_ENV, clear=True)
 @mock_dynamodb
@@ -81,17 +83,46 @@ def test_lamda_handler_success(websocket_event, table_definition):
     dynamodb = boto3.resource("dynamodb")
     table = dynamodb.create_table(**table_definition)
 
+    table.put_item(
+      Item={
+        "PK": "DECK#123",
+        "SK": "USER#1",
+        "entity_type": "DECK",
+        "created_at": "2023-18-01",
+        "last_modified": "2023-18-01",
+        "deck_id": "123",
+        "deck_name": "Azorius Soldiers",
+        "deck_type": "EDH",
+        "user_id": "1",
+        "GSI1_PK": "USER#1",
+        "GSI1_SK": "DECK#123",
+        "total_value": "0"
+      }
+  )
+
     # Act
     with patch("botocore.client.BaseClient._make_api_call", new=mock_make_api_call):
         from functions.get_decks import app
         response = app.lambda_handler(websocket_event, {})
         
         decks = table.query(
-            KeyConditionExpression=Key("GSI1_PK").eq(f"USER#user-123") &
+            KeyConditionExpression=Key("GSI1_PK").eq(f"USER#1") &
             Key("GSI1_SK").begins_with("DECK#"),
             IndexName="GSI1"
         )["Items"]
 
         # Assert
         assert response["statusCode"] == 200
-        assert len(decks) == 0
+        assert len(decks) == 1
+        assert decks[0]["PK"] == "DECK#123"
+        assert decks[0]["SK"] == "USER#1"
+        assert decks[0]["entity_type"] == "DECK"
+        assert decks[0]["created_at"] == "2023-18-01"
+        assert decks[0]["last_modified"] == "2023-18-01"
+        assert decks[0]["deck_id"] == "123"
+        assert decks[0]["deck_name"] == "Azorius Soldiers"
+        assert decks[0]["deck_type"] == "EDH"
+        assert decks[0]["user_id"] == "1"
+        assert decks[0]["GSI1_PK"] == "USER#1"
+        assert decks[0]["GSI1_SK"] == "DECK#123"
+        assert decks[0]["total_value"] == "0"

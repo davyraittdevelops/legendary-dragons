@@ -74,12 +74,29 @@ def test_lamda_handler_success(websocket_event, table_definition):
     dynamodb = boto3.resource("dynamodb")
     table = dynamodb.create_table(**table_definition)
 
+    table.put_item(
+      Item={
+        "PK": "DECK#123",
+        "SK": "USER#1",
+        "entity_type": "DECK",
+        "created_at": "2023-18-01",
+        "last_modified": "2023-18-01",
+        "deck_id": "123",
+        "deck_name": "Azorius Soldiers",
+        "deck_type": "EDH",
+        "user_id": "1",
+        "GSI1_PK": "USER#1",
+        "GSI1_SK": "DECK#123",
+        "total_value": "0"
+      }
+  )
+
     # Act
     from functions.remove_deck import app
     response = app.lambda_handler(websocket_event, {})
 
     decks = table.query(
-        KeyConditionExpression=Key("GSI1_PK").eq("DECK#f98dbd12-8b58-4aa7-8f0a-3f0e7eb55b27") &
+        KeyConditionExpression=Key("GSI1_PK").eq("DECK#123") &
                                Key("GSI1_SK").begins_with("USER"),
         IndexName="GSI1"
     )["Items"]
