@@ -115,7 +115,6 @@ def test_lamda_handler_update_card_deck_location(bus_event, table_definition):
   assert inventory_cards[0]["entity_type"] == "INVENTORY_CARD"
   assert inventory_cards[0]["deck_location"] == "deck-1"
 
-
 @patch.dict(os.environ, OS_ENV, clear=True)
 @mock_dynamodb
 def test_lamda_handler_update_card_deck_location(bus_event, table_definition):
