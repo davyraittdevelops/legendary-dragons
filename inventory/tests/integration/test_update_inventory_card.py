@@ -1,3 +1,4 @@
+import json
 import os
 from unittest.mock import patch
 
@@ -113,3 +114,20 @@ def test_lamda_handler_update_card_deck_location(bus_event, table_definition):
   assert inventory_cards[0]["card_id"] == "1"
   assert inventory_cards[0]["entity_type"] == "INVENTORY_CARD"
   assert inventory_cards[0]["deck_location"] == "deck-1"
+
+
+@patch.dict(os.environ, OS_ENV, clear=True)
+@mock_dynamodb
+def test_lamda_handler_update_card_deck_location(bus_event, table_definition):
+  # Arrange
+  # 1. Create the DynamoDB Table
+  dynamodb = boto3.resource("dynamodb")
+  dynamodb.create_table(**table_definition)
+
+  # Act
+  from functions.update_inventory_card import app
+  response = app.lambda_handler(bus_event, {})
+
+  # Assert
+  assert response["statusCode"] == 400
+  assert json.loads(response["body"])["message"] == "The conditional request failed"
