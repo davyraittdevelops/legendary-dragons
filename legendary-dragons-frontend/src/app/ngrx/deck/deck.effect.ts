@@ -76,7 +76,6 @@ export class DeckEffects {
       mergeMap(() => {
         return this.websocketService.dataUpdates$().pipe(
           filter((event: any) => {
-            console.log(event);
             return event['event_type'] === 'GET_DECK_RESULT'
           }),
           map((event: any) => getDecksSuccess({decks: event["data"]})),
@@ -111,10 +110,11 @@ export class DeckEffects {
   public addCardtoDeckEffect$ = createEffect(() =>
     this.actions$.pipe(
       ofType(addCardToDeck),
-      tap(({deck_id, inventory_card}) => this.websocketService.sendAddCardToDeckMessage(deck_id, inventory_card)),
+      tap(({deck_id, deck_type, inventory_card}) => this.websocketService.sendAddCardToDeckMessage(deck_id, deck_type, inventory_card)),
       mergeMap(() => {
         return this.websocketService.dataUpdates$().pipe(
           filter((event: any) => {
+            console.log(event)
             return event['event_type'] === 'CARD_ADDED_TO_DECK'
           }),
           map((event: any) => addCardToDeckSuccess({deck: event["data"]})),

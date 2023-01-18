@@ -51,12 +51,10 @@ export class AddCardFromInventoryComponent {
   }
 
   addCardToDeck(card: InventoryCard) {
-    this.appStore.dispatch(addCardToDeck({deck_id: this.deckId, inventory_card: card}))
+    this.appStore.dispatch(addCardToDeck({deck_id: this.deckId, deck_type: "main_deck", inventory_card: card}))
   }
 
   addCardToSideDeck(card: InventoryCard) {
-    // console.log('selected card, card', card)
+    this.appStore.dispatch(addCardToDeck({deck_id: this.deckId, deck_type: "side_deck", inventory_card: card}))
   }
 }
-
-

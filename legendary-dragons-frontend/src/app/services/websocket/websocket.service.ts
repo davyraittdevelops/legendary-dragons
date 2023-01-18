@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
+import { InventoryCard } from 'src/app/models/inventory.model';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -69,5 +70,24 @@ export class WebsocketService {
 
   sendGetDecksMessage(): void {
     this.sendMessage('getDeckReq', {});
+  }
+
+  sendGetCardsFromDeckMessage(deck_id : string) {
+    if (!this.socket$) {
+      return;
+    }
+    this.socket$.next({'action': 'getCardsFromDeckReq', 'deck_id': deck_id});
+  }
+
+  sendAddCardToDeckMessage(deck_id : string, deck_type: string, inventory_card : InventoryCard, ) {
+    if (!this.socket$) {
+      return;
+    }
+    this.socket$.next({
+      'action': 'addCardToDeckReq',
+      'deck_id': deck_id,
+      'deck_type': deck_type,
+      'inventory_card': inventory_card
+    });
   }
 }

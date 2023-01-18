@@ -68,14 +68,16 @@ export const deckReducer = createReducer(
       foundDeck: updatedDeck
     };
   }),
-  on(addCardToDeck, (state, {deck_id, inventory_card}) => ({...state, isLoading: true})),
+  on(addCardToDeck, (state, {deck_id, deck_type, inventory_card}) => ({...state, isLoading: true})),
   on(addCardToDeckSuccess, (state, {deck}) => {
     let foundDeck = state.decks.find(d => d.deck_id === deck.deck_id)
-    let updatedDeck = {...foundDeck!, cards: deck.deck_cards};
+    let updatedDeck = {...foundDeck!, cards: deck};
+    let updatedDecks = state.decks.map(d => d.deck_id === updatedDeck.deck_id ? updatedDeck : d);
 
     return {
       ...state,
       selectedDeck: updatedDeck,
+      decks: updatedDecks
     };
   }),
   on(addCardToDeckFail, (state) => ({...state, isLoading: false, hasError: true})),
