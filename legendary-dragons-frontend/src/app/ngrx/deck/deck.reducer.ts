@@ -61,8 +61,6 @@ export const deckReducer = createReducer(
   on(getCardsFromDeckSuccess, (state, {deck_id, deck_cards}) => {
     let foundDeck = state.decks.find(d => d.deck_id === deck_id)
     let updatedDeck = {...foundDeck!, deck_cards: deck_cards};
-
-  
     // let updatedDecks = state.decks.map(d => d.deck_id === updatedDeck.deck_id ? updatedDeck : d);
 
     return {
@@ -80,7 +78,6 @@ export const deckReducer = createReducer(
       selectedDeck: updatedDeck
     };
 
-    
   }),
   on(addCardToDeckFail, (state) => ({...state, isLoading: false, hasError: true})),
 )

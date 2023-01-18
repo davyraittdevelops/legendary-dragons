@@ -91,7 +91,7 @@ export class DeckEffects {
   public getCardsFromDeck$ = createEffect(() =>
     this.actions$.pipe(
       ofType(getCardsFromDeck),
-      tap(({deck_id}) => { 
+      tap(({deck_id}) => {
         this.websocketService.sendGetCardsFromDeckMessage(deck_id)
       }),
       mergeMap(() => {
@@ -99,7 +99,7 @@ export class DeckEffects {
           filter((event: any) => {
             return event['event_type'] === 'GET_DECK_CARDS_RESULT'
           }),
-          map((event: any) => getCardsFromDeckSuccess({deck_id: event["deck_id"], deck_cards: event["data"]})),
+          map((event: any) => getCardsFromDeckSuccess({deck_id: event["deck_id"], deck_cards: event["data"]["Items"]})),
           catchError((error) => {
             console.log(error);
             return of(getCardsFromDeckFail({error: true}))

@@ -37,7 +37,8 @@ import { InventoryEffects } from './ngrx/inventory/inventory.effect';
 import { inventoryReducer } from './ngrx/inventory/inventory.reducer';
 import { UserEffects } from './ngrx/user/user.effect';
 import { userReducer } from './ngrx/user/user.reducer';
-import { CardsDetailsPageComponent } from './components/card/cards-details-page/cards-details-page.component';
+import { DeckCardsDetailsPageComponent } from './components/deck/deck-cards-details/deck-cards-details-page.component';
+import { CardsDetailsPageComponent } from './components/card/cards-details/cards-details-page.component';
 
 @NgModule({
   declarations: [
@@ -55,7 +56,8 @@ import { CardsDetailsPageComponent } from './components/card/cards-details-page/
     AddCardComponent,
     CardFooterComponent,
     AddCardToDeckComponent,
-    CardsDetailsPageComponent
+    CardsDetailsPageComponent,
+    DeckCardsDetailsPageComponent
 
   ],
   imports: [

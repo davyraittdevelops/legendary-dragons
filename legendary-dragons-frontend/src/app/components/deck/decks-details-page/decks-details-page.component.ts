@@ -25,7 +25,6 @@ export class DecksDetailsPageComponent implements OnInit {
   isLoading$: Observable<boolean>;
   hasError$: Observable<boolean>;
   deck_id: string = ""
-  inventory$: Observable<Inventory>;
 
   constructor(public modalService: NgbModal, private appStore: Store<AppState>, private activatedRoute: ActivatedRoute, private websocketService : WebsocketService,) {
     this.selectedDeck$ = this.appStore.select(deckByIdSelector).pipe(tap(selectedDeck => {
@@ -34,17 +33,15 @@ export class DecksDetailsPageComponent implements OnInit {
 
     this.isLoading$ = this.appStore.select(isLoadingSelector);
     this.hasError$ = this.appStore.select(errorSelector);
-    this.inventory$ = this.appStore.select(inventorySelector);
+
+  }
+
+  ngOnInit(): void {
+    this.websocketService.dataUpdates$().subscribe(() => {})
 
     this.activatedRoute.params.subscribe(params => {
       this.deck_id = params["id"];
       this.appStore.dispatch(getCardsFromDeck({deck_id: this.deck_id}));
     });
-
-    
-  }
-
-  ngOnInit(): void {
-    this.websocketService.dataUpdates$().subscribe(() => {})
   }
 }
