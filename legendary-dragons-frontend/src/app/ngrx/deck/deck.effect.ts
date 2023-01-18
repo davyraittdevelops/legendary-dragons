@@ -118,7 +118,7 @@ export class DeckEffects {
             console.log(event);
             return event['event_type'] === 'GET_CARDS_FROM_DECK_RESULT'
           }),
-          map((event: any) => getCardsFromDeckSuccess({deck_id: "", deck_cards: event["data"]})),
+          map((event: any) => getCardsFromDeckSuccess({deck_cards: event["data"], deck_id: event["data"]["deck_id"]})),
           catchError((error) => {
             console.log(error);
             return of(getCardsFromDeckFail({error: true}))

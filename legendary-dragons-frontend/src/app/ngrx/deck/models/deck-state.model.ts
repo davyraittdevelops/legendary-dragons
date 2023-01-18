@@ -1,4 +1,4 @@
-import { Deck } from "src/app/models/deck.model";
+import {Deck, DeckCard} from "src/app/models/deck.model";
 import { Inventory } from "src/app/models/inventory.model";
 
 export interface DeckState {

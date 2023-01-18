@@ -20,6 +20,13 @@
             <h1>Deck</h1>
             <cdk-virtual-scroll-viewport appendOnly itemSize="50" class="deck-viewport">
                 <div class="card-position">
+
+<!--                  <ng-container *ngIf="decksCards$ | async as deckCards">-->
+<!--                    <div class="card deck-card me-3 bg-dark shadow" *ngFor="let deckCard of deckCards; let i = index">-->
+<!--                      <h1>{{deckCard.card_name}}</h1>-->
+<!--                    </div>-->
+<!--                  </ng-container>-->
+
                 </div>
             </cdk-virtual-scroll-viewport>
         </div>
