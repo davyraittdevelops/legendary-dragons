@@ -100,7 +100,6 @@ def step_impl(context):
 
 @then("the deck should be created")
 def step_impl(context):
-    print(context.detail["create_deck"])
     assert context.detail["create_deck"]["event_type"] == "INSERT_DECK_RESULT"
     assert context.detail["create_deck"]["data"]["entity_type"] == "DECK"
     assert context.detail["create_deck"]["data"]["deck_type"] == "COMMANDER"

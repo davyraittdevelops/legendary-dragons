@@ -34,8 +34,6 @@ def removeCardFromInventory(context):
 
     context.detail["remove_card_from_inventory"] = json.loads(context.ws.recv())
 
-    print(context.detail["remove_card_from_inventory"])
-
 @given("there is an existing user and the user is logged in")
 def step_impl(context):
     registerVerifyLoginConnectUser(context)
