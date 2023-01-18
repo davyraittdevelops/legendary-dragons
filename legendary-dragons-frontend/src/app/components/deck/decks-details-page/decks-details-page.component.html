@@ -22,32 +22,25 @@
                 <div class="card-position">
 
                   <ng-container *ngIf="selectedDeck$ | async as selectedDeck">
-                    <app-deck-cards-details-page class="col" *ngFor="let card of selectedDeck.deck_cards"
-                                            [card]="card">
-                    </app-deck-cards-details-page>
+                    <div class="row">
+                      <app-deck-cards-details-page class="col" *ngFor="let card of selectedDeck.deck_cards"
+                                              [card]="card">
+                      </app-deck-cards-details-page>
+                    </div>
                   </ng-container>
-
-<!--                  -->
-<!--                  <ng-container  *ngIf="selectedDeck$ | async as selectedDeck">-->
-<!--                    <ng-container *ngFor="let card of selectedDeck.deck_cards">-->
-<!--                    <app-deck-cards-details-page class="col" [card]="card.key">-->
-<!--                      {{card.value}}-->
-<!--                    </app-deck-cards-details-page>-->
-<!--                    </ng-container>-->
-<!--                  </ng-container>-->
                 </div>
             </cdk-virtual-scroll-viewport>
         </div>
         <div class="col col-6 text-center">
             <h1>Side Deck</h1>
             <cdk-virtual-scroll-viewport appendOnly itemSize="50" class="deck-viewport">
-              <div class="card-position">
-                <ng-container  *ngIf="selectedDeck$ | async as selectedDeck">
-                  <app-deck-cards-details-page class="col" *ngFor="let card of selectedDeck.side_deck?.deck_cards | keyvalue">
-                    {{card.value}}
-                  </app-deck-cards-details-page>
-                </ng-container>
-              </div>
+<!--              <div class="card-position">-->
+<!--                <ng-container  *ngIf="selectedDeck$ | async as selectedDeck">-->
+<!--                  <app-deck-cards-details-page class="col" *ngFor="let card of selectedDeck.side_deck?.deck_cards">-->
+<!--                    {{card.value}}-->
+<!--                  </app-deck-cards-details-page>-->
+<!--                </ng-container>-->
+<!--              </div>-->
             </cdk-virtual-scroll-viewport>
         </div>
     </div>

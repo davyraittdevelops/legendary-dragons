@@ -1,14 +1,19 @@
 .card-image {
+  height: 260px;
+}
+
+.card-modal-image {
   height: 400px;
 }
 
 .card-size {
-  width: 100%;
-  height: 400px;
+  width: 28%;
+  height: 250px;
 }
 
 .collection-card {
   display: grid;
+  position: relative;
 }
 
 .collection-card > img, div {
@@ -22,4 +27,8 @@
 
 .card-action-footer {
   width: 100%;
+  display: grid;
+  justify-content: left;
 }
+
+
