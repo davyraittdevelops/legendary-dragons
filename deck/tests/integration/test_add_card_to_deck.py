@@ -178,3 +178,4 @@ def test_lamda_handler_sidedeck(websocket_event, table_definition):
   assert deck_card
   assert deck_card["deck_id"] == "123"
   assert deck_card["entity_type"] == "DECK_CARD"
+  assert deck_card["SK"] == "DECK#123#SIDE_DECK"
