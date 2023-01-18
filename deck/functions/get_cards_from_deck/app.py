@@ -43,7 +43,7 @@ def lambda_handler(event, context):
         logger.info(f"Exception retrieving cards! {e}")
     
     output = {
-        "event_type": "GET_CARDS_FROM_DECK_RESULT",
+        "event_type": "GET_DECK_CARDS_RESULT",
         "data": decks
     }
 

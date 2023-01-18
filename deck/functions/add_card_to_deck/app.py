@@ -24,16 +24,15 @@ def lambda_handler(event, context):
 
   deck_id = body["deck_id"]
   inventory_card = body["inventory_card"]
-  deck_card_id = str(uuid.uuid4())
 
   now = datetime.utcnow().isoformat()
-  pk = f"DECK_CARD#{deck_card_id}"
+  pk = f"DECK_CARD#{inventory_card['card_id']}"
   sk = f"DECK#{deck_id}"
 
   try:
     update_inventory_card_deck_location(inventory_card)
 
-    logger.info(f"Adding deck card ({deck_card_id}) to DynamoDB table")
+    logger.info(f"Adding deck card ({inventory_card['card_id']}) to DynamoDB table")
 
     table.put_item(Item={
       "PK": pk,
