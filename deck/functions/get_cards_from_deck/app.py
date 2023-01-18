@@ -39,7 +39,6 @@ def lambda_handler(event, context):
             IndexName="GSI1"
         )
         logger.info(f"Querying for deck cards succesful, with deck_id {deck_id}")
-        print(decks)
     except Exception as e:
         logger.info(f"Exception retrieving cards! {e}")
     
