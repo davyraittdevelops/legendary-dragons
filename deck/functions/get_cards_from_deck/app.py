@@ -37,13 +37,14 @@ def lambda_handler(event, context):
             &
             Key("GSI1_SK").begins_with("DECK_CARD#"),
             IndexName="GSI1"
-        )
+        )['Items']
         logger.info(f"Querying for deck cards succesful, with deck_id {deck_id}")
     except Exception as e:
         logger.info(f"Exception retrieving cards! {e}")
     
     output = {
         "event_type": "GET_DECK_CARDS_RESULT",
+        "deck_id": deck_id,
         "data": decks
     }
 
