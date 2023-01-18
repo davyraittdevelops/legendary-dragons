@@ -21,12 +21,18 @@ eventbus = os.getenv("EVENT_BUS_NAME")
 def lambda_handler(event, context):
   """Creates a new Deck_Card entry"""
   body = json.loads(event["body"])
+
+  deck_type = body["deck_type"]
   deck_id = body["deck_id"]
   inventory_card = body["inventory_card"]
 
   now = datetime.utcnow().isoformat()
-  pk = f"DECK_CARD#{inventory_card['card_id']}"
-  sk = f"DECK#{deck_id}"
+  if deck_type == "side_deck":
+    pk = f"DECK_CARD#{inventory_card['card_id']}"
+    sk = f"DECK#{deck_id}#SIDE_DECK"
+  else:
+    pk = f"DECK_CARD#{inventory_card['card_id']}"
+    sk = f"DECK#{deck_id}"
 
   try:
     update_inventory_card_deck_location(inventory_card)
@@ -51,6 +57,7 @@ def lambda_handler(event, context):
       "GSI1_PK": sk,
       "GSI1_SK": pk
     })
+    logger.info(f"Succesfully added into deck: ({sk})")
   except Exception as e:
     logger.info(f"Adding card to deck failed: {e}")
 
