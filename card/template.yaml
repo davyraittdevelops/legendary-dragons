@@ -46,6 +46,26 @@ Resources:
                     Fn::ImportValue:
                       'Fn::Sub': "${LegDragonsWebSocketApi}"
 
+  UpdateCardsFromScryfallFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri:  functions/update_cards_from_scryfall/
+      Environment:
+        Variables:
+          SCRYFALL_BULK_DATA_URL: "https://api.scryfall.com/bulk-data"
+          TABLE_NAME: "cards"
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref CardTable
+    Events:
+      Schedule:
+        Type: Schedule
+        Properties:
+          Description: Runs the lambda every day at 23.45PM.
+          Enabled: True
+          Schedule: "cron(45 23 * * ? *)"
+  
+
   SteamCardChangesFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -136,6 +156,62 @@ Resources:
     Properties:
       Action: lambda:InvokeFunction
       FunctionName: !Ref SearchCardByKeywordFunction
+      Principal: apigateway.amazonaws.com
+
+
+  # Get card code
+  GetCardFunction:
+      Type: AWS::Serverless::Function
+      Properties:
+        CodeUri: functions/get_card/
+        Environment:
+          Variables:
+            DATABASE_NAME: "cards"
+        Policies:
+          - DynamoDBReadPolicy:
+              TableName: !Ref CardTable
+          - Statement:
+            - Effect: Allow
+              Action:
+                - 'execute-api:ManageConnections'
+              Resource:
+                Fn::Sub:
+                  - 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${WebSocketApi}/*'
+                  - WebSocketApi:
+                      Fn::ImportValue:
+                        'Fn::Sub': "${LegDragonsWebSocketApi}"
+
+  GetCardRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Fn::ImportValue:
+          !Sub "${LegDragonsWebSocketApi}"
+      RouteKey: GetCardReq
+      AuthorizationType: NONE
+      OperationName: GetCardRoute
+      Target: !Join
+        - '/'
+        - - 'integrations'
+          - !Ref GetCardInteg
+
+  GetCardInteg:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Fn::ImportValue:
+          !Sub "${LegDragonsWebSocketApi}"
+      Description: Get card integration
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::Sub:
+            arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GetCardFunction.Arn}/invocations
+
+  GetCardPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref GetCardFunction
       Principal: apigateway.amazonaws.com
 
 Outputs:

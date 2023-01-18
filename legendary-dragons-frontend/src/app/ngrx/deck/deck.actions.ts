@@ -30,3 +30,17 @@ export const removeDeckSuccess = createAction(
   '[Deck Component] Delete Deck Success',
   props<{deck: Deck}>(),
 );
+
+export const getDecks = createAction(
+  '[Deck Component] Get Decks'
+);
+
+export const getDecksFail = createAction(
+  '[Deck Component] Get Decks Fail',
+  props<{ error: boolean }>(),
+);
+
+export const getDecksSuccess = createAction(
+  '[Deck Component] Get Decks Success',
+  props<{decks: Deck[]}>(),
+);
