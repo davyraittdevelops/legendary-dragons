@@ -51,7 +51,9 @@ export class DecksPageComponent implements OnInit {
       return;
     }
 
-    this.appStore.dispatch(createDeck({deck_name: this.name.value!, deck_type: this.type.value!}))
+    this.appStore.dispatch(createDeck({deck_name: this.name.value!, deck_type: this.type.value!}));
+    this.modalService.dismissAll();
+    this.form.reset();
   }
 
   removeDeck(deckId: string): void {

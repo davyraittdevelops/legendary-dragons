@@ -25,6 +25,10 @@ Globals:
     Environment:
         Variables:
           TABLE_NAME: !Ref DeckTable
+          EVENT_BUS_NAME:
+            Fn::ImportValue:
+                !Sub "${LegDragonsConnectionsEventBus}"
+
     Architectures:
       - x86_64
     Tracing: Active
@@ -80,6 +84,59 @@ Resources:
       IntegrationUri:
         Fn::Sub:
             arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GetDeckFunction.Arn}/invocations
+
+  GetCardsFromDeckFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/get_cards_from_deck/
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref DeckTable
+        - Statement:
+          - Effect: Allow
+            Action:
+              - 'execute-api:ManageConnections'
+            Resource:
+              Fn::Sub:
+                - 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${WebSocketApi}/*'
+                - WebSocketApi:
+                    Fn::ImportValue:
+                      'Fn::Sub': "${LegDragonsWebSocketApi}"
+
+  GetCardsFromDeckPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref GetCardsFromDeckFunction
+      Principal: apigateway.amazonaws.com
+
+  GetCardsFromDeckRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Fn::ImportValue:
+          !Sub "${LegDragonsWebSocketApi}"
+      RouteKey: getCardsFromDeckReq
+      AuthorizationType: NONE
+      OperationName: GetCardsFromDeckRoute
+      Target: !Join
+        - '/'
+        - - 'integrations'
+          - !Ref GetCardsFromDeckInteg
+
+  GetCardsFromDeckInteg:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Fn::ImportValue:
+          !Sub "${LegDragonsWebSocketApi}"
+      Description: GetCardsFromDeck
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::Sub:
+            arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GetCardsFromDeckFunction.Arn}/invocations
+
+
 
   CreateDeckFunction:
     Type: AWS::Serverless::Function
@@ -162,6 +219,49 @@ Resources:
       IntegrationUri:
         Fn::Sub:
           arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${RemoveDeckFunction.Arn}/invocations
+
+  AddCardToDeckFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/add_card_to_deck/
+      Policies:
+        - EventBridgePutEventsPolicy:
+            EventBusName: "connection-event-bus"
+        - DynamoDBWritePolicy:
+            TableName: !Ref DeckTable
+
+  AddCardToDeckPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref AddCardToDeckFunction
+      Principal: apigateway.amazonaws.com
+
+  AddCardToDeckRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Fn::ImportValue:
+          !Sub "${LegDragonsWebSocketApi}"
+      RouteKey: addCardToDeckReq
+      AuthorizationType: NONE
+      OperationName: AddCardToDeckRoute
+      Target: !Join
+        - '/'
+        - - 'integrations'
+          - !Ref AddCardToDeckInteg
+
+  AddCardToDeckInteg:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Fn::ImportValue:
+          !Sub "${LegDragonsWebSocketApi}"
+      Description: Add Card to Deck
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::Sub:
+          arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AddCardToDeckFunction.Arn}/invocations
 
   StreamDeckChangesFunction:
     Type: AWS::Serverless::Function
@@ -249,7 +349,7 @@ Resources:
           Arn:
             Fn::ImportValue:
               !Sub "${LegDragonsBroadcastArn}"
-  
+
   DeckEventPermission:
     Type: AWS::Lambda::Permission
     Properties:
@@ -279,3 +379,15 @@ Outputs:
   CreateDeckFunctionIamRole:
     Description: "Implicit IAM Role created for Create Deck Function"
     Value: !GetAtt CreateDeckFunctionRole.Arn
+  GetCardsFromDeckFunction:
+    Description: "Get Cards From Deck Function ARN"
+    Value: !GetAtt GetCardsFromDeckFunction.Arn
+  GetCardsFromDeckFunctionIamRole:
+    Description: "Implicit IAM Role created for Get Cards From Deck Function Function"
+    Value: !GetAtt GetCardsFromDeckFunctionRole.Arn
+  AddCardToDeckFunction:
+    Description: "Add Card To Deck Function ARN"
+    Value: !GetAtt AddCardToDeckFunction.Arn
+  AddCardToDeckFunctionIamRole:
+    Description: "Implicit IAM Role created for Add Card To Deck Function"
+    Value: !GetAtt AddCardToDeckFunctionRole.Arn

@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { environment } from 'src/environments/environment';
-import {InventoryCard} from "../../models/inventory.model";
 
 @Injectable({
   providedIn: 'root'
@@ -36,95 +35,39 @@ export class WebsocketService {
   }
 
   sendSearchCardByKeywordMessage(query: string) {
-    if (!this.socket$) {
-      return;
-    }
-
-    const message = {
-      'action': 'searchCardsByKeywordReq',
-      ...(query && { 'query': query }),
-    };
-    this.socket$.next(message);
+    this.sendMessage('searchCardsByKeywordReq', {query})
   }
 
   sendAddCardToInventoryMessage(inventory_id: string, card: any) {
-    if (!this.socket$) {
-      return;
-    }
-
-    const message = {
-      'action': 'addCardToInventoryReq',
-      'inventory_id': inventory_id,
-      'inventory_card': card
-    };
-    this.socket$.next(message);
+    this.sendMessage(
+      'addCardToInventoryReq',
+      {inventory_id: inventory_id, inventory_card: card}
+    )
   }
 
-  sendRemoveCardFromInventoryMessage(inventory_card_id: any, inventory_id: any) {
-    if (!this.socket$) {
-      return;
-    }
-
-    const message = {
-      'action': 'removeCardFromInventoryReq',
-      'inventory_card_id': inventory_card_id,
-      'inventory_id': inventory_id
-    };
-    this.socket$.next(message);
+  sendRemoveCardFromInventoryMessage(inventory_card_id: string, inventory_id: string) {
+    this.sendMessage(
+      'removeCardFromInventoryReq',
+      {
+        inventory_card_id: inventory_card_id,
+        inventory_id: inventory_id
+      }
+    )
   }
 
   sendGetInventoryMessage() {
-    if (!this.socket$) {
-      return;
-    }
-    this.socket$.next({'action': 'getInventoryReq'});
-  }
-
-  sendGetCardsFromDeckMessage(deck_id : string) {
-    if (!this.socket$) {
-      return;
-    }
-    this.socket$.next({'action': 'getCardsFromDeckReq', 'deck_id': deck_id});
-  }
-
-  sendAddCardToDeckMessage(deck_id : string, inventory_card : InventoryCard) {
-    console.log('sendAddCardToDeckMessage', inventory_card, deck_id)
-    if (!this.socket$) {
-      return;
-    }
-    this.socket$.next({
-      'action': 'getCardsFromDeckReq',
-      'deck_id': deck_id,
-      'inventory_card': inventory_card
-    });
+    this.sendMessage('getInventoryReq', {});
   }
 
   sendCreateDeckMessage(deck_name: string, deck_type: string) {
-    if (!this.socket$) {
-      return;
-    }
-
-    const message = {
-      'action': 'createDeckReq',
-      'deck_name': deck_name,
-      'deck_type': deck_type
-    };
-    this.socket$.next(message);
+    this.sendMessage('createDeckReq', {deck_name: deck_name, deck_type: deck_type});
   }
 
   sendRemoveDeckMessage(deck_id: string) {
-    if (!this.socket$) {
-      return;
-    }
-
-    const message = {
-      'action': 'removeDeckReq',
-      'deck_id': deck_id,
-    };
-    this.socket$.next(message);
+    this.sendMessage('removeDeckReq', {deck_id: deck_id});
   }
 
   sendGetDecksMessage(): void {
-    this.sendMessage("getDeckReq", {});
+    this.sendMessage('getDeckReq', {});
   }
 }
