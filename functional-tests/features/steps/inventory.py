@@ -2,7 +2,7 @@ from behave import given, when, then
 import logging
 import json
 import boto3
-from setup import registerUser, verifyUser, loginUser, onConnect
+from setup import registerVerifyLoginConnectUser
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -39,14 +39,7 @@ def removeCardFromInventory(context):
 
 @given("there is an existing user and the user is logged in")
 def step_impl(context):
-    registerUser(context, "LegendaryDragonsMinor@gmail.com", "Eindopdracht3!")
-
-    if not context.detail["verified"]:
-        verifyUser(context)
-        context.detail["verified"] = True
-
-    loginUser(context)
-    onConnect(context)
+    registerVerifyLoginConnectUser(context)
 
     context.card = {
         "oracle_id": "44b8eb8f-fa23-401a-98b5-1fbb9871128e",

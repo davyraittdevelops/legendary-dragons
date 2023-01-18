@@ -46,3 +46,13 @@ def loginUser(context):
 
 def onConnect(context):
     context.ws.connect(url=context.websocket_url + "?token=" + context.token)
+
+def registerVerifyLoginConnectUser(context):
+    registerUser(context, "LegendaryDragonsMinor@gmail.com", "Eindopdracht3!")
+
+    if not context.detail["verified"]:
+        verifyUser(context)
+        context.detail["verified"] = True
+
+    loginUser(context)
+    onConnect(context)
