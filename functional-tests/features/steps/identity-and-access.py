@@ -41,7 +41,6 @@ def step_impl(context):
     context.status_code = response.status_code
     context.headers = response.headers
 
-
 @then("the user should be registered")
 def step_impl(context):
     client.admin_confirm_sign_up(
@@ -56,4 +55,3 @@ def step_impl(context):
     assert context.status_code == 200
 
     # Assertion for headers
-

@@ -14,3 +14,13 @@ Scenario: Remove deck
     Given there is an existing user, the user is logged in and the user has atleast one deck
     When I request to remove a deck
     Then the deck should be removed from all my decks
+
+Scenario: Add card to main deck
+   Given there is an existing user, the user is logged in and the user has atleast one deck
+   When I request to add a card to the main deck
+   Then the deck collection is updated and should contain the new card
+
+Scenario: Add card to side deck
+   Given there is an existing user, the user is logged in and the user has atleast one deck
+   When I request to add a card to the side deck
+   Then the deck collection is updated and should contain the new card
