@@ -3,7 +3,6 @@ import { Observable } from 'rxjs';
 import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { InventoryCard } from 'src/app/models/inventory.model';
 import { environment } from 'src/environments/environment';
-import {InventoryCard} from "../../models/inventory.model";
 
 @Injectable({
   providedIn: 'root'
@@ -61,25 +60,6 @@ export class WebsocketService {
     this.sendMessage('getInventoryReq', {});
   }
 
-  sendGetCardsFromDeckMessage(deck_id : string) {
-    if (!this.socket$) {
-      return;
-    }
-    this.socket$.next({'action': 'getCardsFromDeckReq', 'deck_id': deck_id});
-  }
-
-  sendAddCardToDeckMessage(deck_id : string, inventory_card : InventoryCard) {
-    console.log('sendAddCardToDeckMessage', inventory_card, deck_id)
-    if (!this.socket$) {
-      return;
-    }
-    this.socket$.next({
-      'action': 'getCardsFromDeckReq',
-      'deck_id': deck_id,
-      'inventory_card': inventory_card
-    });
-  }
-
   sendCreateDeckMessage(deck_name: string, deck_type: string) {
     this.sendMessage('createDeckReq', {deck_name: deck_name, deck_type: deck_type});
   }
@@ -113,17 +93,5 @@ export class WebsocketService {
       return;
     }
     this.socket$.next({'action': 'getCardsFromDeckReq', 'deck_id': deck_id});
-  }
-
-  sendAddCardToDeckMessage(deck_id : string, deck_type: string, inventory_card : InventoryCard, ) {
-    if (!this.socket$) {
-      return;
-    }
-    this.socket$.next({
-      'action': 'addCardToDeckReq',
-      'deck_id': deck_id,
-      'deck_type': deck_type,
-      'inventory_card': inventory_card
-    });
   }
 }
