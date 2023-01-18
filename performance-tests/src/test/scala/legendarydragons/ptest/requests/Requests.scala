@@ -40,6 +40,7 @@ object Requests {
     .check(
       regex("INSERT_INVENTORY_CARD_RESULT"),
       jsonPath("$.data.card_id").saveAs("inventoryCardId"),
+      jsonPath("$.data").saveAs("inventoryCard"),
     )
 
   val addCardToInventory = ws("addCardToInventory")
@@ -47,7 +48,7 @@ object Requests {
       """
         |{"action": "addCardToInventoryReq","inventory_id": "${inventoryId}","inventory_card":
         |{"oracle_id" : "${rid3}","card_name" : "${rid2}","colors" : ["R"],"prices": {"usd":"0.27"},"rarity" :
-        |"meta","quality" : "uncommon", "deck_location" : "side","scryfall_id" : "${rid4}"}}
+        |"meta","quality" : "uncommon", "deck_location" : "","scryfall_id" : "${rid4}", "image_url": "foobar"}}
         |""".stripMargin
     )
     .await(15)(checkAddCardToInventoryReply)
@@ -94,4 +95,24 @@ object Requests {
       """{"action": "removeDeckReq", "deck_id": "${deckId}" } """
     ).await(20)(checkRemoveDeckReply)
 
+  val checkAddCardToDeckReply = ws.checkTextMessage("Add Card To Deck Reply")
+    .check(
+      regex("INSERT_DECK_CARD_RESULT"),
+      jsonPath("$.data.deck_id").saveAs("deckId"),
+    )
+
+  val addCardToDeck = ws("addCardToDeckReq")
+    .sendText(
+      """{"action": "addCardToDeckReq", "deck_id": "${deckId}", "inventory_card": ${inventoryCard}, "deck_type": "deck" } """
+    ).await(20)(checkAddCardToDeckReply)
+
+  val checkGetCardsFromDeckReply = ws.checkTextMessage("Add Card To Deck Reply")
+    .check(
+      regex("GET_DECK_CARDS_RESULT"),
+    )
+
+  val getCardsFromDeck = ws("getCardsFromDeckReq")
+    .sendText(
+      """{"action": "getCardsFromDeckReq", "deck_id": "${deckId}" } """
+    ).await(20)(checkGetCardsFromDeckReply)
 }
