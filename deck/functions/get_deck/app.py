@@ -32,7 +32,17 @@ def lambda_handler(event, context):
     logger.info(f"Querying with deck_id {deck_id}")
 
     try:
-        decks = table.query(
+        deck = table.query(
+            KeyConditionExpression=Key("PK").eq(f"DECK#{deck_id}") 
+            &
+            Key("SK").begins_with("USER#")
+        )['Items']
+        logger.info(f"Querying for deck succesful, with deck_id {deck_id}")
+    except Exception as e:
+        logger.info(f"Exception retrieving cards! {e}")
+
+    try:
+        deck_cards = table.query(
             KeyConditionExpression=Key("GSI1_PK").eq(f"DECK#{deck_id}") 
             &
             Key("GSI1_SK").begins_with("DECK_CARD#"),
@@ -42,10 +52,11 @@ def lambda_handler(event, context):
     except Exception as e:
         logger.info(f"Exception retrieving cards! {e}")
     
+    
     output = {
-        "event_type": "GET_DECK_CARDS_RESULT",
-        "deck_id": deck_id,
-        "data": decks
+        "event_type": "GET_DECK_RESULT",
+        "deck": deck,
+        "deck_cards": deck_cards
     }
 
     apigateway.post_to_connection(
