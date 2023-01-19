@@ -153,5 +153,50 @@ Resources:
       IntegrationUri:
         Fn::Sub:
           arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GetWishlistItemsByUserIdFunction.Arn}/invocations
+  
+  #REMOVE WISHLIST ITEM
+  RemoveWishlistItemFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/remove_wishlist_item/
+      Policies:
+        - EventBridgePutEventsPolicy:
+            EventBusName: "connection-event-bus"
+        - DynamoDBCrudPolicy:
+            TableName: !Ref WishlistTable
+
+  RemoveWishlistItemPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref RemoveWishlistItemFunction
+      Principal: apigateway.amazonaws.com
+
+  RemoveWishlistItemRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Fn::ImportValue:
+          !Sub "${LegDragonsWebSocketApi}"
+      RouteKey: removeWishlistItemReq
+      AuthorizationType: NONE
+      OperationName: RemoveWishlistItemRoute
+      Target: !Join
+        - '/'
+        - - 'integrations'
+          - !Ref RemoveWishlistItemInteg
+
+  RemoveWishlistItemInteg:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Fn::ImportValue:
+          !Sub "${LegDragonsWebSocketApi}"
+      Description: Create a wishlist item.
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::Sub:
+          arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${RemoveWishlistItemFunction.Arn}/invocations
+
 
 # Outputs:
