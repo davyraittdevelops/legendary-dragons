@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Store } from "@ngrx/store";
-import { Observable, share, tap } from "rxjs";
+import { catchError, Observable, of, share, tap } from "rxjs";
+import { logoutUser } from 'src/app/ngrx/user/user.actions';
 import { WebsocketService } from 'src/app/services/websocket/websocket.service';
 import { AppState } from "../../../app.state";
 import { Deck } from "../../../models/deck.model";
@@ -21,7 +22,8 @@ export class DecksDetailsPageComponent implements OnInit {
   hasError$: Observable<boolean>;
   deck_id: string = "";
 
-  constructor(public modalService: NgbModal, private appStore: Store<AppState>, private activatedRoute: ActivatedRoute, private websocketService : WebsocketService) {
+  constructor(public modalService: NgbModal, private appStore: Store<AppState>, private activatedRoute: ActivatedRoute,
+              private websocketService : WebsocketService, private router: Router) {
     this.selectedDeck$ = this.appStore.select(deckByIdSelector).pipe(tap(selectedDeck => {
       console.log(selectedDeck);
     }));
@@ -32,7 +34,18 @@ export class DecksDetailsPageComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.websocketService.dataUpdates$().pipe(share()).subscribe(() => {});
+    this.websocketService.dataUpdates$().pipe(
+      share(),
+      catchError((error) => {
+        // Token expired
+        if (!('reason' in error)) {
+          this.appStore.dispatch(logoutUser());
+          this.router.navigate(["/login"]);
+        }
+
+        return of(error);
+      })
+    ).subscribe();
 
     this.activatedRoute.params.subscribe(params => {
       this.deck_id = params["id"];
