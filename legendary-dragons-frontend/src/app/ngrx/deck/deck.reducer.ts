@@ -34,11 +34,7 @@ const initialState: DeckState = {
     last_modified: new Date(""),
     image_url: "",
     deck_cards: [],
-    side_deck: {
-      created_at: new Date(""),
-      last_modified: new Date(""),
-      side_deck_cards: []
-    }
+    side_deck_cards: []
   }
 }
 
@@ -63,13 +59,7 @@ export const deckReducer = createReducer(
   on(getCardsFromDeckFail, (state) => ({...state, isLoading: false, hasError: true})),
   on(getCardsFromDeckSuccess, (state, {deck_id, main_deck_cards, side_deck_cards}) => {
     let foundDeck = state.decks.find(d => d.deck_id === deck_id)
-    let updatedDeck = {
-      ...foundDeck!,
-      deck_cards: main_deck_cards,
-
-      ...foundDeck!.side_deck,
-        side_deck_cards: side_deck_cards
-    };
+    let updatedDeck = {...foundDeck!, deck_cards: main_deck_cards, side_deck_cards: side_deck_cards};
 
     return {
       ...state,
