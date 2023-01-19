@@ -8,7 +8,7 @@ import { WebsocketService } from 'src/app/services/websocket/websocket.service';
 import { AppState } from "../../../app.state";
 import { Deck } from "../../../models/deck.model";
 import { getDeck } from "../../../ngrx/deck/deck.actions";
-import { deckByIdSelector, errorSelector, isLoadingSelector } from "../../../ngrx/deck/deck.selectors";
+import { deckByIdSelector, errorSelector, isAddCardLoadingSelector, isLoadingSelector } from "../../../ngrx/deck/deck.selectors";
 
 @Component({
   selector: 'app-decks-details-page',
@@ -18,6 +18,7 @@ import { deckByIdSelector, errorSelector, isLoadingSelector } from "../../../ngr
 export class DecksDetailsPageComponent implements OnInit {
   selectedDeck$: Observable<Deck>;
   isLoading$: Observable<boolean>;
+  isAddCardLoading$: Observable<boolean>;
   hasError$: Observable<boolean>;
   deck_id: string = "";
 
@@ -28,8 +29,8 @@ export class DecksDetailsPageComponent implements OnInit {
     }));
 
     this.isLoading$ = this.appStore.select(isLoadingSelector);
+    this.isAddCardLoading$ = this.appStore.select(isAddCardLoadingSelector);
     this.hasError$ = this.appStore.select(errorSelector);
-
   }
 
   ngOnInit(): void {
