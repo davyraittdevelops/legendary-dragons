@@ -65,7 +65,6 @@ Resources:
         StreamViewType: "NEW_AND_OLD_IMAGES"
 
   # CREATE WISHLIST ITEM 
-
   CreateWishlistItemFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -148,7 +147,7 @@ Resources:
       ApiId:
         Fn::ImportValue:
           !Sub "${LegDragonsWebSocketApi}"
-      Description: Create a wishlist item.
+      Description: Get wishlist items for a user id.
       IntegrationType: AWS_PROXY
       IntegrationUri:
         Fn::Sub:
@@ -192,11 +191,54 @@ Resources:
       ApiId:
         Fn::ImportValue:
           !Sub "${LegDragonsWebSocketApi}"
-      Description: Create a wishlist item.
+      Description: Remove wishlist item by id.
       IntegrationType: AWS_PROXY
       IntegrationUri:
         Fn::Sub:
           arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${RemoveWishlistItemFunction.Arn}/invocations
 
+  #CREATE PRICE ALERT
+  CreatePriceAlertFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/create_price_alert/
+      Policies:
+        - EventBridgePutEventsPolicy:
+            EventBusName: "connection-event-bus"
+        - DynamoDBWritePolicy:
+            TableName: !Ref WishlistTable
+
+  CreatePriceAlertPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref CreatePriceAlertFunction
+      Principal: apigateway.amazonaws.com
+
+  CreatePriceAlertRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Fn::ImportValue:
+          !Sub "${LegDragonsWebSocketApi}"
+      RouteKey: createPriceAlertReq
+      AuthorizationType: NONE
+      OperationName: CreatePriceAlertItemRoute
+      Target: !Join
+        - '/'
+        - - 'integrations'
+          - !Ref CreatePriceAlertInteg
+
+  CreatePriceAlertInteg:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Fn::ImportValue:
+          !Sub "${LegDragonsWebSocketApi}"
+      Description: Create a price alert.
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::Sub:
+          arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${CreatePriceAlertFunction.Arn}/invocations
 
 # Outputs:
