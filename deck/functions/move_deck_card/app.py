@@ -19,20 +19,16 @@ table = dynamodb.Table(os.getenv("TABLE_NAME"))
 eventbus = os.getenv("EVENT_BUS_NAME")
 
 def lambda_handler(event, context):
-  
-  except Exception as e:
-    logger.info(f"Adding card to deck failed: {e}")
+  body = json.loads(event["body"])
+  deck_card = body["deck_card"]
+  deck_id = body["deck_id"]
 
-  return {"statusCode": 200}
-
-
-def update_inventory_card_deck_location(inventory_card):
-  events_client.put_events(Entries=[
-    {
-      "Time": datetime.now(),
-      "Source": "legdragons.deck.add_card_to_deck",
-      "DetailType": "CARD_ADDED_TO_DECK",
-      "Detail": json.dumps({"inventory_card": inventory_card}),
-      "EventBusName": eventbus
+  save = table.get_item(
+    Key={
+      "PK": deck_card,
+      "SK": deck_id
     }
-  ])
+  )
+
+  logger.info(save)
+  return {"statusCode": 200}
