@@ -64,7 +64,7 @@ Resources:
       ApiId:
         Fn::ImportValue:
           !Sub "${LegDragonsWebSocketApi}"
-      RouteKey: GetDecksReq
+      RouteKey: getDecksReq
       AuthorizationType: NONE
       OperationName: GetDecksRoute
       Target: !Join
@@ -115,7 +115,7 @@ Resources:
         ApiId:
           Fn::ImportValue:
             !Sub "${LegDragonsWebSocketApi}"
-        RouteKey: GetDeckReq
+        RouteKey: getDeckReq
         AuthorizationType: NONE
         OperationName: GetDeckRoute
         Target: !Join
