@@ -37,7 +37,7 @@ channels:
 
   searchCardsByKeywordReq:
     description: AWS Lambda function that queries the Scryfall API for Magic The Gathering cards based on a keyword given in the request. It uses the requests library to make GET requests to the Scryfall API, with a small delay before each request as recommended by the API docs. It maps the response to a specific format and logs the total number of cards found and the number of cards returned. It then sends the data in chunks, to avoid large payloads, using the AWS Api Gateway Management Api to a connected client specified by the connection ID. The function also uses the AWS X-Ray SDK to trace and debug requests. It returns a JSON object with a status code of 200 on success.
-    publish:
+    subscribe:
       message:
         $ref: '#/components/messages/searchCardsByKeywordReq'
 
@@ -54,7 +54,7 @@ channels:
           $ref: '#/components/messages/addCardToDeckReq'
   
   createDeck:
-      subscribe:
+      publish:
         summary: This code creates a new deck in DynamoDB table with a unique ID generated using uuid package. It extracts the deck name and type from the request body, and user ID from request context. It sets the current time as the creation and modification time. It also sets the user_id and total_value to 0. It then adds this new deck to the DynamoDB table using the put_item() method. It returns a HTTP status code of 200 upon successful execution.
         message:
           $ref: '#/components/messages/createDeckReq'
@@ -78,7 +78,7 @@ channels:
           $ref: '#/components/messages/getDecksReq'
   
   deleteDeck:
-      subscribe:
+      publish:
         operationId: deleteDeck
         summary: The function is triggered by an API Gateway, it takes in a request with a deck_id in the body and a user_id in the request context. The function uses the extracted deck_id and user_id to delete the specific deck item from a DynamoDB table. If the deletion is successful, a log message is written with the result. If there is an exception, it is logged. The function returns a status code of 200.
         message:
