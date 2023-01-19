@@ -121,3 +121,53 @@ def test_lamda_handler_success(websocket_event, table_definition):
   # Assert
   assert response["statusCode"] == 200
   assert len(deck_card) == 0
+
+@patch.dict(os.environ, OS_ENV, clear=True)
+@mock_dynamodb
+@mock_events
+@mock_sqs
+def test_lamda_handler_sidedeck(websocket_event, table_definition):
+  # Arrange
+  # 1. Create the DynamoDB Table
+  dynamodb = boto3.resource("dynamodb")
+  table = dynamodb.create_table(**table_definition)
+
+  table.put_item(
+    Item={
+        "PK": "DECK_CARD#1",
+      "SK": "DECK#123#SIDE_DECK",
+      "entity_type": "DECK_CARD",
+      "deck_id": "123",
+      "inventory_id": "123",
+      "inventory_card_id": "1",
+      "created_at": "2023-01-17T23:45:18.666453",
+      "last_modified": "2023-01-17T23:45:18.666453",
+      "card_name": "Swords of Doom",
+      "colors": ["R"],
+      "prices": {"usd": "0.05"},
+      "rarity": "meta",
+      "quality": "rare",
+      "image_url": "example-image-url.com",
+      "GSI1_PK": "DECK#123#SIDE_DECK",
+      "GSI1_SK": "DECK_CARD#1",
+      "user_id": "user-123"
+    }
+  )
+
+  body = json.loads(websocket_event["body"])
+  body["deck_type"] = "side_deck"
+  websocket_event["body"] = json.dumps(body)
+
+  # Act
+  from functions.remove_card_from_deck import app
+  response = app.lambda_handler(websocket_event, {})
+
+  deck_card = table.query(
+      KeyConditionExpression=Key("GSI1_PK").eq("DECK#123#SIDE_DECK") &
+                             Key("GSI1_SK").begins_with("DECK_CARD"),
+      IndexName="GSI1"
+  )["Items"]
+
+  # Assert
+  assert response["statusCode"] == 200
+  assert len(deck_card) == 0
