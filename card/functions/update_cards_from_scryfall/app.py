@@ -32,24 +32,28 @@ def lambda_handler(event, context):
     logger.info("Converting the maps to lists")
     card_faces_list = list(mapped_card_faces)
     card_list = list(mapped_cards)
+    card_face_list = []
+    for card_faces in card_faces_list:
+        for card_face in card_faces:
+            card_face_list.append(card_face)
 
-    write_to_database(card_list, card_faces_list)
+    write_to_database(card_list, card_face_list)
     
     return {"statusCode": 200}
 
 def write_to_database(card_list, card_faces_list):
+    print('Length of card_list is : ' , len(card_list))
+    print('Length of card_faces_list is : ' , len(card_faces_list))
+
     """Import the update objects in the database"""
     logger.info("Import the update objects in the database")
-    counter = 0
-    overwrite_keys = ['PK', 'SK']
-    with table.batch_writer(overwrite_by_pkeys=overwrite_keys) as writer:
+    with table.batch_writer() as writer:
         for card in card_list:
-            counter = counter + 1
             writer.put_item(Item=card)
-        for card_faces in card_faces_list:
-            for card_face in card_faces:
-                counter = counter + 1
-                writer.put_item(Item=card_face)
+        for card_face in card_faces_list:
+            print('Working with ' , card_face['card_name'])
+            writer.put_item(Item=card_face)
+
 
 def card_entry(card):
     """Map the API object to the DynamoDB entity."""
@@ -103,17 +107,17 @@ def card_face_entry(card):
             if oracle_id == '':
                 oracle_id = face['oracle_id']
             multiverse_id = multiverse[idx] if idx <= (multiverse_len - 1) else None
-            card_face = create_card_face(face, multiverse_id, oracle_id, scryfall_id, type_line )
+            card_face = create_card_face(face, multiverse_id, oracle_id, scryfall_id, type_line, idx)
             card_faces.append(card_face)
 
     else:
         multiverse_id = multiverse[0] if multiverse_len >= 1 else None
-        card_faces.append(create_card_face(card, multiverse_id, oracle_id,scryfall_id, type_line))
+        card_faces.append(create_card_face(card, multiverse_id, oracle_id,scryfall_id, type_line, 0))
     
     return card_faces
 
 
-def create_card_face(card, multiverse_id, oracle_id, scryfall_id, type_line):
+def create_card_face(card, multiverse_id, oracle_id, scryfall_id, type_line, idx):
     """Map the card face object."""
     colors = []
     image = ""
@@ -121,12 +125,13 @@ def create_card_face(card, multiverse_id, oracle_id, scryfall_id, type_line):
     if "image_uris" in card:
         image = card["image_uris"]["png"]
 
+    card_name_append = f'#{idx}'
     card_scryfall_id = "CARD#" + scryfall_id
     card_face_oracle_id = "CARD_FACE#" + oracle_id
 
     return {
         "PK": card_face_oracle_id,
-        "SK": card_scryfall_id,
+        "SK": card_scryfall_id + card_name_append,
         "entity_type": "CARD_FACE",
         "scryfall_id": scryfall_id,
         "oracle_id": oracle_id,
