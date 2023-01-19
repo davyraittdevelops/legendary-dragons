@@ -15,22 +15,25 @@ def step_impl(context):
     context.nickname = uuid.uuid4().hex
     logger.info(f"Generated nickname: ${context.nickname}")
 
-@given("we have a registered user with email '{email}' and password '{password}'")
-@when("we register with email '{email}' and password '{password}'")
-def step_impl(context, email, password):
-    body = {"nickname": context.nickname, "email": email, "password": password}
+@given("we register a new user with an email and a password")
+@when("we register a new user with an email and a password")
+def step_impl(context):
+    context.detail["email"] = "LegendaryDragonsMinor@gmail.com"
+    context.detail["password"] = "Eindopdracht3!"
+
+    body = {"nickname": context.nickname, "email": context.detail["email"], "password": context.detail["password"]}
     logger.info(f"{context.base_url}/users/register")
     response = requests.post(
         f"{context.base_url}/users/register",
         json.dumps(body)
     )
-    context.detail["email"] = email
+    
     context.status_code = response.status_code
-    context.password = password
+    
 
 @when("we login the existing user")
 def step_impl(context):
-    body = {"email": context.detail["email"], "password": context.password}
+    body = {"email": context.detail["email"], "password": context.detail["password"]}
     logger.info(f"{context.base_url}/users/login")
 
     response = requests.post(
@@ -40,7 +43,6 @@ def step_impl(context):
 
     context.status_code = response.status_code
     context.headers = response.headers
-
 
 @then("the user should be registered")
 def step_impl(context):
@@ -56,4 +58,3 @@ def step_impl(context):
     assert context.status_code == 200
 
     # Assertion for headers
-
