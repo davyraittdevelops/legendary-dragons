@@ -34,8 +34,7 @@ def lambda_handler(event, context):
     card_list = list(mapped_cards)
     card_face_list = []
     for card_faces in card_faces_list:
-        for card_face in card_faces:
-            card_face_list.append(card_face)
+        card_face_list.extend(card_faces)
 
     write_to_database(card_list, card_face_list)
     
