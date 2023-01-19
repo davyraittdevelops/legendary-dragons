@@ -38,11 +38,11 @@ def addCardToDeck(context):
     inventory_card = {
         "card_id": "0783c3f7-3f48-443f-9f30-a8094f8fca53",
         "card_name": "Abdel Adrian, Gorion's Ward",
-        "colors": "['W']" ,
+        "colors": "['W']",
         "deck_location": "",
         "entity_type": "INVENTORY_CARD",
         "image_url": "https://cards.scryfall.io/png/front/3/9/396f9198-67b6-45d8-91b4-dc853bff9623.png?1660722100",
-        "inventory_id":"09660b91-e394-44ca-882d-438eb1cc9d25",
+        "inventory_id": "09660b91-e394-44ca-882d-438eb1cc9d25",
         "last_modified": "2023-01-16",
         "oracle_id": "cab092f9-b7ff-43b9-935f-310869a4daf8",
         "prices": "{usd_foil: '0.80', usd_etched: null, eur_foil: '0.18', tix: null, eur: '0.09', …}",
@@ -71,6 +71,34 @@ def getCardsFromDeck(context):
 
     context.detail["get_cards_from_deck"] = json.loads(context.ws.recv())
 
+
+def removeCardFromDeck(context):
+    deck_card = {
+        "inventory_card_id": "0783c3f7-3f48-443f-9f30-a8094f8fca53",
+        "card_name": "Abdel Adrian, Gorion's Ward",
+        "colors": "['W']",
+        "deck_location": "",
+        "entity_type": "DECK_CARD",
+        "image_url": "https://cards.scryfall.io/png/front/3/9/396f9198-67b6-45d8-91b4-dc853bff9623.png?1660722100",
+        "inventory_id": "09660b91-e394-44ca-882d-438eb1cc9d25",
+        "last_modified": "2023-01-16",
+        "oracle_id": "cab092f9-b7ff-43b9-935f-310869a4daf8",
+        "prices": "{usd_foil: '0.80', usd_etched: null, eur_foil: '0.18', tix: null, eur: '0.09', …}",
+        "rarity": "uncommon",
+        "quality": "damaged",
+        "set_name": "Commander Legends: Battle for Baldur's Gate",
+        "user_id": "870b54fc-22f1-4b4c-83f6-90eac12eaa3c",
+    }
+
+    context.ws.send(json.dumps({
+        "action": "removeCardFromDeckReq",
+        "deck_id": context.detail["create_deck"]["data"]["deck_id"],
+        "deck_type": context.detail["deck_type"],
+        "deck_card": deck_card
+    }))
+
+    context.detail["removed_card_from_deck"] = json.loads(context.ws.recv())
+
 @given("there is an user and the registered user is logged in")
 def step_impl(context):
     registerVerifyLoginConnectUser(context)
@@ -80,7 +108,7 @@ def step_impl(context):
     registerVerifyLoginConnectUser(context)
     createDeck(context)
 
-@given("there is an existing user, the user is logged in, the user has atleast one deck and the deck contains two cards")
+@given("there is an existing user, the user is logged in, the user has atleast one deck and the deck contains cards")
 def step_impl(context):
     registerVerifyLoginConnectUser(context)
     createDeck(context)
@@ -118,6 +146,16 @@ def step_impl(context):
 @when("I request to see contents of the deck")
 def step_impl(context):
     getCardsFromDeck(context)
+
+@when("I request to remove a card from the main deck")
+def step_impl(context):
+    context.detail["deck_type"] = "main_deck"
+    removeCardFromDeck(context)
+
+@when("I request to remove a card from the side deck")
+def step_impl(context):
+    context.detail["deck_type"] = "side_deck"
+    removeCardFromDeck(context)
 
 @then("the deck should be created")
 def step_impl(context):
@@ -161,3 +199,18 @@ def step_impl(context):
     assert context.detail["get_cards_from_deck"]["data"]["side_deck_cards"][0]["card_name"] == "Abdel Adrian, Gorion's Ward"
     assert context.detail["get_cards_from_deck"]["data"]["side_deck_cards"][0]["quality"] == "damaged"
     assert context.detail["get_cards_from_deck"]["data"]["side_deck_cards"][0]["rarity"] == "uncommon"
+
+@then("the deck collection is updated and the card is removed")
+def step_impl(context):
+    assert context.detail["removed_card_from_deck"]["event_type"] == "REMOVE_DECK_CARD_RESULT"
+
+    assert context.detail["removed_card_from_deck"]["data"]["entity_type"] == "DECK_CARD"
+    assert context.detail["removed_card_from_deck"]["data"]["card_name"] == "Abdel Adrian, Gorion's Ward"
+    assert context.detail["removed_card_from_deck"]["data"]["quality"] == "damaged"
+    assert context.detail["removed_card_from_deck"]["data"]["rarity"] == "uncommon"
+
+
+
+
+
+

@@ -27,9 +27,9 @@ def step_impl(context):
         f"{context.base_url}/users/register",
         json.dumps(body)
     )
-    
+
     context.status_code = response.status_code
-    
+
 
 @when("we login the existing user")
 def step_impl(context):
