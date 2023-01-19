@@ -151,7 +151,10 @@ def test_lamda_handler_sidedeck(websocket_event, table_definition):
   client.put_rule(
       Name="test-rule", EventBusName=OS_ENV["EVENT_BUS_NAME"],
       EventPattern=json.dumps(
-          {"detail-type": ["CARD_ADDED_TO_DECK"], "source": ["legdragons.deck.add_card_to_deck"]}
+          {
+            "detail-type": ["CARD_ADDED_TO_DECK"],
+            "source": ["legdragons.decks.add_card_to_deck"]
+          }
       )
   )
   client.put_targets(
