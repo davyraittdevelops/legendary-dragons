@@ -103,7 +103,7 @@ export class DeckEffects {
             return event['event_type'] === 'GET_DECK_RESULT'
           }),
           map((event: any) => {
-            const deck = event["data"]["deck"][0];
+            const deck = event["data"]["deck"];
             deck.deck_cards = event["data"]["deck_cards"];
             deck.side_deck_cards = event["data"]["side_deck_cards"];
             return getDeckSuccess({deck})
