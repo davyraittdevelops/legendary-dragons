@@ -57,13 +57,13 @@ Resources:
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref CardTable
-    Events:
-      Schedule:
-        Type: Schedule
-        Properties:
-          Description: Runs the lambda every day at 23.45PM.
-          Enabled: True
-          Schedule: "cron(45 23 * * ? *)"
+      Events:
+        Schedule:
+          Type: Schedule
+          Properties:
+            Description: Runs the lambda every day at 23.45PM.
+            Enabled: True
+            Schedule: "cron(45 23 * * ? *)"
   
 
   SteamCardChangesFunction:
@@ -187,7 +187,7 @@ Resources:
       ApiId:
         Fn::ImportValue:
           !Sub "${LegDragonsWebSocketApi}"
-      RouteKey: GetCardReq
+      RouteKey: getCardReq
       AuthorizationType: NONE
       OperationName: GetCardRoute
       Target: !Join

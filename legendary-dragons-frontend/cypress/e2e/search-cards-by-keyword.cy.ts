@@ -2,6 +2,7 @@ import {loginUser, logout} from "../support/common";
 
 beforeEach(() => {
   loginUser();
+  cy.reload();
 });
 
 afterEach(() => {
@@ -18,6 +19,7 @@ describe("Search 'Conclave Mentor' card", () => {
     //act
     keywordSearchInput.type("Conclave mentor");
     keywordSearchInput.type("{enter}");
+
     //assert
     cy.get("table > tbody", {timeout: 5000}).should("be.visible");
     cy.get("table > tbody").within(() => {

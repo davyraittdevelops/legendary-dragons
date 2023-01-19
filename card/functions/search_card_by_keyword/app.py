@@ -91,6 +91,10 @@ def card_entry(card):
         multiverse_id = multiverse[0] if multiverse_len >= 1 else None
         card_faces.append(create_card_face(card, multiverse_id))
 
+    oracle_id = card.get('oracle_id', '')
+    if oracle_id == '':
+        oracle_id = card["card_faces"][0]['oracle_id']
+
     return {
         "scryfall_id": card["id"],
         "collector_number": card["collector_number"],
@@ -98,7 +102,7 @@ def card_entry(card):
         "prices": card["prices"],
         "cardmarket_id": card["cardmarket_id"] if "cardmarket_id" in card else None,
         "is_multifaced": is_multifaced,
-        "oracle_id": card["oracle_id"],
+        "oracle_id": oracle_id,
         "set_id": card["set_id"],
         "set_name": card["set_name"],
         "set_code": card["set"],

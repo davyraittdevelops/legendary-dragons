@@ -1,19 +1,17 @@
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
-import { catchError, filter, map, mergeMap, tap } from 'rxjs/operators';
+import { catchError, filter, map, switchMap, tap } from 'rxjs/operators';
 import { WebsocketService } from "src/app/services/websocket/websocket.service";
 
 import {
   addCardtoInventory,
   addCardtoInventoryFail,
-  addCardtoInventorySuccess,
-  removeCardFromInventory,
-  removeCardFromInventoryFail,
-  removeCardFromInventorySuccess,
-  getInventory,
+  addCardtoInventorySuccess, getInventory,
   getInventoryFail,
-  getInventorySuccess
+  getInventorySuccess, removeCardFromInventory,
+  removeCardFromInventoryFail,
+  removeCardFromInventorySuccess, updateInventoryCardFail, updateInventoryCardSuccess
 } from "./inventory.actions";
 
 @Injectable()
@@ -24,11 +22,26 @@ export class InventoryEffects {
     private readonly websocketService: WebsocketService,
   ) { }
 
+  public updateInventoryCardEffect$ = createEffect(() =>
+    this.actions$.pipe(
+      switchMap(() => {
+        return this.websocketService.dataUpdates$().pipe(
+          filter((event: any) => event['event_type'] === 'MODIFY_INVENTORY_CARD_RESULT'),
+          map((event: any) => updateInventoryCardSuccess({inventoryCard: event["data"]})),
+          catchError((error) => {
+            console.log(error);
+            return of(updateInventoryCardFail({error: true}))
+          })
+        )
+      })
+    )
+  );
+
   public addCardtoInventoryEffect$ = createEffect(() =>
     this.actions$.pipe(
       ofType(addCardtoInventory),
       tap(({inventoryCard, inventoryId}) => this.websocketService.sendAddCardToInventoryMessage(inventoryId, inventoryCard)),
-      mergeMap(() => {
+      switchMap(() => {
         return this.websocketService.dataUpdates$().pipe(
           filter((event: any) => {
             return event['event_type'] === 'INSERT_INVENTORY_CARD_RESULT'
@@ -47,7 +60,7 @@ export class InventoryEffects {
     this.actions$.pipe(
       ofType(removeCardFromInventory),
       tap(({inventoryCardId, inventoryId}) => this.websocketService.sendRemoveCardFromInventoryMessage(inventoryCardId, inventoryId)),
-      mergeMap(() => {
+      switchMap(() => {
         return this.websocketService.dataUpdates$().pipe(
           filter((event: any) => {
             return event['event_type'] === 'REMOVE_INVENTORY_CARD_RESULT'
@@ -66,7 +79,7 @@ export class InventoryEffects {
     this.actions$.pipe(
       ofType(getInventory),
       tap(() => this.websocketService.sendGetInventoryMessage()),
-      mergeMap(() => {
+      switchMap(() => {
         return this.websocketService.dataUpdates$().pipe(
           filter((event: any) => {
             return event['event_type'] === 'GET_INVENTORY_RESULT'

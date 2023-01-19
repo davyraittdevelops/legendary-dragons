@@ -20,10 +20,10 @@ def createDeck(context):
     
 def getDecks(context):
     context.ws.send(json.dumps({
-        "action": "getDeckReq",
+        "action": "getDecksReq",
     }))
 
-    context.detail["get_deck"] = json.loads(context.ws.recv())
+    context.detail["get_decks"] = json.loads(context.ws.recv())
 
 def removeDeck(context):
     context.ws.send(json.dumps({
@@ -63,13 +63,13 @@ def addCardToDeck(context):
     context.detail["card_added_to_deck"] = json.loads(context.ws.recv())
 
 
-def getCardsFromDeck(context):
+def getDeck(context):
     context.ws.send(json.dumps({
-    "action": "getCardsFromDeckReq",
+    "action": "getDeckReq",
     "deck_id": context.detail["create_deck"]["data"]["deck_id"],
     }))
 
-    context.detail["get_cards_from_deck"] = json.loads(context.ws.recv())
+    context.detail["get_deck"] = json.loads(context.ws.recv())
 
 
 def removeCardFromDeck(context):
@@ -143,9 +143,10 @@ def step_impl(context):
     context.detail["deck_type"] = "side_deck"
     addCardToDeck(context)
 
-@when("I request to see contents of the deck")
+@when("I request to see the details of my deck")
 def step_impl(context):
-    getCardsFromDeck(context)
+    getDeck(context)
+
 
 @when("I request to remove a card from the main deck")
 def step_impl(context):
@@ -166,8 +167,8 @@ def step_impl(context):
 
 @then("I should be able to see all my decks")
 def step_impl(context):
-    assert context.detail["get_deck"]["event_type"] == "GET_DECK_RESULT"
-    assert len(context.detail["get_deck"]["data"]) == 1
+    assert context.detail["get_decks"]["event_type"] == "GET_DECKS_RESULT"
+    assert len(context.detail["get_decks"]["data"]) == 1
 
 @then("the deck should be removed from all my decks")
 def step_impl(context):
@@ -183,22 +184,24 @@ def step_impl(context):
     assert context.detail["card_added_to_deck"]["data"]["quality"] == "damaged"
     assert context.detail["card_added_to_deck"]["data"]["deck_id"] == context.detail["create_deck"]["data"]["deck_id"]
 
-@then("I should be able to see my deck with two cards")
+@then("I should be able to see my deck details including main deck and side deck cards")
 def step_impl(context):
-    assert context.detail["get_cards_from_deck"]["event_type"] == "GET_DECK_CARDS_RESULT"
-    assert context.detail["get_cards_from_deck"]["deck_id"] == context.detail["create_deck"]["data"]["deck_id"]
+    print(context.detail["get_deck"])
+    assert context.detail["get_deck"]["event_type"] == "GET_DECK_RESULT"
+    assert context.detail["get_deck"]["data"]["deck"]["deck_id"] == context.detail["create_deck"]["data"]["deck_id"]
+    assert context.detail["get_deck"]["data"]["deck"]["deck_name"] == "White-Blue: Azorius"
 
     # Main Deck
-    assert context.detail["get_cards_from_deck"]["data"]["deck_cards"][0]["entity_type"] == "DECK_CARD"
-    assert context.detail["get_cards_from_deck"]["data"]["deck_cards"][0]["card_name"] == "Abdel Adrian, Gorion's Ward"
-    assert context.detail["get_cards_from_deck"]["data"]["deck_cards"][0]["quality"] == "damaged"
-    assert context.detail["get_cards_from_deck"]["data"]["deck_cards"][0]["rarity"] == "uncommon"
+    assert context.detail["get_deck"]["data"]["deck_cards"][0]["entity_type"] == "DECK_CARD"
+    assert context.detail["get_deck"]["data"]["deck_cards"][0]["card_name"] == "Abdel Adrian, Gorion's Ward"
+    assert context.detail["get_deck"]["data"]["deck_cards"][0]["quality"] == "damaged"
+    assert context.detail["get_deck"]["data"]["deck_cards"][0]["rarity"] == "uncommon"
 
     # Side Deck
-    assert context.detail["get_cards_from_deck"]["data"]["side_deck_cards"][0]["entity_type"] == "DECK_CARD"
-    assert context.detail["get_cards_from_deck"]["data"]["side_deck_cards"][0]["card_name"] == "Abdel Adrian, Gorion's Ward"
-    assert context.detail["get_cards_from_deck"]["data"]["side_deck_cards"][0]["quality"] == "damaged"
-    assert context.detail["get_cards_from_deck"]["data"]["side_deck_cards"][0]["rarity"] == "uncommon"
+    assert context.detail["get_deck"]["data"]["side_deck_cards"][0]["entity_type"] == "DECK_CARD"
+    assert context.detail["get_deck"]["data"]["side_deck_cards"][0]["card_name"] == "Abdel Adrian, Gorion's Ward"
+    assert context.detail["get_deck"]["data"]["side_deck_cards"][0]["quality"] == "damaged"
+    assert context.detail["get_deck"]["data"]["side_deck_cards"][0]["rarity"] == "uncommon"
 
 @then("the deck collection is updated and the card is removed")
 def step_impl(context):
