@@ -18,14 +18,12 @@ dynamodb = boto3.resource("dynamodb")
 cards = dynamodb.Table(os.getenv("TABLE_NAME"))
 
 def lambda_handler(event, context):
-    """Get details from event."""
     connection_id = event["requestContext"]["connectionId"]
     domain_name = event["requestContext"]["domainName"]
     stage = event["requestContext"]["stage"]
     endpoint = f"https://{domain_name}/{stage}"
     apigateway = boto3.client("apigatewaymanagementapi", endpoint_url=endpoint)
 
-    """Get card details by querying the cached cards database"""
     body = json.loads(event["body"])
     scryfall_id = body['scryfall_id']
 

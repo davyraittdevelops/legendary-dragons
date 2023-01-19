@@ -31,7 +31,7 @@ def lambda_handler(event, context):
     logger.info(f"Querying with deck_id {deck_id}")
 
     try:
-        deck = table.get_item(
+        deck = table.query(
             KeyConditionExpression=Key("PK").eq(f"DECK#{deck_id}") 
             &
             Key("SK").begins_with("USER#")
@@ -52,7 +52,6 @@ def lambda_handler(event, context):
         Key("GSI1_SK").begins_with("DECK_CARD#"),
         IndexName="GSI1"
         )['Items']
-
     except Exception as e:
         logger.info(f"Exception retrieving cards! {e}")
     
@@ -64,6 +63,7 @@ def lambda_handler(event, context):
             "deck_cards": deck_cards,
             "side_deck_cards": side_deck_cards
         }
+
     }
 
     apigateway.post_to_connection(
