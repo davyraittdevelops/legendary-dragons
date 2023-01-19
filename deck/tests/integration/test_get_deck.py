@@ -20,6 +20,7 @@ OS_ENV = {
   "EVENT_BUS_NAME": "test-event-bus"
 }
 
+
 @pytest.fixture()
 def table_definition():
   return {
@@ -47,6 +48,7 @@ def table_definition():
     "BillingMode": "PAY_PER_REQUEST"
   }
 
+
 @pytest.fixture()
 def websocket_event():
   """Generates Websocket Event"""
@@ -65,12 +67,15 @@ def websocket_event():
     }),
   }
 
+
 orig = botocore.client.BaseClient._make_api_call
+
 
 def mock_make_api_call(self, operation_name, kwarg):
     if operation_name == "PostToConnection":
         return None
     return orig(self, operation_name, kwarg)
+
 
 @patch.dict(os.environ, OS_ENV, clear=True)
 @mock_dynamodb
@@ -82,23 +87,35 @@ def test_lamda_handler_success(websocket_event, table_definition):
   dynamodb = boto3.resource("dynamodb")
   table = dynamodb.create_table(**table_definition)
 
-  
+  table.put_item(
+    Item={
+      "PK": "DECK#123",
+      "SK": "USER#user-123",
+      "deck_id": "123",
+      "deck_name": "Main",
+      "created_at": "today",
+      "last_modified": "just now",
+      "GSI1_SK": "DECK#123",
+      "GSI1_PK": "USER#user-123",
+    }
+  )
+
   table.put_item(
       Item={
           "PK": "DECK_CARD#1232",
           "SK": "DECK#123",
           "entity_type": "DECK_CARD",
           "deck_id": "123",
-          "inventory_id": '1',
-          "inventory_card_id": '1',
-          "created_at":'today',
-          "last_modified": 'just now',
-          "card_name": 'obelisk the tormentor',
-          "colors": 'red',
-          "prices": '100eur',
-          "rarity": 'veryrare',
-          "quality": 'good',
-          "image_url": 'https://img',
+          "inventory_id": "1",
+          "inventory_card_id": "1",
+          "created_at": "today",
+          "last_modified": "just now",
+          "card_name": "obelisk the tormentor",
+          "colors": "red",
+          "prices": "100eur",
+          "rarity": "veryrare",
+          "quality": "good",
+          "image_url": "https://img",
           "GSI1_PK": "DECK#123",
           "GSI1_SK": "DECK_CARD#1232",
       }
@@ -118,17 +135,17 @@ def test_lamda_handler_success(websocket_event, table_definition):
     # Assert
     assert response["statusCode"] == 200
     assert len(deck_cards) == 1
-    assert deck_cards[0]['PK'] == 'DECK_CARD#1232'
-    assert deck_cards[0]['SK'] == 'DECK#123'
-    assert deck_cards[0]['entity_type'] == 'DECK_CARD'
-    assert deck_cards[0]['deck_id'] == '123'
-    assert deck_cards[0]['inventory_id'] == '1'
-    assert deck_cards[0]['created_at'] == 'today'
-    assert deck_cards[0]['last_modified'] == 'just now'
-    assert deck_cards[0]['card_name'] == 'obelisk the tormentor'
-    assert deck_cards[0]['colors'] == 'red'
-    assert deck_cards[0]['prices'] == '100eur'
-    assert deck_cards[0]['rarity'] == 'veryrare'
-    assert deck_cards[0]['quality'] == 'good'
-    assert deck_cards[0]['image_url'] == 'https://img'
-    assert deck_cards[0]['GSI1_PK'] == 'DECK#123'
+    assert deck_cards[0]["PK"] == "DECK_CARD#1232"
+    assert deck_cards[0]["SK"] == "DECK#123"
+    assert deck_cards[0]["entity_type"] == "DECK_CARD"
+    assert deck_cards[0]["deck_id"] == "123"
+    assert deck_cards[0]["inventory_id"] == "1"
+    assert deck_cards[0]["created_at"] == "today"
+    assert deck_cards[0]["last_modified"] == "just now"
+    assert deck_cards[0]["card_name"] == "obelisk the tormentor"
+    assert deck_cards[0]["colors"] == "red"
+    assert deck_cards[0]["prices"] == "100eur"
+    assert deck_cards[0]["rarity"] == "veryrare"
+    assert deck_cards[0]["quality"] == "good"
+    assert deck_cards[0]["image_url"] == "https://img"
+    assert deck_cards[0]["GSI1_PK"] == "DECK#123"

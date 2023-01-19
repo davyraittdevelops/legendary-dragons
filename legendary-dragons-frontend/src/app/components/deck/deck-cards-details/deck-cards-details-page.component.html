@@ -1,6 +1,6 @@
 <div class="card-size mt-2 ms-2" aria-label="collection-card">
-  <img src="{{card.image_url}}" alt="{{card.card_name}} image" class="card-image" />
-  <div class="d-flex justify-content-end pointer" (click)="open({content : content});"></div>
+  <img src="{{card.image_url}}" alt="{{card.card_name}} image" class="card-image pointer" (click)="open({content : content});" />
+  <div class="d-flex justify-content-end"></div>
   <div class="btn-group card-action" role="group">
     <button type="button" (click)="open({content : content});" class="btn btn-dark">
       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
@@ -15,8 +15,6 @@
     </button>
   </div>
 </div>
-
-
 
 <ng-template #content let-modal>
   <div class="modal-header card-modal bg-dark">

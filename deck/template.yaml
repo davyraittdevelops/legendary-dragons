@@ -32,7 +32,7 @@ Globals:
       - x86_64
     Tracing: Active
 
-Resources: 
+Resources:
   GetDecksFunction:
     Type: AWS::Serverless::Function
     Properties:

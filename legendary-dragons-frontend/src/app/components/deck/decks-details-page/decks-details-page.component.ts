@@ -2,13 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from "@angular/router";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Store } from "@ngrx/store";
-import { catchError, Observable, of, share, tap } from "rxjs";
+import { catchError, Observable, of, share } from "rxjs";
 import { logoutUser } from 'src/app/ngrx/user/user.actions';
 import { WebsocketService } from 'src/app/services/websocket/websocket.service';
 import { AppState } from "../../../app.state";
 import { Deck } from "../../../models/deck.model";
 import { getDeck } from "../../../ngrx/deck/deck.actions";
-import { deckByIdSelector, errorSelector, isLoadingSelector } from "../../../ngrx/deck/deck.selectors";
+import { deckByIdSelector, errorSelector, isAddCardLoadingSelector, isLoadingSelector } from "../../../ngrx/deck/deck.selectors";
 
 @Component({
   selector: 'app-decks-details-page',
@@ -18,18 +18,17 @@ import { deckByIdSelector, errorSelector, isLoadingSelector } from "../../../ngr
 export class DecksDetailsPageComponent implements OnInit {
   selectedDeck$: Observable<Deck>;
   isLoading$: Observable<boolean>;
+  isAddCardLoading$: Observable<boolean>;
   hasError$: Observable<boolean>;
-  deck_id: string = "";
+
+  deckId: string = "";
 
   constructor(public modalService: NgbModal, private appStore: Store<AppState>, private activatedRoute: ActivatedRoute,
               private websocketService : WebsocketService, private router: Router) {
-    this.selectedDeck$ = this.appStore.select(deckByIdSelector).pipe(tap(selectedDeck => {
-      console.log(selectedDeck);
-    }));
-
+    this.selectedDeck$ = this.appStore.select(deckByIdSelector);
     this.isLoading$ = this.appStore.select(isLoadingSelector);
+    this.isAddCardLoading$ = this.appStore.select(isAddCardLoadingSelector);
     this.hasError$ = this.appStore.select(errorSelector);
-
   }
 
   ngOnInit(): void {
@@ -37,18 +36,20 @@ export class DecksDetailsPageComponent implements OnInit {
       share(),
       catchError((error) => {
         // Token expired
-        if (!('reason' in error)) {
-          this.appStore.dispatch(logoutUser());
-          this.router.navigate(["/login"]);
-        }
+        // if (!('reason' in error)) {
+        //   this.appStore.dispatch(logoutUser());
+
+        //   // TODO: Not working correctly..
+        //   this.router.navigate(["/login"]);
+        // }
 
         return of(error);
       })
     ).subscribe();
 
     this.activatedRoute.params.subscribe(params => {
-      this.deck_id = params["id"];
-      this.appStore.dispatch(getDeck({deck_id: this.deck_id}));
+      this.deckId = params["id"];
+      this.appStore.dispatch(getDeck({deck_id: this.deckId}));
     });
   }
 }

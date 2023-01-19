@@ -1,4 +1,5 @@
 import { createReducer, on } from "@ngrx/store";
+import { DeckType } from "src/app/models/deck-type.enum";
 import {
   createDeck,
   createDeckSuccess,
@@ -23,6 +24,7 @@ import { DeckState } from "./models/deck-state.model";
 
 const initialState: DeckState = {
   isLoading: false,
+  isAddCardLoading: false,
   hasError: false,
   decks: [],
   selectedDeck: {
@@ -65,26 +67,24 @@ export const deckReducer = createReducer(
       selectedDeck: deck
     };
   }),
-  on(addCardToDeck, (state, {deck_id, deck_type, inventory_card, deck_name}) => ({...state, isLoading: true})),
+  on(addCardToDeck, (state, {deck_id, deck_type, inventory_card}) => ({...state, isAddCardLoading: true})),
   on(addCardToDeckSuccess, (state, {deckCard, deckType}) => {
     let newSelectedDeck = {...state.selectedDeck};
 
-    // TODO: ADD ENUM PLS
-    if (deckType == "side_deck")
+    if (deckType == DeckType.SIDE)
       newSelectedDeck.side_deck_cards = [deckCard, ...state.selectedDeck.side_deck_cards];
     else
       newSelectedDeck.deck_cards = [deckCard, ...state.selectedDeck.deck_cards];
 
-    // TODO: New isloading
     return {
       ...state,
       hasError: false,
-      isLoading: false,
+      isAddCardLoading: false,
       selectedDeck: newSelectedDeck
     };
 
   }),
-  on(addCardToDeckFail, (state) => ({...state, isLoading: false, hasError: true})),
+  on(addCardToDeckFail, (state) => ({...state, isAddCardLoading: false, hasError: true})),
   on(removeCardFromDeck, (state, {deck_id, inventory_card}) => ({...state, isLoading: true})),
   on(removeCardFromDeckSuccess, (state, {deck_id, deck_card}) => {
     let foundDeck = state.decks.find(d => d.deck_id === deck_id)
