@@ -20,11 +20,6 @@
            <input matInput (keyup)="applyFilter($event)" placeholder="Search" #input>
            </mat-form-field> -->
 
-      <!-- <div *ngVar="availableCards(inventory.inventory_cards) as cards">
-           {{cards | json}}
-
-           </div>
-      -->
       <ng-container *ngIf="availableCards(inventory.inventory_cards) as cards">
         <div class="text-center" *ngIf="cards.length === 0">
           <h1>All cards from the inventory seem to be assigned to a deck</h1>
