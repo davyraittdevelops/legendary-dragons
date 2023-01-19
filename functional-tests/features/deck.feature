@@ -24,3 +24,8 @@ Scenario: Add card to side deck
    Given there is an existing user, the user is logged in and the user has atleast one deck
    When I request to add a card to the side deck
    Then the deck collection is updated and should contain the new card
+
+Scenario: Get cards from deck
+Given there is an existing user, the user is logged in, the user has atleast one deck and the deck contains two cards
+When I request to see contents of the deck 
+Then I should be able to see my deck with two cards

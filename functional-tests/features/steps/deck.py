@@ -36,10 +36,6 @@ def removeDeck(context):
 
 def addCardToDeck(context):
     inventory_card = {
-        "GSI1_PK": "INVENTORY#09660b91-e394-44ca-882d-438eb1cc9d25",
-        "GSI1_SK": "INVENTORY_CARD#0783c3f7-3f48-443f-9f30-a8094f8fca53",
-        "PK": "INVENTORY_CARD#0783c3f7-3f48-443f-9f30-a8094f8fca53",
-        "SK": "INVENTORY#09660b91-e394-44ca-882d-438eb1cc9d25",
         "card_id": "0783c3f7-3f48-443f-9f30-a8094f8fca53",
         "card_name": "Abdel Adrian, Gorion's Ward",
         "colors": "['W']" ,
@@ -67,6 +63,14 @@ def addCardToDeck(context):
     context.detail["card_added_to_deck"] = json.loads(context.ws.recv())
 
 
+def getCardsFromDeck(context):
+    context.ws.send(json.dumps({
+    "action": "getCardsFromDeckReq",
+    "deck_id": context.detail["create_deck"]["data"]["deck_id"],
+    }))
+
+    context.detail["get_cards_from_deck"] = json.loads(context.ws.recv())
+
 @given("there is an user and the registered user is logged in")
 def step_impl(context):
     registerVerifyLoginConnectUser(context)
@@ -75,6 +79,19 @@ def step_impl(context):
 def step_impl(context):
     registerVerifyLoginConnectUser(context)
     createDeck(context)
+
+@given("there is an existing user, the user is logged in, the user has atleast one deck and the deck contains two cards")
+def step_impl(context):
+    registerVerifyLoginConnectUser(context)
+    createDeck(context)
+
+    # Add one card to main deck
+    context.detail["deck_type"] = "main_deck"
+    addCardToDeck(context)
+
+    # Add one card to side deck
+    context.detail["deck_type"] = "side_deck"
+    addCardToDeck(context)
 
 @when("I create a new deck")
 def step_impl(context):
@@ -97,6 +114,10 @@ def step_impl(context):
 def step_impl(context):
     context.detail["deck_type"] = "side_deck"
     addCardToDeck(context)
+
+@when("I request to see contents of the deck")
+def step_impl(context):
+    getCardsFromDeck(context)
 
 @then("the deck should be created")
 def step_impl(context):
@@ -123,3 +144,21 @@ def step_impl(context):
     assert context.detail["card_added_to_deck"]["data"]["card_name"] == "Abdel Adrian, Gorion's Ward"
     assert context.detail["card_added_to_deck"]["data"]["quality"] == "damaged"
     assert context.detail["card_added_to_deck"]["data"]["deck_id"] == context.detail["create_deck"]["data"]["deck_id"]
+
+@then("I should be able to see my deck with two cards")
+def step_impl(context):
+    assert context.detail["get_cards_from_deck"]["event_type"] == "GET_DECK_CARDS_RESULT"
+
+    # Main Deck
+    assert context.detail["get_cards_from_deck"]["deck_id"] == context.detail["create_deck"]["data"]["deck_id"]
+    assert context.detail["get_cards_from_deck"]["data"]["deck_cards"][0]["entity_type"] == "DECK_CARD"
+    assert context.detail["get_cards_from_deck"]["data"]["deck_cards"][0]["card_name"] == "Abdel Adrian, Gorion's Ward"
+    assert context.detail["get_cards_from_deck"]["data"]["deck_cards"][0]["quality"] == "damaged"
+    assert context.detail["get_cards_from_deck"]["data"]["deck_cards"][0]["rarity"] == "uncommon"
+
+    # Side Deck
+    assert context.detail["get_cards_from_deck"]["deck_id"] == context.detail["create_deck"]["data"]["deck_id"]
+    assert context.detail["get_cards_from_deck"]["data"]["side_deck_cards"][0]["entity_type"] == "DECK_CARD"
+    assert context.detail["get_cards_from_deck"]["data"]["side_deck_cards"][0]["card_name"] == "Abdel Adrian, Gorion's Ward"
+    assert context.detail["get_cards_from_deck"]["data"]["side_deck_cards"][0]["quality"] == "damaged"
+    assert context.detail["get_cards_from_deck"]["data"]["side_deck_cards"][0]["rarity"] == "uncommon"
