@@ -20,5 +20,5 @@ def after_feature(context, feature):
         UserPoolId="us-east-1_H1AyV4HD1",
         Username=context.detail["email"]
     )
-    
+
     context.detail["verified"] = False
