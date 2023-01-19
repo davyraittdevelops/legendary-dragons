@@ -69,7 +69,7 @@ def update_inventory_card_deck_location(inventory_card):
   events_client.put_events(Entries=[
     {
       "Time": datetime.now(),
-      "Source": "legdragons.deck.add_card_to_deck",
+      "Source": "legdragons.decks.add_card_to_deck",
       "DetailType": "CARD_ADDED_TO_DECK",
       "Detail": json.dumps({"inventory_card": inventory_card}),
       "EventBusName": eventbus
