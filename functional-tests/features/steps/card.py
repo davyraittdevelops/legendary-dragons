@@ -22,8 +22,9 @@ def step_impl(context, keyword):
         "query": context.query
     }))
 
+    context.detail["search_card_by_keyword"] = json.loads(context.ws.recv())
+
 @then("there should be a result of cards")
 def step_impl(context):
-    result = json.loads(context.ws.recv())
-    assert result['event_type'] == 'SEARCH_CARD_RESULT'
-    assert result['data'][0]['card_name'] == context.query
+    assert context.detail["search_card_by_keyword"]['event_type'] == 'SEARCH_CARD_RESULT'
+    assert context.detail["search_card_by_keyword"]['data'][0]['card_name'] == context.query
