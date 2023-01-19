@@ -91,12 +91,9 @@ def card_entry(card):
         multiverse_id = multiverse[0] if multiverse_len >= 1 else None
         card_faces.append(create_card_face(card, multiverse_id))
 
-    print('working with card: ' , card)
-
     oracle_id = card.get('oracle_id', '')
     if oracle_id == '':
         oracle_id = card["card_faces"][0]['oracle_id']
-
 
     return {
         "scryfall_id": card["id"],

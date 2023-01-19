@@ -3,7 +3,6 @@ import logging
 import os
 import boto3
 from decimal import Decimal
-from datetime import datetime
 from boto3.dynamodb.conditions import Key
 from aws_xray_sdk.core import patch_all
 
