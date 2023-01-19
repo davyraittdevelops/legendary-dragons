@@ -24,28 +24,25 @@ def lambda_handler(event, context):
     endpoint = f"https://{domain_name}/{stage}"
     apigateway = boto3.client("apigatewaymanagementapi", endpoint_url=endpoint)
     body = json.loads(event["body"])
-    user_id = event["requestContext"]["authorizer"]["userId"]
+    
+    wishlist_item = body['wishlist_item']
     wishlist_item_id = str(uuid.uuid4())
 
-    """Params from body."""
-    deck_id = body['deck_id']
-    wishlist_item = body['wishlist_item']
-
-    wishlist_item = {
-        'PK': f'WISHLIST_ITEM#{wishlist_item_id}',
-        'SK': f'WISHLIST#USER#{user_id}',
-        'wishlist_item_id' : wishlist_item_id,
-        'entity_type': 'WISHLIST_ITEM',
-        'created_at': wishlist_item['created_at'],
-        'oracle_id': wishlist_item['oracle_id'],
-        'price_point': wishlist_item['price_point'],
-        'card_name': wishlist_item['card_name'],
-        'user_id': user_id,
-        'GSI1_PK': f'WISHLIST#USER#{user_id}',
-        'GSI1_SK': f'WISHLIST_ITEM#{wishlist_item_id}',
-        'GSI2_PK': f'DECK{deck_id}',
-        'GSI2_SK':  f'WISHLIST_ITEM#{wishlist_item_id}',
-    }
+    # wishlist_item = {
+    #     'PK': f'WISHLIST_ITEM#{wishlist_item_id}',
+    #     'SK': 'WISHLIST#USER#15fcbfd3-0c91-48d1-8257-634e8411eed9',
+    #     'wishlist_item_id' : wishlist_item_id,
+    #     'entity_type': 'WISHLIST_ITEM',
+    #     'created_at': '1/19/2023',
+    #     'oracle_id': '36f9af75-9c95-4503-95e8-8f524c39a334',
+    #     'price_point': '€5.00',
+    #     'card_name': 'White Lotus',
+    #     'user_id': '15fcbfd3-0c91-48d1-8257-634e8411eed9',
+    #     'GSI1_PK': 'WISHLIST#15fcbfd3-0c91-48d1-8257-634e8411eed9',
+    #     'GSI1_SK': f'WISHLIST_ITEM#{wishlist_item_id}',
+    #     'GSI2_PK': 'DECK#0000-0000-0000-0000',
+    #     'GSI2_SK':  f'WISHLIST_ITEM#{wishlist_item_id}',
+    # }
 
     """Do query/data manipulation."""
     try:
@@ -60,6 +57,7 @@ def lambda_handler(event, context):
     output = {
         "event_type": "CREATE_WISHLIST_ITEM_RESULT",
         "wishlist_item": wishlist_item,
+       
     }
 
     apigateway.post_to_connection(
