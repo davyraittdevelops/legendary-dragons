@@ -148,16 +148,15 @@ def step_impl(context):
 @then("I should be able to see my deck with two cards")
 def step_impl(context):
     assert context.detail["get_cards_from_deck"]["event_type"] == "GET_DECK_CARDS_RESULT"
+    assert context.detail["get_cards_from_deck"]["deck_id"] == context.detail["create_deck"]["data"]["deck_id"]
 
     # Main Deck
-    assert context.detail["get_cards_from_deck"]["deck_id"] == context.detail["create_deck"]["data"]["deck_id"]
     assert context.detail["get_cards_from_deck"]["data"]["deck_cards"][0]["entity_type"] == "DECK_CARD"
     assert context.detail["get_cards_from_deck"]["data"]["deck_cards"][0]["card_name"] == "Abdel Adrian, Gorion's Ward"
     assert context.detail["get_cards_from_deck"]["data"]["deck_cards"][0]["quality"] == "damaged"
     assert context.detail["get_cards_from_deck"]["data"]["deck_cards"][0]["rarity"] == "uncommon"
 
     # Side Deck
-    assert context.detail["get_cards_from_deck"]["deck_id"] == context.detail["create_deck"]["data"]["deck_id"]
     assert context.detail["get_cards_from_deck"]["data"]["side_deck_cards"][0]["entity_type"] == "DECK_CARD"
     assert context.detail["get_cards_from_deck"]["data"]["side_deck_cards"][0]["card_name"] == "Abdel Adrian, Gorion's Ward"
     assert context.detail["get_cards_from_deck"]["data"]["side_deck_cards"][0]["quality"] == "damaged"
