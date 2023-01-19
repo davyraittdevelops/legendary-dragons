@@ -77,11 +77,11 @@ object Requests {
 
   val checkGetDeckReply = ws.checkTextMessage("Get Deck Check")
     .check(
-      regex("GET_DECK_RESULT")
+      regex("GET_DECKS_RESULT")
     )
 
-  val getDeck = ws("getDeck")
-    .sendText("""{"action": "getDeckReq"}""")
+  val getDecks = ws("getDecks")
+    .sendText("""{"action": "getDecksReq"}""")
     .await(25)(checkGetDeckReply)
 
   val checkRemoveDeckReply = ws.checkTextMessage("Remove Deck Check")
@@ -106,13 +106,13 @@ object Requests {
       """{"action": "addCardToDeckReq", "deck_id": "${deckId}", "inventory_card": ${inventoryCard}, "deck_type": "deck" } """
     ).await(20)(checkAddCardToDeckReply)
 
-  val checkGetCardsFromDeckReply = ws.checkTextMessage("Add Card To Deck Reply")
+  val checkGetDeckReply = ws.checkTextMessage("Add Card To Deck Reply")
     .check(
-      regex("GET_DECK_CARDS_RESULT"),
+      regex("GET_DECK_RESULT"),
     )
 
-  val getCardsFromDeck = ws("getCardsFromDeckReq")
+  val getDeck = ws("getDeckReq")
     .sendText(
-      """{"action": "getCardsFromDeckReq", "deck_id": "${deckId}" } """
-    ).await(20)(checkGetCardsFromDeckReply)
+      """{"action": "getDeckReq", "deck_id": "${deckId}" } """
+    ).await(20)(checkGetDeckReply)
 }
