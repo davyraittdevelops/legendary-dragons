@@ -2,7 +2,6 @@ import requests
 import logging
 import json
 import boto3
-import websocket
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -49,10 +48,11 @@ def onConnect(context):
 
 def registerVerifyLoginConnectUser(context):
     registerUser(context, "LegendaryDragonsMinor@gmail.com", "Eindopdracht3!")
-
+    
     if not context.detail["verified"]:
         verifyUser(context)
         context.detail["verified"] = True
 
     loginUser(context)
     onConnect(context)
+    
