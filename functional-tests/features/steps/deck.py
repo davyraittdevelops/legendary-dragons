@@ -150,8 +150,8 @@ def step_impl(context):
 def step_impl(context):
     print(context.detail["get_deck"])
     assert context.detail["get_deck"]["event_type"] == "GET_DECK_RESULT"
-    assert context.detail["get_deck"]["data"]["deck"][0]["deck_id"] == context.detail["create_deck"]["data"]["deck_id"]
-    assert context.detail["get_deck"]["data"]["deck"][0]["deck_name"] == "White-Blue: Azorius"
+    assert context.detail["get_deck"]["data"]["deck"]["deck_id"] == context.detail["create_deck"]["data"]["deck_id"]
+    assert context.detail["get_deck"]["data"]["deck"]["deck_name"] == "White-Blue: Azorius"
 
     # Main Deck
     assert context.detail["get_deck"]["data"]["deck_cards"][0]["entity_type"] == "DECK_CARD"
