@@ -47,11 +47,185 @@ channels:
       message:
         $ref: '#/components/messages/removeCardFromInventoryReq'
 
+  addCardToDeck:
+      publish:
+        summary:  function that handles adding a card to a deck in a DynamoDB table. It takes in JSON data in the request body containing the deck type, user id, deck id, and inventory card details. It then updates the inventory card's deck location and adds the card to the specified deck in the DynamoDB table. It also sends an event to an event bus to notify of the card being added to the deck. The function returns a 200 status code upon success.
+        message:
+          $ref: '#/components/messages/addCardToDeckReq'
+  
+  createDeck:
+      subscribe:
+        summary: This code creates a new deck in DynamoDB table with a unique ID generated using uuid package. It extracts the deck name and type from the request body, and user ID from request context. It sets the current time as the creation and modification time. It also sets the user_id and total_value to 0. It then adds this new deck to the DynamoDB table using the put_item() method. It returns a HTTP status code of 200 upon successful execution.
+        message:
+          $ref: '#/components/messages/createDeckReq'
 
+  getCard:
+      subscribe:
+        summary: This function is triggered by an API Gateway. It takes in a request with a scryfall_id in the body, which is used to query a DynamoDB table for card details and card faces. The card details and card faces are then returned to the client via the apigatewaymanagementapi client. Additionally, it uses the DecimalEncoder class to handle any Decimal data types in the returned data. The function uses two helper function get_card_details and get_card_faces to query DynamoDB table. The get_card_details function queries the table for card details by searching for an item with a primary key of PK CARD{scryfall_id} and a sort key that begins with SK CARD_FACE. The get_card_faces function queries the table for card faces by searching for an item with a GSI1 primary key of GSI1_PK CARD{scryfall_id} and a GSI1 sort key that begins with GSI1_SK CARD_FACE, using index GSI1. If the query is successful, the result is returned. If there is an exception, it is logged and returned.
+        message:
+          $ref: '#/components/messages/getCardReq'
+
+  getDeck:
+      subscribe:
+        summary: This code is a lambda function that is triggered by an API Gateway. It takes in a request with a deck_id in the body, which is used to query a DynamoDB table for deck details, deck cards and side deck cards. The deck details, deck cards and side deck cards are then returned to the client via the apigatewaymanagementapi client. Additionally, it uses the DecimalEncoder class to handle any Decimal data types in the returned data. The function queries DynamoDB table using the KeyConditionExpression parameter, to search for items with a specific primary key and a sort key that starts with a specific value. The query is done in 3 steps, first it queries the table for the deck by searching for an item with a primary key of PK "DECK#{deck_id}" and a sort key that starts with "USER#". Second it queries the table for the deck cards by searching for an item with a GSI1 primary key of GSI1_PK "DECK#{deck_id}" and a GSI1 sort key that starts with "DECK_CARD#", using index GSI1. Lastly, it queries the table for the side deck cards by searching for an item with a GSI1 primary key of GSI1_PK "DECK#{deck_id}#SIDE_DECK" and a GSI1 sort key that starts with "DECK_CARD#", using index GSI1. If the query is successful, the result is returned. If there is an exception, it is logged and returned.
+        message:
+          $ref: '#/components/messages/getDeckReq'
+  
+  getDecks:
+      subscribe:
+        summary: This Lambda function is triggered by an API Gateway. It takes in a request and uses the userId from the request context's authorizer to query a DynamoDB table for all decks belonging to the user. The decks are returned to the client via the apigatewaymanagementapi client. Additionally, it uses the DecimalEncoder class to handle any Decimal data types in the returned data. The function queries the DynamoDB table using the GSI1_PK of "USER#{user_id}" and a GSI1_SK that begins with "DECK#", using index GSI1. The query returns all decks for the provided userId and these decks are returned to the client via apigatewaymanagementapi client. If there is an exception, it is logged.
+        message:
+          $ref: '#/components/messages/getDecksReq'
+  
+  deleteDeck:
+      subscribe:
+        operationId: deleteDeck
+        summary: Delete a deck
+        message:
+          $ref: '#/components/messages/deleteDeckReq'
+  
 # COMPONENTS ATTACHED TO THE CHANNELS
-
 components:
   messages:
+    deleteDeckReq:
+      summary: Delete deck
+      payload:
+        type: object
+        properties:
+          statusCode:
+            type: integer
+            description: The status code of the response
+
+    getDecksReq:
+      summary: Retrieve all decks associated with a user
+      payload:
+        type: object
+        properties:
+          event_type:
+            type: string
+            description: Event type indicating the type of response message
+          data:
+            type: array
+            items:
+              type: object
+              properties:
+                PK:
+                  type: string
+                  description: The primary key for the DynamoDB table
+                SK:
+                  type: string
+                  description: The sort key for the DynamoDB table
+                entity_type:
+                  type: string
+                  description: The type of the entity stored in the table
+                created_at:
+                  type: string
+                  description: The timestamp when the deck was created
+                last_modified:
+                  type: string
+                  description: The timestamp when the deck was last modified
+                deck_id:
+                  type: string
+                  description: The unique ID of the deck
+                deck_name:
+                  type: string
+                  description: The name of the deck
+                deck_type:
+                  type: string
+                  description: The type of the deck
+                user_id:
+                  type: string
+                  description: The ID of the user associated with the deck
+                GSI1_PK:
+                  type: string
+                  description: The primary key of the global secondary index
+                GSI1_SK:
+                  type: string
+                  description: The sort key of the global secondary index
+                total_value:
+                  type: string
+                  description: The total value of the cards in the deck
+
+    getDeckReq:
+      summary: Request to get a deck details
+      payload:
+        type: object
+        properties:
+          deck_id:
+            type: string
+            description: The unique identifier for the deck
+            example: 'deck_id_123'
+
+    getCardReq:
+      summary: Request to get a card details
+      payload:
+        type: object
+        properties:
+          scryfall_id:
+            type: string
+            description: The unique identifier for the card on Scryfall
+            example: 'scryfall_id_123'
+
+    createDeckReq:
+      summary: Request to create a new deck
+      payload:
+        type: object
+        properties:
+          deck_name:
+            type: string
+            description: Name of the deck
+            example: 'My Deck'
+          deck_type:
+            type: string
+            description: Type of deck (main_deck or side_deck)
+            example: main_deck
+
+    addCardToDeckReq:
+      summary: Request to add a card to a user's deck
+      payload:
+        type: object
+        properties:
+          deck_type:
+            type: string
+            description: Type of deck (main_deck or side_deck)
+            example: main_deck
+          deck_id:
+            type: string
+            description: ID of the deck
+            example: 'deck_id_123'
+          inventory_card:
+            type: object
+            properties:
+              card_id:
+                type: string
+                description: ID of the card
+                example: 'card_id_123'
+              inventory_id:
+                type: string
+                description: ID of the inventory
+                example: 'inventory_id_123'
+              card_name:
+                type: string
+                description: Name of the card
+                example: 'Fireball'
+              colors:
+                type: array
+                items:
+                  type: string
+                  example: 'red'
+              rarity:
+                type: string
+                description: Rarity of the card
+                example: 'rare'
+              quality:
+                type: string
+                description: Quality of the card
+                example: 'mint'
+              image_url:
+                type: string
+                description: URL of the card's image
+                example: 'https://example.com/image.jpg'
+    
     $connect:
       payload:
         type: object
@@ -79,7 +253,6 @@ components:
         - name:  $disconnect
           payload:
             action/route: $disconnect
-
 
     addCardToInventoryReq:
       payload:
@@ -117,7 +290,6 @@ components:
               "scryfall_id" : "${rid4}"
           }'
 
-
     getInventoryReq:
       payload:
         type: object
@@ -129,7 +301,6 @@ components:
         - name: getInventoryReq
           payload:
             action: getInventoryReq
-
 
     searchCardsByKeywordReq:
       payload:
