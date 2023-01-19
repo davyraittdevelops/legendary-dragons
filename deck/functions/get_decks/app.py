@@ -17,18 +17,19 @@ table = dynamodb.Table(os.getenv("TABLE_NAME"))
 
 
 def lambda_handler(event, context):
+    output = {"event_type": "GET_DECKS_RESULT", "data": []}
+    connection_id = event["requestContext"]["connectionId"]
+    user_id = event["requestContext"]["authorizer"]["userId"]
+
     domain_name = event["requestContext"]["domainName"]
     stage = event["requestContext"]["stage"]
     endpoint = f"https://{domain_name}/{stage}"
+
     logger.info(f"Request will be made to {endpoint}")
 
-    output = {"event_type": "GET_DECKS_RESULT", "data": []}
-    connection_id = event["requestContext"]["connectionId"]
     apigateway = boto3.client("apigatewaymanagementapi", endpoint_url=endpoint)
 
-    user_id = event["requestContext"]["authorizer"]["userId"]
     logger.info("Searching for decks in user %s", user_id)
-
     decks = table.query(
         KeyConditionExpression=Key("GSI1_PK").eq(f"USER#{user_id}") &
         Key("GSI1_SK").begins_with("DECK#"),
