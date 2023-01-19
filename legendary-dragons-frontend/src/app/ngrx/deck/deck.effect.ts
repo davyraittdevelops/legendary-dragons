@@ -124,7 +124,6 @@ export class DeckEffects {
       switchMap(({deck_type}) => {
         return this.websocketService.dataUpdates$().pipe(
           filter((event: any) => {
-            console.log(event)
             return event['event_type'] === 'INSERT_DECK_CARD_RESULT'
           }),
           map((event: any) => addCardToDeckSuccess({deckCard: event["data"], deckType: deck_type})),
@@ -144,7 +143,6 @@ export class DeckEffects {
       switchMap(() => {
         return this.websocketService.dataUpdates$().pipe(
           filter((event: any) => {
-            console.log(event)
             return event['event_type'] === 'CARD_REMOVED_FROM_DECK'
           }),
           map((event: any) => removeCardFromDeckSuccess({deck_id: event["deck_id"], deck_card: event["data"]})),

@@ -2,8 +2,6 @@ import json
 import logging
 import os
 import boto3
-import uuid
-from datetime import datetime
 from aws_xray_sdk.core import patch_all
 
 logger = logging.getLogger()
@@ -24,19 +22,17 @@ def lambda_handler(event, context):
     inventory_id = body['inventory_id']
 
     try:
-        logger.info(f"Removing inventory card from DynamoDB table")
+        logger.info("Removing inventory card from DynamoDB table")
         result = table.delete_item(
-        Key={
-            "PK": 'INVENTORY_CARD#' + inventory_card_id,
-            "SK": 'INVENTORY#' + inventory_id
-        },
-        ReturnValues='ALL_OLD'
-    )
-        logger.info(f"Deleted card from table, result is  {result}")
-        
+            Key={
+                "PK": 'INVENTORY_CARD#' + inventory_card_id,
+                "SK": 'INVENTORY#' + inventory_id
+            },
+            ReturnValues='ALL_OLD'
+        )
+        logger.info(f"Deleted card from table, result is {result}")
+
     except Exception as error:
-        logger.info('Error deleting card from database ' , error)
-   
-    return {
-        "statusCode": 200,
-        }
+        logger.info('Error deleting card from database: %s', error)
+
+    return {"statusCode": 200}

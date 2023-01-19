@@ -1,7 +1,7 @@
 <div class="container-fluid text-center">
 
   <div class="text-center mt-3" *ngIf="(isLoading$ | async); else deck">
-    <span class="spinner-border  mt-3 deck-loading-spinner" role="status" aria-hidden="true"></span>
+    <span class="spinner-border mt-3 deck-loading-spinner" role="status" aria-hidden="true"></span>
   </div>
 
   <div *ngIf="hasError$ | async" class="text-danger" class="alert alert-warning" role="alert">
@@ -54,7 +54,6 @@
                 <app-deck-cards-details-page class="col mt-3" *ngFor="let card of selectedDeck.side_deck_cards" [card]="card">
                 </app-deck-cards-details-page>
               </div>
-
             </div>
           </cdk-virtual-scroll-viewport>
         </div>

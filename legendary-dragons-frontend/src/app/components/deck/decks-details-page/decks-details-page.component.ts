@@ -36,11 +36,12 @@ export class DecksDetailsPageComponent implements OnInit {
       share(),
       catchError((error) => {
         // Token expired
-        if (!('reason' in error)) {
-          this.appStore.dispatch(logoutUser());
-          // TODO: Not working correctly..
-          this.router.navigate(["/login"]);
-        }
+        // if (!('reason' in error)) {
+        //   this.appStore.dispatch(logoutUser());
+
+        //   // TODO: Not working correctly..
+        //   this.router.navigate(["/login"]);
+        // }
 
         return of(error);
       })
@@ -51,5 +52,4 @@ export class DecksDetailsPageComponent implements OnInit {
       this.appStore.dispatch(getDeck({deck_id: this.deckId}));
     });
   }
-
 }

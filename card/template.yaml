@@ -187,7 +187,7 @@ Resources:
       ApiId:
         Fn::ImportValue:
           !Sub "${LegDragonsWebSocketApi}"
-      RouteKey: GetCardReq
+      RouteKey: getCardReq
       AuthorizationType: NONE
       OperationName: GetCardRoute
       Target: !Join

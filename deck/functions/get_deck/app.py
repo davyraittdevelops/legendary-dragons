@@ -61,6 +61,7 @@ def lambda_handler(event, context):
             "deck_cards": deck_cards,
             "side_deck_cards": side_deck_cards
         }
+
     }
 
     apigateway.post_to_connection(
