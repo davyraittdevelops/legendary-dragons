@@ -2,9 +2,8 @@ import os
 import json
 import pytest
 import boto3
-from moto import mock_events, mock_dynamodb
+from moto import mock_dynamodb
 from unittest.mock import patch
-import requests_mock
 import botocore.client
 import logging
 
@@ -21,13 +20,23 @@ OS_ENV = {
     "TABLE_NAME": TABLE_NAME
  }
 
+
 @pytest.fixture()
-def stream_event():
+def websocket_event():
     return {
-        "Records": [
-            {}
-        ]
+        "requestContext": {
+            "domainName": "localhost",
+            "stage": "Prod",
+            "connectionId": "assfgefg",
+            "authorizer": {
+                "userId": "user-123"
+            }
+        },
+        "body": json.dumps({
+            "scryfall_id": "scry-13",
+        }),
     }
+
 
 @pytest.fixture()
 def table_definition():
@@ -57,28 +66,41 @@ def table_definition():
     }
 
 
+orig = botocore.client.BaseClient._make_api_call
+
+
 def mock_make_api_call(self, operation_name, kwarg):
     if operation_name == "PostToConnection":
         return None
     return orig(self, operation_name, kwarg)
 
+
 @patch.dict(os.environ, OS_ENV, clear=True)
 @mock_dynamodb
-def test_lambda_handler(stream_event, table_definition):
+def test_lambda_handler(websocket_event, table_definition):
     # Arrange
     dynamodb = boto3.resource("dynamodb")
     table = dynamodb.create_table(**table_definition)
 
+    table.put_item(Item={
+        "PK": "CARD#scry-13",
+        "SK": "CARD_FACE#123",
+        "GSI1_SK": "CARD#scry-13",
+        "GSI1_PK": "CARD_FACE#123"
+    })
+
+    table.put_item(Item={
+        "SK": "CARD#scry-13",
+        "PK": "CARD_FACE#123",
+        "GSI1_PK": "CARD#scry-13",
+        "GSI1_SK": "CARD_FACE#123"
+    })
 
     # Act
-    from functions.update_cards_from_scryfall import app
-    response = app.lambda_handler(stream_event, {})
-    response = table.scan()
+    with patch("botocore.client.BaseClient._make_api_call", new=mock_make_api_call):
+        from functions.get_card import app
+        response = app.lambda_handler(websocket_event, {})
 
-    # Assert
-    assert response["Items"][0]['entity_type'] == 'CARD'
-    assert response["Items"][0]['GSI1_SK'] == 'CARD#0000579f-7b35-4ed3-b44c-db2a538066fe'
-    assert response["Items"][0]['GSI1_PK'] == 'CARD_FACE#44623693-51d6-49ad-8cd7-140505caf02f'
-    assert response["Items"][1]['entity_type'] == 'CARD_FACE'
-    assert response["Items"][1]['scryfall_id'] == '0000579f-7b35-4ed3-b44c-db2a538066fe'
-    assert response["Items"][1]['oracle_id'] == '44623693-51d6-49ad-8cd7-140505caf02f'
+        # Assert
+        print(response)
+        assert response["statusCode"] == 200
