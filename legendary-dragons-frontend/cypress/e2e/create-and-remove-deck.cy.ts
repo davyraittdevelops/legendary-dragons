@@ -2,6 +2,7 @@ import { loginUser, logout } from "../support/common";
 
 beforeEach(() => {
   loginUser();
+  cy.reload();
 });
 
 afterEach(() => {

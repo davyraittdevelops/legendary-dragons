@@ -2,6 +2,7 @@ import {loginUser, logout, removeAllInventoryCards} from "../support/common";
 
 beforeEach(() => {
   loginUser();
+  cy.reload();
   removeAllInventoryCards();
 });
 

@@ -80,6 +80,7 @@ def removeCardFromDeck(context):
         "user_id": "870b54fc-22f1-4b4c-83f6-90eac12eaa3c",
     }
 
+
     context.ws.send(json.dumps({
         "action": "removeCardFromDeckReq",
         "deck_id": context.detail["create_deck"]["data"]["deck_id"],
@@ -88,7 +89,6 @@ def removeCardFromDeck(context):
     }))
 
     context.detail["removed_card_from_deck"] = json.loads(context.ws.recv())
-
 
 def getDeck(context):
     context.ws.send(json.dumps({

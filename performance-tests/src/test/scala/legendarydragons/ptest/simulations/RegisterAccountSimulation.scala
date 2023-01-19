@@ -20,5 +20,5 @@ class RegisterAccountSimulation extends Simulation {
   .protocols(httpProtocol))
   .assertions(
     global.responseTime.max.lt(15000),
-    global.successfulRequests.percent.gte(50))
+    global.successfulRequests.percent.gte(80))
 }

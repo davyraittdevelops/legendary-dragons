@@ -17,6 +17,7 @@ if "DISABLE_XRAY" not in os.environ:
 dynamodb = boto3.resource("dynamodb")
 cards = dynamodb.Table(os.getenv("TABLE_NAME"))
 
+
 def lambda_handler(event, context):
     connection_id = event["requestContext"]["connectionId"]
     domain_name = event["requestContext"]["domainName"]
@@ -30,7 +31,7 @@ def lambda_handler(event, context):
     card_details_reponse = get_card_details(scryfall_id)
     card = card_details_reponse["Items"][0]
     card_faces_response = get_card_faces(scryfall_id)
-    card_faces =  card_faces_response["Items"]
+    card_faces = card_faces_response["Items"]
 
     output = {
         "event_type": "GET_CARD_RESULT",
@@ -43,12 +44,16 @@ def lambda_handler(event, context):
         Data=json.dumps(output, cls=DecimalEncoder)
     )
 
+    return {"statusCode": 200}
+
+
 class DecimalEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, Decimal):
             return str(obj)
 
         return json.JSONEncoder.default(self, obj)
+
 
 def get_card_details(scryfall_id):
     """Get card details by querying the cached cards database"""
@@ -63,7 +68,8 @@ def get_card_details(scryfall_id):
     except Exception as e:
         logger.info(f"Exception retrieving cards! {e}")
         return e
-    
+
+
 def get_card_faces(scryfall_id):
     """Get card details by querying the cached cards database"""
     try:
@@ -78,7 +84,3 @@ def get_card_faces(scryfall_id):
     except Exception as e:
         logger.info(f"Exception retrieving cards! {e}")
         return e
-    
-
-   
-   
