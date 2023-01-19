@@ -26,25 +26,41 @@ def lambda_handler(event, context):
     deck_id = body['deck_id']
 
     try:
-        logger.info("Querying the table to find the deck cards")
         logger.info(f"Querying with deck_id {deck_id}")
 
-        decks = table.query(
+        deck = table.query(
+            KeyConditionExpression=Key("PK").eq(f"DECK#{deck_id}")
+            &
+            Key("SK").begins_with("USER#")
+        )['Items'][0]
+        logger.info(f"Querying for deck successful, with deck_id {deck_id}")
+
+        deck_cards = table.query(
             KeyConditionExpression=Key("GSI1_PK").eq(f"DECK#{deck_id}")
             &
             Key("GSI1_SK").begins_with("DECK_CARD#"),
             IndexName="GSI1"
-        )
+        )['Items']
         logger.info(f"Querying for deck cards succesful, with deck_id {deck_id}")
+
+        side_deck_cards = table.query(
+            KeyConditionExpression=Key("GSI1_PK").eq(f"DECK#{deck_id}#SIDE_DECK")
+            &
+            Key("GSI1_SK").begins_with("DECK_CARD#"),
+            IndexName="GSI1"
+        )['Items']
     except Exception as e:
         logger.info(f"Exception retrieving cards! {e}")
 
     connection_id = event["requestContext"]["connectionId"]
     apigateway = boto3.client("apigatewaymanagementapi", endpoint_url=endpoint)
     output = {
-        "event_type": "GET_DECK_CARDS_RESULT",
-        "deck_id": deck_id,
-        "data": decks
+        "event_type": "GET_DECK_RESULT",
+        "data": {
+            "deck": deck,
+            "deck_cards": deck_cards,
+            "side_deck_cards": side_deck_cards
+        }
     }
 
     apigateway.post_to_connection(
