@@ -1,5 +1,3 @@
-import { Card } from "./card.model";
-
 export interface Deck {
   deck_id: string;
   deck_name: string;
@@ -9,17 +7,11 @@ export interface Deck {
   last_modified: Date;
   image_url: string;
   deck_cards: DeckCard[];
-
-  side_deck: SideDeck;
-}
-
-export interface SideDeck {
-  created_at: Date;
-  last_modified: Date;
-  deck_cards: DeckCard[];
+  side_deck_cards: DeckCard[];
 }
 
 export interface DeckCard {
+  inventory_card_id: string;
   oracle_id: string,
   card_name: string,
   colors: string[];

@@ -17,7 +17,6 @@ export const addCardtoInventorySuccess = createAction(
   props<{ inventoryCard: InventoryCard}>()
 );
 
-
 export const removeCardFromInventory = createAction(
   '[Add Card Component] Remove Card From Inventory',
   props<{ inventoryCardId: string, inventoryId: string }>()
@@ -45,4 +44,14 @@ export const getInventoryFail = createAction(
 export const getInventorySuccess = createAction(
   '[Inventory Component] Get Inventory Success',
   props<{inventory: Inventory}>(),
+);
+
+export const updateInventoryCardFail = createAction(
+  '[Add Card Component] Update Inventory Card Fail',
+  props<{ error: boolean }>(),
+);
+
+export const updateInventoryCardSuccess = createAction(
+  '[Add Card Component] Update Inventory Card Success',
+  props<{ inventoryCard: InventoryCard}>()
 );
