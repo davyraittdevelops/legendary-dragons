@@ -20,7 +20,7 @@ export class AddCardToDeckComponent {
   inventory$: Observable<Inventory>;
   isLoading$: Observable<boolean>;
   hasError$: Observable<boolean>;
-  displayedColumns: string[] = ['Image', 'Name', 'AddButton'];
+  displayedColumns: string[] = ['Image', 'Name', 'MainDeck', 'SideDeck'];
   dataSource : any ;
   deck_id = this.router.url.replace("/decks/", "");
 

@@ -8,11 +8,6 @@
           </button>
       </div>
 
-      <div class="text-center me-3" *ngIf="isLoading$ | async">
-        <span class="spinner-border spinner-border mt-3" role="status" aria-hidden="true">
-        </span>
-      </div>
-
       <div *ngIf="hasError$ | async" class="text-danger" class="alert alert-warning me-2" role="alert">
         An error has occured while loading your decks. Please try again.
       </div>
@@ -48,6 +43,11 @@
           </div>
         </div>
       </ng-container>
+
+      <div class="text-center ms-3" *ngIf="isLoading$ | async">
+        <span class="spinner-border spinner-border mt-3" role="status" aria-hidden="true">
+        </span>
+      </div>
     </div>
 </div>
 
