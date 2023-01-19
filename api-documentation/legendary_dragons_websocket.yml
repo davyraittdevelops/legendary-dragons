@@ -2,7 +2,7 @@ asyncapi: 2.5.0
 info:
   title: Legendary dragons websocket documentation
   version: '0.1.0'
-  description: Legendary Dragons is a Magic The Gathering collection management tool that allows users to track and organize their cards. Users can add, delete, and update cards in their collection, view detailed information about each card, and search for specific cards.  Additionally, it has a deck building feature that allows players to create and manage custom decks. It also includes a wishlist feature that allows users to keep track of cards they want to acquire. The tool is available as a web application and as a mobile application.
+  description: Legendary Dragons is a Magic The Gathering collection management tool that allows users to track and organize their cards. Users can add, delete, and update cards in their collection, view detailed information about each card, and search for specific cards.  Additionally, it has a deck building feature that allows players to create and manage custom decks. It also includes a wishlist feature that allows users to keep track of cards they want to acquire. The tool is available as a web application.
 
 
 servers:
@@ -80,7 +80,7 @@ channels:
   deleteDeck:
       subscribe:
         operationId: deleteDeck
-        summary: Delete a deck
+        summary: The function is triggered by an API Gateway, it takes in a request with a deck_id in the body and a user_id in the request context. The function uses the extracted deck_id and user_id to delete the specific deck item from a DynamoDB table. If the deletion is successful, a log message is written with the result. If there is an exception, it is logged. The function returns a status code of 200.
         message:
           $ref: '#/components/messages/deleteDeckReq'
   
