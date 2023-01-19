@@ -11,24 +11,11 @@
   height: 250px;
 }
 
-.collection-card {
-  display: grid;
-  position: relative;
-}
-
-.collection-card > img, div {
-  grid-column: 1;
-  grid-row: 1;
-}
 
 .pointer {
   cursor: pointer !important;
 }
 
-.card-action-footer {
-  width: 100%;
-  display: grid;
-  justify-content: left;
+.card-action {
+  width: 100% !important;
 }
-
-
