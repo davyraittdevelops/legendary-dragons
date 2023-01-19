@@ -49,14 +49,14 @@ def lambda_handler(event, context):
                     "SK": f"ALERT#AVAILABILITY#{price_alert_id}"
                 }
             )
-            logger.info(f'Result from table delete item : {response}')
+            logger.info(f'Result from table remove item : {response}')
             
     except Exception as error:
         logger.info(f'Received an error: {error}')
 
     """Post output back to the connection."""
     output = {
-        "event_type": "DELETE_ALERT_RESULT",
+        "event_type": "REMOVE_ALERT_RESULT",
         "response": response,
     }
 

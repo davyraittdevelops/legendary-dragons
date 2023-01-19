@@ -44,7 +44,7 @@ def lambda_handler(event, context):
 
     """Post output back to the connection."""
     output = {
-        "event_type": "DELETE_WISHLIST_ITEM_RESULT",
+        "event_type": "REMOVE_WISHLIST_ITEM_RESULT",
         "response": response,
     }
 

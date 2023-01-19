@@ -32,7 +32,7 @@ def lambda_handler(event, context):
     wishlist_item_id = body['wishlist_item_id']
     price_alert_item = body['price_alert_item']
 
-    if price_alert_item['entity_type'] == price_alert: 
+    if price_alert_item['entity_type'] == 'price_alert': 
         alert = {
             'PK' : f'WISHLIST_ITEM{wishlist_item_id}',
             'SK' : f'ALERT#PRICE#{alert_id}',
@@ -48,7 +48,7 @@ def lambda_handler(event, context):
             'wishlist_item_id' : wishlist_item_id,
         }
 
-    if price_alert_item['entity_type'] == availability_alert: 
+    if price_alert_item['entity_type'] == 'availability_alert': 
         alert = {
             'PK' : f'WISHLIST_ITEM#{wishlist_item_id}',
             'SK' : f'ALERT#AVAILABILITY#{alert_id}',
