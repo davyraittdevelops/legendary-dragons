@@ -30,7 +30,6 @@ def step_impl(context):
 
     context.status_code = response.status_code
 
-
 @when("we login the existing user")
 def step_impl(context):
     body = {"email": context.detail["email"], "password": context.detail["password"]}

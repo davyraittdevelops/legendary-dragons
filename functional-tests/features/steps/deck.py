@@ -208,9 +208,3 @@ def step_impl(context):
     assert context.detail["removed_card_from_deck"]["data"]["card_name"] == "Abdel Adrian, Gorion's Ward"
     assert context.detail["removed_card_from_deck"]["data"]["quality"] == "damaged"
     assert context.detail["removed_card_from_deck"]["data"]["rarity"] == "uncommon"
-
-
-
-
-
-
