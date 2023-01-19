@@ -26,7 +26,6 @@ def lambda_handler(event, context):
     }
     logger.info(f"Request will be made to {endpoint}")
 
-    output = {"event_type": "GET_DECK_RESULT", "data": []}
     connection_id = event["requestContext"]["connectionId"]
     apigateway = boto3.client("apigatewaymanagementapi", endpoint_url=endpoint)
 

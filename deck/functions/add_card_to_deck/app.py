@@ -24,7 +24,8 @@ def lambda_handler(event, context):
 
   deck_type = body["deck_type"]
   user_id = event["requestContext"]["authorizer"]["userId"]
-  deck_id = body["deck_id"]
+  deck_id = body["deck_id"]  
+  deck_name = body["deck_name"]
   inventory_card = body["inventory_card"]
 
   now = datetime.utcnow().isoformat()
@@ -35,6 +36,7 @@ def lambda_handler(event, context):
     sk = f"DECK#{deck_id}#SIDE_DECK"
 
   try:
+    inventory_card['deck_location'] = deck_name
     update_inventory_card_deck_location(inventory_card)
 
     logger.info(f"Adding deck card ({inventory_card['card_id']}) to DynamoDB table")
@@ -69,7 +71,7 @@ def update_inventory_card_deck_location(inventory_card):
   events_client.put_events(Entries=[
     {
       "Time": datetime.now(),
-      "Source": "legdragons.deck.add_card_to_deck",
+      "Source": "legdragons.decks.add_card_to_deck",
       "DetailType": "CARD_ADDED_TO_DECK",
       "Detail": json.dumps({"inventory_card": inventory_card}),
       "EventBusName": eventbus
