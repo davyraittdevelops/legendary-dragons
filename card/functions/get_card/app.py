@@ -19,27 +19,38 @@ cards = dynamodb.Table(os.getenv("TABLE_NAME"))
 
 def lambda_handler(event, context):
     """Get details from event."""
-    # connection_id = event["requestContext"]["connectionId"]
-    # domain_name = event["requestContext"]["domainName"]
-    # stage = event["requestContext"]["stage"]
-    # endpoint = f"https://{domain_name}/{stage}"
-    # apigateway = boto3.client("apigatewaymanagementapi", endpoint_url=endpoint)
+    connection_id = event["requestContext"]["connectionId"]
+    domain_name = event["requestContext"]["domainName"]
+    stage = event["requestContext"]["stage"]
+    endpoint = f"https://{domain_name}/{stage}"
+    apigateway = boto3.client("apigatewaymanagementapi", endpoint_url=endpoint)
 
     """Get card details by querying the cached cards database"""
-    print('Get card details by querying the cached cards database')
-    # body = json.loads(event["body"])
-    # scryfall_id = body['scryfall_id']
+    body = json.loads(event["body"])
+    scryfall_id = body['scryfall_id']
 
-    scryfall_id = 'c7d5e394-8e41-442e-ae97-a478a61e1b9d'
-    card_details = get_card_details(scryfall_id)
-    print('## Got back ', card_details)
-    card = card_details["Items"][0]
+    card_details_reponse = get_card_details(scryfall_id)
+    card = card_details_reponse["Items"][0]
+    card_faces_response = get_card_faces(scryfall_id)
+    card_faces =  card_faces_response["Items"]
 
-    print('deserialized card is ', card)
-    oracle_id = card['oracle_id']
-    print('oracle id is ##' , oracle_id)
+    output = {
+        "event_type": "GET_CARD_RESULT",
+        "deck_id": card,
+        "data": card_faces
+    }
 
-    get_card_faces(scryfall_id)
+    apigateway.post_to_connection(
+        ConnectionId=connection_id,
+        Data=json.dumps(output, cls=DecimalEncoder)
+    )
+
+class DecimalEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, Decimal):
+            return str(obj)
+
+        return json.JSONEncoder.default(self, obj)
 
 def get_card_details(scryfall_id):
     """Get card details by querying the cached cards database"""
@@ -55,7 +66,6 @@ def get_card_details(scryfall_id):
         logger.info(f"Exception retrieving cards! {e}")
         return e
     
-
 def get_card_faces(scryfall_id):
     """Get card details by querying the cached cards database"""
     try:
