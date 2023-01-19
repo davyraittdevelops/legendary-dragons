@@ -25,7 +25,7 @@ def lambda_handler(event, context):
 
     endpoint = f"https://{domain_name}/{stage}"
     output = {
-        "event_type": "GET_DECK_RESULT",
+        "event_type": "GET_DECKS_RESULT",
         "data": []
     }
     logger.info(f"Request will be made to {endpoint}")
