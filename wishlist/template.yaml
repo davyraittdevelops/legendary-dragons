@@ -197,48 +197,92 @@ Resources:
         Fn::Sub:
           arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${RemoveWishlistItemFunction.Arn}/invocations
 
-  #CREATE PRICE ALERT
-  CreatePriceAlertFunction:
+  #CREATE ALERT
+  CreateAlertFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: functions/create_price_alert/
+      CodeUri: functions/create_alert/
       Policies:
         - EventBridgePutEventsPolicy:
             EventBusName: "connection-event-bus"
         - DynamoDBWritePolicy:
             TableName: !Ref WishlistTable
 
-  CreatePriceAlertPermission:
+  CreateAlertPermission:
     Type: AWS::Lambda::Permission
     Properties:
       Action: lambda:InvokeFunction
-      FunctionName: !Ref CreatePriceAlertFunction
+      FunctionName: !Ref CreateAlertFunction
       Principal: apigateway.amazonaws.com
 
-  CreatePriceAlertRoute:
+  CreateAlertRoute:
     Type: AWS::ApiGatewayV2::Route
     Properties:
       ApiId:
         Fn::ImportValue:
           !Sub "${LegDragonsWebSocketApi}"
-      RouteKey: createPriceAlertReq
+      RouteKey: createAlertReq
       AuthorizationType: NONE
-      OperationName: CreatePriceAlertItemRoute
+      OperationName: CreateAlertItemRoute
       Target: !Join
         - '/'
         - - 'integrations'
-          - !Ref CreatePriceAlertInteg
+          - !Ref CreateAlertInteg
 
-  CreatePriceAlertInteg:
+  CreateAlertInteg:
     Type: AWS::ApiGatewayV2::Integration
     Properties:
       ApiId:
         Fn::ImportValue:
           !Sub "${LegDragonsWebSocketApi}"
-      Description: Create a price alert.
+      Description: Create a alert.
       IntegrationType: AWS_PROXY
       IntegrationUri:
         Fn::Sub:
-          arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${CreatePriceAlertFunction.Arn}/invocations
+          arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${CreateAlertFunction.Arn}/invocations
+
+  #REMOVE ALERT
+  RemoveAlertFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/remove_alert/
+      Policies:
+        - EventBridgePutEventsPolicy:
+            EventBusName: "connection-event-bus"
+        - DynamoDBCrudPolicy:
+            TableName: !Ref WishlistTable
+
+  RemoveAlertPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref RemoveAlertFunction
+      Principal: apigateway.amazonaws.com
+
+  RemoveAlertRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Fn::ImportValue:
+          !Sub "${LegDragonsWebSocketApi}"
+      RouteKey: removeAlertReq
+      AuthorizationType: NONE
+      OperationName: RemoveAlertRoute
+      Target: !Join
+        - '/'
+        - - 'integrations'
+          - !Ref RemoveAlertInteg
+
+  RemoveAlertInteg:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Fn::ImportValue:
+          !Sub "${LegDragonsWebSocketApi}"
+      Description: Remove alerts.
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::Sub:
+          arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${RemoveAlertFunction.Arn}/invocations
 
 # Outputs:
