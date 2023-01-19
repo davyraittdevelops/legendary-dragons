@@ -91,4 +91,15 @@ export class WebsocketService {
       'inventory_card': inventory_card
     });
   }
+
+  sendRemoveCardFromDeckMessage(deck_id : string, inventory_card : InventoryCard) {
+    if (!this.socket$) {
+      return;
+    }
+    this.socket$.next({
+      'action': 'removeCardFromDeckReq',
+      'deck_id': deck_id,
+      'inventory_card': inventory_card
+    });
+  }
 }

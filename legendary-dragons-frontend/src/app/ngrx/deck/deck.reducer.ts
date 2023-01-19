@@ -14,7 +14,10 @@ import {
   getCardsFromDeckSuccess,
   addCardToDeck,
   addCardToDeckFail,
-  addCardToDeckSuccess
+  addCardToDeckSuccess,
+  removeCardFromDeck,
+  removeCardFromDeckFail,
+  removeCardFromDeckSuccess
 } from "./deck.actions";
 import { DeckState } from "./models/deck-state.model";
 
@@ -34,7 +37,7 @@ const initialState: DeckState = {
     side_deck: {
       created_at: new Date(""),
       last_modified: new Date(""),
-      deck_cards: []
+      side_deck_cards: []
     }
   }
 }
@@ -58,10 +61,15 @@ export const deckReducer = createReducer(
   on(getDecksSuccess, (state, {decks}) => ({...state, isLoading: false, hasError: false, decks: decks})),
   on(getCardsFromDeck, (state, {deck_id}) => ({...state, isLoading: true})),
   on(getCardsFromDeckFail, (state) => ({...state, isLoading: false, hasError: true})),
-  on(getCardsFromDeckSuccess, (state, {deck_id, deck_cards}) => {
+  on(getCardsFromDeckSuccess, (state, {deck_id, main_deck_cards, side_deck_cards}) => {
     let foundDeck = state.decks.find(d => d.deck_id === deck_id)
-    let updatedDeck = {...foundDeck!, deck_cards: deck_cards};
-    // let updatedDecks = state.decks.map(d => d.deck_id === updatedDeck.deck_id ? updatedDeck : d);
+    let updatedDeck = {
+      ...foundDeck!,
+      deck_cards: main_deck_cards,
+
+      ...foundDeck!.side_deck,
+        side_deck_cards: side_deck_cards
+    };
 
     return {
       ...state,
@@ -80,4 +88,16 @@ export const deckReducer = createReducer(
 
   }),
   on(addCardToDeckFail, (state) => ({...state, isLoading: false, hasError: true})),
+  on(removeCardFromDeck, (state, {deck_id, inventory_card}) => ({...state, isLoading: true})),
+  on(removeCardFromDeckSuccess, (state, {deck_id, deck_card}) => {
+    let foundDeck = state.decks.find(d => d.deck_id === deck_id)
+    let updatedDeck = {...foundDeck!, deck_cards: state.selectedDeck.deck_cards.filter(card => card.inventory_card_id !== deck_card.inventory_card_id)};
+
+    return {
+      ...state,
+      selectedDeck: updatedDeck
+    };
+
+  }),
+  on(removeCardFromDeckFail, (state) => ({...state, isLoading: false, hasError: true})),
 )

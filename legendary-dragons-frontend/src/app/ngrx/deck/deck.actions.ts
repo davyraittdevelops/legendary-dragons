@@ -59,7 +59,7 @@ export const getCardsFromDeckFail = createAction(
 
 export const getCardsFromDeckSuccess = createAction(
   '[Deck Detail Component] Get Cards From Deck Success',
-  props<{deck_id: string, deck_cards: DeckCard[]}>(),
+  props<{deck_id: string, main_deck_cards: DeckCard[], side_deck_cards: DeckCard[]}>(),
 );
 
 export const addCardToDeck = createAction(
@@ -73,7 +73,22 @@ export const addCardToDeckFail = createAction(
 );
 
 export const addCardToDeckSuccess = createAction(
-  '[Deck Detail Component]Add Card To Deck Success',
+  '[Deck Detail Component] Add Card To Deck Success',
   props<{deck: Deck}>(),
+);
+
+export const removeCardFromDeck = createAction(
+  '[Deck Detail Component] Remove Card From Deck',
+  props<{ deck_id: string, inventory_card: InventoryCard }>(),
+);
+
+export const removeCardFromDeckFail = createAction(
+  '[Deck Detail Component] Remove Card From Deck Fail',
+  props<{ error: boolean }>(),
+);
+
+export const removeCardFromDeckSuccess = createAction(
+  '[Deck Detail Component] Remove Card From Deck Success',
+  props<{deck_id: string, deck_card: DeckCard}>(),
 );
 

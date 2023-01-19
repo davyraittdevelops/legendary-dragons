@@ -19,7 +19,10 @@ import {
   getCardsFromDeckSuccess,
   addCardToDeck,
   addCardToDeckFail,
-  addCardToDeckSuccess
+  addCardToDeckSuccess,
+  removeCardFromDeck,
+  removeCardFromDeckFail,
+  removeCardFromDeckSuccess
 } from "./deck.actions";
 
 @Injectable()
@@ -99,7 +102,7 @@ export class DeckEffects {
           filter((event: any) => {
             return event['event_type'] === 'GET_DECK_CARDS_RESULT'
           }),
-          map((event: any) => getCardsFromDeckSuccess({deck_id: event["deck_id"], deck_cards: event["data"]["Items"]})),
+          map((event: any) => getCardsFromDeckSuccess({deck_id: event["deck_id"], main_deck_cards: event["data"]["deck_cards"], side_deck_cards: event["data"]["side_deck_cards"]})),
           catchError((error) => {
             console.log(error);
             return of(getCardsFromDeckFail({error: true}))
@@ -123,6 +126,26 @@ export class DeckEffects {
           catchError((error) => {
             console.log(error);
             return of(addCardToDeckFail({error: true}))
+          })
+        )
+      })
+    )
+  );
+
+  public removeCardFromDeckEffect$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(removeCardFromDeck),
+      tap(({deck_id, inventory_card}) => this.websocketService.sendRemoveCardFromDeckMessage(deck_id, inventory_card)),
+      mergeMap(() => {
+        return this.websocketService.dataUpdates$().pipe(
+          filter((event: any) => {
+            console.log(event)
+            return event['event_type'] === 'CARD_REMOVED_FROM_DECK'
+          }),
+          map((event: any) => removeCardFromDeckSuccess({deck_id: event["deck_id"], deck_card: event["data"]})),
+          catchError((error) => {
+            console.log(error);
+            return of(removeCardFromDeckFail({error: true}))
           })
         )
       })

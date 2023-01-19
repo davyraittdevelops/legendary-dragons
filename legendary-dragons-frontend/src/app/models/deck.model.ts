@@ -14,10 +14,11 @@ export interface Deck {
 export interface SideDeck {
   created_at: Date;
   last_modified: Date;
-  deck_cards: DeckCard[];
+  side_deck_cards: DeckCard[];
 }
 
 export interface DeckCard {
+  inventory_card_id: string;
   oracle_id: string,
   card_name: string,
   colors: string[];
