@@ -64,6 +64,8 @@ Resources:
       StreamSpecification:
         StreamViewType: "NEW_AND_OLD_IMAGES"
 
+  # CREATE WISHLIST ITEM 
+
   CreateWishlistItemFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -106,5 +108,50 @@ Resources:
       IntegrationUri:
         Fn::Sub:
           arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${CreateWishlistItemFunction.Arn}/invocations
+
+
+  # GET WISHLIST ITEMS BY USER ID
+  GetWishlistItemsByUserIdFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/get_wishlist_items_by_user_id/
+      Policies:
+        - EventBridgePutEventsPolicy:
+            EventBusName: "connection-event-bus"
+        - DynamoDBReadPolicy:
+            TableName: !Ref WishlistTable
+
+  GetWishlistItemsByUserIdPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref GetWishlistItemsByUserIdFunction
+      Principal: apigateway.amazonaws.com
+
+  GetWishlistItemsByUserIdRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Fn::ImportValue:
+          !Sub "${LegDragonsWebSocketApi}"
+      RouteKey: getWishlistItemsByUserIdReq
+      AuthorizationType: NONE
+      OperationName: GetWishlistItemsByUserIdRoute
+      Target: !Join
+        - '/'
+        - - 'integrations'
+          - !Ref GetWishlistItemsByUserIdInteg
+
+  GetWishlistItemsByUserIdInteg:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Fn::ImportValue:
+          !Sub "${LegDragonsWebSocketApi}"
+      Description: Create a wishlist item.
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::Sub:
+          arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GetWishlistItemsByUserIdFunction.Arn}/invocations
 
 # Outputs:
