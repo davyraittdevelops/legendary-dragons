@@ -23,7 +23,7 @@
         </div>
         <!--    For chart diagram    -->
         <div class="col col-6 text-center"></div>
-        <app-add-card-to-deck></app-add-card-to-deck>
+        <app-add-card-to-deck [deck_name]="selectedDeck.deck_name"></app-add-card-to-deck>
       </div>
 
       <!-- Row 2  -->
@@ -61,5 +61,4 @@
       <div class="row latest-row-margin"></div>
     </ng-container>
   </ng-template>
-
 </div>

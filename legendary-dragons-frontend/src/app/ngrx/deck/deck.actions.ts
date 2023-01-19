@@ -64,7 +64,7 @@ export const getDeckSuccess = createAction(
 
 export const addCardToDeck = createAction(
   '[Deck Detail Component] Add Card To Deck',
-  props<{ deck_id: string, deck_type: string, inventory_card: InventoryCard }>(),
+  props<{ deck_id: string, deck_type: string, inventory_card: InventoryCard, deck_name: string}>(),
 );
 
 export const addCardToDeckFail = createAction(

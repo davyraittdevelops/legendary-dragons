@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, Input } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Store } from "@ngrx/store";
 import { Observable } from "rxjs";
@@ -16,14 +16,18 @@ import { errorSelector, inventorySelector, isLoadingSelector } from "../../../ng
   styleUrls: ['./add-card-to-deck.component.scss']
 })
 export class AddCardToDeckComponent {
+  @Input('deck_name') deckName: string = '';
+
   inventory$: Observable<Inventory>;
   isLoading$: Observable<boolean>;
   hasError$: Observable<boolean>;
+
   displayedColumns: string[] = ['Image', 'Name', 'MainDeck', 'SideDeck'];
   dataSource : any ;
-  deck_id: string = '';
+  deckId: string = '';
 
-  constructor(private appStore: Store<AppState>, public modalService: NgbModal, private activatedRoute: ActivatedRoute) {
+  constructor(private appStore: Store<AppState>, public modalService: NgbModal,
+              private activatedRoute: ActivatedRoute) {
     this.isLoading$ = this.appStore.select(isLoadingSelector);
     this.hasError$ = this.appStore.select(errorSelector);
     this.inventory$ = this.appStore.select(inventorySelector);
@@ -33,15 +37,12 @@ export class AddCardToDeckComponent {
     this.appStore.dispatch(getInventory());
 
     this.activatedRoute.params.subscribe(params => {
-      this.deck_id = params["id"];
+      this.deckId = params["id"];
     });
   }
 
   open({content}: { content: any }): void {
-    this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title', size: 'xl'}).result.then(
-      () => {},
-      () => {}
-    );
+    this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title', size: 'xl'});
   }
 
   applyFilter(event: Event) {
@@ -50,10 +51,12 @@ export class AddCardToDeckComponent {
   }
 
   addCardToDeck(card: InventoryCard) {
-    this.appStore.dispatch(addCardToDeck({deck_id: this.deck_id, deck_type: DeckType.MAIN, inventory_card: card}))
+    this.appStore.dispatch(addCardToDeck({deck_id: this.deckId, deck_type: DeckType.MAIN, inventory_card: card, deck_name: this.deckName}));
+    this.modalService.dismissAll();
   }
 
   addCardToSideDeck(card: InventoryCard) {
-    this.appStore.dispatch(addCardToDeck({deck_id: this.deck_id, deck_type: DeckType.SIDE, inventory_card: card}))
+    this.appStore.dispatch(addCardToDeck({deck_id: this.deckId, deck_type: DeckType.SIDE, inventory_card: card, deck_name: this.deckName}));
+    this.modalService.dismissAll();
   }
 }

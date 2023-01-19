@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
-import { catchError, filter, map, mergeMap, tap } from 'rxjs/operators';
+import { catchError, filter, map, switchMap, tap } from 'rxjs/operators';
 import { WebsocketService } from "src/app/services/websocket/websocket.service";
 
 import {
@@ -37,7 +37,7 @@ export class DeckEffects {
     this.actions$.pipe(
       ofType(createDeck),
       tap(({deck_name, deck_type}) => this.websocketService.sendCreateDeckMessage(deck_name, deck_type)),
-      mergeMap(() => {
+      switchMap(() => {
         return this.websocketService.dataUpdates$().pipe(
           filter((event: any) => {
             return event['event_type'] === 'INSERT_DECK_RESULT'
@@ -56,7 +56,7 @@ export class DeckEffects {
     this.actions$.pipe(
       ofType(removeDeck),
       tap(({deck_id}) => this.websocketService.sendRemoveDeckMessage(deck_id)),
-      mergeMap(() => {
+      switchMap(() => {
         return this.websocketService.dataUpdates$().pipe(
           filter((event: any) => {
             return event['event_type'] === 'REMOVE_DECK_RESULT'
@@ -76,7 +76,7 @@ export class DeckEffects {
     this.actions$.pipe(
       ofType(getDecks),
       tap(() => this.websocketService.sendGetDecksMessage()),
-      mergeMap(() => {
+      switchMap(() => {
         return this.websocketService.dataUpdates$().pipe(
           filter((event: any) => {
             return event['event_type'] === 'GET_DECKS_RESULT'
@@ -97,7 +97,7 @@ export class DeckEffects {
       tap(({deck_id}) => {
         this.websocketService.sendGetDeckMessage(deck_id)
       }),
-      mergeMap(() => {
+      switchMap(() => {
         return this.websocketService.dataUpdates$().pipe(
           filter((event: any) => {
             return event['event_type'] === 'GET_DECK_RESULT'
@@ -120,8 +120,8 @@ export class DeckEffects {
   public addCardtoDeckEffect$ = createEffect(() =>
     this.actions$.pipe(
       ofType(addCardToDeck),
-      tap(({deck_id, deck_type, inventory_card}) => this.websocketService.sendAddCardToDeckMessage(deck_id, deck_type, inventory_card)),
-      mergeMap(({deck_type}) => {
+      tap(({deck_id, deck_type, inventory_card, deck_name}) => this.websocketService.sendAddCardToDeckMessage(deck_id, deck_type, inventory_card, deck_name)),
+      switchMap(({deck_type}) => {
         return this.websocketService.dataUpdates$().pipe(
           filter((event: any) => {
             console.log(event)
@@ -141,7 +141,7 @@ export class DeckEffects {
     this.actions$.pipe(
       ofType(removeCardFromDeck),
       tap(({deck_id, inventory_card}) => this.websocketService.sendRemoveCardFromDeckMessage(deck_id, inventory_card)),
-      mergeMap(() => {
+      switchMap(() => {
         return this.websocketService.dataUpdates$().pipe(
           filter((event: any) => {
             console.log(event)

@@ -76,26 +76,15 @@ export class WebsocketService {
     this.sendMessage('getDeckReq', {deck_id});
   }
 
-  sendAddCardToDeckMessage(deck_id : string, deck_type: string, inventory_card : InventoryCard) {
-    if (!this.socket$) {
-      return;
-    }
-    this.socket$.next({
-      'action': 'addCardToDeckReq',
-      'deck_id': deck_id,
-      'deck_type': deck_type,
-      'inventory_card': inventory_card
+  sendAddCardToDeckMessage(deck_id : string, deck_type: string, inventory_card : InventoryCard, deck_name: string) {
+    this.sendMessage('addCardToDeckReq', {
+      deck_name, deck_id, deck_type, inventory_card
     });
   }
 
   sendRemoveCardFromDeckMessage(deck_id : string, inventory_card : InventoryCard) {
-    if (!this.socket$) {
-      return;
-    }
-    this.socket$.next({
-      'action': 'removeCardFromDeckReq',
-      'deck_id': deck_id,
-      'inventory_card': inventory_card
+    this.sendMessage('removeCardFromDeckReq', {
+      deck_id, inventory_card
     });
   }
 }

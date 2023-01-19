@@ -20,7 +20,8 @@ export class DecksDetailsPageComponent implements OnInit {
   isLoading$: Observable<boolean>;
   isAddCardLoading$: Observable<boolean>;
   hasError$: Observable<boolean>;
-  deck_id: string = "";
+
+  deckId: string = "";
 
   constructor(public modalService: NgbModal, private appStore: Store<AppState>, private activatedRoute: ActivatedRoute,
               private websocketService : WebsocketService, private router: Router) {
@@ -48,8 +49,9 @@ export class DecksDetailsPageComponent implements OnInit {
     ).subscribe();
 
     this.activatedRoute.params.subscribe(params => {
-      this.deck_id = params["id"];
-      this.appStore.dispatch(getDeck({deck_id: this.deck_id}));
+      this.deckId = params["id"];
+      this.appStore.dispatch(getDeck({deck_id: this.deckId}));
     });
   }
+
 }
