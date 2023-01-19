@@ -1,0 +1,110 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  wishlist
+  SAM Template for wishlist bounded context
+
+Parameters:
+  LegDragonsWebSocketApi:
+    Type: String
+    Default: "legendary-dragons-ws-api-gateway-LegDragonsWebSocketApi"
+  LegDragonsConnectionsEventBus:
+    Type: String
+    Default: "legendary-dragons-connection-event-bus-LegDragonsConnectionsEventBus"
+  LegDragonsBroadcastArn:
+    Type: String
+    Default: "legendary-dragons-connection-LegDragonsBroadcastArn"
+
+Globals:
+  Api:
+    TracingEnabled: True
+  Function:
+    Handler: app.lambda_handler
+    Runtime: python3.9
+    Environment:
+        Variables:
+          TABLE_NAME: !Ref WishlistTable
+          EVENT_BUS_NAME:
+            Fn::ImportValue:
+                !Sub "${LegDragonsConnectionsEventBus}"
+
+    Architectures:
+      - x86_64
+    Tracing: Active
+
+Resources: 
+  WishlistTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: wishlist
+      KeySchema:
+        - AttributeName: PK
+          KeyType: HASH
+        - AttributeName: SK
+          KeyType: RANGE
+      AttributeDefinitions:
+        - AttributeName: PK
+          AttributeType: S
+        - AttributeName: SK
+          AttributeType: S
+        - AttributeName: GSI1_PK
+          AttributeType: S
+        - AttributeName: GSI1_SK
+          AttributeType: S
+      BillingMode: PAY_PER_REQUEST
+      GlobalSecondaryIndexes:
+        - IndexName: "GSI1"
+          KeySchema:
+            - AttributeName: GSI1_PK
+              KeyType: HASH
+            - AttributeName: GSI1_SK
+              KeyType: RANGE
+          Projection:
+            ProjectionType: "ALL"
+      StreamSpecification:
+        StreamViewType: "NEW_AND_OLD_IMAGES"
+
+  CreateWishlistItemFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/create_wishlist_item/
+      Policies:
+        - EventBridgePutEventsPolicy:
+            EventBusName: "connection-event-bus"
+        - DynamoDBWritePolicy:
+            TableName: !Ref WishlistTable
+
+  CreateWishlistItemPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref CreateWishlistItemFunction
+      Principal: apigateway.amazonaws.com
+
+  CreateWishlistItemRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Fn::ImportValue:
+          !Sub "${LegDragonsWebSocketApi}"
+      RouteKey: createWishlistItemReq
+      AuthorizationType: NONE
+      OperationName: CreateWishlistItemRoute
+      Target: !Join
+        - '/'
+        - - 'integrations'
+          - !Ref CreateWishlistItemInteg
+
+  CreateWishlistItemInteg:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Fn::ImportValue:
+          !Sub "${LegDragonsWebSocketApi}"
+      Description: Create a wishlist item.
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::Sub:
+          arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${CreateWishlistItemFunction.Arn}/invocations
+
+# Outputs:

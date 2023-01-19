@@ -2,9 +2,9 @@ version = 0.1
 [default]
 [default.deploy]
 [default.deploy.parameters]
-stack_name = "legendary-dragons-deck"
+stack_name = "legendary-dragons-wishlist"
 s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-he0au9dk38to"
-s3_prefix = "legendary-dragons-deck"
+s3_prefix = "legendary-dragons-wishlist"
 region = "us-east-1"
 confirm_changeset = true
 capabilities = "CAPABILITY_IAM"
