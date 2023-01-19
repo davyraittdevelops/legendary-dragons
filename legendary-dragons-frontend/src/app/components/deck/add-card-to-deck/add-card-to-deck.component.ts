@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Store } from "@ngrx/store";
 import { Observable } from "rxjs";
+import { DeckType } from 'src/app/models/deck-type.enum';
 import { addCardToDeck } from 'src/app/ngrx/deck/deck.actions';
 import { AppState } from "../../../app.state";
 import { Inventory, InventoryCard } from "../../../models/inventory.model";
@@ -49,10 +50,10 @@ export class AddCardToDeckComponent {
   }
 
   addCardToDeck(card: InventoryCard) {
-    this.appStore.dispatch(addCardToDeck({deck_id: this.deck_id, deck_type: "main_deck", inventory_card: card}))
+    this.appStore.dispatch(addCardToDeck({deck_id: this.deck_id, deck_type: DeckType.MAIN, inventory_card: card}))
   }
 
   addCardToSideDeck(card: InventoryCard) {
-    this.appStore.dispatch(addCardToDeck({deck_id: this.deck_id, deck_type: "side_deck", inventory_card: card}))
+    this.appStore.dispatch(addCardToDeck({deck_id: this.deck_id, deck_type: DeckType.SIDE, inventory_card: card}))
   }
 }

@@ -1,4 +1,5 @@
 import { createReducer, on } from "@ngrx/store";
+import { DeckType } from "src/app/models/deck-type.enum";
 import {
   createDeck,
   createDeckSuccess,
@@ -69,8 +70,7 @@ export const deckReducer = createReducer(
   on(addCardToDeckSuccess, (state, {deckCard, deckType}) => {
     let newSelectedDeck = {...state.selectedDeck};
 
-    // TODO: ADD ENUM PLS
-    if (deckType == "side_deck")
+    if (deckType == DeckType.SIDE)
       newSelectedDeck.side_deck_cards = [deckCard, ...state.selectedDeck.side_deck_cards];
     else
       newSelectedDeck.deck_cards = [deckCard, ...state.selectedDeck.deck_cards];
