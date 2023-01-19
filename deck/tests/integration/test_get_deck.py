@@ -106,7 +106,7 @@ def test_lamda_handler_success(websocket_event, table_definition):
 
   # Act
   with patch("botocore.client.BaseClient._make_api_call", new=mock_make_api_call):
-    from functions.get_cards_from_deck import app
+    from functions.get_deck import app
     response = app.lambda_handler(websocket_event, {})
 
     deck_cards = table.query(
