@@ -5,4 +5,5 @@ export interface DeckState {
   isLoading: boolean;
   hasError: boolean;
   decks: Deck[];
+  selectedDeck: Deck;
 }

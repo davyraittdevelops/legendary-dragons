@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 import { UserRegistration } from 'src/app/models/user.model';
 import { registerUser } from 'src/app/ngrx/user/user.actions';
 import { isLoadingSelector, userErrorSelector } from 'src/app/ngrx/user/user.selectors';
-import { AppState } from "../../app.state";
+import { AppState } from "../../../app.state";
 
 export const validatePasswords = (control: AbstractControl): ValidationErrors | null => {
   if (control && control.get("password") && control.get("confirmPassword")) {
