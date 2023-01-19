@@ -65,7 +65,7 @@ export const deckReducer = createReducer(
       selectedDeck: deck
     };
   }),
-  on(addCardToDeck, (state, {deck_id, deck_type, inventory_card}) => ({...state, isLoading: true})),
+  on(addCardToDeck, (state, {deck_id, deck_type, inventory_card, deck_name}) => ({...state, isLoading: true})),
   on(addCardToDeckSuccess, (state, {deckCard, deckType}) => {
     let newSelectedDeck = {...state.selectedDeck};
 

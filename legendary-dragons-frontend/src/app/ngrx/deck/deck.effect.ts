@@ -120,7 +120,7 @@ export class DeckEffects {
   public addCardtoDeckEffect$ = createEffect(() =>
     this.actions$.pipe(
       ofType(addCardToDeck),
-      tap(({deck_id, deck_type, inventory_card}) => this.websocketService.sendAddCardToDeckMessage(deck_id, deck_type, inventory_card)),
+      tap(({deck_id, deck_type, inventory_card, deck_name}) => this.websocketService.sendAddCardToDeckMessage(deck_id, deck_type, inventory_card, deck_name)),
       mergeMap(({deck_type}) => {
         return this.websocketService.dataUpdates$().pipe(
           filter((event: any) => {

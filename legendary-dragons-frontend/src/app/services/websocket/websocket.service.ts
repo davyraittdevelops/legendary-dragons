@@ -76,12 +76,13 @@ export class WebsocketService {
     this.sendMessage('getDeckReq', {deck_id});
   }
 
-  sendAddCardToDeckMessage(deck_id : string, deck_type: string, inventory_card : InventoryCard) {
+  sendAddCardToDeckMessage(deck_id : string, deck_type: string, inventory_card : InventoryCard, deck_name : string) {
     if (!this.socket$) {
       return;
     }
     this.socket$.next({
       'action': 'addCardToDeckReq',
+      'deck_name' : deck_name,
       'deck_id': deck_id,
       'deck_type': deck_type,
       'inventory_card': inventory_card

@@ -32,6 +32,7 @@ export class AddCardToDeckComponent {
     this.appStore.dispatch(getInventory());
 
     this.activatedRoute.params.subscribe(params => {
+      console.log(params)
       this.deck_id = params["id"];
     });
   }
@@ -49,10 +50,11 @@ export class AddCardToDeckComponent {
   }
 
   addCardToDeck(card: InventoryCard) {
-    this.appStore.dispatch(addCardToDeck({deck_id: this.deck_id, deck_type: "main_deck", inventory_card: card}))
+    console.log(card)
+    this.appStore.dispatch(addCardToDeck({deck_id: this.deck_id, deck_type: "main_deck", inventory_card: card, deck_name: ''}))
   }
 
   addCardToSideDeck(card: InventoryCard) {
-    this.appStore.dispatch(addCardToDeck({deck_id: this.deck_id, deck_type: "side_deck", inventory_card: card}))
+    this.appStore.dispatch(addCardToDeck({deck_id: this.deck_id, deck_type: "side_deck", inventory_card: card, deck_name: ''}))
   }
 }
