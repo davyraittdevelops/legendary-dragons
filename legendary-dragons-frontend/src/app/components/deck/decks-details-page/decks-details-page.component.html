@@ -33,10 +33,10 @@
             Deck
             <span class="spinner-border ms-2" role="status" aria-hidden="true" *ngIf="(isAddCardLoading$ | async)"></span>
           </h1>
-          <cdk-virtual-scroll-viewport appendOnly itemSize="50" class="deck-viewport border border-2 border-light rounded-bottom shadow border-top-0 bg-dark bg-opacity-50" style="--bs-border-opacity: .5;">
+          <cdk-virtual-scroll-viewport appendOnly itemSize="50" class="deck-viewport border border-2 border-light rounded-bottom shadow border-top-0 bg-light bg-opacity-25 border-opacity-25">
             <div class="card-position">
               <div class="row">
-                <app-deck-cards-details-page *ngFor="let card of selectedDeck.deck_cards" [card]="card" class="col">
+                <app-deck-cards-details-page *ngFor="let card of selectedDeck.deck_cards" [card]="card" class="col mt-3">
                 </app-deck-cards-details-page>
               </div>
             </div>
@@ -48,10 +48,13 @@
             Side Deck
             <span class="spinner-border ms-2" role="status" aria-hidden="true" *ngIf="(isAddCardLoading$ | async)"></span>
           </h1>
-          <cdk-virtual-scroll-viewport appendOnly itemSize="50" class="deck-viewport border border-2 border-light rounded-bottom shadow border-top-0 bg-dark bg-opacity-50" style="--bs-border-opacity: .5;">
+          <cdk-virtual-scroll-viewport appendOnly itemSize="50" class="deck-viewport border border-2 border-light rounded-bottom shadow border-top-0 bg-light bg-opacity-25 border-opacity-25">
             <div class="card-position">
-              <app-deck-cards-details-page class="col" *ngFor="let card of selectedDeck.side_deck_cards" [card]="card">
-              </app-deck-cards-details-page>
+              <div class="row">
+                <app-deck-cards-details-page class="col mt-3" *ngFor="let card of selectedDeck.side_deck_cards" [card]="card">
+                </app-deck-cards-details-page>
+              </div>
+
             </div>
           </cdk-virtual-scroll-viewport>
         </div>

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from "@angular/router";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Store } from "@ngrx/store";
-import { catchError, Observable, of, share, tap } from "rxjs";
+import { catchError, Observable, of, share } from "rxjs";
 import { logoutUser } from 'src/app/ngrx/user/user.actions';
 import { WebsocketService } from 'src/app/services/websocket/websocket.service';
 import { AppState } from "../../../app.state";
@@ -25,10 +25,7 @@ export class DecksDetailsPageComponent implements OnInit {
 
   constructor(public modalService: NgbModal, private appStore: Store<AppState>, private activatedRoute: ActivatedRoute,
               private websocketService : WebsocketService, private router: Router) {
-    this.selectedDeck$ = this.appStore.select(deckByIdSelector).pipe(tap(selectedDeck => {
-      console.log(selectedDeck);
-    }));
-
+    this.selectedDeck$ = this.appStore.select(deckByIdSelector);
     this.isLoading$ = this.appStore.select(isLoadingSelector);
     this.isAddCardLoading$ = this.appStore.select(isAddCardLoadingSelector);
     this.hasError$ = this.appStore.select(errorSelector);
@@ -41,6 +38,7 @@ export class DecksDetailsPageComponent implements OnInit {
         // Token expired
         if (!('reason' in error)) {
           this.appStore.dispatch(logoutUser());
+          // TODO: Not working correctly..
           this.router.navigate(["/login"]);
         }
 
