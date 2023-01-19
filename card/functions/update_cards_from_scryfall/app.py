@@ -41,8 +41,9 @@ def lambda_handler(event, context):
     return {"statusCode": 200}
 
 def write_to_database(card_list, card_faces_list):
-    print('Length of card_list is : ' , len(card_list))
-    print('Length of card_faces_list is : ' , len(card_faces_list))
+    logger.info(f'Length of card_list is :  {len(card_list)}' )
+    logger.info(f'Length of card_faces_list is :  {len(card_faces_list)}' )
+
 
     """Import the update objects in the database"""
     logger.info("Import the update objects in the database")
