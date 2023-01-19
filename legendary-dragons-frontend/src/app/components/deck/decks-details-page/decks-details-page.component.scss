@@ -3,6 +3,11 @@
   width: 50%;
 }
 
+.deck-loading-spinner {
+  width: 4rem !important;
+  height: 4rem !important;
+}
+
 /* Start Scrolling Styles */
 .deck-viewport {
   height: 500px;
@@ -53,14 +58,6 @@
 }
 
 /* End Add Card Styling */
-
-.card-counts {
-  font-size: 30px
-}
-
-.card-price {
-  font-size: 25px;
-}
 
 .latest-row-margin {
   margin-top:40px

@@ -1,18 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import {Card} from "../../../models/card.model";
-import {Observable, tap} from "rxjs";
-import {Inventory} from "../../../models/inventory.model";
-import {inventorySelector} from "../../../ngrx/inventory/inventory.selectors";
-import {Deck} from "../../../models/deck.model";
-import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
-import {Store} from "@ngrx/store";
-import {AppState} from "../../../app.state";
-import {deckByIdSelector, decksSelector, errorSelector, isLoadingSelector} from "../../../ngrx/deck/deck.selectors";
-import {getCardsFromDeck, getDecks} from "../../../ngrx/deck/deck.actions";
-import {ActivatedRoute, Router} from "@angular/router";
-import {getInventory} from "../../../ngrx/inventory/inventory.actions";
+import { ActivatedRoute } from "@angular/router";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { Observable, share, tap } from "rxjs";
 import { WebsocketService } from 'src/app/services/websocket/websocket.service';
+import { AppState } from "../../../app.state";
+import { Deck } from "../../../models/deck.model";
+import { getCardsFromDeck } from "../../../ngrx/deck/deck.actions";
+import { deckByIdSelector, errorSelector, isLoadingSelector } from "../../../ngrx/deck/deck.selectors";
 
 
 @Component({
@@ -24,11 +19,11 @@ export class DecksDetailsPageComponent implements OnInit {
   selectedDeck$: Observable<Deck>;
   isLoading$: Observable<boolean>;
   hasError$: Observable<boolean>;
-  deck_id: string = ""
+  deck_id: string = "";
 
-  constructor(public modalService: NgbModal, private appStore: Store<AppState>, private activatedRoute: ActivatedRoute, private websocketService : WebsocketService,) {
+  constructor(public modalService: NgbModal, private appStore: Store<AppState>, private activatedRoute: ActivatedRoute, private websocketService : WebsocketService) {
     this.selectedDeck$ = this.appStore.select(deckByIdSelector).pipe(tap(selectedDeck => {
-      console.log(selectedDeck)
+      console.log(selectedDeck);
     }));
 
     this.isLoading$ = this.appStore.select(isLoadingSelector);
@@ -37,7 +32,7 @@ export class DecksDetailsPageComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.websocketService.dataUpdates$().subscribe(() => {})
+    this.websocketService.dataUpdates$().pipe(share()).subscribe(() => {});
 
     this.activatedRoute.params.subscribe(params => {
       this.deck_id = params["id"];

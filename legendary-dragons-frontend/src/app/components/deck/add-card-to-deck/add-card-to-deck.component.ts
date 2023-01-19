@@ -1,15 +1,13 @@
 import { Component } from '@angular/core';
-import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
-import {clearSearchResult} from "../../../ngrx/card/card.actions";
-import {Observable} from "rxjs";
-import {Inventory, InventoryCard} from "../../../models/inventory.model";
-import {Store} from "@ngrx/store";
-import {AppState} from "../../../app.state";
-import {errorSelector, inventorySelector, isLoadingSelector} from "../../../ngrx/inventory/inventory.selectors";
-import {getInventory} from "../../../ngrx/inventory/inventory.actions";
-import {MatTableDataSource} from "@angular/material/table";
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { Observable } from "rxjs";
 import { addCardToDeck } from 'src/app/ngrx/deck/deck.actions';
+import { AppState } from "../../../app.state";
+import { Inventory, InventoryCard } from "../../../models/inventory.model";
+import { getInventory } from "../../../ngrx/inventory/inventory.actions";
+import { errorSelector, inventorySelector, isLoadingSelector } from "../../../ngrx/inventory/inventory.selectors";
 
 @Component({
   selector: 'app-add-card-to-deck',
@@ -22,30 +20,30 @@ export class AddCardToDeckComponent {
   hasError$: Observable<boolean>;
   displayedColumns: string[] = ['Image', 'Name', 'MainDeck', 'SideDeck'];
   dataSource : any ;
-  deck_id = this.router.url.replace("/decks/", "");
+  deck_id: string = '';
 
-
-  constructor(private appStore: Store<AppState>, public modalService: NgbModal, private router: Router) {
+  constructor(private appStore: Store<AppState>, public modalService: NgbModal, private activatedRoute: ActivatedRoute) {
     this.isLoading$ = this.appStore.select(isLoadingSelector);
     this.hasError$ = this.appStore.select(errorSelector);
     this.inventory$ = this.appStore.select(inventorySelector);
   }
 
-
   ngOnInit(): void {
-    // this.appStore.dispatch(getInventory())
+    this.appStore.dispatch(getInventory());
+
+    this.activatedRoute.params.subscribe(params => {
+      this.deck_id = params["id"];
+    });
   }
 
   open({content}: { content: any }): void {
     this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title', size: 'xl'}).result.then(
       () => {},
-      () => {
-      }
+      () => {}
     );
   }
 
   applyFilter(event: Event) {
-    // console.log('event', event)
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
