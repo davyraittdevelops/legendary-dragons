@@ -9,9 +9,9 @@ import {
   getDecks,
   getDecksSuccess,
   getDecksFail,
-  getCardsFromDeck,
-  getCardsFromDeckFail,
-  getCardsFromDeckSuccess,
+  getDeck,
+  getDeckFail,
+  getDeckSuccess,
   addCardToDeck,
   addCardToDeckFail,
   addCardToDeckSuccess,
@@ -55,25 +55,32 @@ export const deckReducer = createReducer(
   on(getDecks, (state) => ({...state, isLoading: true})),
   on(getDecksFail, (state) => ({...state, isLoading: false, hasError: true})),
   on(getDecksSuccess, (state, {decks}) => ({...state, isLoading: false, hasError: false, decks: decks})),
-  on(getCardsFromDeck, (state, {deck_id}) => ({...state, isLoading: true})),
-  on(getCardsFromDeckFail, (state) => ({...state, isLoading: false, hasError: true})),
-  on(getCardsFromDeckSuccess, (state, {deck_id, main_deck_cards, side_deck_cards}) => {
-    let foundDeck = state.decks.find(d => d.deck_id === deck_id)
-    let updatedDeck = {...foundDeck!, deck_cards: main_deck_cards, side_deck_cards: side_deck_cards};
-
+  on(getDeck, (state, {deck_id}) => ({...state, isLoading: true})),
+  on(getDeckFail, (state) => ({...state, isLoading: false, hasError: true})),
+  on(getDeckSuccess, (state, {deck}) => {
     return {
       ...state,
-      selectedDeck: updatedDeck
+      isLoading: false,
+      hasError: false,
+      selectedDeck: deck
     };
   }),
   on(addCardToDeck, (state, {deck_id, deck_type, inventory_card}) => ({...state, isLoading: true})),
-  on(addCardToDeckSuccess, (state, {deck}) => {
-    let foundDeck = state.decks.find(d => d.deck_id === deck.deck_id)
-    let updatedDeck = {...foundDeck!, deck_cards: deck.deck_cards};
+  on(addCardToDeckSuccess, (state, {deckCard, deckType}) => {
+    let newSelectedDeck = {...state.selectedDeck};
 
+    // TODO: ADD ENUM PLS
+    if (deckType == "side_deck")
+      newSelectedDeck.side_deck_cards = [deckCard, ...state.selectedDeck.side_deck_cards];
+    else
+      newSelectedDeck.deck_cards = [deckCard, ...state.selectedDeck.deck_cards];
+
+    // TODO: New isloading
     return {
       ...state,
-      selectedDeck: updatedDeck
+      hasError: false,
+      isLoading: false,
+      selectedDeck: newSelectedDeck
     };
 
   }),

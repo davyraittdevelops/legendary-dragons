@@ -14,9 +14,9 @@ import {
   getDecks,
   getDecksSuccess,
   getDecksFail,
-  getCardsFromDeck,
-  getCardsFromDeckFail,
-  getCardsFromDeckSuccess,
+  getDeck,
+  getDeckFail,
+  getDeckSuccess,
   addCardToDeck,
   addCardToDeckFail,
   addCardToDeckSuccess,
@@ -79,7 +79,7 @@ export class DeckEffects {
       mergeMap(() => {
         return this.websocketService.dataUpdates$().pipe(
           filter((event: any) => {
-            return event['event_type'] === 'GET_DECK_RESULT'
+            return event['event_type'] === 'GET_DECKS_RESULT'
           }),
           map((event: any) => getDecksSuccess({decks: event["data"]})),
           catchError((error) => {
@@ -91,21 +91,26 @@ export class DeckEffects {
     )
   );
 
-  public getCardsFromDeck$ = createEffect(() =>
+  public getDeckEffect$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(getCardsFromDeck),
+      ofType(getDeck),
       tap(({deck_id}) => {
-        this.websocketService.sendGetCardsFromDeckMessage(deck_id)
+        this.websocketService.sendGetDeckMessage(deck_id)
       }),
       mergeMap(() => {
         return this.websocketService.dataUpdates$().pipe(
           filter((event: any) => {
-            return event['event_type'] === 'GET_DECK_CARDS_RESULT'
+            return event['event_type'] === 'GET_DECK_RESULT'
           }),
-          map((event: any) => getCardsFromDeckSuccess({deck_id: event["deck_id"], main_deck_cards: event["data"]["deck_cards"], side_deck_cards: event["data"]["side_deck_cards"]})),
+          map((event: any) => {
+            const deck = event["data"]["deck"][0];
+            deck.deck_cards = event["data"]["deck_cards"];
+            deck.side_deck_cards = event["data"]["side_deck_cards"];
+            return getDeckSuccess({deck})
+          }),
           catchError((error) => {
             console.log(error);
-            return of(getCardsFromDeckFail({error: true}))
+            return of(getDeckFail({error: true}))
           })
         )
       })
@@ -116,13 +121,13 @@ export class DeckEffects {
     this.actions$.pipe(
       ofType(addCardToDeck),
       tap(({deck_id, deck_type, inventory_card}) => this.websocketService.sendAddCardToDeckMessage(deck_id, deck_type, inventory_card)),
-      mergeMap(() => {
+      mergeMap(({deck_type}) => {
         return this.websocketService.dataUpdates$().pipe(
           filter((event: any) => {
             console.log(event)
-            return event['event_type'] === 'CARD_ADDED_TO_DECK'
+            return event['event_type'] === 'INSERT_DECK_CARD_RESULT'
           }),
-          map((event: any) => addCardToDeckSuccess({deck: event["data"]})),
+          map((event: any) => addCardToDeckSuccess({deckCard: event["data"], deckType: deck_type})),
           catchError((error) => {
             console.log(error);
             return of(addCardToDeckFail({error: true}))

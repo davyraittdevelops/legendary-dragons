@@ -69,15 +69,11 @@ export class WebsocketService {
   }
 
   sendGetDecksMessage(): void {
-    this.sendMessage('getDeckReq', {});
+    this.sendMessage('getDecksReq', {});
   }
 
-  sendGetCardsFromDeckMessage(deck_id : string) {
-    if (!this.socket$) {
-      return;
-    }
-
-    this.socket$.next({'action': 'getCardsFromDeckReq', 'deck_id': deck_id});
+  sendGetDeckMessage(deck_id : string) {
+    this.sendMessage('getDeckReq', {deck_id});
   }
 
   sendAddCardToDeckMessage(deck_id : string, deck_type: string, inventory_card : InventoryCard) {

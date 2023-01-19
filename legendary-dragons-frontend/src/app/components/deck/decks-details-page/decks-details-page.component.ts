@@ -7,9 +7,8 @@ import { logoutUser } from 'src/app/ngrx/user/user.actions';
 import { WebsocketService } from 'src/app/services/websocket/websocket.service';
 import { AppState } from "../../../app.state";
 import { Deck } from "../../../models/deck.model";
-import { getCardsFromDeck } from "../../../ngrx/deck/deck.actions";
+import { getDeck } from "../../../ngrx/deck/deck.actions";
 import { deckByIdSelector, errorSelector, isLoadingSelector } from "../../../ngrx/deck/deck.selectors";
-
 
 @Component({
   selector: 'app-decks-details-page',
@@ -49,7 +48,7 @@ export class DecksDetailsPageComponent implements OnInit {
 
     this.activatedRoute.params.subscribe(params => {
       this.deck_id = params["id"];
-      this.appStore.dispatch(getCardsFromDeck({deck_id: this.deck_id}));
+      this.appStore.dispatch(getDeck({deck_id: this.deck_id}));
     });
   }
 }
