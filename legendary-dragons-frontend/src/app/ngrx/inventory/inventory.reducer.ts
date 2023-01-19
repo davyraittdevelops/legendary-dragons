@@ -6,7 +6,7 @@ import {
   getInventory,
   getInventoryFail,
   getInventorySuccess,
-  removeCardFromInventory, removeCardFromInventorySuccess,
+  removeCardFromInventory, removeCardFromInventorySuccess, updateInventoryCardFail, updateInventoryCardSuccess,
 } from "./inventory.actions";
 import { InventoryState } from "./models/inventory-state.model";
 
@@ -57,4 +57,12 @@ export const inventoryReducer = createReducer(
   on(getInventory, (state) => ({...state, isLoading: true})),
   on(getInventorySuccess, (state, {inventory}) => ({...state, isLoading: false, hasError: false, inventory})),
   on(getInventoryFail, (state) => ({...state, isLoading: false, hasError: true})),
+  on(updateInventoryCardSuccess, (state, {inventoryCard}) => {
+    const inventory = {...state.inventory};
+    const filteredInventoryCards = inventory.inventory_cards.filter((card) => card.card_id !== inventoryCard.card_id);
+    inventory.inventory_cards = [...filteredInventoryCards, inventoryCard];
+
+    return {...state, hasError: false, inventory}
+  }),
+  on(updateInventoryCardFail, (state) => ({...state, hasError: true}))
 )

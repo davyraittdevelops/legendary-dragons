@@ -5,10 +5,11 @@ import { Store } from "@ngrx/store";
 import { Observable } from "rxjs";
 import { DeckType } from 'src/app/models/deck-type.enum';
 import { addCardToDeck } from 'src/app/ngrx/deck/deck.actions';
+import { isAddCardLoadingSelector } from 'src/app/ngrx/deck/deck.selectors';
 import { AppState } from "../../../app.state";
 import { Inventory, InventoryCard } from "../../../models/inventory.model";
 import { getInventory } from "../../../ngrx/inventory/inventory.actions";
-import { errorSelector, inventorySelector, isLoadingSelector } from "../../../ngrx/inventory/inventory.selectors";
+import { errorSelector, inventorySelector } from "../../../ngrx/inventory/inventory.selectors";
 
 @Component({
   selector: 'app-add-card-to-deck',
@@ -28,7 +29,7 @@ export class AddCardToDeckComponent {
 
   constructor(private appStore: Store<AppState>, public modalService: NgbModal,
               private activatedRoute: ActivatedRoute) {
-    this.isLoading$ = this.appStore.select(isLoadingSelector);
+    this.isLoading$ = this.appStore.select(isAddCardLoadingSelector);
     this.hasError$ = this.appStore.select(errorSelector);
     this.inventory$ = this.appStore.select(inventorySelector);
   }
@@ -39,6 +40,10 @@ export class AddCardToDeckComponent {
     this.activatedRoute.params.subscribe(params => {
       this.deckId = params["id"];
     });
+  }
+
+  availableCards(inventoryCards: InventoryCard[]): InventoryCard[] {
+    return inventoryCards.filter((card) => card.deck_location === '');
   }
 
   open({content}: { content: any }): void {

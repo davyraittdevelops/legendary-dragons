@@ -1,4 +1,4 @@
-<button type="button" (click)="open({content : content});" class="btn btn-light btn-lg">
+<button type="button" (click)="open({content : content});" class="btn btn-light btn-lg" [disabled]="isLoading$ | async">
   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-plus-fill" viewBox="0 0 16 16">
     <path d="M12 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zM8.5 6v1.5H10a.5.5 0 0 1 0 1H8.5V10a.5.5 0 0 1-1 0V8.5H6a.5.5 0 0 1 0-1h1.5V6a.5.5 0 0 1 1 0z"/>
   </svg>
@@ -15,45 +15,64 @@
 
   <div class="modal-body bg-body-secondary text-black">
     <ng-container *ngIf="inventory$ | async as inventory">
-      <mat-form-field>
-        <mat-label>Filter</mat-label>
-        <input matInput (keyup)="applyFilter($event)" placeholder="Search" #input>
-      </mat-form-field>
-      <table mat-table [dataSource]="inventory.inventory_cards">
-        <ng-container matColumnDef="Image">
-          <th mat-header-cell *matHeaderCellDef> Image </th>
-          <td mat-cell *matCellDef="let card"><img [src]="card.image_url"  class="small-image"> </td>
-        </ng-container>
-        <ng-container matColumnDef="Name">
-          <th mat-header-cell *matHeaderCellDef> Name </th>
-          <td mat-cell *matCellDef="let card"> {{card.card_name}} </td>
-        </ng-container>
-        <ng-container matColumnDef="MainDeck">
-          <th mat-header-cell *matHeaderCellDef>Action</th>
-          <td mat-cell *matCellDef="let card">
-            <button type="button" (click)="addCardToDeck(card);" class="btn btn-dark">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-bar-left" viewBox="0 0 16 16">
-                <path fill-rule="evenodd" d="M12.5 15a.5.5 0 0 1-.5-.5v-13a.5.5 0 0 1 1 0v13a.5.5 0 0 1-.5.5ZM10 8a.5.5 0 0 1-.5.5H3.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L3.707 7.5H9.5a.5.5 0 0 1 .5.5Z"/>
-              </svg>
-              Add to deck
-            </button>
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="SideDeck">
-          <th mat-header-cell *matHeaderCellDef></th>
-          <td mat-cell *matCellDef="let card">
-            <button type="button" (click)="addCardToSideDeck(card);" class="btn btn-dark">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-bar-right" viewBox="0 0 16 16">
-                <path fill-rule="evenodd" d="M6 8a.5.5 0 0 0 .5.5h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L12.293 7.5H6.5A.5.5 0 0 0 6 8Zm-2.5 7a.5.5 0 0 1-.5-.5v-13a.5.5 0 0 1 1 0v13a.5.5 0 0 1-.5.5Z"/>
-              </svg>
-              Add to side deck
-            </button>
-          </td>
-        </ng-container>
+      <!-- <mat-form-field>
+           <mat-label>Filter</mat-label>
+           <input matInput (keyup)="applyFilter($event)" placeholder="Search" #input>
+           </mat-form-field> -->
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-      </table>
+      <!-- <div *ngVar="availableCards(inventory.inventory_cards) as cards">
+           {{cards | json}}
+
+           </div>
+      -->
+      <ng-container *ngIf="availableCards(inventory.inventory_cards) as cards">
+        <div class="text-center" *ngIf="cards.length === 0">
+          <h1>All cards from the inventory seem to be assigned to a deck</h1>
+        </div>
+
+        <ng-container *ngIf="cards.length > 0">
+          <p class="mb-3 text-end fs-6">
+            {{cards.length}} card/-s unassigned.
+          </p>
+
+          <table mat-table [dataSource]="cards">
+            <ng-container matColumnDef="Image">
+              <th mat-header-cell *matHeaderCellDef> Image </th>
+              <td mat-cell *matCellDef="let card"><img [src]="card.image_url"  class="small-image"> </td>
+            </ng-container>
+            <ng-container matColumnDef="Name">
+              <th mat-header-cell *matHeaderCellDef> Name </th>
+              <td mat-cell *matCellDef="let card"> {{card.card_name}} </td>
+            </ng-container>
+            <ng-container matColumnDef="MainDeck">
+              <th mat-header-cell *matHeaderCellDef>Action</th>
+              <td mat-cell *matCellDef="let card">
+                <button type="button" (click)="addCardToDeck(card);" class="btn btn-dark">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-bar-left" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M12.5 15a.5.5 0 0 1-.5-.5v-13a.5.5 0 0 1 1 0v13a.5.5 0 0 1-.5.5ZM10 8a.5.5 0 0 1-.5.5H3.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L3.707 7.5H9.5a.5.5 0 0 1 .5.5Z"/>
+                  </svg>
+                  Add to deck
+                </button>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="SideDeck">
+              <th mat-header-cell *matHeaderCellDef></th>
+              <td mat-cell *matCellDef="let card">
+                <button type="button" (click)="addCardToSideDeck(card);" class="btn btn-dark">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-bar-right" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M6 8a.5.5 0 0 0 .5.5h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L12.293 7.5H6.5A.5.5 0 0 0 6 8Zm-2.5 7a.5.5 0 0 1-.5-.5v-13a.5.5 0 0 1 1 0v13a.5.5 0 0 1-.5.5Z"/>
+                  </svg>
+                  Add to side deck
+                </button>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+        </ng-container>
+      </ng-container>
+
     </ng-container>
   </div>
 </ng-template>

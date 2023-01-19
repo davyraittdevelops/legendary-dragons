@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
-import { catchError, filter, map, mergeMap, tap } from 'rxjs/operators';
+import { catchError, filter, map, mergeMap, switchMap, tap } from 'rxjs/operators';
 import { WebsocketService } from "src/app/services/websocket/websocket.service";
 
 import {
@@ -13,7 +13,9 @@ import {
   removeCardFromInventorySuccess,
   getInventory,
   getInventoryFail,
-  getInventorySuccess
+  getInventorySuccess,
+  updateInventoryCardSuccess,
+  updateInventoryCardFail
 } from "./inventory.actions";
 
 @Injectable()
@@ -23,6 +25,21 @@ export class InventoryEffects {
     private readonly actions$: Actions,
     private readonly websocketService: WebsocketService,
   ) { }
+
+  public updateInventoryCardEffect$ = createEffect(() =>
+    this.actions$.pipe(
+      switchMap(() => {
+        return this.websocketService.dataUpdates$().pipe(
+          filter((event: any) => event['event_type'] === 'MODIFY_INVENTORY_CARD_RESULT'),
+          map((event: any) => updateInventoryCardSuccess({inventoryCard: event["data"]})),
+          catchError((error) => {
+            console.log(error);
+            return of(updateInventoryCardFail({error: true}))
+          })
+        )
+      })
+    )
+  );
 
   public addCardtoInventoryEffect$ = createEffect(() =>
     this.actions$.pipe(
