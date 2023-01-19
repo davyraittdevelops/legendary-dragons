@@ -41,7 +41,6 @@ def lambda_handler(event, context):
     output = {
         "event_type": "GET_WISHLIST_ITEM_RESULT",
         "wishlist_item": wishlist_items,
-       
     }
 
     apigateway.post_to_connection(
