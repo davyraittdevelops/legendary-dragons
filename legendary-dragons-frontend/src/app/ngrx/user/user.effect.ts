@@ -1,9 +1,8 @@
-import { Injectable } from "@angular/core";
-import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { Store } from '@ngrx/store';
-import { of } from 'rxjs';
-import { catchError, map, mergeMap, withLatestFrom } from 'rxjs/operators';
-import { UserService } from "src/app/services/user/user.service";
+import {Injectable} from "@angular/core";
+import {Actions, createEffect, ofType} from '@ngrx/effects';
+import {of} from 'rxjs';
+import {catchError, map, switchMap} from 'rxjs/operators';
+import {UserService} from "src/app/services/user/user.service";
 import {
   loginUser,
   loginUserFail,
@@ -24,7 +23,7 @@ export class UserEffects {
   public loginUserEffect = createEffect(() =>
     this.actions$.pipe(
       ofType(loginUser),
-      mergeMap(({email, password}) => {
+      switchMap(({email, password}) => {
         return this.userService.loginUser(email, password)
           .pipe(
             map((response) => {
@@ -43,7 +42,7 @@ export class UserEffects {
   public registerUserEffect = createEffect(() =>
     this.actions$.pipe(
       ofType(registerUser),
-      mergeMap(({user}) => {
+      switchMap(({user}) => {
         return this.userService.registerUser(user).pipe(
           map(() => registerUserSuccess()),
           catchError((error) => {

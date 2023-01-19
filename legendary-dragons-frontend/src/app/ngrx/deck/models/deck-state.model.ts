@@ -1,5 +1,4 @@
-import { Deck } from "src/app/models/deck.model";
-import { Inventory } from "src/app/models/inventory.model";
+import {Deck} from "src/app/models/deck.model";
 
 export interface DeckState {
   isLoading: boolean;

@@ -1,18 +1,17 @@
-import { Component, OnInit } from '@angular/core';
-import {Card} from "../../../models/card.model";
+import {Component, OnInit} from '@angular/core';
 import {Observable, tap} from "rxjs";
-import {Inventory} from "../../../models/inventory.model";
-import {inventorySelector} from "../../../ngrx/inventory/inventory.selectors";
 import {Deck} from "../../../models/deck.model";
-import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {Store} from "@ngrx/store";
 import {AppState} from "../../../app.state";
-import {deckByIdSelector, decksSelector, errorSelector, isLoadingSelector} from "../../../ngrx/deck/deck.selectors";
-import {getCardsFromDeck, getDecks} from "../../../ngrx/deck/deck.actions";
-import {ActivatedRoute, Router} from "@angular/router";
-import {getInventory} from "../../../ngrx/inventory/inventory.actions";
-import { WebsocketService } from 'src/app/services/websocket/websocket.service';
+import {
+  deckByIdSelector,
+  errorSelector,
+  isLoadingSelector
+} from "../../../ngrx/deck/deck.selectors";
+import {getCardsFromDeck} from "../../../ngrx/deck/deck.actions";
+import {ActivatedRoute} from "@angular/router";
+import {WebsocketService} from 'src/app/services/websocket/websocket.service';
 
 
 @Component({
@@ -33,7 +32,6 @@ export class DecksDetailsPageComponent implements OnInit {
 
     this.isLoading$ = this.appStore.select(isLoadingSelector);
     this.hasError$ = this.appStore.select(errorSelector);
-
   }
 
   ngOnInit(): void {

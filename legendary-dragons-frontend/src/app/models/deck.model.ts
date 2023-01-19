@@ -7,13 +7,6 @@ export interface Deck {
   last_modified: Date;
   image_url: string;
   deck_cards: DeckCard[];
-
-  side_deck: SideDeck;
-}
-
-export interface SideDeck {
-  created_at: Date;
-  last_modified: Date;
   side_deck_cards: DeckCard[];
 }
 
