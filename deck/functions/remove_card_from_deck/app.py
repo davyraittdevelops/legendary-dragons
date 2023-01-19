@@ -24,9 +24,9 @@ def lambda_handler(event, context):
 
   deck_type = body["deck_type"]
   deck_id = body["deck_id"]
-  inventory_card = body["inventory_card"]
+  deck_card = body["deck_card"]
 
-  pk = f"DECK_CARD#{inventory_card['card_id']}"
+  pk = f"DECK_CARD#{deck_card['inventory_card_id']}"
   sk = f"DECK#{deck_id}"
 
   if deck_type == "side_deck": 
@@ -41,7 +41,7 @@ def lambda_handler(event, context):
       },
       ReturnValues="ALL_OLD"
     )
-    logger.info(f"Deleted {inventory_card['card_name']} from {sk}, result: {result}")
+    logger.info(f"Deleted {deck_card['card_name']} from {sk}, result: {result}")
   except Exception as error:
     logger.info(f"Error deleting card from deck, {error}")
   return {"statusCode": 200}

@@ -61,16 +61,15 @@ def websocket_event():
       "action": "removeCardFromDeckReq",
       "deck_type": "deck",
       "deck_id": "123",
-      "inventory_card": {
+      "deck_card": {
         "card_name": "Swords of Doom",
-        "card_id": "1",
-        "inventory_id": "123",
-        "oracle_id": "oracle-123",
+        "inventory_card_id": "1",
         "colors": ["R"],
+        "inventory_id": "123",
+        "entity_type": "DECK_CARD",
         "prices": {"usd": "0.05"},
         "rarity": "meta",
         "quality": "rare",
-        "scryfall_id": "scryfall-1",
         "image_url": "example-image-url.com",
       }
     }),
@@ -88,7 +87,7 @@ def test_lamda_handler_success(websocket_event, table_definition):
 
   table.put_item(
     Item={
-        "PK": "DECK_CARD#1",
+      "PK": "DECK_CARD#1",
       "SK": "DECK#123",
       "entity_type": "DECK_CARD",
       "deck_id": "123",
@@ -112,7 +111,7 @@ def test_lamda_handler_success(websocket_event, table_definition):
   from functions.remove_card_from_deck import app
   response = app.lambda_handler(websocket_event, {})
 
-  deck_card = table.query(
+  deck_cards = table.query(
       KeyConditionExpression=Key("GSI1_PK").eq("DECK#123") &
                              Key("GSI1_SK").begins_with("DECK_CARD"),
       IndexName="GSI1"
@@ -120,7 +119,7 @@ def test_lamda_handler_success(websocket_event, table_definition):
 
   # Assert
   assert response["statusCode"] == 200
-  assert len(deck_card) == 0
+  assert len(deck_cards) == 0
 
 @patch.dict(os.environ, OS_ENV, clear=True)
 @mock_dynamodb
@@ -134,7 +133,7 @@ def test_lamda_handler_sidedeck(websocket_event, table_definition):
 
   table.put_item(
     Item={
-        "PK": "DECK_CARD#1",
+      "PK": "DECK_CARD#1",
       "SK": "DECK#123#SIDE_DECK",
       "entity_type": "DECK_CARD",
       "deck_id": "123",
@@ -162,7 +161,7 @@ def test_lamda_handler_sidedeck(websocket_event, table_definition):
   from functions.remove_card_from_deck import app
   response = app.lambda_handler(websocket_event, {})
 
-  deck_card = table.query(
+  side_deck_cards = table.query(
       KeyConditionExpression=Key("GSI1_PK").eq("DECK#123#SIDE_DECK") &
                              Key("GSI1_SK").begins_with("DECK_CARD"),
       IndexName="GSI1"
@@ -170,4 +169,4 @@ def test_lamda_handler_sidedeck(websocket_event, table_definition):
 
   # Assert
   assert response["statusCode"] == 200
-  assert len(deck_card) == 0
+  assert len(side_deck_cards) == 0
