@@ -31,11 +31,8 @@ def removeCardFromInventory(context):
         'inventory_card_id': context.detail["add_card_to_inventory"]["data"]["card_id"],
         'inventory_id': context.detail["get_inventory"]["data"]["inventory_id"]
     }))
-    
+
     context.detail["remove_card_from_inventory"] = json.loads(context.ws.recv())
-
-    print(context.detail["remove_card_from_inventory"])
-
 
 @given("there is an existing user and the user is logged in")
 def step_impl(context):
@@ -54,7 +51,6 @@ def step_impl(context):
         "scryfall_id": "7d839f21-68c7-47db-8407-ff3e2c3e13b4",
     }
 
-
 @when("we add the card with the received data to the inventory")
 def step_impl(context):
     getInventory(context)
@@ -63,7 +59,6 @@ def step_impl(context):
 @when("I request for my inventory")
 def step_impl(context):
     getInventory(context)
-
 
 @when("we remove the card with the received data from the inventory")
 def step_impl(context):
@@ -76,12 +71,10 @@ def step_impl(context):
     assert context.detail["add_card_to_inventory"]["event_type"] == "INSERT_INVENTORY_CARD_RESULT"
     assert context.detail["add_card_to_inventory"]["data"]["card_name"] == context.card["card_name"]
 
-
 @then("I should be able to see my collection")
 def step_impl(context):
     assert context.detail["get_inventory"]["event_type"] == "GET_INVENTORY_RESULT"
     assert context.detail["get_inventory"]["data"]["entity_type"] == "INVENTORY"
-
 
 @then("the card should be removed from the inventory")
 def step_impl(context):
