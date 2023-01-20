@@ -32,36 +32,34 @@ def lambda_handler(event, context):
     wishlist_item_id = body['wishlist_item_id']
     price_alert_item = body['price_alert_item']
 
-    if price_alert_item['entity_type'] == 'price_alert': 
+    if price_alert_item['entity_type'] == 'ALERT#PRICE': 
         alert = {
-            'PK' : f'WISHLIST_ITEM{wishlist_item_id}',
-            'SK' : f'ALERT#PRICE#{alert_id}',
-            'entity_type' : 'price_alert',
+            'PK' : f'USER{user_id}',
+            'SK' : f'WISHLIST_ITEM#{wishlist_item_id}#ALERT#PRICE#{alert_id}',
+            'entity_type' : 'ALERT#PRICE',
             'created_at':datetime.utcnow().isoformat(),
             'last_modified': datetime.utcnow().isoformat(),
             'card_market_id': price_alert_item['card_market_id'],
-            'price_point' : '',
+            'price_point' : '21',
             'alert_id' : alert_id,
             'user_id' : user_id,
-            'GSI1_PK': f'ALERT#PRICE#{alert_id}',
-            'GSI1_SK': f'WISHLIST_ITEM#{wishlist_item_id}',
+            'GSI1_PK': f'WISHLIST_ITEM#{wishlist_item_id}#ALERT#PRICE#{alert_id}',
+            'GSI1_SK': f'USER{user_id}',
             'wishlist_item_id' : wishlist_item_id,
         }
 
-    if price_alert_item['entity_type'] == 'availability_alert': 
+    if price_alert_item['entity_type'] == 'ALERT#AVAILABILITY': 
         alert = {
-            'PK' : f'WISHLIST_ITEM#{wishlist_item_id}',
-            'SK' : f'ALERT#AVAILABILITY#{alert_id}',
-            'entity_type' : 'availability_alert',
+            'PK' : f'USER{user_id}',
+            'SK' : f'WISHLIST_ITEM#{wishlist_item_id}#ALERT#AVAILABILITY#{alert_id}',
+            'entity_type' : 'ALERT#AVAILABILITY',
             'created_at':datetime.utcnow().isoformat(),
             'last_modified': datetime.utcnow().isoformat(),
             'card_market_id': price_alert_item['card_market_id'],
-            'price_point' : '',
             'alert_id' : alert_id,
             'user_id' : user_id,
-            'GSI1_PK': f'ALERT#AVAILABILITY#{alert_id}',
-            'GSI1_SK': f'WISHLIST_ITEM#{wishlist_item_id}',
-            'GSI2_PK': f'DECK{deck_id}',
+            'GSI1_PK': f'WISHLIST_ITEM#{wishlist_item_id}#ALERT#AVAILABILITY#{alert_id}',
+            'GSI1_SK': f'USER{user_id}',
             'wishlist_item_id' : wishlist_item_id,
         }
 
