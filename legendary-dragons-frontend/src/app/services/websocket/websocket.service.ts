@@ -90,11 +90,11 @@ export class WebsocketService {
   }
 
   sendGetWishlistMessage() {
+    console.log('Receiving wishlist!')
     this.sendMessage('getWishlistReq', {});
   }
 
   sendCreateWishlistItemMessage(wishlist_item: WishlistItem) {
-    console.log('adding item: ' , wishlist_item)
     this.sendMessage(
       'createWishlistItemReq',
       {wishlist_item: wishlist_item,

@@ -18,7 +18,7 @@ import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from './app.component';
 import { CardFooterComponent } from './components/card/card-footer/card-footer.component';
 import { AddCardComponent } from './components/card/add-card-component/add-card-component';
-import { AddWishlistItemComponent } from './components/card/add-wishlist-item-component/add-wishlist-item-component';
+import { AddWishlistItemComponent } from './components/wishlist/add-wishlist-item-component/add-wishlist-item-component';
 import { DashboardComponent } from './components/general/dashboard/dashboard.component';
 import { AddCardToDeckComponent } from './components/deck/add-card-to-deck/add-card-to-deck.component';
 import { DecksDetailsPageComponent } from './components/deck/decks-details-page/decks-details-page.component';
@@ -42,6 +42,7 @@ import { DeckCardsDetailsPageComponent } from './components/deck/deck-cards-deta
 import { CardsDetailsPageComponent } from './components/card/cards-details/cards-details-page.component';
 import { wishlistReducer } from './ngrx/wishlist/wishlist.reducer';
 import { WishlistEffects } from './ngrx/wishlist/wishlist.effect';
+import { WishlistItemComponent } from './components/wishlist/wishlist-item/wishlist-item.component';
 
 @NgModule({
   declarations: [
@@ -62,6 +63,7 @@ import { WishlistEffects } from './ngrx/wishlist/wishlist.effect';
     AddCardToDeckComponent,
     CardsDetailsPageComponent,
     DeckCardsDetailsPageComponent,
+    WishlistItemComponent,
   ],
   imports: [
     BrowserModule,

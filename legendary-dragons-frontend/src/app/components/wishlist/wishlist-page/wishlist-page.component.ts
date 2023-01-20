@@ -7,6 +7,7 @@ import { getInventory } from 'src/app/ngrx/inventory/inventory.actions';
 import { errorSelector, inventorySelector, isLoadingSelector } from 'src/app/ngrx/inventory/inventory.selectors';
 import {Wishlist} from "../../../models/wishlist.model";
 import {wishlistSelector} from "../../../ngrx/wishlist/wishlist.selectors";
+import {getWishlist} from "../../../ngrx/wishlist/wishlist.actions";
 
 @Component({
   selector: 'app-wishlist-page',
@@ -25,7 +26,7 @@ export class WishlistPageComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.appStore.dispatch(getInventory())
+    this.appStore.dispatch(getWishlist())
   }
 
 }

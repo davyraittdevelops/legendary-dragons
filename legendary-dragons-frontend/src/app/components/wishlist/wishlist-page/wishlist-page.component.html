@@ -1,4 +1,10 @@
 <ng-container *ngIf="wishlist | async as wishlist">
   <app-add-wishlist-item-component [wishlist_id]="wishlist.id"
                           class="col"></app-add-wishlist-item-component>
+
+  <app-wishlist-item class="col" *ngFor="let wishlist_item of wishlist.wishlist_items"
+                          [wishlist_item]="wishlist_item">
+                          <h1>{{wishlist_item.card_name}}</h1>
+  </app-wishlist-item>
+
 </ng-container>
