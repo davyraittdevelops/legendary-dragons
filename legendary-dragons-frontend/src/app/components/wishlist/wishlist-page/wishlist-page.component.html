@@ -1,1 +1,4 @@
-<p>Coming soon!</p>
+<ng-container *ngIf="inventory$ | async as inventory">
+  <app-add-wishlist-item-component [inventory_id]="inventory.inventory_id"
+                          class="col"></app-add-wishlist-item-component>
+</ng-container>

@@ -1,0 +1,112 @@
+<button type="button" (click)="open({content : content});" class="btn btn-secondary add-card" name="openAddCardModal">
+  <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
+    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z"/>
+  </svg>
+</button>
+
+<ng-template #content let-modal>
+  <div class="modal-header bg-dark">
+    <h2 class="modal-title" id="modal-basic-title">Add Card</h2>
+    <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="modal.dismiss('Cross click')">
+    </button>
+  </div>
+
+  <div class="modal-body bg-body-secondary text-black">
+    <div>
+      <mat-form-field class="full-width fs-5">
+        <mat-label>Search for a card</mat-label>
+        <div (keyup.enter)="searchCardsByKeyword()">
+          <input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium" name="keywordSearch" #input>
+        </div>
+      </mat-form-field>
+
+      <button type="submit" class="search" (click)="searchCardsByKeyword()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+          <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+        </svg>
+      </button>
+
+      <div class="text-center">
+        <span *ngIf="isLoading$ | async"
+              class="spinner-border spinner-border" role="status" aria-hidden="true">
+        </span>
+      </div>
+
+      <div *ngIf="hasError$ | async" class="text-danger" class="alert alert-warning" role="alert">
+        An error has occured while searching. Please try again.
+      </div>
+
+      <ng-container *ngIf="searchedCards$ | async as cards">
+        <p class="mb-3 text-end fs-6" *ngIf="cards.length > 0">
+          Found {{cards.length}} cards
+        </p>
+
+        <ng-container *ngIf="cards.length > 0">
+          <table mat-table [dataSource]="cards" class="mat-elevation-z8">
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef> Name </th>
+              <td mat-cell *matCellDef="let element"> {{element.card_name}}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="setName">
+              <th mat-header-cell *matHeaderCellDef>Set </th>
+              <td mat-cell *matCellDef="let element"> {{element.set_name | titlecase}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="released">
+              <th mat-header-cell *matHeaderCellDef> Released</th>
+              <td mat-cell *matCellDef="let element"> {{element.released_at | date:'dd/MM/yyyy'}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="rarity">
+              <th mat-header-cell *matHeaderCellDef> Rarity </th>
+              <td mat-cell *matCellDef="let element"> {{element.rarity | titlecase}}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="value">
+              <th mat-header-cell *matHeaderCellDef> Value </th>
+              <td mat-cell *matCellDef="let element"> {{displayAvailablePrice(element.prices)}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="imageUrl">
+              <th mat-header-cell *matHeaderCellDef> Image </th>
+              <td mat-cell *matCellDef="let element">
+                <img [src]="element.card_faces[0].image_url" loading="lazy"/>
+              </td>
+            </ng-container>
+
+
+            <ng-container matColumnDef="addCard">
+              <th mat-header-cell *matHeaderCellDef>Add card</th>
+              <td mat-cell *matCellDef="let element">
+                <div class="dropdown">
+                  <mat-form-field appearance="fill">
+                    <mat-label>{{element.quality ? element.quality : 'Please select a quality'}}</mat-label>
+                    <mat-select (selectionChange)="selectedQuality($event.value, element)">
+                      <mat-option *ngFor="let quality of qualityList | keyvalue" [value] = "quality">
+                        {{quality.value}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                  <button type="button" class="btn btn-dark" [disabled]="!element.quality"
+                          name="addCardToInventory" (click)="addCardtoInventory(element)">
+                    +
+                  </button>
+                </div>
+              </td>
+            </ng-container>
+
+            <!--HEAD FOOTER INFORMATION-->
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+          </table>
+        </ng-container>
+
+      </ng-container>
+
+    </div>
+  </div>
+
+</ng-template>

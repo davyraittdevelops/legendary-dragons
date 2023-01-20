@@ -1,0 +1,64 @@
+.deck-image {
+  heigth: 100px;
+  width: 50%;
+}
+
+.deck-loading-spinner {
+  width: 4rem !important;
+  height: 4rem !important;
+}
+
+/* Start Scrolling Styles */
+.deck-viewport {
+  height: 500px;
+  width: 100%;
+  scrollbar-width: thin;
+}
+
+.deck-item {
+  height: 50px;
+}
+
+.sidedeck-item {
+  height: 100%;
+  width: 60px;
+  padding: 8px;
+}
+
+/* End Scrolling Styles */
+
+/* Start Card styles */
+:host ::ng-deep .card-img {
+  width: 145px;
+  height: 200px;
+  padding: 2px;
+}
+
+:host ::ng-deep .card-size {
+  width: 145px;
+  height: 200px;
+  display: contents;
+}
+
+
+/* End Card Styles */
+
+
+/* Start Add Card Styling */
+:host ::ng-deep .add-card {
+  width: 145px;
+  height: 200px;
+  max-height: 195px;
+  opacity: 1;
+}
+
+.card-position {
+  display: contents;
+  padding: 2px 3px 2px 2px;
+}
+
+/* End Add Card Styling */
+
+.latest-row-margin {
+  margin-top:40px
+}

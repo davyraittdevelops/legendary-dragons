@@ -18,6 +18,7 @@ import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from './app.component';
 import { CardFooterComponent } from './components/card/card-footer/card-footer.component';
 import { AddCardComponent } from './components/card/add-card-component/add-card-component';
+import { AddWishlistItemComponent } from './components/card/add-wishlist-item-component/add-wishlist-item-component';
 import { DashboardComponent } from './components/general/dashboard/dashboard.component';
 import { AddCardToDeckComponent } from './components/deck/add-card-to-deck/add-card-to-deck.component';
 import { DecksDetailsPageComponent } from './components/deck/decks-details-page/decks-details-page.component';
@@ -56,11 +57,11 @@ import { WishlistEffects } from './ngrx/wishlist/wishlist.effect';
     DecksPageComponent,
     WishlistPageComponent,
     AddCardComponent,
+    AddWishlistItemComponent,
     CardFooterComponent,
     AddCardToDeckComponent,
     CardsDetailsPageComponent,
-    DeckCardsDetailsPageComponent
-
+    DeckCardsDetailsPageComponent,
   ],
   imports: [
     BrowserModule,
