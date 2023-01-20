@@ -67,6 +67,4 @@ def lambda_handler(event, context):
       "user_id": save["user_id"]
     })
   logger.info(f"Succesfully moved to other deck, deck id now: {sk}")
-
-  # TODO: Access denied exception to delete!
   return {"statusCode": 200}
