@@ -10,6 +10,7 @@ import { errorSelector, isLoadingSelector, querySelector, searchedCardSelector }
 import { addCardtoInventory } from 'src/app/ngrx/inventory/inventory.actions';
 import { ToastService } from 'src/app/services/toast/toast.service';
 import { Card } from "../../../models/card.model";
+import {WishlistItem} from "../../../models/wishlist.model";
 
 @Component({
   selector: 'app-add-wishlist-item-component',
@@ -18,7 +19,7 @@ import { Card } from "../../../models/card.model";
 })
 
 export class AddWishlistItemComponent implements OnInit {
-  @Input('inventory_id') inventoryId: string = '';
+  @Input('wishlist_id') inventoryId: string = '';
   searchedCards$: Observable<Card[]>;
   isLoading$: Observable<boolean>;
   hasError$: Observable<boolean>;
@@ -81,28 +82,12 @@ export class AddWishlistItemComponent implements OnInit {
     );
   }
 
-  addCardtoInventory(card: Card) {
-    this.scryfall_id = card.scryfall_id;
+  addCardToWishlist(wishlistItem: WishlistItem) {
 
-    const inventoryCard: InventoryCardRequest = {
-      scryfall_id: card.scryfall_id,
-      oracle_id: card.oracle_id,
-      card_name: card.card_name,
-      mana_cost: card.mana_cost,
-      oracle_text: card.oracle_text,
-      set_name: card.set_name,
-      colors: card.card_faces[0].colors,
-      prices: card.prices,
-      rarity: card.rarity,
-      quality: card.quality ,
-      deck_location: "",
-      image_url: card.card_faces[0].image_url
-    }
-    this.appStore.dispatch(addCardtoInventory({inventoryId: this.inventoryId, inventoryCard}))
-    this.toastService.showSuccess(`${inventoryCard.card_name} successfully added to the inventory!`);
+    console.log('@@@@@@' , wishlistItem)
+
+    // this.appStore.dispatch(addCardtoInventory({inventoryId: this.inventoryId, inventoryCard}))
+    this.toastService.showSuccess(`successfully added to the wislist!`);
   }
 
-  selectedQuality(event: any, foundCard: Card) {
-    this.appStore.dispatch(updateCardQuality({card: foundCard, quality: event.value}));
-  }
 }

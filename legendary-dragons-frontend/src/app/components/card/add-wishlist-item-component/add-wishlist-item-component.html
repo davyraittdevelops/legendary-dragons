@@ -81,20 +81,10 @@
             <ng-container matColumnDef="addCard">
               <th mat-header-cell *matHeaderCellDef>Add card</th>
               <td mat-cell *matCellDef="let element">
-                <div class="dropdown">
-                  <mat-form-field appearance="fill">
-                    <mat-label>{{element.quality ? element.quality : 'Please select a quality'}}</mat-label>
-                    <mat-select (selectionChange)="selectedQuality($event.value, element)">
-                      <mat-option *ngFor="let quality of qualityList | keyvalue" [value] = "quality">
-                        {{quality.value}}
-                      </mat-option>
-                    </mat-select>
-                  </mat-form-field>
-                  <button type="button" class="btn btn-dark" [disabled]="!element.quality"
-                          name="addCardToInventory" (click)="addCardtoInventory(element)">
+                  <button type="button" class="btn btn-dark"
+                          name="addCardToWishlist" (click)="addCardToWishlist(element)">
                     +
                   </button>
-                </div>
               </td>
             </ng-container>
 
