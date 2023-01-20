@@ -8,6 +8,7 @@ import { errorSelector, inventorySelector, isLoadingSelector } from 'src/app/ngr
 import {getWishlist} from "../../../ngrx/wishlist/wishlist.actions";
 import {wishlistItemsSelector} from "../../../ngrx/wishlist/wishlist.selectors";
 import {WishlistItem} from "../../../models/wishlist.model";
+import {tap} from "rxjs/operators";
 
 @Component({
   selector: 'app-wishlist-page',
@@ -22,7 +23,7 @@ export class WishlistPageComponent implements OnInit {
   constructor(private appStore: Store<AppState>) {
     this.isLoading$ = this.appStore.select(isLoadingSelector);
     this.hasError$ = this.appStore.select(errorSelector);
-    this.wishlist_items$ = this.appStore.select(wishlistItemsSelector);
+    this.wishlist_items$ = this.appStore.select(wishlistItemsSelector).pipe(tap(wishlist_items => console.log('#########' , wishlist_items)));
   }
 
   ngOnInit(): void {
