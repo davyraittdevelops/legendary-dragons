@@ -39,6 +39,7 @@ def lambda_handler(event, context):
         'created_at':datetime.utcnow().isoformat(),
         'last_modified': datetime.utcnow().isoformat(),
         'oracle_id': wishlist_item['oracle_id'],
+        'image_url' : wishlist_item['image_url'],
         'card_market_id': wishlist_item['cardmarket_id'],
         'card_name': wishlist_item['card_name'],
         'user_id': user_id,
