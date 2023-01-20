@@ -3,7 +3,7 @@
   "ModelMetadata": {
     "Author": "TheDragonsTeam",
     "DateCreated": "Dec 20, 2022, 02:44 PM",
-    "DateLastModified": "Jan 20, 2023, 10:24 AM",
+    "DateLastModified": "Jan 20, 2023, 03:58 PM",
     "Description": "",
     "AWSService": "Amazon DynamoDB",
     "Version": "3.0"
@@ -846,10 +846,10 @@
       "TableData": [
         {
           "PK": {
-            "S": "WISHLIST_ITEM#1"
+            "S": "USER#1"
           },
           "SK": {
-            "S": "ALERT#PRICE#1"
+            "S": "WISHLIST_ITEM#1#ALERT#PRICE#1"
           },
           "entity_type": {
             "S": "ALERT#PRICE"
@@ -870,10 +870,10 @@
             "S": "1"
           },
           "GSI1_PK": {
-            "S": "ALERT#PRICE#1"
+            "S": "WISHLIST_ITEM#1#ALERT#PRICE#1"
           },
           "GSI1_SK": {
-            "S": "WISHLIST_ITEM#1"
+            "S": "USER#1"
           },
           "wishlist_item_id ": {
             "S": "1"
@@ -881,10 +881,10 @@
         },
         {
           "PK": {
-            "S": " WISHLIST_ITEM#2"
+            "S": " USER#1"
           },
           "SK": {
-            "S": "ALERT#AVAILABILITY#2"
+            "S": "WISHLIST_ITEM#2#ALERT#AVAILABILITY#2"
           },
           "entity_type": {
             "S": "ALERT#AVAILABILITY"
@@ -902,10 +902,10 @@
             "S": "1"
           },
           "GSI1_PK": {
-            "S": "ALERT#AVAILABILITY#2"
+            "S": "WISHLIST_ITEM#2#ALERT#AVAILABILITY#2"
           },
           "GSI1_SK": {
-            "S": "WISHLIST_ITEM#2"
+            "S": " USER#1"
           },
           "wishlist_item_id ": {
             "S": "2"
@@ -913,10 +913,10 @@
         },
         {
           "PK": {
-            "S": "WISHLIST_ITEM#1"
+            "S": "USER#1"
           },
           "SK": {
-            "S": "WISHLIST#USER#1"
+            "S": "WISHLIST_ITEM#1"
           },
           "entity_type": {
             "S": "WISHLIST_ITEM"
@@ -940,10 +940,10 @@
             "S": "1"
           },
           "GSI1_PK": {
-            "S": "WISHLIST#USER#1"
+            "S": "WISHLIST_ITEM#1"
           },
           "GSI1_SK": {
-            "S": "WISHLIST_ITEM#1"
+            "S": "USER#1"
           },
           "GSI2_PK": {
             "S": "DECK#200"
@@ -957,10 +957,10 @@
         },
         {
           "PK": {
-            "S": " WISHLIST_ITEM#2"
+            "S": "USER#1"
           },
           "SK": {
-            "S": "WISHLIST#USER#1"
+            "S": "WISHLIST_ITEM#2"
           },
           "entity_type": {
             "S": "WISHLIST_ITEM"
@@ -984,10 +984,10 @@
             "S": "1"
           },
           "GSI1_PK": {
-            "S": "WISHLIST#USER#1"
+            "S": "WISHLIST_ITEM#2"
           },
           "GSI1_SK": {
-            "S": "WISHLIST_ITEM#2"
+            "S": "USER#1"
           },
           "GSI2_PK": {
             "S": "DECK#200"
@@ -1115,6 +1115,10 @@
         {
           "AttributeName": "image_url",
           "AttributeType": "S"
+        },
+        {
+          "AttributeName": "is_valid",
+          "AttributeType": "BOOL"
         }
       ],
       "GlobalSecondaryIndexes": [
@@ -1138,10 +1142,10 @@
       "TableData": [
         {
           "PK": {
-            "S": "DECK#1"
+            "S": "USER#1"
           },
           "SK": {
-            "S": "USER#1"
+            "S": "DECK#1"
           },
           "entity_type": {
             "S": "DECK"
@@ -1168,21 +1172,24 @@
             "S": "3"
           },
           "GSI1_PK": {
-            "S": "USER#1"
-          },
-          "GSI1_SK": {
             "S": "DECK#1"
           },
+          "GSI1_SK": {
+            "S": "USER#1"
+          },
           "total_value": {
-            "S": "500"
+            "S": "{\"usd\": \"3\"}"
+          },
+          "is_valid": {
+            "BOOL": false
           }
         },
         {
           "PK": {
-            "S": "DECK_CARD#3"
+            "S": "USER#1"
           },
           "SK": {
-            "S": "DECK#1"
+            "S": "DECK#1#DECK_CARD#3"
           },
           "entity_type": {
             "S": "DECK_CARD"
@@ -1223,10 +1230,10 @@
             "S": "mint"
           },
           "GSI1_PK": {
-            "S": "DECK#1"
+            "S": "DECK#1#DECK_CARD#3"
           },
           "GSI1_SK": {
-            "S": "DECK_CARD#3"
+            "S": "USER#1"
           },
           "image_url": {
             "S": "https://foobar.png"
@@ -1234,13 +1241,13 @@
         },
         {
           "PK": {
-            "S": "DECK_CARD#4"
+            "S": "USER#1"
           },
           "SK": {
-            "S": "DECK#1#SIDE_DECK"
+            "S": "DECK#1#DECK_CARD#4"
           },
           "entity_type": {
-            "S": "DECK_CARD"
+            "S": "SIDE_DECK_CARD"
           },
           "created_at": {
             "S": "2022-12-20"
@@ -1278,10 +1285,10 @@
             "S": "mint"
           },
           "GSI1_PK": {
-            "S": "DECK#1SIDE_DECK"
+            "S": "DECK#1#DECK_CARD#4"
           },
           "GSI1_SK": {
-            "S": "DECK_CARD#4"
+            "S": "USER#1"
           },
           "image_url": {
             "S": "https://foobar.png"
@@ -1399,6 +1406,14 @@
         {
           "AttributeName": "image_url",
           "AttributeType": "S"
+        },
+        {
+          "AttributeName": "total_value",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "total_cards",
+          "AttributeType": "S"
         }
       ],
       "GlobalSecondaryIndexes": [
@@ -1422,10 +1437,10 @@
       "TableData": [
         {
           "PK": {
-            "S": "INVENTORY_CARD#2"
+            "S": "USER#1"
           },
           "SK": {
-            "S": "INVENTORY#1"
+            "S": "INVENTORY#1INVENTORY_CARD#2"
           },
           "entity_type": {
             "S": "INVENTORY_CARD"
@@ -1469,24 +1484,27 @@
             "S": "main"
           },
           "GSI1_PK": {
-            "S": "INVENTORY#1USER#1"
+            "S": "INVENTORY#1INVENTORY_CARD#3"
           },
           "GSI1_SK": {
-            "S": "INVENTORY_CARD#2"
+            "S": "USER#1"
           },
           "scryfall_id": {
             "S": "hfssfhfghszkjfjsfhg"
           },
           "image_url": {
             "S": "https://foobar.png"
+          },
+          "total_cards": {
+            "S": "2"
           }
         },
         {
           "PK": {
-            "S": "INVENTORY_CARD#3"
+            "S": "USER#1"
           },
           "SK": {
-            "S": "INVENTORY#1"
+            "S": "INVENTORY#1INVENTORY_CARD#3"
           },
           "entity_type": {
             "S": "INVENTORY_CARD"
@@ -1530,10 +1548,10 @@
             "S": "side"
           },
           "GSI1_PK": {
-            "S": "INVENTORY#1USER#1"
+            "S": "INVENTORY#1INVENTORY_CARD#3"
           },
           "GSI1_SK": {
-            "S": "INVENTORY_CARD#3"
+            "S": "USER#1"
           },
           "scryfall_id": {
             "S": "fjpsjfsfglsljgzdjlghksj;Fg"
@@ -1544,10 +1562,10 @@
         },
         {
           "PK": {
-            "S": "INVENTORY#1"
+            "S": "USER#1"
           },
           "SK": {
-            "S": "USER#1"
+            "S": "INVENTORY#1"
           },
           "entity_type": {
             "S": "INVENTORY"
@@ -1565,10 +1583,13 @@
             "S": "1"
           },
           "GSI1_PK": {
-            "S": "USER#1"
+            "S": "INVENTORY#1"
           },
           "GSI1_SK": {
-            "S": "INVENTORY#1"
+            "S": "USER#1"
+          },
+          "total_value": {
+            "S": "{\"usd\": \"50000.05\"}"
           }
         }
       ],
