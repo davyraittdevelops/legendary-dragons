@@ -11,166 +11,266 @@ servers:
     protocol: wss
 
 channels:
+# Connection
+
   $connect:
-    description: AWS Lambda function that creates a new item in a DynamoDB table to store WebSocket connections. It uses Boto3 library to interact with DynamoDB, and X-Ray SDK to trace and debug requests. The function extracts connection and user information from the event object and adds it to the table as an item with primary and sort keys and a Global Secondary Index. It also logs messages using the logging module and returns a JSON object with a status code of 200 on success.
-    subscribe:
+    publish:
+      summary: Creates a Websocket connection.
       message:
-        $ref: '#/components/messages/$connect'
+         $ref: '#/components/messages/$connect'
 
   $disconnect:
-    description: AWS Lambda function that deletes an item from a DynamoDB table storing WebSocket connections. It uses Boto3 library to interact with DynamoDB, and X-Ray SDK to trace and debug requests. The function extracts the connection ID and user ID from the event object and uses it to delete the item from the table. It also logs messages using the logging module and returns a JSON object with a status code of 200 on success.
     publish:
+      summary: Closes a Websocket connection.
       message:
-        $ref: '#/components/messages/$disconnect'
+          $ref: '#/components/messages/$disconnect'
 
-  addCardToInventoryReq:
-    description: AWS Lambda function that creates a new item in a DynamoDB table to store Magic The Gathering cards as part of an inventory. It uses Boto3 library to interact with DynamoDB, and X-Ray SDK to trace and debug requests. The function extracts the card information and the inventory and user ID from the event object, generates a unique card ID and adds it to the table as an item with primary and sort keys and a Global Secondary Index. It also logs messages using the logging module and returns a JSON object with a status code of 200 on success.
+
+# Card
+  searchCardsByKeyword:
     publish:
+      summary: Retrieves the details of a inventory.
       message:
-        $ref: '#/components/messages/addCardToInventoryReq'
-
-  getInventoryReq:
-    description: The function extracts the user ID from the event object, and queries the DynamoDB table using the user ID and a Global Secondary Index (GSI1) to retrieve the inventory for that user. It then queries the table again using the inventory ID and GSI1 to retrieve the inventory cards for that inventory. If the inventory is not found it returns a status code of 404, otherwise it returns a JSON object with a status code of 200 on success and sends the inventory data to the client via the AWS Api Gateway Management Api.
-    subscribe:
-      message:
-        $ref: '#/components/messages/getInventoryReq'
-
-  searchCardsByKeywordReq:
-    description: AWS Lambda function that queries the Scryfall API for Magic The Gathering cards based on a keyword given in the request. It uses the requests library to make GET requests to the Scryfall API, with a small delay before each request as recommended by the API docs. It maps the response to a specific format and logs the total number of cards found and the number of cards returned. It then sends the data in chunks, to avoid large payloads, using the AWS Api Gateway Management Api to a connected client specified by the connection ID. The function also uses the AWS X-Ray SDK to trace and debug requests. It returns a JSON object with a status code of 200 on success.
-    subscribe:
-      message:
-        $ref: '#/components/messages/searchCardsByKeywordReq'
-
-  removeCardFromInventoryReq:
-    description: removeCardFromInventoryReq is an AWS Lambda function that removes a card from a DynamoDB table based on the provided inventory ID and card ID. It is triggered by a websocket event and it extracts the inventory ID and card ID from the event. It initializes a DynamoDB resource and table, and then uses the provided inventory ID and card ID to construct the primary key and sort key of the card item to be deleted. Then it uses the DynamoDB delete_item method to remove the card from the table. It returns a 200 status code if the deletion was successful.
-    publish:
-      message:
-        $ref: '#/components/messages/removeCardFromInventoryReq'
-
-  addCardToDeck:
-      publish:
-        summary:  function that handles adding a card to a deck in a DynamoDB table. It takes in JSON data in the request body containing the deck type, user id, deck id, and inventory card details. It then updates the inventory card's deck location and adds the card to the specified deck in the DynamoDB table. It also sends an event to an event bus to notify of the card being added to the deck. The function returns a 200 status code upon success.
-        message:
-          $ref: '#/components/messages/addCardToDeckReq'
-  
-  createDeck:
-      publish:
-        summary: This code creates a new deck in DynamoDB table with a unique ID generated using uuid package. It extracts the deck name and type from the request body, and user ID from request context. It sets the current time as the creation and modification time. It also sets the user_id and total_value to 0. It then adds this new deck to the DynamoDB table using the put_item() method. It returns a HTTP status code of 200 upon successful execution.
-        message:
-          $ref: '#/components/messages/createDeckReq'
+          $ref: '#/components/messages/searchCardsByKeywordReq'
 
   getCard:
-      subscribe:
-        summary: This function is triggered by an API Gateway. It takes in a request with a scryfall_id in the body, which is used to query a DynamoDB table for card details and card faces. The card details and card faces are then returned to the client via the apigatewaymanagementapi client. Additionally, it uses the DecimalEncoder class to handle any Decimal data types in the returned data. The function uses two helper function get_card_details and get_card_faces to query DynamoDB table. The get_card_details function queries the table for card details by searching for an item with a primary key of PK CARD{scryfall_id} and a sort key that begins with SK CARD_FACE. The get_card_faces function queries the table for card faces by searching for an item with a GSI1 primary key of GSI1_PK CARD{scryfall_id} and a GSI1 sort key that begins with GSI1_SK CARD_FACE, using index GSI1. If the query is successful, the result is returned. If there is an exception, it is logged and returned.
-        message:
-          $ref: '#/components/messages/getCardReq'
+    publish:
+      summary: Retrieves card details.
+      message:
+          $ref: '#/components/messages/getCardReq'    
+
+# Inventory
+  getInventory:
+    publish:
+      summary: Retrieves the details of a inventory.
+      message:
+          $ref: '#/components/messages/getInventoryReq'
+
+  addCardToInventory:
+    publish:
+      summary: Adds a card to the inventory.
+      message:
+          $ref: '#/components/messages/addCardToInventoryReq'
+
+
+  removeCardFromInventory:
+    publish:
+      summary: Removes a card from the inventory.
+      message:
+          $ref: '#/components/messages/removeCardFromInventoryReq'     
+
+# Deck
+
+  getDecks:
+    publish:
+      summary: Retrieves all decks.
+      message:
+          $ref: '#/components/messages/getDecksReq'    
 
   getDeck:
-      subscribe:
-        summary: This code is a lambda function that is triggered by an API Gateway. It takes in a request with a deck_id in the body, which is used to query a DynamoDB table for deck details, deck cards and side deck cards. The deck details, deck cards and side deck cards are then returned to the client via the apigatewaymanagementapi client. Additionally, it uses the DecimalEncoder class to handle any Decimal data types in the returned data. The function queries DynamoDB table using the KeyConditionExpression parameter, to search for items with a specific primary key and a sort key that starts with a specific value. The query is done in 3 steps, first it queries the table for the deck by searching for an item with a primary key of PK "DECK#{deck_id}" and a sort key that starts with "USER#". Second it queries the table for the deck cards by searching for an item with a GSI1 primary key of GSI1_PK "DECK#{deck_id}" and a GSI1 sort key that starts with "DECK_CARD#", using index GSI1. Lastly, it queries the table for the side deck cards by searching for an item with a GSI1 primary key of GSI1_PK "DECK#{deck_id}#SIDE_DECK" and a GSI1 sort key that starts with "DECK_CARD#", using index GSI1. If the query is successful, the result is returned. If there is an exception, it is logged and returned.
-        message:
+    publish:
+      summary: Retrieves deck details.
+      message:
           $ref: '#/components/messages/getDeckReq'
-  
-  getDecks:
-      subscribe:
-        summary: This Lambda function is triggered by an API Gateway. It takes in a request and uses the userId from the request context's authorizer to query a DynamoDB table for all decks belonging to the user. The decks are returned to the client via the apigatewaymanagementapi client. Additionally, it uses the DecimalEncoder class to handle any Decimal data types in the returned data. The function queries the DynamoDB table using the GSI1_PK of "USER#{user_id}" and a GSI1_SK that begins with "DECK#", using index GSI1. The query returns all decks for the provided userId and these decks are returned to the client via apigatewaymanagementapi client. If there is an exception, it is logged.
-        message:
-          $ref: '#/components/messages/getDecksReq'
-  
-  deleteDeck:
-      publish:
-        operationId: deleteDeck
-        summary: The function is triggered by an API Gateway, it takes in a request with a deck_id in the body and a user_id in the request context. The function uses the extracted deck_id and user_id to delete the specific deck item from a DynamoDB table. If the deletion is successful, a log message is written with the result. If there is an exception, it is logged. The function returns a status code of 200.
-        message:
-          $ref: '#/components/messages/deleteDeckReq'
+
+  createDeck:
+    publish:
+      summary: Creates a new deck.
+      message:
+          $ref: '#/components/messages/createDeckReq'       
+
+  removeDeck:
+    publish:
+      summary: Removes a deck.
+      message:
+          $ref: '#/components/messages/removeDeckReq'  
+
+  addCardToDeck:
+    publish:
+      summary: Adds a card to the deck.
+      message:
+          $ref: '#/components/messages/addCardToDeckReq'       
+
   
 # COMPONENTS ATTACHED TO THE CHANNELS
 components:
   messages:
-    deleteDeckReq:
-      summary: Delete deck
-      payload:
-        type: object
-        properties:
-          statusCode:
-            type: integer
-            description: The status code of the response
 
-    getDecksReq:
-      summary: Retrieve all decks associated with a user
-      payload:
-        type: object
-        properties:
-          event_type:
-            type: string
-            description: Event type indicating the type of response message
-          data:
-            type: array
-            items:
-              type: object
-              properties:
-                PK:
-                  type: string
-                  description: The primary key for the DynamoDB table
-                SK:
-                  type: string
-                  description: The sort key for the DynamoDB table
-                entity_type:
-                  type: string
-                  description: The type of the entity stored in the table
-                created_at:
-                  type: string
-                  description: The timestamp when the deck was created
-                last_modified:
-                  type: string
-                  description: The timestamp when the deck was last modified
-                deck_id:
-                  type: string
-                  description: The unique ID of the deck
-                deck_name:
-                  type: string
-                  description: The name of the deck
-                deck_type:
-                  type: string
-                  description: The type of the deck
-                user_id:
-                  type: string
-                  description: The ID of the user associated with the deck
-                GSI1_PK:
-                  type: string
-                  description: The primary key of the global secondary index
-                GSI1_SK:
-                  type: string
-                  description: The sort key of the global secondary index
-                total_value:
-                  type: string
-                  description: The total value of the cards in the deck
+# Connection
 
-    getDeckReq:
-      summary: Request to get a deck details
+    $connect:
       payload:
         type: object
         properties:
-          deck_id:
+          action:
             type: string
-            description: The unique identifier for the deck
-            example: 'deck_id_123'
+            description: Connect to Websocket (wss) url with a valid JWT token
+          token:
+            type: string
+            description: Token should be a valid JWT token retrieved from the /login function
+      examples:
+        - name:  $connect
+          payload:
+            action/route: $connect
+            token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0Ijox'
+
+    $disconnect:
+      payload:
+        type: object
+        properties:
+          action:
+            type: string
+            description: Disconnect to Websocket (wss) url
+          connectionId:
+            type: string
+            description: The connectionId that will be terminated
+      examples:
+        - name:  $disconnect
+          payload:
+            action/route: $disconnect
+# Card
+
+    searchCardsByKeywordReq:
+      payload:
+        type: object
+        properties:
+          action:
+            type: string
+            description: searchCardsByKeywordReq
+          query:
+            type: string
+            description: Keyword query that will be searched in the scryfall api.
+      examples:
+        - name: searchCardsByKeywordReq
+          payload:
+            action: searchCardsByKeywordReq
+            query: 'Obelisk the tormentor'
 
     getCardReq:
       summary: Request to get a card details
       payload:
         type: object
         properties:
+          action: 
+            type: string
+            description: getCardReq
           scryfall_id:
             type: string
             description: The unique identifier for the card on Scryfall
             example: 'scryfall_id_123'
+            
+
+# Inventory
+
+    getInventoryReq:
+      payload:
+        type: object
+        properties:
+          action: 
+            type: string
+            description: getInventoryReq
+          user_id:
+            type: string
+            description: We need user_id to find the matching inventory.
+      examples:
+        - name: getInventoryReq
+          payload:
+            action: getInventoryReq
+    
+    addCardToInventoryReq:
+      payload:
+        type: object
+        properties:
+          action:
+            type: string
+            description: addCardToInventoryReq
+          inventory_id:
+            type: string
+            description: Inventory ID of the users inventory.
+          inventory_card:
+            type: string
+            description: Card that will be added to the inventory.
+      examples:
+        - name: TODO ADD NAME
+          summary: TODO ADD SUMMARY
+          payload:
+            action: addCardToInventoryReq
+            inventory_id: '128938129'
+            inventory_card: '   { 
+              "PK" : "INVENTORY_CARD#${rid1}",
+              "SK" : "INVENTORY#1",
+              "entity_type" : "INVENTORY_CARD",
+              "inventory_id" : "1",
+              "created_at" : "2023-01-12",
+              "last_modified" : "2023-01-12",
+              "card_id" : "${rid2}",
+              "oracle_id" : "${rid3}",
+              "card_name" : "${rid2}",
+              "colors" : {"SS":["R"]},
+              "prices": {"usd":"0.27"},
+              "rarity" : "meta",
+              "quality" : "uncommon",
+              "deck_location" : "side",
+              "GSI1_PK" : "INVENTORY#1",
+              "GSI1_SK" : ""INVENTORY_CARD#${rid1}",
+              "scryfall_id" : "${rid4}"
+          }'
+
+    removeCardFromInventoryReq:
+      payload:
+        type: object
+        properties:
+          action:
+            type: string
+            description: removeCardFromInventoryReq
+          card_id:
+            type: string
+            description: Card_id of the card that should be removed.
+          inventory_id:
+            type: string
+            description: Inventory ID of the user.
+      examples:
+        - name: removeCardFromInventoryReq
+          payload:
+            action: removeCardFromInventoryReq
+            card_id: 01230-213123-422111-2312
+            inventory_id: AFA3212-ASDFADF33-AFDFDA344-GFRD54
+
+# Deck
+
+    getDecksReq:
+      summary: Retrieve all decks associated with a user
+      payload:
+        type: object
+        properties:
+          action: 
+            type: string
+            description: getDecksReq
+          event_type:
+            type: string
+            description: Event type indicating the type of response message
+
+    getDeckReq:
+      summary: Request to get a deck details
+      payload:
+        type: object
+        properties:
+          action: 
+            type: string
+            description: getDeckReq
+          deck_id:
+            type: string
+            description: The unique identifier for the deck
+            example: 'deck_id_123'
 
     createDeckReq:
       summary: Request to create a new deck
       payload:
         type: object
         properties:
+          action: 
+            type: string
+            description: createDeckReq
           deck_name:
             type: string
             description: Name of the deck
@@ -180,11 +280,31 @@ components:
             description: Type of deck (main_deck or side_deck)
             example: main_deck
 
+    removeDeckReq:
+      summary: Remove deck
+      payload:
+        type: object
+        properties:
+          action: 
+            type: string
+            description: removeDeckReq
+          deck_id:
+            type: string
+            description: The unique identifier for the deck
+            example: 'deck_id_123'
+
     addCardToDeckReq:
       summary: Request to add a card to a user's deck
       payload:
         type: object
         properties:
+          action: 
+            type: string
+            description: addCardToDeckReq
+          deck_name:
+            type: string
+            description: Name of the deck
+            example: MODERN PRELIMINARY
           deck_type:
             type: string
             description: Type of deck (main_deck or side_deck)
@@ -225,112 +345,4 @@ components:
                 type: string
                 description: URL of the card's image
                 example: 'https://example.com/image.jpg'
-    
-    $connect:
-      payload:
-        type: object
-        properties:
-          action:
-            type: string
-            description: Action should be connect
-          token:
-            type: string
-            description: Token should be a valid jwt token retrieved from the /login function
-      examples:
-        - name:  $connect
-          payload:
-            action/route: $connect
-            token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0Ijox'
-
-    $disconnect:
-      payload:
-        type: object
-        properties:
-          connectionId:
-            type: string
-            description: connectionId that will be terminated
-      examples:
-        - name:  $disconnect
-          payload:
-            action/route: $disconnect
-
-    addCardToInventoryReq:
-      payload:
-        type: object
-        properties:
-          inventory_id:
-            type: string
-            description: Inventory ID of the users inventory.
-          inventory_card:
-            type: string
-            description: Card that will be added to the inventory.
-      examples:
-        - name: TODO ADD NAME
-          summary: TODO ADD SUMMARY
-          payload:
-            action: addCardToInventoryReq
-            inventory_id: '128938129'
-            inventory_card: '   { 
-              "PK" : "INVENTORY_CARD#${rid1}",
-              "SK" : "INVENTORY#1",
-              "entity_type" : "INVENTORY_CARD",
-              "inventory_id" : "1",
-              "created_at" : "2023-01-12",
-              "last_modified" : "2023-01-12",
-              "card_id" : "${rid2}",
-              "oracle_id" : "${rid3}",
-              "card_name" : "${rid2}",
-              "colors" : {"SS":["R"]},
-              "prices": {"usd":"0.27"},
-              "rarity" : "meta",
-              "quality" : "uncommon",
-              "deck_location" : "side",
-              "GSI1_PK" : "INVENTORY#1",
-              "GSI1_SK" : ""INVENTORY_CARD#${rid1}",
-              "scryfall_id" : "${rid4}"
-          }'
-
-    getInventoryReq:
-      payload:
-        type: object
-        properties:
-          user_id:
-            type: string
-            description: We need user_id to find the matching inventory.
-      examples:
-        - name: getInventoryReq
-          payload:
-            action: getInventoryReq
-
-    searchCardsByKeywordReq:
-      payload:
-        type: object
-        properties:
-          query:
-            type: string
-            description: Keyword query that will be searched in the scryfall api.
-      examples:
-        - name: searchCardsByKeywordReq
-          payload:
-            action: searchCardsByKeywordReq
-            query: 'Obelisk the tormentor'
-
-    removeCardFromInventoryReq:
-      payload:
-        type: object
-        properties:
-          action:
-            type: string
-            description: Websocket action/route
-          card_id:
-            type: string
-            description: Card_id of the card that should be removed.
-          inventory_id:
-            type: string
-            description: Inventory ID of the user.
-      examples:
-        - name: removeCardFromInventoryReq
-          payload:
-            action: removeCardFromInventoryReq
-            card_id: 01230-213123-422111-2312
-            inventory_id: AFA3212-ASDFADF33-AFDFDA344-GFRD54
+  
