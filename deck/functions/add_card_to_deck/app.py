@@ -26,7 +26,7 @@ def lambda_handler(event, context):
   user_id = event["requestContext"]["authorizer"]["userId"]
   deck_id = body["deck_id"]
   inventory_card = body["inventory_card"]
-
+  deck_name = body["deck_name"]
   now = datetime.utcnow().isoformat()
   pk = f"DECK_CARD#{inventory_card['card_id']}"
   sk = f"DECK#{deck_id}"
@@ -35,6 +35,7 @@ def lambda_handler(event, context):
     sk = f"DECK#{deck_id}#SIDE_DECK"
 
   try:
+    inventory_card['deck_location'] = deck_name
     update_inventory_card_deck_location(inventory_card)
 
     logger.info(f"Adding deck card ({inventory_card['card_id']}) to DynamoDB table")
