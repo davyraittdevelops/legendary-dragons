@@ -1,8 +1,8 @@
-import { loginUser, logout } from "../support/common";
+import {loginUser, logout, removeAllDecks} from "../support/common";
 
 beforeEach(() => {
   loginUser();
-  cy.reload();
+  removeAllDecks();
 });
 
 afterEach(() => {
@@ -26,10 +26,10 @@ describe('Create and remove a deck', () => {
     // Assert - Create
     cy.get("div[role=document]").should("not.be.visible");
     cy.get(".card-title", {timeout: 5000}).contains("Main");
-    cy.get("button[name=navigateToDeck-0]").should("be.visible");
+    cy.get("button[name=navigateToDeck]").should("be.visible");
 
     // Act - Delete
-    cy.get("button[name=removeDeck-0]").click();
+    cy.get("button[name=removeDeck]").click();
     cy.wait(1500);
 
     // Assert - Delete
