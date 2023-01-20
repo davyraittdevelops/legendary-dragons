@@ -42,7 +42,7 @@ Within the scope of the Legendary Dragons Application, 3 actors have been identi
 
 ## Event Storming
 
-## Logical View (Domain MOdel)
+## Logical View (Domain Model)
 
 ## Context Map
 
@@ -107,7 +107,7 @@ Websocket documentation: http://websocket-documentation.s3-website-us-east-1.ama
 | :heavy_check_mark:    | [SHOULD] DynamoDB correct toegepast                                |
 | :heavy_check_mark:    | [SHOULD] Eventual consistency correct toegepast                    |
 | :heavy_check_mark:    | [SHOULD] Access patterns correct geïdentificeerd en toegepast      |
-| :x:    | [CLOUD] Distributed transacties correct toegepast (Step Functions) |
+| :x:    | [COULD] Distributed transacties correct toegepast (Step Functions) |
 
 ## Toepassen van Container- en Serverless technologie voor de deployment van applicaties (5%)
 
@@ -167,7 +167,7 @@ Websocket documentation: http://websocket-documentation.s3-website-us-east-1.ama
 | :heavy_check_mark:    | [SHOULD] SSL/TLS beveiliging toegepast op endpoints                                                   |
 | :heavy_check_mark:    | [SHOULD] Kosten zijn beheerst gebleven                                                                |
 | :x:    | [SHOULD] Security van de applicaties is getest en bevat geen voor de handliggende OWASP top 10 issues |
-| :x:    | [CLOUD] Performance testen opgenomen in de CI/CD pipeline                                             |
+| :x:    | [COULD] Performance testen opgenomen in de CI/CD pipeline                                             |
 
 ## Toepassen van Agile Scrum en DevOps principes (15%)
 

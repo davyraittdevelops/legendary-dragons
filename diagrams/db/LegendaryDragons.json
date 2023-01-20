@@ -1,0 +1,1607 @@
+{
+  "ModelName": "LegendaryDragons",
+  "ModelMetadata": {
+    "Author": "TheDragonsTeam",
+    "DateCreated": "Dec 20, 2022, 02:44 PM",
+    "DateLastModified": "Jan 20, 2023, 10:24 AM",
+    "Description": "",
+    "AWSService": "Amazon DynamoDB",
+    "Version": "3.0"
+  },
+  "DataModel": [
+    {
+      "TableName": "Connections",
+      "KeyAttributes": {
+        "PartitionKey": {
+          "AttributeName": "PK",
+          "AttributeType": "S"
+        },
+        "SortKey": {
+          "AttributeName": "SK",
+          "AttributeType": "S"
+        }
+      },
+      "NonKeyAttributes": [
+        {
+          "AttributeName": "entity_type",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "domain",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "stage",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "connection_id",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "user_id",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "GSI1_PK",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "GSI1_SK",
+          "AttributeType": "S"
+        }
+      ],
+      "GlobalSecondaryIndexes": [
+        {
+          "IndexName": "GSI1",
+          "KeyAttributes": {
+            "PartitionKey": {
+              "AttributeName": "GSI1_PK",
+              "AttributeType": "S"
+            },
+            "SortKey": {
+              "AttributeName": "GSI1_SK",
+              "AttributeType": "S"
+            }
+          },
+          "Projection": {
+            "ProjectionType": "ALL"
+          }
+        }
+      ],
+      "TableData": [
+        {
+          "PK": {
+            "S": "CONNECTION#123"
+          },
+          "SK": {
+            "S": "USER#1"
+          },
+          "entity_type": {
+            "S": "CONNECTION"
+          },
+          "domain": {
+            "S": "foobar.com"
+          },
+          "stage": {
+            "S": "prod"
+          },
+          "connection_id": {
+            "S": "123"
+          },
+          "user_id": {
+            "S": "1"
+          },
+          "GSI1_PK": {
+            "S": "USER#1"
+          },
+          "GSI1_SK": {
+            "S": "CONNECTION#123"
+          }
+        },
+        {
+          "PK": {
+            "S": "CONNECTION#1234"
+          },
+          "SK": {
+            "S": "USER#1"
+          },
+          "entity_type": {
+            "S": "CONNECTION"
+          },
+          "domain": {
+            "S": "foobar.com"
+          },
+          "stage": {
+            "S": "prod"
+          },
+          "connection_id": {
+            "S": "1234"
+          },
+          "user_id": {
+            "S": "1"
+          },
+          "GSI1_PK": {
+            "S": "USER#1"
+          },
+          "GSI1_SK": {
+            "S": "CONNECTION#1234"
+          }
+        },
+        {
+          "PK": {
+            "S": "CONNECTION#12345"
+          },
+          "SK": {
+            "S": "USER#12"
+          },
+          "entity_type": {
+            "S": "CONNECTION"
+          },
+          "domain": {
+            "S": "foobar.com"
+          },
+          "stage": {
+            "S": "prod"
+          },
+          "connection_id": {
+            "S": "12345"
+          },
+          "user_id": {
+            "S": "12"
+          },
+          "GSI1_PK": {
+            "S": "USER#12"
+          },
+          "GSI1_SK": {
+            "S": "CONNECTION#12345"
+          }
+        }
+      ],
+      "DataAccess": {
+        "MySql": {}
+      },
+      "BillingMode": "PROVISIONED",
+      "ProvisionedCapacitySettings": {
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": 5,
+          "WriteCapacityUnits": 5
+        },
+        "AutoScalingRead": {
+          "ScalableTargetRequest": {
+            "MinCapacity": 1,
+            "MaxCapacity": 10,
+            "ServiceRole": "AWSServiceRoleForApplicationAutoScaling_DynamoDBTable"
+          },
+          "ScalingPolicyConfiguration": {
+            "TargetValue": 70
+          }
+        },
+        "AutoScalingWrite": {
+          "ScalableTargetRequest": {
+            "MinCapacity": 1,
+            "MaxCapacity": 10,
+            "ServiceRole": "AWSServiceRoleForApplicationAutoScaling_DynamoDBTable"
+          },
+          "ScalingPolicyConfiguration": {
+            "TargetValue": 70
+          }
+        }
+      }
+    },
+    {
+      "TableName": "Cards",
+      "KeyAttributes": {
+        "PartitionKey": {
+          "AttributeName": "PK",
+          "AttributeType": "S"
+        },
+        "SortKey": {
+          "AttributeName": "SK",
+          "AttributeType": "S"
+        }
+      },
+      "NonKeyAttributes": [
+        {
+          "AttributeName": "entity_type",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "scryfall_id",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "collector_number",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "rarity",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "prices",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "cardmarket_id",
+          "AttributeType": "N"
+        },
+        {
+          "AttributeName": "is_multifaced",
+          "AttributeType": "BOOL"
+        },
+        {
+          "AttributeName": "oracle_id",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "set_id",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "set_code",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "set_type",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "released_at",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "multiverse_id",
+          "AttributeType": "N"
+        },
+        {
+          "AttributeName": "card_name",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "oracle_text",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "mana_cost",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "colors",
+          "AttributeType": "SS"
+        },
+        {
+          "AttributeName": "type_line",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "image_url",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "GSI1_PK",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "GSI1_SK",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "created_at",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "last_modified",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "set_name",
+          "AttributeType": "S"
+        }
+      ],
+      "GlobalSecondaryIndexes": [
+        {
+          "IndexName": "GSI1",
+          "KeyAttributes": {
+            "PartitionKey": {
+              "AttributeName": "GSI1_PK",
+              "AttributeType": "S"
+            },
+            "SortKey": {
+              "AttributeName": "GSI1_SK",
+              "AttributeType": "S"
+            }
+          },
+          "Projection": {
+            "ProjectionType": "ALL"
+          }
+        }
+      ],
+      "TableData": [
+        {
+          "PK": {
+            "S": "CARD#7d839f21-68c7-47db-8407-ff3e2c3e13b4"
+          },
+          "SK": {
+            "S": "CARD_FACE#b1544f21-7e98-461b-aed5-e748b0168c52"
+          },
+          "entity_type": {
+            "S": "CARD"
+          },
+          "scryfall_id": {
+            "S": "7d839f21-68c7-47db-8407-ff3e2c3e13b4"
+          },
+          "collector_number": {
+            "S": "31"
+          },
+          "rarity": {
+            "S": "uncommon"
+          },
+          "prices": {
+            "S": "{\"usd\":\"1.03\",\"eur\":\"1.33\"}"
+          },
+          "cardmarket_id": {
+            "N": "688531"
+          },
+          "is_multifaced": {
+            "BOOL": false
+          },
+          "oracle_id": {
+            "S": "b1544f21-7e98-461b-aed5-e748b0168c52"
+          },
+          "set_id": {
+            "S": "44b8eb8f-fa23-401a-98b5-1fbb9871128e"
+          },
+          "set_code": {
+            "S": "mid"
+          },
+          "set_type": {
+            "S": "expansion"
+          },
+          "released_at": {
+            "S": "2021-09-24"
+          },
+          "card_name": {
+            "S": "Swords to Plowshares"
+          },
+          "GSI1_PK": {
+            "S": "CARD_FACE#b1544f21-7e98-461b-aed5-e748b0168c52"
+          },
+          "GSI1_SK": {
+            "S": "CARD#7d839f21-68c7-47db-8407-ff3e2c3e13b4"
+          },
+          "created_at": {
+            "S": "2022-12-20"
+          },
+          "last_modified": {
+            "S": "2022-12-20"
+          },
+          "set_name": {
+            "S": "Innistrad: Midnight Hunt"
+          }
+        },
+        {
+          "PK": {
+            "S": "CARD_FACE#b1544f21-7e98-461b-aed5-e748b0168c52"
+          },
+          "SK": {
+            "S": "CARD#7d839f21-68c7-47db-8407-ff3e2c3e13b4#0"
+          },
+          "entity_type": {
+            "S": "CARD_FACE"
+          },
+          "scryfall_id": {
+            "S": "7d839f21-68c7-47db-8407-ff3e2c3e13b4"
+          },
+          "oracle_id": {
+            "S": "b1544f21-7e98-461b-aed5-e748b0168c52"
+          },
+          "card_name": {
+            "S": "Swords to Plowshares"
+          },
+          "oracle_text": {
+            "S": "Exile target creature. Its controller gains life equal to its power."
+          },
+          "mana_cost": {
+            "S": "{W}"
+          },
+          "colors": {
+            "SS": [
+              "W"
+            ]
+          },
+          "type_line": {
+            "S": "Instant"
+          },
+          "image_url": {
+            "S": "https://cards.scryfall.io/png/front/7/d/7d839f21-68c7-47db-8407-ff3e2c3e13b4.png?1664930801"
+          },
+          "GSI1_PK": {
+            "S": "CARD#7d839f21-68c7-47db-8407-ff3e2c3e13b4"
+          },
+          "GSI1_SK": {
+            "S": "CARD_FACE#b1544f21-7e98-461b-aed5-e748b0168c52"
+          },
+          "created_at": {
+            "S": "2022-12-20"
+          },
+          "last_modified": {
+            "S": "2022-12-20"
+          }
+        },
+        {
+          "PK": {
+            "S": "CARD#ef51caf8-f9d9-48d7-9145-9dfc91054f70"
+          },
+          "SK": {
+            "S": "CARD_FACE#b1544f21-7e98-461b-aed5-e748b0168c52"
+          },
+          "entity_type": {
+            "S": "CARD"
+          },
+          "scryfall_id": {
+            "S": "ef51caf8-f9d9-48d7-9145-9dfc91054f70"
+          },
+          "collector_number": {
+            "S": "211"
+          },
+          "rarity": {
+            "S": "uncommon"
+          },
+          "prices": {
+            "S": "{\"usd\":\"1.91\",\"eur\":\"1.98\"}"
+          },
+          "cardmarket_id": {
+            "N": "652795"
+          },
+          "is_multifaced": {
+            "BOOL": false
+          },
+          "oracle_id": {
+            "S": "b1544f21-7e98-461b-aed5-e748b0168c52"
+          },
+          "set_id": {
+            "S": "c51de34b-d4d6-4179-a432-573744ded119"
+          },
+          "set_code": {
+            "S": "ncc"
+          },
+          "set_type": {
+            "S": "commander"
+          },
+          "released_at": {
+            "S": "2022-04-29"
+          },
+          "card_name": {
+            "S": "Swords to Plowshares"
+          },
+          "GSI1_PK": {
+            "S": "CARD_FACE#b1544f21-7e98-461b-aed5-e748b0168c52"
+          },
+          "GSI1_SK": {
+            "S": "CARD#ef51caf8-f9d9-48d7-9145-9dfc91054f70"
+          },
+          "created_at": {
+            "S": "2022-12-20"
+          },
+          "last_modified": {
+            "S": "2022-12-20"
+          },
+          "set_name": {
+            "S": "New Capenna Commander"
+          }
+        },
+        {
+          "PK": {
+            "S": "CARD_FACE#b1544f21-7e98-461b-aed5-e748b0168c52"
+          },
+          "SK": {
+            "S": "CARD#ef51caf8-f9d9-48d7-9145-9dfc91054f70#0"
+          },
+          "entity_type": {
+            "S": "CARD_FACE"
+          },
+          "scryfall_id": {
+            "S": "ef51caf8-f9d9-48d7-9145-9dfc91054f70"
+          },
+          "oracle_id": {
+            "S": "b1544f21-7e98-461b-aed5-e748b0168c52"
+          },
+          "multiverse_id": {
+            "N": "559783"
+          },
+          "oracle_text": {
+            "S": "Exile target creature. Its controller gains life equal to its power."
+          },
+          "mana_cost": {
+            "S": "{W}"
+          },
+          "colors": {
+            "SS": [
+              "W"
+            ]
+          },
+          "type_line": {
+            "S": "Instant"
+          },
+          "image_url": {
+            "S": "https://cards.scryfall.io/png/front/e/f/ef51caf8-f9d9-48d7-9145-9dfc91054f70.png?1650408130"
+          },
+          "GSI1_PK": {
+            "S": "CARD#ef51caf8-f9d9-48d7-9145-9dfc91054f70"
+          },
+          "GSI1_SK": {
+            "S": "CARD_FACE#b1544f21-7e98-461b-aed5-e748b0168c52"
+          },
+          "created_at": {
+            "S": "2022-12-20"
+          },
+          "last_modified": {
+            "S": "2022-12-20"
+          }
+        },
+        {
+          "PK": {
+            "S": "CARD#d4054ae6-0227-4d99-8cb5-72e8b5d0b726"
+          },
+          "SK": {
+            "S": "CARD_FACE#ffc1fe11-0ecb-4497-a266-0817c79477e9"
+          },
+          "entity_type": {
+            "S": "CARD"
+          },
+          "scryfall_id": {
+            "S": "d4054ae6-0227-4d99-8cb5-72e8b5d0b726"
+          },
+          "collector_number": {
+            "S": "126"
+          },
+          "rarity": {
+            "S": "uncommon"
+          },
+          "prices": {
+            "S": "{\"usd\":\"0.07\",\"eur\":\"0.49\"}"
+          },
+          "cardmarket_id": {
+            "N": "575042"
+          },
+          "is_multifaced": {
+            "BOOL": true
+          },
+          "oracle_id": {
+            "S": "ffc1fe11-0ecb-4497-a266-0817c79477e9"
+          },
+          "set_id": {
+            "S": "44b8eb8f-fa23-401a-98b5-1fbb9871128e"
+          },
+          "set_code": {
+            "S": "mid"
+          },
+          "set_type": {
+            "S": "expansion"
+          },
+          "released_at": {
+            "S": "2021-09-24"
+          },
+          "card_name": {
+            "S": "Vengeful Strangler // Strangling Grasp"
+          },
+          "GSI1_PK": {
+            "S": "CARD#d4054ae6-0227-4d99-8cb5-72e8b5d0b726"
+          },
+          "GSI1_SK": {
+            "S": "CARD_FACE#ffc1fe11-0ecb-4497-a266-0817c79477e9"
+          },
+          "created_at": {
+            "S": "2022-12-20"
+          },
+          "last_modified": {
+            "S": "2022-12-20"
+          },
+          "set_name": {
+            "S": "Innistrad: Midnight Hunt"
+          }
+        },
+        {
+          "PK": {
+            "S": "CARD_FACE#ffc1fe11-0ecb-4497-a266-0817c79477e9"
+          },
+          "SK": {
+            "S": "CARD#d4054ae6-0227-4d99-8cb5-72e8b5d0b726#0"
+          },
+          "entity_type": {
+            "S": "CARD_FACE"
+          },
+          "scryfall_id": {
+            "S": "d4054ae6-0227-4d99-8cb5-72e8b5d0b726"
+          },
+          "oracle_id": {
+            "S": "ffc1fe11-0ecb-4497-a266-0817c79477e9"
+          },
+          "multiverse_id": {
+            "N": "534901"
+          },
+          "card_name": {
+            "S": "Vengeful Strangler"
+          },
+          "oracle_text": {
+            "S": "Vengeful Strangler can't block.\\nWhen Vengeful Strangler dies, return it to the battlefield transformed under your control attached to target creature or planeswalker an opponent controls."
+          },
+          "mana_cost": {
+            "S": "{1}{B}"
+          },
+          "colors": {
+            "SS": [
+              "B"
+            ]
+          },
+          "type_line": {
+            "S": "Creature — Human Rogue"
+          },
+          "image_url": {
+            "S": "https://cards.scryfall.io/large/front/d/4/d4054ae6-0227-4d99-8cb5-72e8b5d0b726.jpg?1634348001"
+          },
+          "GSI1_PK": {
+            "S": "CARD#d4054ae6-0227-4d99-8cb5-72e8b5d0b726"
+          },
+          "GSI1_SK": {
+            "S": "CARD_FACE#ffc1fe11-0ecb-4497-a266-0817c79477e9"
+          },
+          "created_at": {
+            "S": "2022-12-20"
+          },
+          "last_modified": {
+            "S": "2022-12-20"
+          }
+        },
+        {
+          "PK": {
+            "S": "CARD_FACE#ffc1fe11-0ecb-4497-a266-0817c79477e9"
+          },
+          "SK": {
+            "S": "CARD#d4054ae6-0227-4d99-8cb5-72e8b5d0b726#1"
+          },
+          "entity_type": {
+            "S": "CARD_FACE"
+          },
+          "scryfall_id": {
+            "S": "d4054ae6-0227-4d99-8cb5-72e8b5d0b726"
+          },
+          "oracle_id": {
+            "S": "ffc1fe11-0ecb-4497-a266-0817c79477e9"
+          },
+          "multiverse_id": {
+            "N": "534902"
+          },
+          "card_name": {
+            "S": "Strangling Grasp"
+          },
+          "oracle_text": {
+            "S": "Enchant creature or planeswalker an opponent controls\\nAt the beginning of your upkeep, enchanted permanent's controller sacrifices a nonland permanent, then that player loses 1 life."
+          },
+          "colors": {
+            "SS": [
+              "B"
+            ]
+          },
+          "type_line": {
+            "S": "Enchantment — Aura"
+          },
+          "image_url": {
+            "S": "\"https://cards.scryfall.io/large/back/d/4/d4054ae6-0227-4d99-8cb5-72e8b5d0b726.jpg?1634348001"
+          },
+          "GSI1_PK": {
+            "S": "CARD#d4054ae6-0227-4d99-8cb5-72e8b5d0b726"
+          },
+          "GSI1_SK": {
+            "S": "CARD_FACE#ffc1fe11-0ecb-4497-a266-0817c79477e9"
+          },
+          "created_at": {
+            "S": "2022-12-20"
+          },
+          "last_modified": {
+            "S": "2022-12-20"
+          }
+        }
+      ],
+      "DataAccess": {
+        "MySql": {}
+      },
+      "BillingMode": "PROVISIONED",
+      "ProvisionedCapacitySettings": {
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": 5,
+          "WriteCapacityUnits": 5
+        },
+        "AutoScalingRead": {
+          "ScalableTargetRequest": {
+            "MinCapacity": 1,
+            "MaxCapacity": 10,
+            "ServiceRole": "AWSServiceRoleForApplicationAutoScaling_DynamoDBTable"
+          },
+          "ScalingPolicyConfiguration": {
+            "TargetValue": 70
+          }
+        },
+        "AutoScalingWrite": {
+          "ScalableTargetRequest": {
+            "MinCapacity": 1,
+            "MaxCapacity": 10,
+            "ServiceRole": "AWSServiceRoleForApplicationAutoScaling_DynamoDBTable"
+          },
+          "ScalingPolicyConfiguration": {
+            "TargetValue": 70
+          }
+        }
+      }
+    },
+    {
+      "TableName": "Wishlists",
+      "KeyAttributes": {
+        "PartitionKey": {
+          "AttributeName": "PK",
+          "AttributeType": "S"
+        },
+        "SortKey": {
+          "AttributeName": "SK",
+          "AttributeType": "S"
+        }
+      },
+      "NonKeyAttributes": [
+        {
+          "AttributeName": "entity_type",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "created_at",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "last_modified",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "cardmarked_id",
+          "AttributeType": "N"
+        },
+        {
+          "AttributeName": "card_name",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "oracle_id",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "price_point",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "alert_id",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "deck_id",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "user_id",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "GSI1_PK",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "GSI1_SK",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "GSI2_PK",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "GSI2_SK",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "wishlist_item_id ",
+          "AttributeType": "S"
+        }
+      ],
+      "GlobalSecondaryIndexes": [
+        {
+          "IndexName": "GSI1",
+          "KeyAttributes": {
+            "PartitionKey": {
+              "AttributeName": "GSI1_PK",
+              "AttributeType": "S"
+            },
+            "SortKey": {
+              "AttributeName": "GSI1_SK",
+              "AttributeType": "S"
+            }
+          },
+          "Projection": {
+            "ProjectionType": "ALL"
+          }
+        },
+        {
+          "IndexName": "GSI2",
+          "KeyAttributes": {
+            "PartitionKey": {
+              "AttributeName": "GSI2_PK",
+              "AttributeType": "S"
+            },
+            "SortKey": {
+              "AttributeName": "GSI2_SK",
+              "AttributeType": "S"
+            }
+          },
+          "Projection": {
+            "ProjectionType": "ALL"
+          }
+        }
+      ],
+      "TableData": [
+        {
+          "PK": {
+            "S": "WISHLIST_ITEM#1"
+          },
+          "SK": {
+            "S": "ALERT#PRICE#1"
+          },
+          "entity_type": {
+            "S": "ALERT#PRICE"
+          },
+          "created_at": {
+            "S": "2022-12-20"
+          },
+          "last_modified": {
+            "S": "2022-12-20"
+          },
+          "price_point": {
+            "S": "5.00"
+          },
+          "alert_id": {
+            "S": "1"
+          },
+          "user_id": {
+            "S": "1"
+          },
+          "GSI1_PK": {
+            "S": "ALERT#PRICE#1"
+          },
+          "GSI1_SK": {
+            "S": "WISHLIST_ITEM#1"
+          },
+          "wishlist_item_id ": {
+            "S": "1"
+          }
+        },
+        {
+          "PK": {
+            "S": " WISHLIST_ITEM#2"
+          },
+          "SK": {
+            "S": "ALERT#AVAILABILITY#2"
+          },
+          "entity_type": {
+            "S": "ALERT#AVAILABILITY"
+          },
+          "created_at": {
+            "S": "2022-12-20"
+          },
+          "last_modified": {
+            "S": "2022-12-20"
+          },
+          "alert_id": {
+            "S": "2"
+          },
+          "user_id": {
+            "S": "1"
+          },
+          "GSI1_PK": {
+            "S": "ALERT#AVAILABILITY#2"
+          },
+          "GSI1_SK": {
+            "S": "WISHLIST_ITEM#2"
+          },
+          "wishlist_item_id ": {
+            "S": "2"
+          }
+        },
+        {
+          "PK": {
+            "S": "WISHLIST_ITEM#1"
+          },
+          "SK": {
+            "S": "WISHLIST#USER#1"
+          },
+          "entity_type": {
+            "S": "WISHLIST_ITEM"
+          },
+          "created_at": {
+            "S": "2022-12-20"
+          },
+          "last_modified": {
+            "S": "2022-12-20"
+          },
+          "cardmarked_id": {
+            "N": "50"
+          },
+          "card_name": {
+            "S": "Black Lotus"
+          },
+          "oracle_id": {
+            "S": "b1544f21-7e98-461b-aed5-e748b0168c59"
+          },
+          "user_id": {
+            "S": "1"
+          },
+          "GSI1_PK": {
+            "S": "WISHLIST#USER#1"
+          },
+          "GSI1_SK": {
+            "S": "WISHLIST_ITEM#1"
+          },
+          "GSI2_PK": {
+            "S": "DECK#200"
+          },
+          "GSI2_SK": {
+            "S": "WISHLIST_ITEM#1"
+          },
+          "wishlist_item_id ": {
+            "S": "1"
+          }
+        },
+        {
+          "PK": {
+            "S": " WISHLIST_ITEM#2"
+          },
+          "SK": {
+            "S": "WISHLIST#USER#1"
+          },
+          "entity_type": {
+            "S": "WISHLIST_ITEM"
+          },
+          "created_at": {
+            "S": "2022-12-20"
+          },
+          "last_modified": {
+            "S": "2022-12-20"
+          },
+          "cardmarked_id": {
+            "N": "51"
+          },
+          "card_name": {
+            "S": "Mega Black Lotus"
+          },
+          "oracle_id": {
+            "S": "b1544f21-7e98-461b-aed5-e748b0168c60"
+          },
+          "user_id": {
+            "S": "1"
+          },
+          "GSI1_PK": {
+            "S": "WISHLIST#USER#1"
+          },
+          "GSI1_SK": {
+            "S": "WISHLIST_ITEM#2"
+          },
+          "GSI2_PK": {
+            "S": "DECK#200"
+          },
+          "GSI2_SK": {
+            "S": "WISHLIST_ITEM#2"
+          },
+          "wishlist_item_id ": {
+            "S": "2"
+          }
+        }
+      ],
+      "DataAccess": {
+        "MySql": {}
+      },
+      "BillingMode": "PROVISIONED",
+      "ProvisionedCapacitySettings": {
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": 5,
+          "WriteCapacityUnits": 5
+        },
+        "AutoScalingRead": {
+          "ScalableTargetRequest": {
+            "MinCapacity": 1,
+            "MaxCapacity": 10,
+            "ServiceRole": "AWSServiceRoleForApplicationAutoScaling_DynamoDBTable"
+          },
+          "ScalingPolicyConfiguration": {
+            "TargetValue": 70
+          }
+        },
+        "AutoScalingWrite": {
+          "ScalableTargetRequest": {
+            "MinCapacity": 1,
+            "MaxCapacity": 10,
+            "ServiceRole": "AWSServiceRoleForApplicationAutoScaling_DynamoDBTable"
+          },
+          "ScalingPolicyConfiguration": {
+            "TargetValue": 70
+          }
+        }
+      }
+    },
+    {
+      "TableName": "Decks",
+      "KeyAttributes": {
+        "PartitionKey": {
+          "AttributeName": "PK",
+          "AttributeType": "S"
+        },
+        "SortKey": {
+          "AttributeName": "SK",
+          "AttributeType": "S"
+        }
+      },
+      "NonKeyAttributes": [
+        {
+          "AttributeName": "entity_type",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "created_at",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "last_modified",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "deck_id",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "deck_name",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "deck_type",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "user_id",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "inventory_id",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "inventory_card_id",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "card_name",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "colors",
+          "AttributeType": "SS"
+        },
+        {
+          "AttributeName": "prices",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "rarity",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "quality",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "GSI1_PK",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "GSI1_SK",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "total_value",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "image_url",
+          "AttributeType": "S"
+        }
+      ],
+      "GlobalSecondaryIndexes": [
+        {
+          "IndexName": "GSI1",
+          "KeyAttributes": {
+            "PartitionKey": {
+              "AttributeName": "GSI1_PK",
+              "AttributeType": "S"
+            },
+            "SortKey": {
+              "AttributeName": "GSI1_SK",
+              "AttributeType": "S"
+            }
+          },
+          "Projection": {
+            "ProjectionType": "ALL"
+          }
+        }
+      ],
+      "TableData": [
+        {
+          "PK": {
+            "S": "DECK#1"
+          },
+          "SK": {
+            "S": "USER#1"
+          },
+          "entity_type": {
+            "S": "DECK"
+          },
+          "created_at": {
+            "S": "2022-12-20"
+          },
+          "last_modified": {
+            "S": "2022-12-20"
+          },
+          "deck_id": {
+            "S": "1"
+          },
+          "deck_name": {
+            "S": "GGEZ"
+          },
+          "deck_type": {
+            "S": "EDH"
+          },
+          "user_id": {
+            "S": "1"
+          },
+          "inventory_id": {
+            "S": "3"
+          },
+          "GSI1_PK": {
+            "S": "USER#1"
+          },
+          "GSI1_SK": {
+            "S": "DECK#1"
+          },
+          "total_value": {
+            "S": "500"
+          }
+        },
+        {
+          "PK": {
+            "S": "DECK_CARD#3"
+          },
+          "SK": {
+            "S": "DECK#1"
+          },
+          "entity_type": {
+            "S": "DECK_CARD"
+          },
+          "created_at": {
+            "S": "2022-12-20"
+          },
+          "last_modified": {
+            "S": "2022-12-20"
+          },
+          "deck_id": {
+            "S": "1"
+          },
+          "user_id": {
+            "S": "1"
+          },
+          "inventory_id": {
+            "S": "3"
+          },
+          "inventory_card_id": {
+            "S": "3"
+          },
+          "card_name": {
+            "S": "Black Lotus"
+          },
+          "colors": {
+            "SS": [
+              "B"
+            ]
+          },
+          "prices": {
+            "S": "{\"usd\": \"1\"}"
+          },
+          "rarity": {
+            "S": "rare"
+          },
+          "quality": {
+            "S": "mint"
+          },
+          "GSI1_PK": {
+            "S": "DECK#1"
+          },
+          "GSI1_SK": {
+            "S": "DECK_CARD#3"
+          },
+          "image_url": {
+            "S": "https://foobar.png"
+          }
+        },
+        {
+          "PK": {
+            "S": "DECK_CARD#4"
+          },
+          "SK": {
+            "S": "DECK#1#SIDE_DECK"
+          },
+          "entity_type": {
+            "S": "DECK_CARD"
+          },
+          "created_at": {
+            "S": "2022-12-20"
+          },
+          "last_modified": {
+            "S": "2022-12-20"
+          },
+          "deck_id": {
+            "S": "1"
+          },
+          "user_id": {
+            "S": "1"
+          },
+          "inventory_id": {
+            "S": "3"
+          },
+          "inventory_card_id": {
+            "S": "4"
+          },
+          "card_name": {
+            "S": "Mega Black Lotus"
+          },
+          "colors": {
+            "SS": [
+              "B"
+            ]
+          },
+          "prices": {
+            "S": "{\"usd\": \"2\"}"
+          },
+          "rarity": {
+            "S": "uncommon"
+          },
+          "quality": {
+            "S": "mint"
+          },
+          "GSI1_PK": {
+            "S": "DECK#1SIDE_DECK"
+          },
+          "GSI1_SK": {
+            "S": "DECK_CARD#4"
+          },
+          "image_url": {
+            "S": "https://foobar.png"
+          }
+        }
+      ],
+      "DataAccess": {
+        "MySql": {}
+      },
+      "BillingMode": "PROVISIONED",
+      "ProvisionedCapacitySettings": {
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": 5,
+          "WriteCapacityUnits": 5
+        },
+        "AutoScalingRead": {
+          "ScalableTargetRequest": {
+            "MinCapacity": 1,
+            "MaxCapacity": 10,
+            "ServiceRole": "AWSServiceRoleForApplicationAutoScaling_DynamoDBTable"
+          },
+          "ScalingPolicyConfiguration": {
+            "TargetValue": 70
+          }
+        },
+        "AutoScalingWrite": {
+          "ScalableTargetRequest": {
+            "MinCapacity": 1,
+            "MaxCapacity": 10,
+            "ServiceRole": "AWSServiceRoleForApplicationAutoScaling_DynamoDBTable"
+          },
+          "ScalingPolicyConfiguration": {
+            "TargetValue": 70
+          }
+        }
+      }
+    },
+    {
+      "TableName": "Inventory",
+      "KeyAttributes": {
+        "PartitionKey": {
+          "AttributeName": "PK",
+          "AttributeType": "S"
+        },
+        "SortKey": {
+          "AttributeName": "SK",
+          "AttributeType": "S"
+        }
+      },
+      "NonKeyAttributes": [
+        {
+          "AttributeName": "entity_type",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "inventory_id",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "created_at",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "last_modified",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "user_id",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "card_id",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "oracle_id",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "card_name",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "colors",
+          "AttributeType": "SS"
+        },
+        {
+          "AttributeName": "prices",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "rarity",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "quality",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "deck_location",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "GSI1_PK",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "GSI1_SK",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "scryfall_id",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "image_url",
+          "AttributeType": "S"
+        }
+      ],
+      "GlobalSecondaryIndexes": [
+        {
+          "IndexName": "GSI1",
+          "KeyAttributes": {
+            "PartitionKey": {
+              "AttributeName": "GSI1_PK",
+              "AttributeType": "S"
+            },
+            "SortKey": {
+              "AttributeName": "GSI1_SK",
+              "AttributeType": "S"
+            }
+          },
+          "Projection": {
+            "ProjectionType": "ALL"
+          }
+        }
+      ],
+      "TableData": [
+        {
+          "PK": {
+            "S": "INVENTORY_CARD#2"
+          },
+          "SK": {
+            "S": "INVENTORY#1"
+          },
+          "entity_type": {
+            "S": "INVENTORY_CARD"
+          },
+          "inventory_id": {
+            "S": "1"
+          },
+          "created_at": {
+            "S": "2022-12-20"
+          },
+          "last_modified": {
+            "S": "2022-12-20"
+          },
+          "user_id": {
+            "S": "1"
+          },
+          "card_id": {
+            "S": "2"
+          },
+          "oracle_id": {
+            "S": "sadf23213wujedfysjf34-0-sdfsdf-34"
+          },
+          "card_name": {
+            "S": "DROP TABLE"
+          },
+          "colors": {
+            "SS": [
+              "W"
+            ]
+          },
+          "prices": {
+            "S": "{\"usd\": \"50000\"}"
+          },
+          "rarity": {
+            "S": "meta"
+          },
+          "quality": {
+            "S": "Mythic rare"
+          },
+          "deck_location": {
+            "S": "main"
+          },
+          "GSI1_PK": {
+            "S": "INVENTORY#1USER#1"
+          },
+          "GSI1_SK": {
+            "S": "INVENTORY_CARD#2"
+          },
+          "scryfall_id": {
+            "S": "hfssfhfghszkjfjsfhg"
+          },
+          "image_url": {
+            "S": "https://foobar.png"
+          }
+        },
+        {
+          "PK": {
+            "S": "INVENTORY_CARD#3"
+          },
+          "SK": {
+            "S": "INVENTORY#1"
+          },
+          "entity_type": {
+            "S": "INVENTORY_CARD"
+          },
+          "inventory_id": {
+            "S": "1"
+          },
+          "created_at": {
+            "S": "2022-12-20"
+          },
+          "last_modified": {
+            "S": "2022-12-20"
+          },
+          "user_id": {
+            "S": "1"
+          },
+          "card_id": {
+            "S": "3"
+          },
+          "oracle_id": {
+            "S": "ffffff23213wujedfysjf34-0-sdfsdf-34"
+          },
+          "card_name": {
+            "S": "Tok Tok, Volcano Born"
+          },
+          "colors": {
+            "SS": [
+              "R"
+            ]
+          },
+          "prices": {
+            "S": "{\"usd\": \"0.05\"}"
+          },
+          "rarity": {
+            "S": "meta"
+          },
+          "quality": {
+            "S": "uncommon"
+          },
+          "deck_location": {
+            "S": "side"
+          },
+          "GSI1_PK": {
+            "S": "INVENTORY#1USER#1"
+          },
+          "GSI1_SK": {
+            "S": "INVENTORY_CARD#3"
+          },
+          "scryfall_id": {
+            "S": "fjpsjfsfglsljgzdjlghksj;Fg"
+          },
+          "image_url": {
+            "S": "https://foobar.png"
+          }
+        },
+        {
+          "PK": {
+            "S": "INVENTORY#1"
+          },
+          "SK": {
+            "S": "USER#1"
+          },
+          "entity_type": {
+            "S": "INVENTORY"
+          },
+          "inventory_id": {
+            "S": "1"
+          },
+          "created_at": {
+            "S": "2022-12-20"
+          },
+          "last_modified": {
+            "S": "2022-12-20"
+          },
+          "user_id": {
+            "S": "1"
+          },
+          "GSI1_PK": {
+            "S": "USER#1"
+          },
+          "GSI1_SK": {
+            "S": "INVENTORY#1"
+          }
+        }
+      ],
+      "DataAccess": {
+        "MySql": {}
+      },
+      "BillingMode": "PROVISIONED",
+      "ProvisionedCapacitySettings": {
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": 5,
+          "WriteCapacityUnits": 5
+        },
+        "AutoScalingRead": {
+          "ScalableTargetRequest": {
+            "MinCapacity": 1,
+            "MaxCapacity": 10,
+            "ServiceRole": "AWSServiceRoleForApplicationAutoScaling_DynamoDBTable"
+          },
+          "ScalingPolicyConfiguration": {
+            "TargetValue": 70
+          }
+        },
+        "AutoScalingWrite": {
+          "ScalableTargetRequest": {
+            "MinCapacity": 1,
+            "MaxCapacity": 10,
+            "ServiceRole": "AWSServiceRoleForApplicationAutoScaling_DynamoDBTable"
+          },
+          "ScalingPolicyConfiguration": {
+            "TargetValue": 70
+          }
+        }
+      }
+    }
+  ]
+}
