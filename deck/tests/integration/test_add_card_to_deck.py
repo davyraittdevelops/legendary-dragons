@@ -66,6 +66,7 @@ def websocket_event():
       "deck_id": "123",
       "inventory_card": {
         "card_name": "Swords of Doom",
+        "deck_location" : 'doom deck',
         "card_id": "1",
         "inventory_id": "123",
         "oracle_id": "oracle-123",
