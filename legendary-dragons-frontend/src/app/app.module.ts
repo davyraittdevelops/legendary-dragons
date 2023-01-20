@@ -39,6 +39,8 @@ import { UserEffects } from './ngrx/user/user.effect';
 import { userReducer } from './ngrx/user/user.reducer';
 import { DeckCardsDetailsPageComponent } from './components/deck/deck-cards-details/deck-cards-details-page.component';
 import { CardsDetailsPageComponent } from './components/card/cards-details/cards-details-page.component';
+import { wishlistReducer } from './ngrx/wishlist/wishlist.reducer';
+import { WishlistEffects } from './ngrx/wishlist/wishlist.effect';
 
 @NgModule({
   declarations: [
@@ -73,7 +75,8 @@ import { CardsDetailsPageComponent } from './components/card/cards-details/cards
       UserEffects,
       CardEffects,
       InventoryEffects,
-      DeckEffects
+      DeckEffects,
+      WishlistEffects
     ]),
     BrowserAnimationsModule,
     MatTabsModule,
@@ -87,7 +90,8 @@ import { CardsDetailsPageComponent } from './components/card/cards-details/cards
       user: userReducer,
       card: cardReducer,
       inventory: inventoryReducer,
-      deck: deckReducer
+      deck: deckReducer,
+      wishlist: wishlistReducer
     }),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() })
   ],
