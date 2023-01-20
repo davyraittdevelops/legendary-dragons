@@ -64,9 +64,9 @@ def websocket_event():
       "action": "addCardToDeckReq",
       "deck_type": "deck",
       "deck_id": "123",
+      "deck_name": 'doom deck',
       "inventory_card": {
         "card_name": "Swords of Doom",
-        "deck_location" : 'doom deck',
         "card_id": "1",
         "inventory_id": "123",
         "oracle_id": "oracle-123",
