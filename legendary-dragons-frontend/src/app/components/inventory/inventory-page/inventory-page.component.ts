@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { AppState } from 'src/app/app.state';
 import { Inventory } from 'src/app/models/inventory.model';
 import { getInventory } from 'src/app/ngrx/inventory/inventory.actions';
 import { errorSelector, inventorySelector, isLoadingSelector } from 'src/app/ngrx/inventory/inventory.selectors';
+import { PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-inventory-page',
@@ -17,6 +18,9 @@ export class InventoryPageComponent implements OnInit {
   isLoading$: Observable<boolean>;
   hasError$: Observable<boolean>;
 
+  pageSize: number = 0;
+  activePage: number = 0;
+
   constructor(private appStore: Store<AppState>) {
     this.isLoading$ = this.appStore.select(isLoadingSelector);
     this.hasError$ = this.appStore.select(errorSelector);
@@ -25,5 +29,11 @@ export class InventoryPageComponent implements OnInit {
 
   ngOnInit(): void {
     this.appStore.dispatch(getInventory())
+  }
+
+  public handlePageEvent(event: PageEvent): PageEvent {
+    this.pageSize = event.pageSize;
+    this.activePage = event.pageIndex
+    return event;
   }
 }

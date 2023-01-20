@@ -19,7 +19,10 @@ const initialState: InventoryState = {
       last_modified: "",
       total_value: "",
       inventory_cards: []
-  }
+  },
+
+  activePage: 0,
+  itemsPerPage: 1
 }
 
 export const inventoryReducer = createReducer(
@@ -64,5 +67,5 @@ export const inventoryReducer = createReducer(
 
     return {...state, hasError: false, inventory}
   }),
-  on(updateInventoryCardFail, (state) => ({...state, hasError: true}))
+  on(updateInventoryCardFail, (state) => ({...state, hasError: true})),
 )

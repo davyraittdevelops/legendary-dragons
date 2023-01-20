@@ -4,4 +4,6 @@ export interface InventoryState {
   isLoading: boolean;
   hasError: boolean;
   inventory: Inventory;
+  activePage: number;
+  itemsPerPage: number;
 }

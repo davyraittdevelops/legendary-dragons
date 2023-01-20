@@ -1,18 +1,22 @@
-<div class="container-fluid p-5 m-0" aria-label="collection">
-  <div class="row row-cols-auto gy-4">
-    <ng-container *ngIf="inventory$ | async as inventory">
+<ng-container *ngIf="inventory$ | async as inventory">
+  <div class="container-fluid p-5 m-0" aria-label="collection">
+    <div class="row row-cols-auto gy-4">
       <app-add-card-component [inventory_id]="inventory.inventory_id"
-                              class="col"></app-add-card-component>
-
+      class="col"></app-add-card-component>
+      
       <app-cards-details-page class="col" *ngFor="let card of inventory.inventory_cards"
                 [card]="card" [inventory_id]="inventory.inventory_id">
       </app-cards-details-page>
-    </ng-container>
-
-    <div class="text-center">
-      <span *ngIf="isLoading$ | async"
+      
+      <div class="text-center">
+        <span *ngIf="isLoading$ | async"
             class="spinner-border spinner-border" role="status" aria-hidden="true">
-      </span>
+          </span>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
+
+<mat-paginator [length]="inventory.inventory_cards.length" pageSize=1
+(page)="handlePageEvent($event)" showFirstLastButtons="false"></mat-paginator>
+
+</ng-container>
