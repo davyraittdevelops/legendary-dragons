@@ -47,7 +47,7 @@ Within the scope of the Legendary Dragons Application, 3 actors have been identi
 
 ## Logical View (Domain Model)
 
-<img src="./diagrams/Logical_view_domain_model_diagram.png" alt="Domain Model Diagram"/>
+<img src="./diagrams/Logical_view_domain model_diagram.png" alt="Domain Model Diagram"/>
 
 
 ## Context Map
@@ -62,7 +62,61 @@ Within the scope of the Legendary Dragons Application, 3 actors have been identi
 
 ## DynamoDB Database design
 This section contains the database design for DynamoDB. The design can be imported with the tool NoSQLWorkbench
-with the following file:
+with the following file: [./diagrams/db/LegendaryDragons.json](./diagrams/db/LegendaryDragons.json).
+
+The following access patterns were identified for the design:
+1)
+
+2)
+
+3)
+
+4)
+
+5)
+
+6)
+
+### Connections
+
+<img src="./diagrams/db/Connections/Connections.png" alt="connections"/>
+
+**GSI1:**
+<img src="./diagrams/db/Connections/GSI_Connections_GSI1.png" alt="gsi1 connections"/>
+
+
+### Cards
+
+<img src="./diagrams/db/Cards/Cards.png" alt="cards"/>
+
+**GSI1:**
+<img src="./diagrams/db/Cards/GSI_Cards_GSI1.png" alt="gsi1 cards"/>
+
+
+### Decks
+
+<img src="./diagrams/db/Decks/Decks.png" alt="decks"/>
+
+**GSI1:**
+<img src="./diagrams/db/Decks/GSI_Decks_GSI1.png" alt="gsi1 decks"/>
+
+
+### Inventory
+
+<img src="./diagrams/db/Inventory/Inventory.png" alt="inventory"/>
+
+**GSI1:**
+<img src="./diagrams/db/Inventory/GSI_Inventory_GSI1.png" alt="gsi1 inventory"/>
+
+### Wishlists
+
+<img src="./diagrams/db/Wishlists/Wishlists.png" alt="wishlists"/>
+
+**GSI1:**
+<img src="./diagrams/db/Wishlists/GSI_Wishlists_GSI1.png" alt="gsi1 wishlists"/>
+
+**GSI2:**
+<img src="./diagrams/db/Wishlists/GSI_Wishlists_GSI2.png" alt="gsi2 wishlists"/>
 
 ## REST API
 
