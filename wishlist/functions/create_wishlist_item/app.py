@@ -32,8 +32,8 @@ def lambda_handler(event, context):
     wishlist_item = body['wishlist_item']
 
     wishlist_item = {
-        'PK': f'WISHLIST_ITEM#{wishlist_item_id}',
-        'SK': f'WISHLIST#USER#{user_id}',
+        'PK': f'USER#{user_id}',
+        'SK': f'WISHLIST_ITEM#{wishlist_item_id}',
         'wishlist_item_id' : wishlist_item_id,
         'entity_type': 'WISHLIST_ITEM',
         'created_at':datetime.utcnow().isoformat(),
@@ -42,8 +42,8 @@ def lambda_handler(event, context):
         'card_market_id': wishlist_item['card_market_id'],
         'card_name': wishlist_item['card_name'],
         'user_id': user_id,
-        'GSI1_PK': f'WISHLIST#USER#{user_id}',
-        'GSI1_SK': f'WISHLIST_ITEM#{wishlist_item_id}',
+        'GSI1_PK': f'WISHLIST_ITEM#{wishlist_item_id}',
+        'GSI1_SK': f'USER#{user_id}',
         'GSI2_PK': f'DECK{deck_id}',
         'GSI2_SK':  f'WISHLIST_ITEM#{wishlist_item_id}',
         'wishlist_item_id' : wishlist_item_id
