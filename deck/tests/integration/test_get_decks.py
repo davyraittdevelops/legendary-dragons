@@ -85,8 +85,8 @@ def test_lamda_handler_success(websocket_event, table_definition):
 
     table.put_item(
       Item={
-        "PK": "DECK#123",
-        "SK": "USER#1",
+        "PK": "USER#1",
+        "SK": "DECK#123",
         "entity_type": "DECK",
         "created_at": "2023-18-01",
         "last_modified": "2023-18-01",
@@ -94,8 +94,8 @@ def test_lamda_handler_success(websocket_event, table_definition):
         "deck_name": "Azorius Soldiers",
         "deck_type": "EDH",
         "user_id": "1",
-        "GSI1_PK": "USER#1",
-        "GSI1_SK": "DECK#123",
+        "GSI1_PK": "DECK#123",
+        "GSI1_SK": "USER#1",
         "total_value": "0"
       }
   )
@@ -106,16 +106,15 @@ def test_lamda_handler_success(websocket_event, table_definition):
         response = app.lambda_handler(websocket_event, {})
         
         decks = table.query(
-            KeyConditionExpression=Key("GSI1_PK").eq(f"USER#1") &
-            Key("GSI1_SK").begins_with("DECK#"),
-            IndexName="GSI1"
+            KeyConditionExpression=Key("PK").eq(f"USER#1") &
+            Key("SK").begins_with("DECK#")
         )["Items"]
 
         # Assert
-        assert response["statusCode"] == 200
+        assert response["statusCode"] == 201
         assert len(decks) == 1
-        assert decks[0]["PK"] == "DECK#123"
-        assert decks[0]["SK"] == "USER#1"
+        assert decks[0]["PK"] == "USER#1"
+        assert decks[0]["SK"] == "DECK#123"
         assert decks[0]["entity_type"] == "DECK"
         assert decks[0]["created_at"] == "2023-18-01"
         assert decks[0]["last_modified"] == "2023-18-01"
@@ -123,6 +122,6 @@ def test_lamda_handler_success(websocket_event, table_definition):
         assert decks[0]["deck_name"] == "Azorius Soldiers"
         assert decks[0]["deck_type"] == "EDH"
         assert decks[0]["user_id"] == "1"
-        assert decks[0]["GSI1_PK"] == "USER#1"
-        assert decks[0]["GSI1_SK"] == "DECK#123"
+        assert decks[0]["GSI1_PK"] == "DECK#123"
+        assert decks[0]["GSI1_SK"] == "USER#1"
         assert decks[0]["total_value"] == "0"
