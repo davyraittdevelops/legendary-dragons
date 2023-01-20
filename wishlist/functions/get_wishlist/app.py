@@ -28,10 +28,9 @@ def lambda_handler(event, context):
     """Do query/data manipulation.  """
     try:
         wishlist_items = table.query(
-            KeyConditionExpression=Key("GSI1_PK").eq(f"WISHLIST#USER#{user_id}") 
+            KeyConditionExpression=Key("PK").eq(f"USER#{user_id}") 
             &
-            Key("GSI1_SK").begins_with("WISHLIST_ITEM#"),
-            IndexName="GSI1"
+            Key("SK").begins_with("WISHLIST_ITEM#")
         )['Items']
         logger.info(f'Result from table get item : {wishlist_items}')
     except Exception as error:
@@ -39,7 +38,7 @@ def lambda_handler(event, context):
 
     """Post output back to the connection."""
     output = {
-        "event_type": "GET_WISHLIST_ITEM_RESULT",
+        "event_type": "GET_WISHLIST_RESULT",
         "wishlist_item": wishlist_items,
     }
 
