@@ -53,8 +53,8 @@ def bus_event():
     "detail-type": "CARD_ADDED_TO_DECK",
     "detail": {
       "inventory_card": {
-        "PK": "INVENTORY_CARD#1",
-        "SK": "INVENTORY#1",
+        "PK": "USER#1",
+        "SK": "INVENTORY#1#INVENTORY_CARD#1",
         "entity_type": "INVENTORY_CARD",
         "card_name": "Swords of Doom",
         "card_id": "1",
@@ -68,8 +68,8 @@ def bus_event():
         "scryfall_id": "scryfall-1",
         "image_url": "example-image-url.com",
         "deck_location": "deck-1",
-        "GSI1_PK": "INVENTORY#1",
-        "GSI1_SK": "INVENTORY_CARD#1",
+        "GSI1_PK": "INVENTORY#1#INVENTORY_CARD#1",
+        "GSI1_SK": "USER#1",
       }
     }
   }
@@ -82,8 +82,8 @@ def test_lamda_handler_update_card_deck_location(bus_event, table_definition):
   dynamodb = boto3.resource("dynamodb")
   table = dynamodb.create_table(**table_definition)
   table.put_item(Item={
-    "PK": "INVENTORY_CARD#1",
-    "SK": "INVENTORY#1",
+    "PK": "USER#1",
+    "SK": "INVENTORY#1#INVENTORY_CARD#1",
     "entity_type": "INVENTORY_CARD",
     "card_name": "Swords of Doom",
     "card_id": "1",
@@ -97,17 +97,18 @@ def test_lamda_handler_update_card_deck_location(bus_event, table_definition):
     "scryfall_id": "scryfall-1",
     "image_url": "example-image-url.com",
     "deck_location": "unassigned",
-    "GSI1_PK": "INVENTORY#1",
-    "GSI1_SK": "INVENTORY_CARD#1",
+    "GSI1_PK": "INVENTORY#1#INVENTORY_CARD#1",
+    "GSI1_SK": "USER#1",
   })
   # Act
   from functions.update_inventory_card import app
   response = app.lambda_handler(bus_event, {})
 
   inventory_cards = table.query(
-      KeyConditionExpression=Key("PK").eq("INVENTORY_CARD#1") &
-                             Key("SK").begins_with("INVENTORY#1")
+      KeyConditionExpression=Key("PK").eq("USER#1") &
+                             Key("SK").begins_with("INVENTORY")
   )["Items"]
+  
   # Assert
   assert response["statusCode"] == 200
   assert len(inventory_cards) == 1

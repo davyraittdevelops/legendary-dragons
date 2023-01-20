@@ -24,9 +24,9 @@ def lambda_handler(event, context):
     now = datetime.utcnow().isoformat()
 
     logger.info("Creating new inventory with id: %s", inventory_id)
-    pk = f"INVENTORY#{inventory_id}"
-    sk = f"USER#{user_id}"
-
+    pk = f"USER#{user_id}"
+    sk = f"INVENTORY#{inventory_id}"
+    
     table.put_item(Item={
         "PK": pk,
         "SK": sk,
@@ -35,7 +35,15 @@ def lambda_handler(event, context):
         "user_id": user_id,
         "created_at": now,
         "last_modified": now,
-        "total_value": "0",
+        "total_value": {
+            "usd": 0,
+            "usd_foil": 0,
+            "usd_etched": 0,
+            "eur": 0,
+            "eur_foil": 0,
+            "tix": 0
+        },
+        "total_cards": "0",
         "GSI1_PK": sk,
         "GSI1_SK": pk
     })

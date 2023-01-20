@@ -86,9 +86,8 @@ def test_lamda_handler_success(websocket_event, table_definition):
     response = app.lambda_handler(websocket_event, {})
 
     inventory_card = table.query(
-        KeyConditionExpression=Key("GSI1_PK").eq("INVENTORY#inv-12") &
-        Key("GSI1_SK").begins_with("INVENTORY_CARD"),
-        IndexName="GSI1"
+        KeyConditionExpression=Key("PK").eq("USER#user-123") &
+        Key("SK").begins_with("INVENTORY#inv-12#INVENTORY_CARD"),
     )["Items"][0]
 
     # Assert
