@@ -87,7 +87,7 @@ export class AddWishlistItemComponent implements OnInit {
     let wishlist_item_object = JSON.parse(JSON.stringify(wishlistItem))
     wishlist_item_object.image_url = card.card_faces[0].image_url
     this.appStore.dispatch(createWishlistItem({wishlist_item: wishlist_item_object}))
-    this.toastService.showSuccess(`successfully added to the wislist!`);
+    this.toastService.showSuccess(wishlistItem.card_name + ` successfully added to the wislist!`);
   }
 
 }

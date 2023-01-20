@@ -18,8 +18,5 @@ export class WishlistItemComponent {
   }
 
   ngOnInit(): void {
-    console.log('item: ' , this.wishlist_item)
   }
-
-
 }
