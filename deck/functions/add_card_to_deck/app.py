@@ -36,8 +36,11 @@ def lambda_handler(event, context):
 
   try:
     inventory_card['deck_location'] = deck_name
+
+    update_deck_price(inventory_card)
     update_inventory_card_deck_location(inventory_card)
 
+    logger.info(f'Received card  {inventory_card}')
     logger.info(f"Adding deck card ({inventory_card['card_id']}) to DynamoDB table")
 
     table.put_item(Item={
@@ -64,6 +67,24 @@ def lambda_handler(event, context):
     logger.info(f"Adding card to deck failed: {e}")
 
   return {"statusCode": 200}
+
+def update_deck_price(inventory_card):
+  try:
+    logger.info(f"Trying to retrieve card price from : {e}")
+    #Try to retrieve prices from card
+    prices = inventory_card['prices']
+    price_tix = prices['tix']
+    price_eur = prices['eur']
+    price_usd = prices['usd']
+    print('prices are: ' , price_tix, price_eur, price_usd)
+
+    #Get deck object with prices, and add these prices to the deck object
+
+    #Post the deck object back 
+      
+  except Exception as e:
+    logger.info(f"Exception occured:  {e}")
+    return e
 
 
 def update_inventory_card_deck_location(inventory_card):
