@@ -1,7 +1,7 @@
-import { Wishlist } from "src/app/models/wishlist.model";
+import {WishlistItem} from "../../../models/wishlist.model";
 
 export interface WishlistState {
   isLoading: boolean;
   hasError: boolean;
-  wishlist: Wishlist;
+  wishlist_items: WishlistItem[];
 }

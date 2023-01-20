@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { Wishlist, WishlistItem } from 'src/app/models/wishlist.model';
+import {  WishlistItem } from 'src/app/models/wishlist.model';
 
 export const getWishlist = createAction(
   '[Wishlist Component] Get Wishlist'
@@ -12,7 +12,7 @@ export const getWishlistFail = createAction(
 
 export const getWishlistSuccess = createAction(
   '[Wishlist Component] Get Wishlist Success',
-  props<{wishlist: Wishlist}>(),
+  props<{wishlist_items: WishlistItem[]}>(),
 );
 
 export const createWishlistItem = createAction(

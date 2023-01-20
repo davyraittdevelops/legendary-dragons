@@ -5,9 +5,9 @@ import { AppState } from 'src/app/app.state';
 import { Inventory } from 'src/app/models/inventory.model';
 import { getInventory } from 'src/app/ngrx/inventory/inventory.actions';
 import { errorSelector, inventorySelector, isLoadingSelector } from 'src/app/ngrx/inventory/inventory.selectors';
-import {Wishlist} from "../../../models/wishlist.model";
-import {wishlistSelector} from "../../../ngrx/wishlist/wishlist.selectors";
 import {getWishlist} from "../../../ngrx/wishlist/wishlist.actions";
+import {wishlistItemsSelector} from "../../../ngrx/wishlist/wishlist.selectors";
+import {WishlistItem} from "../../../models/wishlist.model";
 
 @Component({
   selector: 'app-wishlist-page',
@@ -15,14 +15,14 @@ import {getWishlist} from "../../../ngrx/wishlist/wishlist.actions";
   styleUrls: ['./wishlist-page.component.scss']
 })
 export class WishlistPageComponent implements OnInit {
-  wishlist: Observable<Wishlist>;
+  wishlist_items$: Observable<WishlistItem[]>;
   isLoading$: Observable<boolean>;
   hasError$: Observable<boolean>;
 
   constructor(private appStore: Store<AppState>) {
     this.isLoading$ = this.appStore.select(isLoadingSelector);
     this.hasError$ = this.appStore.select(errorSelector);
-    this.wishlist = this.appStore.select(wishlistSelector);
+    this.wishlist_items$ = this.appStore.select(wishlistItemsSelector);
   }
 
   ngOnInit(): void {

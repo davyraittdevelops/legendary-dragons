@@ -5,4 +5,4 @@ export const selectWishlist = (state: AppState) => state.wishlist
 
 export const isLoadingSelector = createSelector(selectWishlist, (state) => state.isLoading);
 export const errorSelector = createSelector(selectWishlist, (state) => state.hasError);
-export const wishlistSelector = createSelector(selectWishlist, (state) => state.wishlist);
+export const wishlistItemsSelector = createSelector(selectWishlist, (state) => state.wishlist_items);

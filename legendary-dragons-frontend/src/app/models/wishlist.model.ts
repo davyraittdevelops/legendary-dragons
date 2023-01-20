@@ -1,10 +1,3 @@
-export interface Wishlist {
-  id: string;
-  created_at: Date;
-  last_modified: Date;
-  wishlist_items: WishlistItem[];
-}
-
 export interface WishlistItem {
   wishlist_item_id: string
   oracle_id: string

@@ -31,9 +31,10 @@ export class WishlistEffects {
       switchMap(() => {
         return this.websocketService.dataUpdates$().pipe(
           filter((event: any) => {
+            console.log(event)
             return event['event_type'] === 'GET_WISHLIST_RESULT'
           }),
-          map((event: any) => getWishlistSuccess({wishlist: event["data"]})),
+          map((event: any) => getWishlistSuccess({wishlist_items: event["data"]})),
           catchError((error) => {
             console.log(error);
             return of(getWishlistFail({error: true}))
