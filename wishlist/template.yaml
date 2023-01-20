@@ -119,6 +119,16 @@ Resources:
             EventBusName: "connection-event-bus"
         - DynamoDBReadPolicy:
             TableName: !Ref WishlistTable
+        - Statement:
+          - Effect: Allow
+            Action:
+              - 'execute-api:ManageConnections'
+            Resource:
+              Fn::Sub:
+                - 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${WebSocketApi}/*'
+                - WebSocketApi:
+                    Fn::ImportValue:
+                      'Fn::Sub': "${LegDragonsWebSocketApi}"
 
   GetWishlistPermission:
     Type: AWS::Lambda::Permission
