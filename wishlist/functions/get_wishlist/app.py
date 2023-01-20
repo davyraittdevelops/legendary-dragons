@@ -41,7 +41,7 @@ def lambda_handler(event, context):
     """Post output back to the connection."""
     output = {
         "event_type": "GET_WISHLIST_RESULT",
-        "wishlist_items": wishlist_items,
+        "data": wishlist_items,
     }
 
     apigateway.post_to_connection(
