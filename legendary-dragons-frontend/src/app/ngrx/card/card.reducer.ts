@@ -11,7 +11,9 @@ const initialState: CardState = {
   isLoading: false,
   hasError: false,
   query: "",
-  searchedCards: []
+  searchedCards: [],
+  page: 0,
+  itemsPerPage: 1
 }
 
 export const cardReducer = createReducer(

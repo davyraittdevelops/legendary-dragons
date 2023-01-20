@@ -5,4 +5,6 @@ export interface CardState {
   hasError: boolean;
   query: string;
   searchedCards: Card[];
+  page: number;
+  itemsPerPage: number;
 }
