@@ -20,6 +20,7 @@ table = dynamodb.Table(os.getenv("TABLE_NAME"))
 def lambda_handler(event, context):
     domain_name = event["requestContext"]["domainName"]
     stage = event["requestContext"]["stage"]
+    user_id = event["requestContext"]["authorizer"]["userId"]
     endpoint = f"https://{domain_name}/{stage}"
 
     body = json.loads(event["body"])
@@ -28,41 +29,54 @@ def lambda_handler(event, context):
     try:
         logger.info(f"Querying with deck_id {deck_id}")
 
-        deck = table.query(
-            KeyConditionExpression=Key("PK").eq(f"DECK#{deck_id}")
+        deck_response = table.query(
+            KeyConditionExpression=Key("PK").eq(f"USER#{user_id}")
             &
-            Key("SK").begins_with("USER#")
-        )['Items'][0]
-        logger.info(f"Querying for deck successful, with deck_id {deck_id}")
-
-        deck_cards = table.query(
-            KeyConditionExpression=Key("GSI1_PK").eq(f"DECK#{deck_id}")
-            &
-            Key("GSI1_SK").begins_with("DECK_CARD#"),
-            IndexName="GSI1"
+            Key("SK").begins_with(f"DECK#{deck_id}")
         )['Items']
-        logger.info(f"Querying for deck cards succesful, with deck_id {deck_id}")
 
-        side_deck_cards = table.query(
-            KeyConditionExpression=Key("GSI1_PK").eq(f"DECK#{deck_id}#SIDE_DECK")
-            &
-            Key("GSI1_SK").begins_with("DECK_CARD#"),
-            IndexName="GSI1"
-        )['Items']
+        logger.info(f"Deck response length: {len(deck_response)}")
+
+        deck = next(
+            (v for v in deck_response if v["entity_type"] == "DECK"),
+            None
+        )
+
+        connection_id = event["requestContext"]["connectionId"]
+        apigateway = boto3.client("apigatewaymanagementapi", endpoint_url=endpoint)
+
+        if deck is None:
+            output = {
+                "event_type": "GET_DECK_RESULT",
+                "error": "NOT_FOUND"
+            }
+            apigateway.post_to_connection(
+                ConnectionId=connection_id,
+                Data=json.dumps(output, cls=DecimalEncoder)
+            )
+            return {"statusCode": 404}
+
+        deck_cards = filter(
+            lambda card: card["entity_type"] == "DECK_CARD",
+            deck_response
+        )
+        side_deck_cards = filter(
+            lambda card: card["entity_type"] == "SIDE_DECK_CARD",
+            deck_response
+        )
     except Exception as e:
         logger.info(f"Exception retrieving cards! {e}")
 
-    connection_id = event["requestContext"]["connectionId"]
-    apigateway = boto3.client("apigatewaymanagementapi", endpoint_url=endpoint)
     output = {
         "event_type": "GET_DECK_RESULT",
         "data": {
             "deck": deck,
-            "deck_cards": deck_cards,
-            "side_deck_cards": side_deck_cards
+            "deck_cards": list(deck_cards),
+            "side_deck_cards": list(side_deck_cards)
         }
-
     }
+
+    logger.info(output)
 
     apigateway.post_to_connection(
         ConnectionId=connection_id,

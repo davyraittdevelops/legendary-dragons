@@ -104,14 +104,14 @@ def test_lamda_handler_success(websocket_event, table_definition):
     with patch("botocore.client.BaseClient._make_api_call", new=mock_make_api_call):
         from functions.get_decks import app
         response = app.lambda_handler(websocket_event, {})
-        
+
         decks = table.query(
             KeyConditionExpression=Key("PK").eq(f"USER#1") &
             Key("SK").begins_with("DECK#")
         )["Items"]
 
         # Assert
-        assert response["statusCode"] == 201
+        assert response["statusCode"] == 200
         assert len(decks) == 1
         assert decks[0]["PK"] == "USER#1"
         assert decks[0]["SK"] == "DECK#123"
