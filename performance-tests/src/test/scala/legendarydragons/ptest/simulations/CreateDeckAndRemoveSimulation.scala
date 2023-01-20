@@ -14,10 +14,10 @@ class CreateDeckAndRemoveSimulation extends Simulation {
   def httpProtocol = http.baseUrl(getRestApiUrl(environment))
   .userAgentHeader("Gatling/test")
 
-  setUp(CreateDeckScenario()
+  setUp(AddCardToDeckScenario()
   .inject(constantUsersPerSec(userRate) during duration)
   .protocols(httpProtocol))
   .assertions(
     global.responseTime.max.lt(15000),
-    global.successfulRequests.percent.gte(50))
+    global.successfulRequests.percent.gte(80))
 }

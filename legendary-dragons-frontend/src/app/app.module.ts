@@ -16,19 +16,19 @@ import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from './app.component';
-import { CardFooterComponent } from './components/card-footer/card-footer.component';
+import { CardFooterComponent } from './components/card/card-footer/card-footer.component';
 import { AddCardComponent } from './components/card/add-card-component/add-card-component';
-import { CardComponent } from './components/card/card/card.component';
-import { DashboardComponent } from './components/dashboard/dashboard.component';
-import { DecksDetailsPageComponent } from './components/decks-details-page/decks-details-page.component';
-import { DecksPageComponent } from './components/decks-page/decks-page.component';
-import { HeaderComponent } from './components/header/header.component';
-import { HomePageComponent } from "./components/home-page/home-page.component";
-import { InventoryPageComponent } from './components/inventory-page/inventory-page.component';
-import { LoginPageComponent } from './components/login-page/login-page.component';
-import { NavbarComponent } from './components/navbar/navbar.component';
-import { RegisterPageComponent } from './components/register-page/register-page.component';
-import { WishlistPageComponent } from './components/wishlist-page/wishlist-page.component';
+import { DashboardComponent } from './components/general/dashboard/dashboard.component';
+import { AddCardToDeckComponent } from './components/deck/add-card-to-deck/add-card-to-deck.component';
+import { DecksDetailsPageComponent } from './components/deck/decks-details-page/decks-details-page.component';
+import { DecksPageComponent } from './components/deck/decks-page/decks-page.component';
+import { HeaderComponent } from './components/general/header/header.component';
+import { HomePageComponent } from "./components/general/home-page/home-page.component";
+import { InventoryPageComponent } from './components/inventory/inventory-page/inventory-page.component';
+import { LoginPageComponent } from './components/indentity-and-access/login-page/login-page.component';
+import { NavbarComponent } from './components/general/navbar/navbar.component';
+import { RegisterPageComponent } from './components/indentity-and-access/register-page/register-page.component';
+import { WishlistPageComponent } from './components/wishlist/wishlist-page/wishlist-page.component';
 import { CardEffects } from './ngrx/card/card.effect';
 import { cardReducer } from './ngrx/card/card.reducer';
 import { DeckEffects } from './ngrx/deck/deck.effect';
@@ -37,6 +37,8 @@ import { InventoryEffects } from './ngrx/inventory/inventory.effect';
 import { inventoryReducer } from './ngrx/inventory/inventory.reducer';
 import { UserEffects } from './ngrx/user/user.effect';
 import { userReducer } from './ngrx/user/user.reducer';
+import { DeckCardsDetailsPageComponent } from './components/deck/deck-cards-details/deck-cards-details-page.component';
+import { CardsDetailsPageComponent } from './components/card/cards-details/cards-details-page.component';
 
 @NgModule({
   declarations: [
@@ -52,8 +54,10 @@ import { userReducer } from './ngrx/user/user.reducer';
     DecksPageComponent,
     WishlistPageComponent,
     AddCardComponent,
-    CardComponent,
     CardFooterComponent,
+    AddCardToDeckComponent,
+    CardsDetailsPageComponent,
+    DeckCardsDetailsPageComponent
 
   ],
   imports: [
