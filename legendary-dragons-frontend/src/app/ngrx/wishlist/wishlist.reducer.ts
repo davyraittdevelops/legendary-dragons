@@ -33,12 +33,12 @@ export const wishlistReducer = createReducer(
   on(getWishlistFail, (state) => ({...state, isLoading: false, hasError: true})),
   on(createWishlistItem, (state, {wishlist_item}) => ({...state, isLoading: true})),
   on(createWishlistItemSuccess, (state, {wishlist_item}) => {
-    const foundIndex = state.wishlist_items.findIndex((wishlist_item) => wishlist_item.wishlist_item_id === wishlist_item.wishlist_item_id);
+    console.log(wishlist_item)
+    const foundIndex = state.wishlist_items.findIndex((item) => item.wishlist_item_id === wishlist_item.wishlist_item_id);
     if (foundIndex > -1)
       return {...state, isLoading: false, hasError: false};
-    const wishlist_items = [...state.wishlist_items, wishlist_item];
-    const newWishlist = {...state, wishlist_items: wishlist_items};
-    return {...state, isLoading: false, hasError: false, wishlist: newWishlist};
+    const wishlist_items_list = [...state.wishlist_items, wishlist_item];
+    return {...state, isLoading: false, hasError: false, wishlist_items: wishlist_items_list};
   }),
   on(createWishlistItemFail, (state) => ({...state, isLoading: false, hasError: true})),
   on(removeWishlistItem, (state, {wishlist_item_id}) => ({...state, isLoading: true})),

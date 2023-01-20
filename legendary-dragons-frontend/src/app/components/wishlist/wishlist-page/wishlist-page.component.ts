@@ -23,7 +23,7 @@ export class WishlistPageComponent implements OnInit {
   constructor(private appStore: Store<AppState>) {
     this.isLoading$ = this.appStore.select(isLoadingSelector);
     this.hasError$ = this.appStore.select(errorSelector);
-    this.wishlist_items$ = this.appStore.select(wishlistItemsSelector).pipe(tap(wishlist_items => console.log('#########' , wishlist_items)));
+    this.wishlist_items$ = this.appStore.select(wishlistItemsSelector);
   }
 
   ngOnInit(): void {
