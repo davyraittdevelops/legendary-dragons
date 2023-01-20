@@ -65,7 +65,15 @@ This section contains the database design for DynamoDB. The design can be import
 with the following file: [./diagrams/db/LegendaryDragons.json](./diagrams/db/LegendaryDragons.json).
 
 The following access patterns were identified for the design:
-1)
+
+1) Get Card by id
+
+```python
+table.query(
+    KeyConditionExpression=Key("PK").eq("CARD#asd-122343-fdff") &
+    Key("SK").begins_with("CARD_FACE")
+)
+```
 
 2)
 
@@ -142,7 +150,7 @@ Websocket documentation: http://websocket-documentation.s3-website-us-east-1.ama
 <img src="./diagrams/wireframes/Decks - mainpage.png" alt="decks main page"/>
 
 **Decks detail**:
-<img src="./diagrams/wireframes/Decks - decks selected.png" alt="decks selected"/>
+<img src="./diagrams/wireframes/Decks - deck selected.png" alt="decks selected"/>
 
 **Wishlist**:
 <img src="./diagrams/wireframes/Wishlist.png" alt="wishlist"/>
