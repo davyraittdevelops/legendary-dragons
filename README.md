@@ -42,11 +42,23 @@ Within the scope of the Legendary Dragons Application, 3 actors have been identi
 
 ## Event Storming
 
+<img src="./diagrams/Event_storming_diagram.png" alt="Event Storming Diagram"/>
+
+
 ## Logical View (Domain Model)
+
+<img src="./diagrams/Logical_view_domain_model_diagram.png" alt="Domain Model Diagram"/>
+
 
 ## Context Map
 
+<img src="./diagrams/Context_map.png" alt="Context Map"/>
+
+
 ## Cloud Deployment diagram
+
+<img src="./diagrams/cdd.png" alt="CDD"/>
+
 
 ## DynamoDB Database design
 This section contains the database design for DynamoDB. The design can be imported with the tool NoSQLWorkbench
@@ -59,6 +71,31 @@ with the following file:
 Websocket documentation: http://websocket-documentation.s3-website-us-east-1.amazonaws.com/
 
 ## Wireframes
+
+**Homepage**:
+<img src="./diagrams/wireframes/Homepage.png" alt="home"/>
+
+**Register**:
+<img src="./diagrams/wireframes/Register.png" alt="register"/>
+
+**Login**:
+<img src="./diagrams/wireframes/Login.png" alt="login"/>
+
+**Inventory**:
+<img src="./diagrams/wireframes/Homepage - Inventory selected.png" alt="inventory"/>
+
+**Decks Mainpage**:
+<img src="./diagrams/wireframes/Decks - mainpage.png" alt="decks main page"/>
+
+**Decks detail**:
+<img src="./diagrams/wireframes/Decks - decks selected.png" alt="decks selected"/>
+
+**Wishlist**:
+<img src="./diagrams/wireframes/Wishlist.png" alt="wishlist"/>
+
+## Retrospectives
+
+<img src="./diagrams/Retrospectives.png" alt="Retrospectives"/>
 
 # Starting the CI/CD Pipelines
 
