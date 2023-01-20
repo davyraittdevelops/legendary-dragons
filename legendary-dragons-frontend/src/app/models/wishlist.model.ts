@@ -5,4 +5,5 @@ export interface WishlistItem {
   market_id: string
   created_at: string
   last_modified: string
+  image_url: string
 }
