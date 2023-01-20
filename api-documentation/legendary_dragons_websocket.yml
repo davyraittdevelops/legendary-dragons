@@ -29,7 +29,7 @@ channels:
 # Card
   searchCardsByKeyword:
     publish:
-      summary: Retrieves the details of a inventory.
+      summary: Search a card by keyword.
       message:
           $ref: '#/components/messages/searchCardsByKeywordReq'
 
@@ -169,9 +169,6 @@ components:
           action: 
             type: string
             description: getInventoryReq
-          user_id:
-            type: string
-            description: We need user_id to find the matching inventory.
       examples:
         - name: getInventoryReq
           payload:
