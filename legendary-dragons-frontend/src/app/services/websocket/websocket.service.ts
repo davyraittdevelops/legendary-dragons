@@ -94,9 +94,13 @@ export class WebsocketService {
   }
 
   sendCreateWishlistItemMessage(wishlist_item: WishlistItem) {
+    console.log('adding item: ' , wishlist_item)
     this.sendMessage(
       'createWishlistItemReq',
-      {wishlist_item: wishlist_item}
+      {wishlist_item: wishlist_item,
+        deck_id: 'not available for now'
+      }
+
     )
   }
 

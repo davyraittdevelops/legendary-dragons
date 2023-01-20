@@ -11,6 +11,7 @@ import { addCardtoInventory } from 'src/app/ngrx/inventory/inventory.actions';
 import { ToastService } from 'src/app/services/toast/toast.service';
 import { Card } from "../../../models/card.model";
 import {WishlistItem} from "../../../models/wishlist.model";
+import {createWishlistItem} from "../../../ngrx/wishlist/wishlist.actions";
 
 @Component({
   selector: 'app-add-wishlist-item-component',
@@ -83,10 +84,9 @@ export class AddWishlistItemComponent implements OnInit {
   }
 
   addCardToWishlist(wishlistItem: WishlistItem) {
-
     console.log('@@@@@@' , wishlistItem)
 
-    // this.appStore.dispatch(addCardtoInventory({inventoryId: this.inventoryId, inventoryCard}))
+    this.appStore.dispatch(createWishlistItem({wishlist_item: wishlistItem}))
     this.toastService.showSuccess(`successfully added to the wislist!`);
   }
 
