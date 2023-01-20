@@ -1,15 +1,16 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
-import {clearSearchResult} from "../../../ngrx/card/card.actions";
 import {Observable} from "rxjs";
 import {Inventory, InventoryCard} from "../../../models/inventory.model";
 import {Store} from "@ngrx/store";
 import {AppState} from "../../../app.state";
-import {errorSelector, inventorySelector, isLoadingSelector} from "../../../ngrx/inventory/inventory.selectors";
-import {getInventory} from "../../../ngrx/inventory/inventory.actions";
-import {MatTableDataSource} from "@angular/material/table";
-import { Router } from '@angular/router';
-import { addCardToDeck } from 'src/app/ngrx/deck/deck.actions';
+import {
+  errorSelector,
+  inventorySelector,
+  isLoadingSelector
+} from "../../../ngrx/inventory/inventory.selectors";
+import {Router} from '@angular/router';
+import {addCardToDeck} from 'src/app/ngrx/deck/deck.actions';
 
 @Component({
   selector: 'app-add-card-to-deck',

@@ -1,10 +1,10 @@
-<div class="collection-card card-size" aria-label="collection-card">
+<div class="collection-card card-size" aria-label="deck-card">
   <img src="{{card.image_url}}" alt="{{card.card_name}} image" class="card-image" />
   <div class="d-flex justify-content-end pointer" (click)="open({content : content});"></div>
 </div>
 
 <div class="btn-group card-action-footer" role="group" aria-label="Basic example">
-  <button type="button" (click)="open({content : content});" class="btn btn-dark">Details</button>
+  <button type="button" (click)="open({content : content});" class="btn btn-dark" name="openDeckCardDetailsModal">Details</button>
 </div>
 
 <ng-template #content let-modal>

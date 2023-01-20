@@ -1,4 +1,4 @@
-<button type="button" (click)="open({content : content});" class="btn btn-primary">Add cards to deck/side deck</button>
+<button type="button" (click)="open({content : content});" class="btn btn-primary" name="openAddDeckCardModal">Add cards to deck/side deck</button>
 
 
 <ng-template #content let-modal>
@@ -29,8 +29,8 @@
             <th mat-header-cell *matHeaderCellDef> AddButton </th>
             <td mat-cell *matCellDef="let card">
               <div class="addButtons">
-                <button type="button" (click)="addCardToDeck(card);" class="btn btn-dark">Add card to deck</button>
-                <button type="button" (click)="addCardToSideDeck(card);" class="btn btn-dark">Add card to side deck</button>
+                <button type="button" (click)="addCardToDeck(card);" class="btn btn-dark" name="addCardToDeck">Add card to deck</button>
+                <button type="button" (click)="addCardToSideDeck(card);" class="btn btn-dark" name="addCardToSideDeck">Add card to side deck</button>
               </div>
             </td>
           </ng-container>
