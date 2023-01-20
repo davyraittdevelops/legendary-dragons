@@ -11,7 +11,6 @@ export const logout = () => {
 }
 
 export const removeAllInventoryCards = () => {
-  cy.visit("/dashboard");
   cy.wait(3000);
   cy.get("body").then($body => {
     if ($body.find("div[aria-label=collection-card]").length > 0) {
