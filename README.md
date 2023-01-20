@@ -54,6 +54,13 @@ Within the scope of the Legendary Dragons Application, 3 actors have been identi
 
 <img src="./diagrams/Context_map.png" alt="Context Map"/>
 
+The diagram displays the various contexts withing the Legendary Dragons application. The description below describes each context:
+
+- CardContext:
+- InventoryContext: The context for the inventory management for an user.
+- DeckContext:
+- WishlistContext:
+- IdentityAndAccessContext:
 
 ## Cloud Deployment diagram
 
