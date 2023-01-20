@@ -63,7 +63,8 @@ def lambda_handler(event, context):
       "quality": save["quality"],
       "image_url": save["image_url"],
       "GSI1_PK": sk,
-      "GSI1_SK": deck_card
+      "GSI1_SK": deck_card,
+      "user_id": save["user_id"]
     })
   logger.info(f"Succesfully moved to other deck, deck id now: {sk}")
 
