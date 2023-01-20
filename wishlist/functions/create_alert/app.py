@@ -75,7 +75,7 @@ def lambda_handler(event, context):
     """Post output back to the connection."""
     output = {
         "event_type": "CREATE_ALERT_RESULT",
-        "alert": alert,
+        "data": alert,
     }
 
     apigateway.post_to_connection(
