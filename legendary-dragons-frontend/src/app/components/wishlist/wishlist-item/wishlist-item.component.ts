@@ -45,7 +45,6 @@ export class WishlistItemComponent {
   }
 
   removeWishlistItem(wishlist_item: WishlistItem) {
-    console.log('removing item ' , wishlist_item)
     this.appStore.dispatch(removeWishlistItem({wishlist_item_id: wishlist_item.wishlist_item_id}))
   }
 
@@ -60,7 +59,6 @@ export class WishlistItemComponent {
   }
 
   removeAlert(alert_item: WishlistAlert) {
-    console.log('removing...' , alert_item)
     this.appStore.dispatch(removeAlert({alert_item: alert_item, wishlist_item_id: this.wishlist_item.wishlist_item_id}))
 
   }

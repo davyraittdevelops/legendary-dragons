@@ -26,7 +26,6 @@ export const wishlistReducer = createReducer(
   initialState,
   on(getWishlist, (state) => ({...state, isLoading: true})),
   on(getWishlistSuccess, (state, {wishlist_items}) => {
-    console.log(wishlist_items);
     return {
       ...state,
       isLoading: false,
@@ -38,7 +37,6 @@ export const wishlistReducer = createReducer(
 
   on(getAlerts, (state, {wishlist_item_id}) => ({...state, isLoading: true})),
   on(getAlertsSuccess, (state, {alert_items}) => {
-    console.log(alert_items);
     return {
       ...state,
       isLoading: false,
@@ -50,7 +48,6 @@ export const wishlistReducer = createReducer(
 
   on(createWishlistItem, (state, {wishlist_item}) => ({...state, isLoading: true})),
   on(createWishlistItemSuccess, (state, {wishlist_item}) => {
-    console.log(wishlist_item)
     const foundIndex = state.wishlist_items.findIndex((item) => item.wishlist_item_id === wishlist_item.wishlist_item_id);
     if (foundIndex > -1)
       return {...state, isLoading: false, hasError: false};
@@ -70,7 +67,6 @@ export const wishlistReducer = createReducer(
   on(removeWishlistItemFail, (state) => ({...state, isLoading: false, hasError: true})),
   on(createAlert, (state, {alert_item, wishlist_item_id}) => ({...state, isLoading: true})),
   on(createAlertSuccess, (state, {alert_item}) => {
-    console.log(alert_item)
     const foundIndex = state.alert_items.findIndex((item) => item.alert_id === alert_item.alert_id);
     if (foundIndex > -1)
       return {...state, isLoading: false, hasError: false};
