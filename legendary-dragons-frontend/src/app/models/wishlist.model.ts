@@ -6,6 +6,7 @@ export interface WishlistItem {
   created_at: string
   last_modified: string
   image_url: string
+  card_market_id: string
 }
 
 export interface WishlistAlert {

@@ -8,7 +8,10 @@ import {
   createWishlistItemFail,
   removeWishlistItem,
   removeWishlistItemFail,
-  removeWishlistItemSuccess, createAlert, createAlertSuccess, createAlertFail
+  removeWishlistItemSuccess,
+  createAlert,
+  createAlertSuccess,
+  createAlertFail
 } from "./wishlist.actions";
 import { WishlistState } from "./models/wishlist-state.model";
 
