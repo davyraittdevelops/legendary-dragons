@@ -32,7 +32,7 @@ def lambda_handler(event, context):
         wishlist_items = table.query(
             KeyConditionExpression=Key("PK").eq(f"USER#{user_id}") 
             &
-            Key("SK").begins_with("WISHLIST_ITEM#")
+            Key("SK").begins_with("WISHLIST#")
         )['Items']
         logger.info(f'Result from table get item : {wishlist_items}')
     except Exception as error:
