@@ -1,9 +1,8 @@
 import json
 import logging
 import os
-import time
-import requests
 import boto3
+from decimal import Decimal
 from aws_xray_sdk.core import patch_all
 from boto3.dynamodb.conditions import Key
 

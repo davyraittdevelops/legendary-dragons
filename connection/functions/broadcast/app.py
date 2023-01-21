@@ -2,6 +2,7 @@ import json
 import logging
 import os
 import boto3
+from decimal import Decimal
 from boto3.dynamodb.conditions import Key
 from aws_xray_sdk.core import patch_all
 
@@ -14,6 +15,14 @@ if "DISABLE_XRAY" not in os.environ:
 dynamodb = boto3.resource("dynamodb")
 table = dynamodb.Table(os.environ["TABLE_NAME"])
 deserializer = boto3.dynamodb.types.TypeDeserializer()
+
+
+class DecimalEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, Decimal):
+            return str(obj)
+
+        return json.JSONEncoder.default(self, obj)
 
 
 def query_user_connections(user_id):
@@ -62,7 +71,7 @@ def lambda_handler(event, context):
                 Data=json.dumps({
                     "data": mapped_image,
                     "event_type": f"{event_name}_{entity_type}_RESULT"
-                })
+                }, cls=DecimalEncoder)
             )
         except Exception as error:
             logger.error('Error: %s', error)

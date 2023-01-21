@@ -24,8 +24,13 @@
 
             </h2>
             <p class="card-text fs-6">
-              Current deck value: {{deck.total_value}}
+              Current deck value:
             </p>
+
+            <span class="badge rounded-pill text-bg-success price-text fw-normal me-2 mt-2"
+                  *ngFor="let deckValue of deck.total_value | keyvalue">
+              {{deckValue.key.toUpperCase().replace("_", " ")}}: {{deckValue.value}}
+            </span>
           </div>
           <div class="btn-group p-0">
             <button type="button" class="btn action-button" [routerLink]="['/decks', deck.deck_id]" name="navigateToDeck">
