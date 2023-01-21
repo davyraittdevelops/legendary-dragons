@@ -87,7 +87,7 @@ Resources:
       FunctionName: !GetAtt UpdateInventoryCardFunction.Arn
       Principal: events.amazonaws.com
       SourceArn: !GetAtt UpdateInventoryCardEventRule.Arn
-  
+
   RemoveCardFromInventoryFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -203,12 +203,10 @@ Resources:
             Keys:
               SK:
                 S:
-                  - prefix: USER
                   - prefix: INVENTORY
               PK:
                 S:
-                  - prefix: INVENTORY
-                  - prefix: INVENTORY_CARD
+                  - prefix: USER
       State: ENABLED
       Targets:
         - Id: "broadcast-inventory-db-changes"
@@ -277,7 +275,7 @@ Resources:
       IntegrationUri:
         Fn::Sub:
             arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AddCardToInventoryFunction.Arn}/invocations
-  
+
   RemoveCardFromInventoryRoute:
     Type: AWS::ApiGatewayV2::Route
     Properties:

@@ -1,6 +1,5 @@
 import os
 import json
-import botocore.client
 import boto3
 import pytest
 from moto import mock_dynamodb
@@ -66,6 +65,7 @@ def websocket_event():
         }),
     }
 
+
 @patch.dict(os.environ, OS_ENV, clear=True)
 @mock_dynamodb
 def test_lamda_handler_success(websocket_event, table_definition):
@@ -73,32 +73,33 @@ def test_lamda_handler_success(websocket_event, table_definition):
     # 1. Create the DynamoDB Table
     dynamodb = boto3.resource("dynamodb")
     table = dynamodb.create_table(**table_definition)
+    user_pk = "USER#user-123"
+    deck_sk = "DECK#f98dbd12-8b58-4aa7-8f0a-3f0e7eb55b27"
 
     table.put_item(
       Item={
-        "PK": "DECK#123",
-        "SK": "USER#1",
-        "entity_type": "DECK",
-        "created_at": "2023-18-01",
-        "last_modified": "2023-18-01",
-        "deck_id": "123",
-        "deck_name": "Azorius Soldiers",
-        "deck_type": "EDH",
-        "user_id": "1",
-        "GSI1_PK": "USER#1",
-        "GSI1_SK": "DECK#123",
-        "total_value": "0"
+          "PK": user_pk,
+          "SK": deck_sk,
+          "entity_type": "DECK",
+          "created_at": "2023-18-01",
+          "last_modified": "2023-18-01",
+          "deck_id": "123",
+          "deck_name": "Azorius Soldiers",
+          "deck_type": "EDH",
+          "user_id": "1",
+          "GSI1_PK": deck_sk,
+          "GSI1_SK": user_pk,
+          "total_value": "0"
       }
-  )
+    )
 
     # Act
     from functions.remove_deck import app
     response = app.lambda_handler(websocket_event, {})
 
     decks = table.query(
-        KeyConditionExpression=Key("GSI1_PK").eq("DECK#123") &
-                               Key("GSI1_SK").begins_with("USER"),
-        IndexName="GSI1"
+        KeyConditionExpression=Key("PK").eq(user_pk) &
+        Key("SK").begins_with("DECK"),
     )["Items"]
 
     # Assert

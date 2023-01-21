@@ -26,8 +26,8 @@ def lambda_handler(event, context):
     card = body["inventory_card"]
 
     now = datetime.utcnow().isoformat()
-    pk = f"INVENTORY_CARD#{card_id}"
-    sk = f"INVENTORY#{inventory_id}"
+    pk = f"USER#{user_id}"
+    sk = f"INVENTORY#{inventory_id}#INVENTORY_CARD#{card_id}"
 
     logger.info(f"Adding inventory card ({inventory_id}) to DynamoDB table")
 
