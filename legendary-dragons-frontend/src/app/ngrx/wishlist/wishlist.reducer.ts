@@ -42,12 +42,12 @@ export const wishlistReducer = createReducer(
   }),
   on(createWishlistItemFail, (state) => ({...state, isLoading: false, hasError: true})),
   on(removeWishlistItem, (state, {wishlist_item_id}) => ({...state, isLoading: true})),
-  on(removeWishlistItemSuccess, (state, { wishlist_item }) => {
+  on(removeWishlistItemSuccess, (state, { wishlist_item_id }) => {
     return {
       ...state,
       isLoading: false,
       hasError: false,
-      wishlist_items: state.wishlist_items.filter(wishlist_item => wishlist_item.wishlist_item_id !== wishlist_item.wishlist_item_id)
+      wishlist_items: state.wishlist_items.filter(wishlist_item => wishlist_item.wishlist_item_id !== wishlist_item_id)
     };
   }),
   on(removeWishlistItemFail, (state) => ({...state, isLoading: false, hasError: true})),

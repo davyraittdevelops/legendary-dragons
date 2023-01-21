@@ -42,5 +42,5 @@ export const removeWishlistItemFail = createAction(
 
 export const removeWishlistItemSuccess = createAction(
   '[Remove Wishlist Item Component] Remove Wistlist Item Success',
-  props<{ wishlist_item: WishlistItem}>()
+  props<{ wishlist_item_id: string}>()
 );

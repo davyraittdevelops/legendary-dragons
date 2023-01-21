@@ -72,7 +72,7 @@ export class WishlistEffects {
           filter((event: any) => {
             return event['event_type'] === 'REMOVE_WISHLIST_ITEM_RESULT'
           }),
-          map((event: any) => removeWishlistItemSuccess({wishlist_item: event["data"]})),
+          map((event: any) => removeWishlistItemSuccess({wishlist_item_id: event["data"]})),
           catchError((error) => {
             console.log(error);
             return of(removeWishlistItemFail({error: true}))
