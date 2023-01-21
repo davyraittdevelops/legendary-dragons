@@ -6,7 +6,6 @@ import { WishlistState } from "./ngrx/wishlist/models/wishlist-state.model";
 import {WishlistAlert} from "./models/wishlist.model";
 
 export interface AppState {
-  readonly alert_items: WishlistState
   readonly user: UserState;
   readonly card: CardState;
   readonly inventory: InventoryState;

@@ -27,6 +27,8 @@ export class WishlistItemComponent {
   hasError$: Observable<boolean>;
   pricePoint: any;
   alertType: any;
+  isDisabled = false;
+
 
   constructor(private appStore: Store<AppState>, public modalService: NgbModal) {
     this.isLoading$ = this.appStore.select(isLoadingSelector);
@@ -35,11 +37,11 @@ export class WishlistItemComponent {
   }
 
   open({content}: { content: any }) {
+    this.appStore.dispatch(getAlerts({wishlist_item_id: this.wishlist_item.wishlist_item_id}))
     this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title', size: 'xl'});
   }
 
   ngOnInit(): void {
-    this.appStore.dispatch(getAlerts({wishlist_item_id: this.wishlist_item.wishlist_item_id}))
   }
 
   removeWishlistItem(wishlist_item: WishlistItem) {
@@ -61,5 +63,10 @@ export class WishlistItemComponent {
     console.log('sending obj', alert_item_obj)
 
     this.appStore.dispatch(createAlert({alert_item: alert_item_obj, wishlist_item_id: wishlist_item.wishlist_item_id}))
+  }
+
+  removeAlert(alert_item: WishlistAlert) {
+    console.log('removing...' , alert_item)
+
   }
 }

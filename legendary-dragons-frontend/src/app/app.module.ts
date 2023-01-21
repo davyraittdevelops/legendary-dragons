@@ -42,6 +42,7 @@ import { CardsDetailsPageComponent } from './components/card/cards-details/cards
 import { wishlistReducer } from './ngrx/wishlist/wishlist.reducer';
 import { WishlistEffects } from './ngrx/wishlist/wishlist.effect';
 import { WishlistItemComponent } from './components/wishlist/wishlist-item/wishlist-item.component';
+import {MatIconModule} from "@angular/material/icon";
 
 @NgModule({
   declarations: [
@@ -63,39 +64,40 @@ import { WishlistItemComponent } from './components/wishlist/wishlist-item/wishl
     DeckCardsDetailsPageComponent,
     WishlistItemComponent,
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    RouterOutlet,
-    ReactiveFormsModule,
-    HttpClientModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatInputModule,
-    EffectsModule.forRoot([
-      UserEffects,
-      CardEffects,
-      InventoryEffects,
-      DeckEffects,
-      WishlistEffects
-    ]),
-    BrowserAnimationsModule,
-    MatTabsModule,
-    FormsModule,
-    MatTableModule,
-    MatFormFieldModule,
-    MatInputModule,
-    NgbToastModule,
-    ScrollingModule,
-    StoreModule.forRoot({
-      user: userReducer,
-      card: cardReducer,
-      inventory: inventoryReducer,
-      deck: deckReducer,
-      wishlist: wishlistReducer
-    }),
-    StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() })
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        RouterOutlet,
+        ReactiveFormsModule,
+        HttpClientModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatInputModule,
+        EffectsModule.forRoot([
+            UserEffects,
+            CardEffects,
+            InventoryEffects,
+            DeckEffects,
+            WishlistEffects
+        ]),
+        BrowserAnimationsModule,
+        MatTabsModule,
+        FormsModule,
+        MatTableModule,
+        MatFormFieldModule,
+        MatInputModule,
+        NgbToastModule,
+        ScrollingModule,
+        StoreModule.forRoot({
+            user: userReducer,
+            card: cardReducer,
+            inventory: inventoryReducer,
+            deck: deckReducer,
+            wishlist: wishlistReducer
+        }),
+        StoreDevtoolsModule.instrument({maxAge: 25, logOnly: !isDevMode()}),
+        MatIconModule
+    ],
   providers: [],
   bootstrap: [AppComponent]
 })
