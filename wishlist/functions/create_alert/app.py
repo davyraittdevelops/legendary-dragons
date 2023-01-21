@@ -31,6 +31,8 @@ def lambda_handler(event, context):
     wishlist_item_id = body['wishlist_item_id']
     alert_item = body['alert_item']
 
+    print('alert item is: ' , alert_item)
+
     if alert_item['entity_type'] == 'ALERT#PRICE': 
         alert = {
             'PK' : f'USER{user_id}',
