@@ -59,7 +59,7 @@ export class WishlistEffects {
         return this.websocketService.dataUpdates$().pipe(
           filter((event: any) => {
             console.log(event)
-            return event['event_type'] === 'GET_ALERTS_RESULT'
+            return event['event_type'] === 'GET_ALERT_RESULT'
           }),
           map((event: any) => getAlertsSuccess({alert_items: event["data"]})),
           catchError((error) => {
