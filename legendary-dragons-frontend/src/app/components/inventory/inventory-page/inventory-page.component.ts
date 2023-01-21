@@ -18,7 +18,6 @@ export class InventoryPageComponent implements OnInit {
   isLoading$: Observable<boolean>;
   hasError$: Observable<boolean>;
 
-  pageSize: number = 0;
   activePage: number = 0;
 
   constructor(private appStore: Store<AppState>) {
@@ -31,9 +30,8 @@ export class InventoryPageComponent implements OnInit {
     this.appStore.dispatch(getInventory())
   }
 
-  public handlePageEvent(event: PageEvent): PageEvent {
-    this.pageSize = event.pageSize;
-    this.activePage = event.pageIndex
+  public handlePageEvent(event: number): number {
+    this.activePage = event;
     return event;
   }
 }

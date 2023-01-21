@@ -22,10 +22,20 @@
   }
 }
 
-.mat-paginator {
-  display: flex;
+.pagination {
   justify-content: center;
   background-color: transparent;
-  color: white;
-  font-size: 15px;
-} 
+  -webkit-text-fill-color: #d5a14b;
+  font-size: 20px;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+
+.pagination::ng-deep .ngx-pagination .current {
+  background: #13395d;
+}
+
+.pagination::ng-deep .ngx-pagination a:hover {
+  background-color: transparent;
+}

@@ -39,7 +39,7 @@ import { UserEffects } from './ngrx/user/user.effect';
 import { userReducer } from './ngrx/user/user.reducer';
 import { DeckCardsDetailsPageComponent } from './components/deck/deck-cards-details/deck-cards-details-page.component';
 import { CardsDetailsPageComponent } from './components/card/cards-details/cards-details-page.component';
-import { MatPaginatorModule } from '@angular/material/paginator';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 @NgModule({
   declarations: [
@@ -84,7 +84,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     MatInputModule,
     NgbToastModule,
     ScrollingModule,
-    MatPaginatorModule,
+    NgxPaginationModule,
     StoreModule.forRoot({
       user: userReducer,
       card: cardReducer,
