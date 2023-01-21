@@ -40,7 +40,7 @@ def lambda_handler(event, context):
         logger.info(f"Deck response length: {len(deck_response)}")
 
         deck = next(
-            (v for v in deck_response if v["entity_type"] == "DECK"),
+            (item for item in deck_response if item["entity_type"] == "DECK"),
             None
         )
 

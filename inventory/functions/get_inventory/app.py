@@ -38,7 +38,7 @@ def lambda_handler(event, context):
     )["Items"]
 
     inventory_idx = next(
-        (i for i, v in enumerate(inventory_response) if v["entity_type"] == "INVENTORY"),
+        (idx for idx, item in enumerate(inventory_response) if item["entity_type"] == "INVENTORY"),
         None
     )
 

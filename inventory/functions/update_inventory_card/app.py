@@ -25,7 +25,7 @@ def lambda_handler(event, context):
     )
     logger.info(f'result from put item {result}')
   except dynamodb.meta.client.exceptions.ConditionalCheckFailedException as e:
-    error = str(e)[str(e).index(":") + 1:len(str(e))]
+    error = extract_error_message(e)
     logger.info(f"Registration failed: {error}")
     return {
       "statusCode": 400,
@@ -33,3 +33,7 @@ def lambda_handler(event, context):
     }
 
   return {"statusCode": 200}
+
+
+def extract_error_message(error):
+  return str(error)[str(error).index(":") + 1:len(str(error))]
