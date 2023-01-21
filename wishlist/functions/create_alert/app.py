@@ -51,7 +51,7 @@ def lambda_handler(event, context):
 
     if alert_item['entity_type'] == 'ALERT#AVAILABILITY': 
         alert = {
-            'PK' : f'USER{user_id}',
+            'PK' : f'USER#{user_id}',
             'SK' : f'WISHLIST_ITEM#{wishlist_item_id}#ALERT#AVAILABILITY#{alert_id}',
             'entity_type' : 'ALERT#AVAILABILITY',
             'created_at':datetime.utcnow().isoformat(),

@@ -45,7 +45,7 @@ def lambda_handler(event, context):
 
     """Post output back to the connection."""
     output = {
-        "event_type": "GET_alert_RESULT",
+        "event_type": "GET_ALERT_RESULT",
         "data": alert_items,
     }
 
