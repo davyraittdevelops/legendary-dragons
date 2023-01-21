@@ -1,7 +1,6 @@
 import json
 import logging
 import os
-import uuid
 
 import boto3
 from datetime import datetime
@@ -28,8 +27,8 @@ def lambda_handler(event, context):
   inventory_card = body["inventory_card"]
   deck_name = body["deck_name"]
   now = datetime.utcnow().isoformat()
-  sk = f"DECK#{deck_id}#DECK_CARD#{inventory_card['card_id']}"
   pk = f"USER#{user_id}"
+  sk = f"DECK#{deck_id}#DECK_CARD#{inventory_card['card_id']}"
   entity_type = "DECK_CARD"
 
   if deck_type == "side_deck":

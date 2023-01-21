@@ -1,6 +1,5 @@
 import os
 import json
-import botocore.client
 import boto3
 import pytest
 from moto import mock_dynamodb

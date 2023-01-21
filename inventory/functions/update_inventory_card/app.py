@@ -23,7 +23,7 @@ def lambda_handler(event, context):
     result = table.put_item(Item=inventory_card,
       ConditionExpression='attribute_exists(PK) AND attribute_exists(SK)'
     )
-    logger.info(f'result from put item  {result}')
+    logger.info(f'result from put item {result}')
   except dynamodb.meta.client.exceptions.ConditionalCheckFailedException as e:
     error = str(e)[str(e).index(":") + 1:len(str(e))]
     logger.info(f"Registration failed: {error}")

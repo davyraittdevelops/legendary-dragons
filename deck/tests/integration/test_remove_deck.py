@@ -73,11 +73,13 @@ def test_lamda_handler_success(websocket_event, table_definition):
     # 1. Create the DynamoDB Table
     dynamodb = boto3.resource("dynamodb")
     table = dynamodb.create_table(**table_definition)
+    user_pk = "USER#user-123"
+    deck_sk = "DECK#f98dbd12-8b58-4aa7-8f0a-3f0e7eb55b27"
 
     table.put_item(
       Item={
-          "PK": "USER#user-123",
-          "SK": "DECK#f98dbd12-8b58-4aa7-8f0a-3f0e7eb55b27",
+          "PK": user_pk,
+          "SK": deck_sk,
           "entity_type": "DECK",
           "created_at": "2023-18-01",
           "last_modified": "2023-18-01",
@@ -85,8 +87,8 @@ def test_lamda_handler_success(websocket_event, table_definition):
           "deck_name": "Azorius Soldiers",
           "deck_type": "EDH",
           "user_id": "1",
-          "GSI1_PK": "DECK#f98dbd12-8b58-4aa7-8f0a-3f0e7eb55b27",
-          "GSI1_SK": "USER#user-123",
+          "GSI1_PK": deck_sk,
+          "GSI1_SK": user_pk,
           "total_value": "0"
       }
     )
@@ -96,7 +98,7 @@ def test_lamda_handler_success(websocket_event, table_definition):
     response = app.lambda_handler(websocket_event, {})
 
     decks = table.query(
-        KeyConditionExpression=Key("PK").eq("USER#user-123") &
+        KeyConditionExpression=Key("PK").eq(user_pk) &
         Key("SK").begins_with("DECK"),
     )["Items"]
 

@@ -1,4 +1,3 @@
-import json
 import logging
 import os
 import boto3
@@ -26,7 +25,7 @@ def lambda_handler(event, context):
     logger.info("Creating new inventory with id: %s", inventory_id)
     pk = f"USER#{user_id}"
     sk = f"INVENTORY#{inventory_id}"
-    
+
     table.put_item(Item={
         "PK": pk,
         "SK": sk,

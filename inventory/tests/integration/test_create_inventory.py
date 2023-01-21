@@ -1,5 +1,4 @@
 import os
-import json
 import pytest
 import boto3
 from moto import mock_dynamodb

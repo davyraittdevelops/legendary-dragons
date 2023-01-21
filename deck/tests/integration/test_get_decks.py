@@ -69,6 +69,7 @@ def websocket_event():
 
 orig = botocore.client.BaseClient._make_api_call
 
+
 def mock_make_api_call(self, operation_name, kwarg):
     if operation_name == "PostToConnection":
         return None
@@ -82,11 +83,13 @@ def test_lamda_handler_success(websocket_event, table_definition):
     # 1. Create the DynamoDB Table
     dynamodb = boto3.resource("dynamodb")
     table = dynamodb.create_table(**table_definition)
+    user_pk = "USER#1"
+    deck_sk = "DECK#123"
 
     table.put_item(
       Item={
-        "PK": "USER#1",
-        "SK": "DECK#123",
+        "PK": user_pk,
+        "SK": deck_sk,
         "entity_type": "DECK",
         "created_at": "2023-18-01",
         "last_modified": "2023-18-01",
@@ -94,11 +97,11 @@ def test_lamda_handler_success(websocket_event, table_definition):
         "deck_name": "Azorius Soldiers",
         "deck_type": "EDH",
         "user_id": "1",
-        "GSI1_PK": "DECK#123",
-        "GSI1_SK": "USER#1",
+        "GSI1_PK": deck_sk,
+        "GSI1_SK": user_pk,
         "total_value": "0"
       }
-  )
+    )
 
     # Act
     with patch("botocore.client.BaseClient._make_api_call", new=mock_make_api_call):
@@ -106,15 +109,15 @@ def test_lamda_handler_success(websocket_event, table_definition):
         response = app.lambda_handler(websocket_event, {})
 
         decks = table.query(
-            KeyConditionExpression=Key("PK").eq(f"USER#1") &
+            KeyConditionExpression=Key("PK").eq(user_pk) &
             Key("SK").begins_with("DECK#")
         )["Items"]
 
         # Assert
         assert response["statusCode"] == 200
         assert len(decks) == 1
-        assert decks[0]["PK"] == "USER#1"
-        assert decks[0]["SK"] == "DECK#123"
+        assert decks[0]["PK"] == user_pk
+        assert decks[0]["SK"] == deck_sk
         assert decks[0]["entity_type"] == "DECK"
         assert decks[0]["created_at"] == "2023-18-01"
         assert decks[0]["last_modified"] == "2023-18-01"
@@ -122,6 +125,6 @@ def test_lamda_handler_success(websocket_event, table_definition):
         assert decks[0]["deck_name"] == "Azorius Soldiers"
         assert decks[0]["deck_type"] == "EDH"
         assert decks[0]["user_id"] == "1"
-        assert decks[0]["GSI1_PK"] == "DECK#123"
-        assert decks[0]["GSI1_SK"] == "USER#1"
+        assert decks[0]["GSI1_PK"] == deck_sk
+        assert decks[0]["GSI1_SK"] == user_pk
         assert decks[0]["total_value"] == "0"

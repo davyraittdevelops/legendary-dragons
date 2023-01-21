@@ -26,6 +26,8 @@ def lambda_handler(event, context):
     body = json.loads(event["body"])
     deck_id = body['deck_id']
 
+    output = {"event_type": "GET_DECK_RESULT"}
+
     try:
         logger.info(f"Querying with deck_id {deck_id}")
 
@@ -46,10 +48,7 @@ def lambda_handler(event, context):
         apigateway = boto3.client("apigatewaymanagementapi", endpoint_url=endpoint)
 
         if deck is None:
-            output = {
-                "event_type": "GET_DECK_RESULT",
-                "error": "NOT_FOUND"
-            }
+            output["error"] = "NOT_FOUND"
             apigateway.post_to_connection(
                 ConnectionId=connection_id,
                 Data=json.dumps(output, cls=DecimalEncoder)
@@ -67,16 +66,18 @@ def lambda_handler(event, context):
     except Exception as e:
         logger.info(f"Exception retrieving cards! {e}")
 
-    output = {
-        "event_type": "GET_DECK_RESULT",
-        "data": {
-            "deck": deck,
-            "deck_cards": list(deck_cards),
-            "side_deck_cards": list(side_deck_cards)
-        }
+    output["data"] = {
+        "deck": deck,
+        "deck_cards": list(deck_cards),
+        "side_deck_cards": list(side_deck_cards)
     }
 
-    logger.info(output)
+    logger.info(
+        "Deck(%s) with %s main deck cards & %s side deck cards",
+        deck_id,
+        len(output["data"]["deck_cards"]),
+        len(output["data"]["side_deck_cards"])
+    )
 
     apigateway.post_to_connection(
         ConnectionId=connection_id,

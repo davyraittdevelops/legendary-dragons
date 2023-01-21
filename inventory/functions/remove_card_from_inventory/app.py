@@ -15,7 +15,7 @@ table = dynamodb.Table(os.getenv("TABLE_NAME"))
 
 
 def lambda_handler(event, context):
-    """Extract inventory ID and card ID"""
+    """Extract inventory ID and card ID."""
     body = json.loads(event["body"])
     logger.info(f"Received body {body}")
     inventory_card_id = body['inventory_card_id']
@@ -31,8 +31,8 @@ def lambda_handler(event, context):
             },
             ReturnValues='ALL_OLD'
         )
-        logger.info(f"Deleted card from table, result is {result}")
 
+        logger.info(f"Deleted card from table, result is {result}")
     except Exception as error:
         logger.info('Error deleting card from database: %s', error)
 

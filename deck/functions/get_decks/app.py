@@ -30,14 +30,16 @@ def lambda_handler(event, context):
     apigateway = boto3.client("apigatewaymanagementapi", endpoint_url=endpoint)
 
     logger.info("Searching for decks in user %s", user_id)
-    decks_response = table.query(
+    decks = table.query(
         KeyConditionExpression=Key("PK").eq(f"USER#{user_id}") &
-        Key("SK").begins_with("DECK#")
+        Key("SK").begins_with("DECK#"),
+        FilterExpression="#entity_type = :entity_type",
+        ExpressionAttributeNames={"#entity_type": "entity_type"},
+        ExpressionAttributeValues={':entity_type': "DECK"},
     )["Items"]
 
-    decks = filter(lambda deck: deck["entity_type"] == "DECK", decks_response)
-
-    output["data"] = list(decks)
+    logger.info(decks)
+    output["data"] = decks
     apigateway.post_to_connection(
         ConnectionId=connection_id,
         Data=json.dumps(output, cls=DecimalEncoder)

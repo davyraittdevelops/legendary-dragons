@@ -29,7 +29,6 @@ def lambda_handler(event, context):
     }
 
     logger.info(f"Request will be made to {endpoint}")
-
     apigateway = boto3.client("apigatewaymanagementapi", endpoint_url=endpoint)
 
     user_id = event["requestContext"]["authorizer"]["userId"]
@@ -38,7 +37,10 @@ def lambda_handler(event, context):
         Key("SK").begins_with("INVENTORY")
     )["Items"]
 
-    inventory_idx = next((i for i, v in enumerate(inventory_response) if v["entity_type"] == "INVENTORY"), None)
+    inventory_idx = next(
+        (i for i, v in enumerate(inventory_response) if v["entity_type"] == "INVENTORY"),
+        None
+    )
 
     if inventory_idx is None:
         logger.info("Inventory not found")
@@ -51,8 +53,8 @@ def lambda_handler(event, context):
 
     inventory = inventory_response.pop(inventory_idx)
 
-    logger.info(f"found inventory with id {inventory['inventory_id']}")
-    
+    logger.info(f"Found inventory with id {inventory['inventory_id']}")
+
     inventory["inventory_cards"] = inventory_response
     output["data"] = inventory
 
