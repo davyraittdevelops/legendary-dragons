@@ -29,17 +29,20 @@ def lambda_handler(event, context):
     }
 
     logger.info(f"Request will be made to {endpoint}")
-
     apigateway = boto3.client("apigatewaymanagementapi", endpoint_url=endpoint)
 
     user_id = event["requestContext"]["authorizer"]["userId"]
-    inventory = table.query(
-        KeyConditionExpression=Key("GSI1_PK").eq(f"USER#{user_id}") &
-        Key("GSI1_SK").begins_with("INVENTORY"),
-        IndexName="GSI1"
+    inventory_response = table.query(
+        KeyConditionExpression=Key("PK").eq(f"USER#{user_id}") &
+        Key("SK").begins_with("INVENTORY")
     )["Items"]
 
-    if len(inventory) == 0:
+    inventory_idx = next(
+        (idx for idx, item in enumerate(inventory_response) if item["entity_type"] == "INVENTORY"),
+        None
+    )
+
+    if inventory_idx is None:
         logger.info("Inventory not found")
         output["error"] = "NOT_FOUND"
         apigateway.post_to_connection(
@@ -48,18 +51,12 @@ def lambda_handler(event, context):
         )
         return {"statusCode": 404}
 
-    inventory_id = inventory[0]["inventory_id"]
+    inventory = inventory_response.pop(inventory_idx)
 
-    inventory_cards = table.query(
-        KeyConditionExpression=Key("GSI1_PK").eq(f"INVENTORY#{inventory_id}") &
-        Key("GSI1_SK").begins_with("INVENTORY_CARD"),
-        IndexName="GSI1"
-    )["Items"]
+    logger.info(f"Found inventory with id {inventory['inventory_id']}")
 
-    logger.info(f"Found {len(inventory_cards)} inventory cards")
-
-    inventory[0]["inventory_cards"] = inventory_cards
-    output["data"] = inventory[0]
+    inventory["inventory_cards"] = inventory_response
+    output["data"] = inventory
 
     logger.info(f"Sending inventory result to client with id: {connection_id}")
 

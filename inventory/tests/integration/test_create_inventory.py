@@ -1,5 +1,4 @@
 import os
-import json
 import pytest
 import boto3
 from moto import mock_dynamodb
@@ -68,9 +67,8 @@ def test_lambda_handler(bus_event, table_definition):
     response = app.lambda_handler(bus_event, {})
 
     inventory = table.query(
-        KeyConditionExpression=Key("GSI1_PK").eq("USER#1234") &
-        Key("GSI1_SK").begins_with("INVENTORY"),
-        IndexName="GSI1"
+        KeyConditionExpression=Key("PK").eq("USER#1234") &
+        Key("SK").begins_with("INVENTORY"),
     )["Items"][0]
 
     # Assert

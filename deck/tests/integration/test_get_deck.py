@@ -87,23 +87,48 @@ def test_lamda_handler_success(websocket_event, table_definition):
   dynamodb = boto3.resource("dynamodb")
   table = dynamodb.create_table(**table_definition)
 
+  user_pk = "USER#user-123"
+  deck_sk = "DECK#123"
+
   table.put_item(
     Item={
-      "PK": "DECK#123",
-      "SK": "USER#user-123",
+      "PK": user_pk,
+      "SK": deck_sk,
+      "entity_type": "DECK",
       "deck_id": "123",
       "deck_name": "Main",
       "created_at": "today",
       "last_modified": "just now",
-      "GSI1_SK": "DECK#123",
-      "GSI1_PK": "USER#user-123",
+      "GSI1_SK": deck_sk,
+      "GSI1_PK": user_pk,
     }
   )
 
   table.put_item(
       Item={
-          "PK": "DECK_CARD#1232",
-          "SK": "DECK#123",
+          "PK": user_pk,
+          "SK": f"{deck_sk}#DECK_CARD#12324",
+          "entity_type": "SIDE_DECK_CARD",
+          "deck_id": "123",
+          "inventory_id": "1",
+          "inventory_card_id": "1",
+          "created_at": "today",
+          "last_modified": "just now",
+          "card_name": "obelisk the tormentor",
+          "colors": "red",
+          "prices": "100eur",
+          "rarity": "veryrare",
+          "quality": "good",
+          "image_url": "https://img",
+          "GSI1_PK": f"{deck_sk}#DECK_CARD#12324",
+          "GSI1_SK": user_pk,
+      }
+  )
+
+  table.put_item(
+      Item={
+          "PK": user_pk,
+          "SK": f"{deck_sk}#DECK_CARD#1232",
           "entity_type": "DECK_CARD",
           "deck_id": "123",
           "inventory_id": "1",
@@ -116,8 +141,8 @@ def test_lamda_handler_success(websocket_event, table_definition):
           "rarity": "veryrare",
           "quality": "good",
           "image_url": "https://img",
-          "GSI1_PK": "DECK#123",
-          "GSI1_SK": "DECK_CARD#1232",
+          "GSI1_PK": f"{deck_sk}#DECK_CARD#1232",
+          "GSI1_SK": user_pk,
       }
   )
 
@@ -127,16 +152,15 @@ def test_lamda_handler_success(websocket_event, table_definition):
     response = app.lambda_handler(websocket_event, {})
 
     deck_cards = table.query(
-        KeyConditionExpression=Key("GSI1_PK").eq("DECK#123") &
-                              Key("GSI1_SK").begins_with("DECK_CARD"),
-        IndexName="GSI1"
+        KeyConditionExpression=Key("PK").eq(user_pk) &
+        Key("SK").begins_with(f"{deck_sk}#DECK_CARD"),
     )["Items"]
 
     # Assert
     assert response["statusCode"] == 200
-    assert len(deck_cards) == 1
-    assert deck_cards[0]["PK"] == "DECK_CARD#1232"
-    assert deck_cards[0]["SK"] == "DECK#123"
+    assert len(deck_cards) == 2
+    assert deck_cards[0]["PK"] == user_pk
+    assert deck_cards[0]["SK"] == f"{deck_sk}#DECK_CARD#1232"
     assert deck_cards[0]["entity_type"] == "DECK_CARD"
     assert deck_cards[0]["deck_id"] == "123"
     assert deck_cards[0]["inventory_id"] == "1"
@@ -148,4 +172,3 @@ def test_lamda_handler_success(websocket_event, table_definition):
     assert deck_cards[0]["rarity"] == "veryrare"
     assert deck_cards[0]["quality"] == "good"
     assert deck_cards[0]["image_url"] == "https://img"
-    assert deck_cards[0]["GSI1_PK"] == "DECK#123"
