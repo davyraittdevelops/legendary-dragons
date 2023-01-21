@@ -33,6 +33,7 @@ def lambda_handler(event, context):
 
     """Do query/data manipulation.  """
     try:
+        logger.info(f'Querying with the following wishlist_item_id {wishlist_item_id}')
         alert_items = table.query(
             KeyConditionExpression=Key("PK").eq(f"USER#{user_id}") 
             &
