@@ -7,3 +7,10 @@ export interface WishlistItem {
   last_modified: string
   image_url: string
 }
+
+export interface Alert {
+  entity_type: string
+  card_market_id: string
+  price_point: string
+  alert_id: string
+}
