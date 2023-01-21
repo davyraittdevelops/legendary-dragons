@@ -16,7 +16,6 @@ import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from './app.component';
-import { CardFooterComponent } from './components/card/card-footer/card-footer.component';
 import { AddCardComponent } from './components/card/add-card-component/add-card-component';
 import { AddWishlistItemComponent } from './components/wishlist/add-wishlist-item-component/add-wishlist-item-component';
 import { DashboardComponent } from './components/general/dashboard/dashboard.component';
@@ -59,7 +58,6 @@ import { WishlistItemComponent } from './components/wishlist/wishlist-item/wishl
     WishlistPageComponent,
     AddCardComponent,
     AddWishlistItemComponent,
-    CardFooterComponent,
     AddCardToDeckComponent,
     CardsDetailsPageComponent,
     DeckCardsDetailsPageComponent,
