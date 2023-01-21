@@ -19,6 +19,7 @@ OS_ENV = {
   "EVENT_BUS_NAME": "test-event-bus"
 }
 
+
 @pytest.fixture()
 def table_definition():
   return {
@@ -46,6 +47,7 @@ def table_definition():
     "BillingMode": "PAY_PER_REQUEST"
   }
 
+
 @pytest.fixture()
 def websocket_event():
   """Generates Websocket Event"""
@@ -62,6 +64,7 @@ def websocket_event():
       "action": "addCardToDeckReq",
       "deck_type": "deck",
       "deck_id": "123",
+      "deck_name": 'doom deck',
       "inventory_card": {
         "card_name": "Swords of Doom",
         "card_id": "1",
@@ -76,6 +79,7 @@ def websocket_event():
       }
     }),
   }
+
 
 @patch.dict(os.environ, OS_ENV, clear=True)
 @mock_dynamodb
@@ -95,7 +99,10 @@ def test_lamda_handler_success(websocket_event, table_definition):
   client.put_rule(
       Name="test-rule", EventBusName=OS_ENV["EVENT_BUS_NAME"],
       EventPattern=json.dumps(
-          {"detail-type": ["CARD_ADDED_TO_DECK"], "source": ["legdragons.deck.add_card_to_deck"]}
+          {
+            "detail-type": ["CARD_ADDED_TO_DECK"],
+            "source": ["legdragons.decks.add_card_to_deck"]
+          }
       )
   )
   client.put_targets(
@@ -145,7 +152,10 @@ def test_lamda_handler_sidedeck(websocket_event, table_definition):
   client.put_rule(
       Name="test-rule", EventBusName=OS_ENV["EVENT_BUS_NAME"],
       EventPattern=json.dumps(
-          {"detail-type": ["CARD_ADDED_TO_DECK"], "source": ["legdragons.deck.add_card_to_deck"]}
+          {
+            "detail-type": ["CARD_ADDED_TO_DECK"],
+            "source": ["legdragons.decks.add_card_to_deck"]
+          }
       )
   )
   client.put_targets(
