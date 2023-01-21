@@ -60,6 +60,21 @@ export const createAlertSuccess = createAction(
   props<{ alert_item: WishlistAlert}>()
 );
 
+export const removeAlert = createAction(
+  '[Remove Alert] Remove Alert Item',
+  props<{ alert_item: WishlistAlert , wishlist_item_id: string}>()
+);
+
+export const removeAlertFail = createAction(
+  '[Remove Alert] Remove Alert Item Fail',
+  props<{ error: boolean }>(),
+);
+
+export const removeAlertSuccess = createAction(
+  '[Remove Alert ] Remove Alert Item Success',
+  props<{ alert_item: WishlistAlert}>()
+);
+
 export const removeWishlistItem = createAction(
   '[Remove Wishlist Item Component] Remove Wistlist Item',
   props<{ wishlist_item_id: string }>()

@@ -8,7 +8,7 @@ import {getInventory} from "../../../ngrx/inventory/inventory.actions";
 import {
   createAlert,
   createWishlistItem, getAlerts,
-  getWishlist,
+  getWishlist, removeAlert,
   removeWishlistItem
 } from "../../../ngrx/wishlist/wishlist.actions";
 import {Observable} from "rxjs";
@@ -50,23 +50,18 @@ export class WishlistItemComponent {
   }
 
   addAlert(wishlist_item: WishlistItem) {
-    console.log('Adding '+ this.alertType + 'alert for price point: ' + this.pricePoint);
-    console.log('For this item: ' , wishlist_item)
-
     const alert_item_obj = {
       card_market_id: this.wishlist_item.card_market_id,
       price_point : this.pricePoint,
       entity_type: this.alertType,
       alert_id: ''
     }
-
-    console.log('sending obj', alert_item_obj)
-
     this.appStore.dispatch(createAlert({alert_item: alert_item_obj, wishlist_item_id: wishlist_item.wishlist_item_id}))
   }
 
   removeAlert(alert_item: WishlistAlert) {
     console.log('removing...' , alert_item)
+    this.appStore.dispatch(removeAlert({alert_item: alert_item, wishlist_item_id: this.wishlist_item.wishlist_item_id}))
 
   }
 }

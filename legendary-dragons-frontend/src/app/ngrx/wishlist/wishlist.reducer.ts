@@ -11,7 +11,7 @@ import {
   removeWishlistItemSuccess,
   createAlert,
   createAlertSuccess,
-  createAlertFail, getAlerts, getAlertsSuccess, getAlertsFail
+  createAlertFail, getAlerts, getAlertsSuccess, getAlertsFail, removeAlert, removeAlertSuccess, removeAlertFail
 } from "./wishlist.actions";
 import { WishlistState } from "./models/wishlist-state.model";
 
@@ -68,7 +68,6 @@ export const wishlistReducer = createReducer(
     };
   }),
   on(removeWishlistItemFail, (state) => ({...state, isLoading: false, hasError: true})),
-
   on(createAlert, (state, {alert_item, wishlist_item_id}) => ({...state, isLoading: true})),
   on(createAlertSuccess, (state, {alert_item}) => {
     console.log(alert_item)
@@ -79,4 +78,15 @@ export const wishlistReducer = createReducer(
     return {...state, isLoading: false, hasError: false, alert_items: alert_items_list};
   }),
   on(createAlertFail, (state) => ({...state, isLoading: false, hasError: true})),
+
+  on(removeAlert, (state, {wishlist_item_id}) => ({...state, isLoading: true})),
+  on(removeAlertSuccess, (state, { alert_item }) => {
+    return {
+      ...state,
+      isLoading: false,
+      hasError: false,
+      alert_items: state.alert_items.filter(alert_it => alert_it.alert_id !== alert_item.alert_id)
+    };
+  }),
+  on(removeAlertFail, (state) => ({...state, isLoading: false, hasError: true})),
 )

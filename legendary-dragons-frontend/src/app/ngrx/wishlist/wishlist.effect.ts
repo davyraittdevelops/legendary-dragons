@@ -19,7 +19,7 @@ import {
   createAlertSuccess,
   getAlerts,
   getAlertsSuccess,
-  getAlertsFail
+  getAlertsFail, removeAlert, removeAlertSuccess, removeAlertFail
 } from "./wishlist.actions";
 
 @Injectable()
@@ -122,6 +122,25 @@ export class WishlistEffects {
           catchError((error) => {
             console.log(error);
             return of(removeWishlistItemFail({error: true}))
+          })
+        )
+      })
+    )
+  );
+
+  public removeAlertEffect$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(removeAlert),
+      tap(({alert_item, wishlist_item_id}) => this.websocketService.sendRemoveAlertMessage(alert_item, wishlist_item_id)),
+      switchMap(() => {
+        return this.websocketService.dataUpdates$().pipe(
+          filter((event: any) => {
+            return event['event_type'] === 'REMOVE_ALERT_RESULT'
+          }),
+          map((event: any) => removeAlertSuccess({alert_item: event["data"]})),
+          catchError((error) => {
+            console.log(error);
+            return of(removeAlertFail({error: true}))
           })
         )
       })
