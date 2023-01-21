@@ -8,14 +8,15 @@ import {
   createWishlistItemFail,
   removeWishlistItem,
   removeWishlistItemFail,
-  removeWishlistItemSuccess
+  removeWishlistItemSuccess, createAlert, createAlertSuccess, createAlertFail
 } from "./wishlist.actions";
 import { WishlistState } from "./models/wishlist-state.model";
 
 const initialState: WishlistState = {
   isLoading: false,
   hasError: false,
-  wishlist_items: []
+  wishlist_items: [],
+  alert_items: []
 }
 
 export const wishlistReducer = createReducer(
@@ -51,4 +52,15 @@ export const wishlistReducer = createReducer(
     };
   }),
   on(removeWishlistItemFail, (state) => ({...state, isLoading: false, hasError: true})),
+
+  on(createAlert, (state, {alert_item, wishlist_item_id}) => ({...state, isLoading: true})),
+  on(createAlertSuccess, (state, {alert_item}) => {
+    console.log(alert_item)
+    const foundIndex = state.alert_items.findIndex((item) => item.alert_id === alert_item.alert_id);
+    if (foundIndex > -1)
+      return {...state, isLoading: false, hasError: false};
+    const alert_items_list = [...state.alert_items, alert_item];
+    return {...state, isLoading: false, hasError: false, alert_items: alert_items_list};
+  }),
+  on(createAlertFail, (state) => ({...state, isLoading: false, hasError: true})),
 )

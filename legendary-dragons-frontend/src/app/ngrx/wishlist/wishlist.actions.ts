@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import {  WishlistItem } from 'src/app/models/wishlist.model';
+import {WishlistAlert, WishlistItem} from 'src/app/models/wishlist.model';
 
 export const getWishlist = createAction(
   '[Wishlist Component] Get Wishlist'
@@ -28,6 +28,21 @@ export const createWishlistItemFail = createAction(
 export const createWishlistItemSuccess = createAction(
   '[Add Wishlist Item Component] Create Wistlist Item Success',
   props<{ wishlist_item: WishlistItem}>()
+);
+
+export const createAlert = createAction(
+  '[Add Alert Component] Create Alert Item',
+  props<{ alert_item: WishlistAlert , wishlist_item_id: string}>()
+);
+
+export const createAlertFail = createAction(
+  '[Add Alert Component] Create Alert Item Fail',
+  props<{ error: boolean }>(),
+);
+
+export const createAlertSuccess = createAction(
+  '[Add Alert Component] Create Alert Item Success',
+  props<{ alert_item: WishlistAlert}>()
 );
 
 export const removeWishlistItem = createAction(

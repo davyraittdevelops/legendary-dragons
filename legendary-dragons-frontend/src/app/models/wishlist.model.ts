@@ -8,7 +8,7 @@ export interface WishlistItem {
   image_url: string
 }
 
-export interface Alert {
+export interface WishlistAlert {
   entity_type: string
   card_market_id: string
   price_point: string

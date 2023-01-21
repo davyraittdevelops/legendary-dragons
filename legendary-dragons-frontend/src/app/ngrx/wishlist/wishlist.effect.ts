@@ -13,7 +13,7 @@ import {
   createWishlistItemSuccess,
   removeWishlistItem,
   removeWishlistItemFail,
-  removeWishlistItemSuccess
+  removeWishlistItemSuccess, createAlert, createAlertFail, createAlertSuccess
 } from "./wishlist.actions";
 
 @Injectable()
@@ -57,6 +57,25 @@ export class WishlistEffects {
           catchError((error) => {
             console.log(error);
             return of(createWishlistItemFail({error: true}))
+          })
+        )
+      })
+    )
+  );
+
+  public createAlertEffect$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(createAlert),
+      tap(({alert_item, wishlist_item_id}) => this.websocketService.sendCreateAlert(alert_item, wishlist_item_id)),
+      switchMap(() => {
+        return this.websocketService.dataUpdates$().pipe(
+          filter((event: any) => {
+            return event['event_type'] === 'CREATE_ALERT_RESULT'
+          }),
+          map((event: any) => createAlertSuccess({alert_item: event["data"]})),
+          catchError((error) => {
+            console.log(error);
+            return of(createAlertFail({error: true}))
           })
         )
       })
