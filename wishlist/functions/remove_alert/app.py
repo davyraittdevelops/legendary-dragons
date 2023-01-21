@@ -18,6 +18,8 @@ table = dynamodb.Table(os.getenv("TABLE_NAME"))
 
 
 def lambda_handler(event, context):
+    print('event ' , event)
+
     """Read neccesary information from the body/event."""
     connection_id = event["requestContext"]["connectionId"]
     domain_name = event["requestContext"]["domainName"]
