@@ -12,7 +12,7 @@
 
 <ng-template #content let-modal>
   <div class="modal-header" [ngStyle]="{'background-color': 'gray'}">
-    <h4 class="modal-title" id="modal-basic-title">Manage alerts</h4>
+    <h4 class="modal-title" id="modal-basic-title">Manage price alerts for {{wishlist_item.card_name}}</h4>
     <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
       <span aria-hidden="true">&times;</span>
     </button>
@@ -20,8 +20,19 @@
 
   <div class="modal-body" [ngStyle]="{'background-color': 'gray'}" >
     <div>
-
+      <mat-form-field>
+        <mat-label>Alert Type</mat-label>
+        <mat-select [(ngModel)]="alertType">
+          <mat-option value="ALERT#PRICE">Price Alert</mat-option>
+          <mat-option value="ALERT#AVAILABILITY">Availability Alert</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <div *ngIf="alertType === 'ALERT#PRICE'">
+        <input type="text" id="price_point" name="price_point" [(ngModel)]="pricePoint">
+      </div>
+      <button mat-raised-button color="primary" (click)="addAlert(wishlist_item)">Add Alert</button>
     </div>
+    <h1>_______________________________________________________________________________________________________</h1>
   </div>
 
 </ng-template>

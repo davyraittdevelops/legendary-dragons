@@ -1,6 +1,6 @@
 import {Component, Input} from '@angular/core';
 import {InventoryCard} from "../../../models/inventory.model";
-import {WishlistItem} from "../../../models/wishlist.model";
+import {Alert, WishlistItem} from "../../../models/wishlist.model";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {Store} from "@ngrx/store";
 import {AppState} from "../../../app.state";
@@ -14,6 +14,8 @@ import {createWishlistItem, removeWishlistItem} from "../../../ngrx/wishlist/wis
 })
 export class WishlistItemComponent {
   @Input() wishlist_item!: WishlistItem;
+  pricePoint: any;
+  alertType: any;
 
   constructor(private appStore: Store<AppState>, public modalService: NgbModal) {
   }
@@ -28,5 +30,17 @@ export class WishlistItemComponent {
   removeWishlistItem(wishlist_item: WishlistItem) {
     console.log('removing item ' , wishlist_item)
     this.appStore.dispatch(removeWishlistItem({wishlist_item_id: wishlist_item.wishlist_item_id}))
+  }
+
+  addAlert(wishlist_item: WishlistItem) {
+    console.log('Adding '+ this.alertType + 'alert for price point: ' + this.pricePoint);    console.log('For this item: ' , wishlist_item)
+
+    const alert_item = {
+      card_market_id: wishlist_item.market_id,
+      price_point : this.pricePoint,
+      entity_type: this.alertType
+    }
+
+    // Additional code to handle the alert could go here
   }
 }
