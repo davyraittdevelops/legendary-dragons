@@ -90,6 +90,46 @@ Resources:
       FunctionName: !GetAtt StreamWishlistChangesFunction.Arn
       StartingPosition: LATEST
 
+   WishlistEventRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Name: wishlist-broadcast-rule
+      EventBusName: "connection-event-bus" # or arn
+      EventPattern:
+        source:
+          - "wishlist.database"
+        detail-type:
+          - INSERT
+          - REMOVE
+          - MODIFY
+        detail:
+          dynamodb:
+            Keys:
+              SK:
+                S:
+                  - prefix: USER
+                  - prefix: WISHLIST
+              PK:
+                S:
+                  - prefix: WISHLIST
+                  - prefix: WISHLIST_ITEM
+      State: ENABLED
+      Targets:
+        - Id: "broadcast-wishlist-db-changes"
+          Arn:
+            Fn::ImportValue:
+              !Sub "${LegDragonsBroadcastArn}"
+
+  WishlistEventPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::ImportValue:
+          !Sub "${LegDragonsBroadcastArn}"
+      Principal: events.amazonaws.com
+      SourceArn: !GetAtt WishlistEventRule.Arn
+
   # CREATE WISHLIST ITEM 
   CreateWishlistItemFunction:
     Type: AWS::Serverless::Function
