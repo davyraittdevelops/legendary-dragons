@@ -35,11 +35,11 @@ export class WishlistItemComponent {
   }
 
   open({content}: { content: any }) {
-    this.appStore.dispatch(getAlerts({wishlist_item_id: this.wishlist_item.wishlist_item_id}))
     this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title', size: 'xl'});
   }
 
   ngOnInit(): void {
+    this.appStore.dispatch(getAlerts({wishlist_item_id: this.wishlist_item.wishlist_item_id}))
   }
 
   removeWishlistItem(wishlist_item: WishlistItem) {

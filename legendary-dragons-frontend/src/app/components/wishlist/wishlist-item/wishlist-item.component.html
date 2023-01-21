@@ -35,4 +35,11 @@
     <h1>_______________________________________________________________________________________________________</h1>
   </div>
 
+
+  <ng-container *ngIf="alert_items$ | async as alert_items">
+      <ul class="list-group" class="col" *ngFor="let alert_item of alert_items">
+        <li class="list-group-item">{{alert_item.entity_type}}</li>
+      </ul>
+  </ng-container>
+
 </ng-template>
