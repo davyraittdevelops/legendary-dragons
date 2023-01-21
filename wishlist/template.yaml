@@ -237,6 +237,16 @@ Resources:
             EventBusName: "connection-event-bus"
         - DynamoDBWritePolicy:
             TableName: !Ref WishlistTable
+        - Statement:
+          - Effect: Allow
+            Action:
+              - 'execute-api:ManageConnections'
+            Resource:
+              Fn::Sub:
+                - 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${WebSocketApi}/*'
+                - WebSocketApi:
+                    Fn::ImportValue:
+                      'Fn::Sub': "${LegDragonsWebSocketApi}"
 
   CreateAlertPermission:
     Type: AWS::Lambda::Permission

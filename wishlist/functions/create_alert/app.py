@@ -5,6 +5,7 @@ import boto3
 import uuid
 from datetime import datetime
 from aws_xray_sdk.core import patch_all
+from decimal import Decimal
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -14,7 +15,6 @@ if "DISABLE_XRAY" not in os.environ:
 
 dynamodb = boto3.resource("dynamodb")
 table = dynamodb.Table(os.getenv("TABLE_NAME"))
-
 
 def lambda_handler(event, context):
     """Read neccesary information from the body/event."""
@@ -28,19 +28,18 @@ def lambda_handler(event, context):
     alert_id = str(uuid.uuid4())
 
     """Params from body."""
-    deck_id = body['deck_id']
     wishlist_item_id = body['wishlist_item_id']
-    price_alert_item = body['price_alert_item']
+    alert_item = body['alert_item']
 
-    if price_alert_item['entity_type'] == 'ALERT#PRICE': 
+    if alert_item['entity_type'] == 'ALERT#PRICE': 
         alert = {
             'PK' : f'USER{user_id}',
             'SK' : f'WISHLIST_ITEM#{wishlist_item_id}#ALERT#PRICE#{alert_id}',
             'entity_type' : 'ALERT#PRICE',
             'created_at':datetime.utcnow().isoformat(),
             'last_modified': datetime.utcnow().isoformat(),
-            'card_market_id': price_alert_item['card_market_id'],
-            'price_point' : '21',
+            'card_market_id': alert_item['card_market_id'],
+            'price_point' : alert_item['price_point'],
             'alert_id' : alert_id,
             'user_id' : user_id,
             'GSI1_PK': f'WISHLIST_ITEM#{wishlist_item_id}#ALERT#PRICE#{alert_id}',
@@ -48,14 +47,14 @@ def lambda_handler(event, context):
             'wishlist_item_id' : wishlist_item_id,
         }
 
-    if price_alert_item['entity_type'] == 'ALERT#AVAILABILITY': 
+    if alert_item['entity_type'] == 'ALERT#AVAILABILITY': 
         alert = {
             'PK' : f'USER{user_id}',
             'SK' : f'WISHLIST_ITEM#{wishlist_item_id}#ALERT#AVAILABILITY#{alert_id}',
             'entity_type' : 'ALERT#AVAILABILITY',
             'created_at':datetime.utcnow().isoformat(),
             'last_modified': datetime.utcnow().isoformat(),
-            'card_market_id': price_alert_item['card_market_id'],
+            'card_market_id': alert_item['card_market_id'],
             'alert_id' : alert_id,
             'user_id' : user_id,
             'GSI1_PK': f'WISHLIST_ITEM#{wishlist_item_id}#ALERT#AVAILABILITY#{alert_id}',
