@@ -61,7 +61,7 @@ def lambda_handler(event, context):
     """Post output back to the connection."""
     output = {
         "event_type": "REMOVE_ALERT_RESULT",
-        "data": response,
+        "data": alert_item,
     }
 
     apigateway.post_to_connection(
