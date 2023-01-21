@@ -89,12 +89,12 @@ Resources:
       EventSourceArn: !GetAtt WishlistTable.StreamArn
       FunctionName: !GetAtt StreamWishlistChangesFunction.Arn
       StartingPosition: LATEST
-
+  
   WishlistEventRule:
     Type: AWS::Events::Rule
     Properties:
       Name: wishlist-broadcast-rule
-      EventBusName: "connection-event-bus" # or arn
+      EventBusName: "connection-event-bus"
       EventPattern:
         source:
           - "wishlist.database"
@@ -128,7 +128,10 @@ Resources:
       Principal: events.amazonaws.com
       SourceArn: !GetAtt WishlistEventRule.Arn
 
-  # CREATE WISHLIST ITEM 
+
+
+
+
   CreateWishlistItemFunction:
     Type: AWS::Serverless::Function
     Properties:
