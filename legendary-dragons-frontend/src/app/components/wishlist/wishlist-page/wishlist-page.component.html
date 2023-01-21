@@ -2,8 +2,7 @@
   <app-add-wishlist-item-component class="col"></app-add-wishlist-item-component>
 
   <div fxLayout="row" fxLayoutWrap fxLayoutAlign="center center" fxLayoutGap="10px">
-    <app-wishlist-item class="col" *ngFor="let wishlist_item of wishlist_items"
-                       [wishlist_item]="wishlist_item">
+    <app-wishlist-item class="col" *ngFor="let wishlist_item of wishlist_items" [wishlist_item]="wishlist_item">
       <h1>{{wishlist_item.card_name}}</h1>
     </app-wishlist-item>
   </div>
