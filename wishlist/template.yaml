@@ -1,0 +1,392 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  wishlist
+  SAM Template for wishlist bounded context
+
+Parameters:
+  LegDragonsWebSocketApi:
+    Type: String
+    Default: "legendary-dragons-ws-api-gateway-LegDragonsWebSocketApi"
+  LegDragonsConnectionsEventBus:
+    Type: String
+    Default: "legendary-dragons-connection-event-bus-LegDragonsConnectionsEventBus"
+  LegDragonsBroadcastArn:
+    Type: String
+    Default: "legendary-dragons-connection-LegDragonsBroadcastArn"
+
+Globals:
+  Api:
+    TracingEnabled: True
+  Function:
+    Handler: app.lambda_handler
+    Runtime: python3.9
+    Environment:
+        Variables:
+          TABLE_NAME: !Ref WishlistTable
+          EVENT_BUS_NAME:
+            Fn::ImportValue:
+                !Sub "${LegDragonsConnectionsEventBus}"
+
+    Architectures:
+      - x86_64
+    Tracing: Active
+
+Resources: 
+  WishlistTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: wishlist
+      KeySchema:
+        - AttributeName: PK
+          KeyType: HASH
+        - AttributeName: SK
+          KeyType: RANGE
+      AttributeDefinitions:
+        - AttributeName: PK
+          AttributeType: S
+        - AttributeName: SK
+          AttributeType: S
+        - AttributeName: GSI1_PK
+          AttributeType: S
+        - AttributeName: GSI1_SK
+          AttributeType: S
+      BillingMode: PAY_PER_REQUEST
+      GlobalSecondaryIndexes:
+        - IndexName: "GSI1"
+          KeySchema:
+            - AttributeName: GSI1_PK
+              KeyType: HASH
+            - AttributeName: GSI1_SK
+              KeyType: RANGE
+          Projection:
+            ProjectionType: "ALL"
+      StreamSpecification:
+        StreamViewType: "NEW_AND_OLD_IMAGES"
+
+  # CREATE WISHLIST ITEM 
+  CreateWishlistItemFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/create_wishlist_item/
+      Policies:
+        - EventBridgePutEventsPolicy:
+            EventBusName: "connection-event-bus"
+        - DynamoDBWritePolicy:
+            TableName: !Ref WishlistTable
+        - Statement:
+          - Effect: Allow
+            Action:
+              - 'execute-api:ManageConnections'
+            Resource:
+              Fn::Sub:
+                - 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${WebSocketApi}/*'
+                - WebSocketApi:
+                    Fn::ImportValue:
+                      'Fn::Sub': "${LegDragonsWebSocketApi}"
+
+  CreateWishlistItemPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref CreateWishlistItemFunction
+      Principal: apigateway.amazonaws.com
+
+  CreateWishlistItemRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Fn::ImportValue:
+          !Sub "${LegDragonsWebSocketApi}"
+      RouteKey: createWishlistItemReq
+      AuthorizationType: NONE
+      OperationName: CreateWishlistItemRoute
+      Target: !Join
+        - '/'
+        - - 'integrations'
+          - !Ref CreateWishlistItemInteg
+
+  CreateWishlistItemInteg:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Fn::ImportValue:
+          !Sub "${LegDragonsWebSocketApi}"
+      Description: Create a wishlist item.
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::Sub:
+          arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${CreateWishlistItemFunction.Arn}/invocations
+
+
+  # GET WISHLIST ITEMS BY USER ID
+  GetWishlistFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/get_wishlist/
+      Policies:
+        - EventBridgePutEventsPolicy:
+            EventBusName: "connection-event-bus"
+        - DynamoDBReadPolicy:
+            TableName: !Ref WishlistTable
+        - Statement:
+          - Effect: Allow
+            Action:
+              - 'execute-api:ManageConnections'
+            Resource:
+              Fn::Sub:
+                - 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${WebSocketApi}/*'
+                - WebSocketApi:
+                    Fn::ImportValue:
+                      'Fn::Sub': "${LegDragonsWebSocketApi}"
+
+  GetWishlistPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref GetWishlistFunction
+      Principal: apigateway.amazonaws.com
+
+  GetWishlistRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Fn::ImportValue:
+          !Sub "${LegDragonsWebSocketApi}"
+      RouteKey: getWishlistReq
+      AuthorizationType: NONE
+      OperationName: GetWishlistRoute
+      Target: !Join
+        - '/'
+        - - 'integrations'
+          - !Ref GetWishlistInteg
+
+  GetWishlistInteg:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Fn::ImportValue:
+          !Sub "${LegDragonsWebSocketApi}"
+      Description: Get wishlist items for a user id.
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::Sub:
+          arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GetWishlistFunction.Arn}/invocations
+  
+  # GET ALERTS
+  GetAlertsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/get_alerts/
+      Policies:
+        - EventBridgePutEventsPolicy:
+            EventBusName: "connection-event-bus"
+        - DynamoDBReadPolicy:
+            TableName: !Ref WishlistTable
+        - Statement:
+          - Effect: Allow
+            Action:
+              - 'execute-api:ManageConnections'
+            Resource:
+              Fn::Sub:
+                - 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${WebSocketApi}/*'
+                - WebSocketApi:
+                    Fn::ImportValue:
+                      'Fn::Sub': "${LegDragonsWebSocketApi}"
+
+  GetAlertsPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref GetAlertsFunction
+      Principal: apigateway.amazonaws.com
+
+  GetAlertsRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Fn::ImportValue:
+          !Sub "${LegDragonsWebSocketApi}"
+      RouteKey: getAlertsReq
+      AuthorizationType: NONE
+      OperationName: GetAlertsRoute
+      Target: !Join
+        - '/'
+        - - 'integrations'
+          - !Ref GetAlertsInteg
+
+  GetAlertsInteg:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Fn::ImportValue:
+          !Sub "${LegDragonsWebSocketApi}"
+      Description: Get wishlist items for a user id.
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::Sub:
+          arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GetAlertsFunction.Arn}/invocations
+
+  #REMOVE WISHLIST ITEM
+  RemoveWishlistItemFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/remove_wishlist_item/
+      Policies:
+        - EventBridgePutEventsPolicy:
+            EventBusName: "connection-event-bus"
+        - DynamoDBCrudPolicy:
+            TableName: !Ref WishlistTable
+        - Statement:
+          - Effect: Allow
+            Action:
+              - 'execute-api:ManageConnections'
+            Resource:
+              Fn::Sub:
+                - 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${WebSocketApi}/*'
+                - WebSocketApi:
+                    Fn::ImportValue:
+                      'Fn::Sub': "${LegDragonsWebSocketApi}"
+
+  RemoveWishlistItemPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref RemoveWishlistItemFunction
+      Principal: apigateway.amazonaws.com
+
+  RemoveWishlistItemRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Fn::ImportValue:
+          !Sub "${LegDragonsWebSocketApi}"
+      RouteKey: removeWishlistItemReq
+      AuthorizationType: NONE
+      OperationName: RemoveWishlistItemRoute
+      Target: !Join
+        - '/'
+        - - 'integrations'
+          - !Ref RemoveWishlistItemInteg
+
+  RemoveWishlistItemInteg:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Fn::ImportValue:
+          !Sub "${LegDragonsWebSocketApi}"
+      Description: Remove wishlist item by id.
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::Sub:
+          arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${RemoveWishlistItemFunction.Arn}/invocations
+
+  #CREATE ALERT
+  CreateAlertFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/create_alert/
+      Policies:
+        - EventBridgePutEventsPolicy:
+            EventBusName: "connection-event-bus"
+        - DynamoDBWritePolicy:
+            TableName: !Ref WishlistTable
+        - Statement:
+          - Effect: Allow
+            Action:
+              - 'execute-api:ManageConnections'
+            Resource:
+              Fn::Sub:
+                - 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${WebSocketApi}/*'
+                - WebSocketApi:
+                    Fn::ImportValue:
+                      'Fn::Sub': "${LegDragonsWebSocketApi}"
+
+  CreateAlertPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref CreateAlertFunction
+      Principal: apigateway.amazonaws.com
+
+  CreateAlertRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Fn::ImportValue:
+          !Sub "${LegDragonsWebSocketApi}"
+      RouteKey: createAlertReq
+      AuthorizationType: NONE
+      OperationName: CreateAlertItemRoute
+      Target: !Join
+        - '/'
+        - - 'integrations'
+          - !Ref CreateAlertInteg
+
+  CreateAlertInteg:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Fn::ImportValue:
+          !Sub "${LegDragonsWebSocketApi}"
+      Description: Create a alert.
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::Sub:
+          arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${CreateAlertFunction.Arn}/invocations
+
+  #REMOVE ALERT
+  RemoveAlertFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/remove_alert/
+      Policies:
+        - EventBridgePutEventsPolicy:
+            EventBusName: "connection-event-bus"
+        - DynamoDBCrudPolicy:
+            TableName: !Ref WishlistTable
+        - Statement:
+          - Effect: Allow
+            Action:
+              - 'execute-api:ManageConnections'
+            Resource:
+              Fn::Sub:
+                - 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${WebSocketApi}/*'
+                - WebSocketApi:
+                    Fn::ImportValue:
+                      'Fn::Sub': "${LegDragonsWebSocketApi}"
+
+  RemoveAlertPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref RemoveAlertFunction
+      Principal: apigateway.amazonaws.com
+
+  RemoveAlertRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Fn::ImportValue:
+          !Sub "${LegDragonsWebSocketApi}"
+      RouteKey: removeAlertReq
+      AuthorizationType: NONE
+      OperationName: RemoveAlertRoute
+      Target: !Join
+        - '/'
+        - - 'integrations'
+          - !Ref RemoveAlertInteg
+
+  RemoveAlertInteg:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Fn::ImportValue:
+          !Sub "${LegDragonsWebSocketApi}"
+      Description: Remove alerts.
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::Sub:
+          arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${RemoveAlertFunction.Arn}/invocations
+
+# Outputs:
