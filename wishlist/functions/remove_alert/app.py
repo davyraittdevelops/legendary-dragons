@@ -18,8 +18,6 @@ table = dynamodb.Table(os.getenv("TABLE_NAME"))
 
 
 def lambda_handler(event, context):
-    print('event ' , event)
-
     """Read neccesary information from the body/event."""
     connection_id = event["requestContext"]["connectionId"]
     domain_name = event["requestContext"]["domainName"]
@@ -31,11 +29,11 @@ def lambda_handler(event, context):
 
     """Params from body."""
     wishlist_item_id = body['wishlist_item_id']
-    alert =  body['alert']
-    alert_id = alert['alert_id']
-    alert_type = alert['entity_type']
+    alert_item =  body['alert_item']
+    alert_id = alert_item['alert_id']
+    alert_type = alert_item['entity_type']
     
-    print('We received object ' , alert) , wishlist_item_id
+    print('We received object ' , alert_item) , wishlist_item_id
 
     """Do query/data manipulation."""
     try:
