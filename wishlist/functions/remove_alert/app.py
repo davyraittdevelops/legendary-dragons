@@ -56,16 +56,6 @@ def lambda_handler(event, context):
     except Exception as error:
         logger.info(f'Received an error: {error}')
 
-    """Post output back to the connection."""
-    output = {
-        "event_type": "REMOVE_ALERT_RESULT",
-        "data": alert_item,
-    }
-
-    apigateway.post_to_connection(
-        ConnectionId=connection_id,
-        Data=json.dumps(output, cls=DecimalEncoder)
-    )
     return {"statusCode": 200}
 
 class DecimalEncoder(json.JSONEncoder):
