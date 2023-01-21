@@ -64,6 +64,32 @@ Resources:
       StreamSpecification:
         StreamViewType: "NEW_AND_OLD_IMAGES"
 
+  #TABLE STREAM
+  StreamWishlistChangesFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/stream_wishlist_changes/
+      Policies:
+        - EventBridgePutEventsPolicy:
+            EventBusName: "connection-event-bus"
+        - DynamoDBStreamReadPolicy:
+            TableName: !Ref WishlistTable
+            StreamName: !Select [3, !Split ["/", !GetAtt WishlistTable.StreamArn]]
+      Environment:
+        Variables:
+          EVENT_BUS_NAME:
+            Fn::ImportValue:
+                !Sub "${LegDragonsConnectionsEventBus}"
+
+  EventSourceDeckTableStream:
+    Type: AWS::Lambda::EventSourceMapping
+    Properties:
+      BatchSize: 1
+      Enabled: True
+      EventSourceArn: !GetAtt WishlistTable.StreamArn
+      FunctionName: !GetAtt StreamWishlistChangesFunction.Arn
+      StartingPosition: LATEST
+
   # CREATE WISHLIST ITEM 
   CreateWishlistItemFunction:
     Type: AWS::Serverless::Function

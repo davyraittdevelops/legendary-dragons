@@ -33,8 +33,6 @@ def lambda_handler(event, context):
     alert_id = alert_item['alert_id']
     alert_type = alert_item['entity_type']
     
-    print('We received object ' , alert_item) , wishlist_item_id
-
     """Do query/data manipulation."""
     try:
         if alert_type ==  'ALERT#PRICE':

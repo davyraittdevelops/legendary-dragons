@@ -15,9 +15,8 @@ if "DISABLE_XRAY" not in os.environ:
 dynamodb = boto3.resource("dynamodb")
 table = dynamodb.Table(os.getenv("TABLE_NAME"))
 
-
+"""Create wishlist item"""
 def lambda_handler(event, context):
-    """Read neccesary information from the body/event."""
     connection_id = event["requestContext"]["connectionId"]
     domain_name = event["requestContext"]["domainName"]
     stage = event["requestContext"]["stage"]
@@ -26,8 +25,6 @@ def lambda_handler(event, context):
     body = json.loads(event["body"])
     user_id = event["requestContext"]["authorizer"]["userId"]
     wishlist_item_id = str(uuid.uuid4())
-
-    """Params from body."""
     deck_id = body['deck_id']
     wishlist_item = body['wishlist_item']
 
@@ -50,7 +47,6 @@ def lambda_handler(event, context):
         'wishlist_item_id' : wishlist_item_id
     }
 
-    """Do query/data manipulation."""
     try:
         response = table.put_item(
             Item=wishlist_item
@@ -59,16 +55,16 @@ def lambda_handler(event, context):
     except Exception as error:
         logger.info(f'Received an error: {error}')
 
-    """Post output back to the connection."""
-    output = {
-        "event_type": "CREATE_WISHLIST_ITEM_RESULT",
-        "data": wishlist_item,
-    }
+    # # Post output back to the connection.
+    # output = {
+    #     "event_type": "CREATE_WISHLIST_ITEM_RESULT",
+    #     "data": wishlist_item,
+    # }
 
-    apigateway.post_to_connection(
-        ConnectionId=connection_id,
-        Data=json.dumps(output, cls=DecimalEncoder)
-    )
+    # apigateway.post_to_connection(
+    #     ConnectionId=connection_id,
+    #     Data=json.dumps(output, cls=DecimalEncoder)
+    # )
     return {"statusCode": 200}
 
 class DecimalEncoder(json.JSONEncoder):
