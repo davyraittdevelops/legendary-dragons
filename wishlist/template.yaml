@@ -81,7 +81,7 @@ Resources:
             Fn::ImportValue:
                 !Sub "${LegDragonsConnectionsEventBus}"
 
-  EventSourceDeckTableStream:
+  EventSourceWishlistTableStream:
     Type: AWS::Lambda::EventSourceMapping
     Properties:
       BatchSize: 1
