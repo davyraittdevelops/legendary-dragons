@@ -15,7 +15,11 @@ import {createWishlistItem, removeWishlistItem} from "../../../ngrx/wishlist/wis
 export class WishlistItemComponent {
   @Input() wishlist_item!: WishlistItem;
 
-  constructor(private appStore: Store<AppState>) {
+  constructor(private appStore: Store<AppState>, public modalService: NgbModal) {
+  }
+
+  open({content}: { content: any }) {
+    this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title', size: 'xl'});
   }
 
   ngOnInit(): void {
@@ -24,6 +28,5 @@ export class WishlistItemComponent {
   removeWishlistItem(wishlist_item: WishlistItem) {
     console.log('removing item ' , wishlist_item)
     this.appStore.dispatch(removeWishlistItem({wishlist_item_id: wishlist_item.wishlist_item_id}))
-
   }
 }
