@@ -46,7 +46,7 @@ def table_definition():
     }
 
 @pytest.fixture()
-def websocket_event():
+def websocket_deck_event():
   """Generates Websocket Event"""
   return {
     "requestContext": {
@@ -75,11 +75,41 @@ def websocket_event():
     }),
   }
 
+@pytest.fixture()
+def websocket_side_deck_event():
+    """Generates Websocket Event"""
+    return {
+      "requestContext": {
+        "domainName": "localhost",
+        "stage": "Prod",
+        "connectionId": CONNECTION_ID,
+        "authorizer": {
+          "userId": "user-123"
+        }
+      },
+      "body": json.dumps({
+        "action": "removeCardFromDeckReq",
+        "deck_type": "side_deck",
+        "deck_id": "123",
+        "deck_card": {
+          "card_name": "Swords of Hounds",
+          "inventory_card_id": "2",
+          "colors": ["R"],
+          "inventory_id": "123",
+          "entity_type": "SIDE_DECK_CARD",
+          "prices": {"usd": "0.10"},
+          "rarity": "meta",
+          "quality": "rare",
+          "image_url": "example-image-url.com",
+        }
+      }),
+    }
+
 @patch.dict(os.environ, OS_ENV, clear=True)
 @mock_dynamodb
 @mock_events
 @mock_sqs
-def test_lamda_handler_success(websocket_event, table_definition):
+def test_lamda_handler_success(websocket_deck_event, table_definition):
   # Arrange
   # 1. Create the DynamoDB Table
   dynamodb = boto3.resource("dynamodb")
@@ -87,7 +117,7 @@ def test_lamda_handler_success(websocket_event, table_definition):
 
   table.put_item(
     Item={
-      "PK": "DECK_CARD#1",
+      "PK": "USER#user-123",
       "SK": "DECK#123",
       "entity_type": "DECK_CARD",
       "deck_id": "123",
@@ -102,19 +132,18 @@ def test_lamda_handler_success(websocket_event, table_definition):
       "quality": "rare",
       "image_url": "example-image-url.com",
       "GSI1_PK": "DECK#123",
-      "GSI1_SK": "DECK_CARD#1",
+      "GSI1_SK": "USER#user-123",
       "user_id": "user-123"
     }
   )
 
   # Act
   from functions.remove_card_from_deck import app
-  response = app.lambda_handler(websocket_event, {})
+  response = app.lambda_handler(websocket_deck_event, {})
 
   deck_cards = table.query(
-      KeyConditionExpression=Key("GSI1_PK").eq("DECK#123") &
-                             Key("GSI1_SK").begins_with("DECK_CARD"),
-      IndexName="GSI1"
+      KeyConditionExpression=Key("PK").eq("USER#user-123") &
+                             Key("SK").begins_with("DECK#123#DECK_CARD")
   )["Items"]
 
   # Assert
@@ -125,7 +154,7 @@ def test_lamda_handler_success(websocket_event, table_definition):
 @mock_dynamodb
 @mock_events
 @mock_sqs
-def test_lamda_handler_sidedeck(websocket_event, table_definition):
+def test_lamda_handler_sidedeck(websocket_side_deck_event, table_definition):
   # Arrange
   # 1. Create the DynamoDB Table
   dynamodb = boto3.resource("dynamodb")
@@ -133,38 +162,33 @@ def test_lamda_handler_sidedeck(websocket_event, table_definition):
 
   table.put_item(
     Item={
-      "PK": "DECK_CARD#1",
-      "SK": "DECK#123#SIDE_DECK",
-      "entity_type": "DECK_CARD",
+      "PK": "USER#user-123",
+      "SK": "DECK#123",
+      "entity_type": "SIDE_DECK_CARD",
       "deck_id": "123",
       "inventory_id": "123",
-      "inventory_card_id": "1",
+      "inventory_card_id": "2",
       "created_at": "2023-01-17T23:45:18.666453",
       "last_modified": "2023-01-17T23:45:18.666453",
-      "card_name": "Swords of Doom",
+      "card_name": "Swords of Hounds",
       "colors": ["R"],
-      "prices": {"usd": "0.05"},
+      "prices": {"usd": "0.10"},
       "rarity": "meta",
       "quality": "rare",
       "image_url": "example-image-url.com",
-      "GSI1_PK": "DECK#123#SIDE_DECK",
-      "GSI1_SK": "DECK_CARD#1",
+      "GSI1_PK": "DECK#123",
+      "GSI1_SK": "USER#user-123",
       "user_id": "user-123"
     }
   )
-
-  body = json.loads(websocket_event["body"])
-  body["deck_type"] = "side_deck"
-  websocket_event["body"] = json.dumps(body)
-
+  
   # Act
   from functions.remove_card_from_deck import app
-  response = app.lambda_handler(websocket_event, {})
+  response = app.lambda_handler(websocket_side_deck_event, {})
 
   side_deck_cards = table.query(
-      KeyConditionExpression=Key("GSI1_PK").eq("DECK#123#SIDE_DECK") &
-                             Key("GSI1_SK").begins_with("DECK_CARD"),
-      IndexName="GSI1"
+      KeyConditionExpression=Key("PK").eq("USER#user-123") &
+                             Key("SK").begins_with("DECK#123#DECK_CARD")
   )["Items"]
 
   # Assert
