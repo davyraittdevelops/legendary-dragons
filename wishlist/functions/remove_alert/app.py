@@ -5,6 +5,7 @@ import boto3
 import uuid
 from datetime import datetime
 from aws_xray_sdk.core import patch_all
+from decimal import Decimal
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -28,25 +29,28 @@ def lambda_handler(event, context):
 
     """Params from body."""
     wishlist_item_id = body['wishlist_item_id']
-    price_alert_id = body['price_alert_id']
-    alert_type = body['entity_type']
+    alert =  body['alert']
+    alert_id = alert['alert_id']
+    alert_type = alert['entity_type']
+    
+    print('We received object ' , alert) , wishlist_item_id
 
     """Do query/data manipulation."""
     try:
-        if alert_type ==  'price_alert':
+        if alert_type ==  'ALERT#PRICE':
             response = table.delete_item(
                 Key={
-                    "PK": f'WISHLIST_ITEM#{wishlist_item_id}',
-                    "SK": f"ALERT#PRICE#{price_alert_id}"
+                    "PK": f'USER#{user_id}',
+                    "SK": f"WISHLIST_ITEM#{wishlist_item_id}#ALERT#PRICE#{alert_id}"
                 }
             )
             logger.info(f'Result from table delete item : {response}')
 
-        if alert_type ==  'availability_alert':
+        if alert_type ==  'ALERT#AVAILABILITY':
             response = table.delete_item(
                 Key={
-                    "PK": f'WISHLIST_ITEM#{wishlist_item_id}',
-                    "SK": f"ALERT#AVAILABILITY#{price_alert_id}"
+                    "PK": f'USER#{user_id}',
+                    "SK": f"WISHLIST_ITEM#{wishlist_item_id}#ALERT#AVAILABILITY#{alert_id}"
                 }
             )
             logger.info(f'Result from table remove item : {response}')
