@@ -28,7 +28,6 @@ def lambda_handler(event, context):
 
     """Params from body."""
     wishlist_item_id = body['wishlist_item_id']
-    user_id = '15fcbfd3-0c91-48d1-8257-634e8411eed9'
 
     """Do query/data manipulation."""
     try:
@@ -39,6 +38,7 @@ def lambda_handler(event, context):
             }
             )
         logger.info(f'Result from table delete item : {response}')
+
     except Exception as error:
         logger.info(f'Received an error: {error}')
 
