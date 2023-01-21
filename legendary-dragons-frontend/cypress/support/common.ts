@@ -15,7 +15,7 @@ export const removeAllInventoryCards = () => {
   cy.wait(3000);
   cy.get("body").then($body => {
     if ($body.find("div[aria-label=collection-card]").length > 0) {
-      cy.get("button[name=removeCardFromInventory]").click({multiple: true});
+      cy.get("li[name=removeCardFromInventory]").click({multiple: true});
       cy.wait(1000);
     }
   });

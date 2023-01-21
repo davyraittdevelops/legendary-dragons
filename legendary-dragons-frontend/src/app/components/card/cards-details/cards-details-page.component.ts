@@ -24,7 +24,7 @@ export class CardsDetailsPageComponent {
   }
 
   displayAvailablePrice(prices: any): string {
-    let price = "Price not available";
+    let price = '€ 0.00';
 
     if (prices.eur !== null) {
       price = `€ ${prices.eur}`;
