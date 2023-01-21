@@ -13,7 +13,13 @@ import {
   createWishlistItemSuccess,
   removeWishlistItem,
   removeWishlistItemFail,
-  removeWishlistItemSuccess, createAlert, createAlertFail, createAlertSuccess
+  removeWishlistItemSuccess,
+  createAlert,
+  createAlertFail,
+  createAlertSuccess,
+  getAlerts,
+  getAlertsSuccess,
+  getAlertsFail
 } from "./wishlist.actions";
 
 @Injectable()
@@ -38,6 +44,27 @@ export class WishlistEffects {
           catchError((error) => {
             console.log(error);
             return of(getWishlistFail({error: true}))
+          })
+        )
+      })
+    )
+  );
+
+
+  public getAlertsEffect$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(getAlerts),
+      tap(({wishlist_item_id}) => this.websocketService.sendGetAlertsMessage(wishlist_item_id)),
+      switchMap(() => {
+        return this.websocketService.dataUpdates$().pipe(
+          filter((event: any) => {
+            console.log(event)
+            return event['event_type'] === 'GET_ALERTS_RESULT'
+          }),
+          map((event: any) => getAlertsSuccess({alert_items: event["data"]})),
+          catchError((error) => {
+            console.log(error);
+            return of(getAlertsFail({error: true}))
           })
         )
       })

@@ -115,4 +115,8 @@ export class WebsocketService {
   sendCreateAlert(alert_item: WishlistAlert, wishlist_item_id: string) {
     this.sendMessage('createAlertReq', {alert_item, wishlist_item_id});
   }
+
+  sendGetAlertsMessage(wishlist_item_id : string) {
+    this.sendMessage('getAlertsReq', {wishlist_item_id});
+  }
 }

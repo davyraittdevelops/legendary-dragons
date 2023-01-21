@@ -15,6 +15,21 @@ export const getWishlistSuccess = createAction(
   props<{wishlist_items: WishlistItem[]}>(),
 );
 
+export const getAlerts = createAction(
+  '[Alerts Component] Get Alerts',
+  props<{ wishlist_item_id: string }>(),
+);
+
+export const getAlertsFail = createAction(
+  '[Alerts Component] Get Alerts Fail',
+  props<{ error: boolean }>(),
+);
+
+export const getAlertsSuccess = createAction(
+  '[Alerts Component] Get Alerts Success',
+  props<{alert_items: WishlistAlert[]}>(),
+);
+
 export const createWishlistItem = createAction(
   '[Add Wishlist Item Component] Create Wistlist Item',
   props<{ wishlist_item: WishlistItem }>()
