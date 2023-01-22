@@ -1,19 +1,18 @@
 import {Component, Input} from '@angular/core';
-import {InventoryCard} from "../../../models/inventory.model";
-import {WishlistAlert, WishlistAlertRequest, WishlistItem} from "../../../models/wishlist.model";
+import {WishlistAlert, WishlistItem} from "../../../models/wishlist.model";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {Store} from "@ngrx/store";
 import {AppState} from "../../../app.state";
-import {getInventory} from "../../../ngrx/inventory/inventory.actions";
 import {
   createAlert,
-  createWishlistItem, getAlerts,
-  getWishlist, removeAlert,
+  getAlerts,
+  removeAlert,
   removeWishlistItem
 } from "../../../ngrx/wishlist/wishlist.actions";
-import {Observable} from "rxjs";
+import {Observable, tap} from "rxjs";
 import {errorSelector, isLoadingSelector} from "../../../ngrx/inventory/inventory.selectors";
-import {alertItemsSelector, wishlistItemsSelector} from "../../../ngrx/wishlist/wishlist.selectors";
+import {alertItemsSelector} from "../../../ngrx/wishlist/wishlist.selectors";
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-wishlist-item',
@@ -25,18 +24,29 @@ export class WishlistItemComponent {
   alert_items$: Observable<WishlistAlert[]>;
   isLoading$: Observable<boolean>;
   hasError$: Observable<boolean>;
-  pricePoint: any;
-  alertType: any;
+  pricePoint: any = "";
+  alertType: any = "";
   isDisabled = false;
-
+  alerts!: WishlistAlert[]
+  hasPriceAlert: boolean = false;
+  hasAvailabilityAlert: boolean = false;
+  hasAddAlertType: boolean = false;
+  hasAddAlert: boolean = false;
 
   constructor(private appStore: Store<AppState>, public modalService: NgbModal) {
     this.isLoading$ = this.appStore.select(isLoadingSelector);
     this.hasError$ = this.appStore.select(errorSelector);
-    this.alert_items$ = this.appStore.select(alertItemsSelector);
+    this.alert_items$ = this.appStore.select(alertItemsSelector).pipe(tap(alerts =>
+      this.alerts = alerts
+    ));
   }
 
   open({content}: { content: any }) {
+    this.hasPriceAlert = false;
+    this.hasAvailabilityAlert = false;
+    this.hasAddAlertType = false;
+    this.hasAddAlert = false;
+
     this.appStore.dispatch(getAlerts({wishlist_item_id: this.wishlist_item.wishlist_item_id}))
     this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title', size: 'xl'});
   }
@@ -48,13 +58,49 @@ export class WishlistItemComponent {
     this.appStore.dispatch(removeWishlistItem({wishlist_item_id: wishlist_item.wishlist_item_id}))
   }
 
+  changeAlertType(event: any) {
+    this.alertType = event.value;
+    this.hasAddAlertType = true;
+    this.hasAddAlert = false;
+    this.pricePoint = "";
+  }
+
+  onPriceChange(event: any) {
+    this.pricePoint = event.target.value;
+    this.hasAddAlert = false;
+  }
+
   addAlert(wishlist_item: WishlistItem) {
+    this.hasAddAlert = true;
+    if (this.alertType === "") {
+      return;
+    }
+
+    if (this.alertType === "PRICE" && this.pricePoint === "") {
+      return;
+    }
+
+    if (this.alerts.length > 0) {
+      for (let alert of this.alerts) { 
+        console.log(alert)
+        if (this.alertType === "AVAILABILITY" && alert.entity_type ==="ALERT#AVAILABILITY") {
+          this.hasAvailabilityAlert = true;
+          return;
+        }
+        if (this.alertType === "PRICE" && alert.entity_type ==="ALERT#PRICE") {
+          this.hasPriceAlert = true;
+          return;
+        }
+      }
+    }
+
     const alert_item_obj = {
       card_market_id: this.wishlist_item.card_market_id,
       price_point : this.pricePoint,
       alert_type: this.alertType,
       alert_id: ''
     }
+
     this.appStore.dispatch(createAlert({alert_item: alert_item_obj, wishlist_item_id: wishlist_item.wishlist_item_id}))
   }
 
@@ -64,5 +110,13 @@ export class WishlistItemComponent {
     alert_item_obj.alert_type = alertType
     this.appStore.dispatch(removeAlert({alert_item: alert_item_obj, wishlist_item_id: this.wishlist_item.wishlist_item_id}))
 
+    for (let alert of this.alerts) { 
+      if (alert.entity_type !== "ALERT#AVAILABILITY") {
+        this.hasAvailabilityAlert = false;
+      }
+      if (alert.entity_type !== "ALERT#PRICE") {
+        this.hasPriceAlert = false;
+      }
+    }
   }
 }

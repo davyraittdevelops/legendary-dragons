@@ -22,16 +22,34 @@
     <div>
       <mat-form-field>
         <mat-label>Alert Type</mat-label>
-        <mat-select [(ngModel)]="alertType">
+        <mat-select (selectionChange)="changeAlertType($event)">
           <mat-option value="PRICE">Price Alert</mat-option>
           <mat-option value="AVAILABILITY">Availability Alert</mat-option>
         </mat-select>
       </mat-form-field>
       <div *ngIf="alertType === 'PRICE'">
-        <input type="text" id="price_point" name="price_point" [(ngModel)]="pricePoint">
+        <input type="text" id="price_point" name="price_point" (input)="onPriceChange($event)">
       </div>
-      <button mat-raised-button color="primary" (click)="addAlert(wishlist_item)" >Add Alert</button>
+
+      <button mat-raised-button color="primary" (click)="addAlert(wishlist_item)">Add Alert</button>
     </div>
+    
+    <div class="p-3 mb-2 bg-danger text-white" *ngIf="hasAddAlert && !hasAddAlertType">
+      Alert type is required
+    </div>
+
+    <div class="p-3 mb-2 bg-danger text-white" *ngIf="hasAddAlert && alertType === 'PRICE' && pricePoint === ''">
+      Pricepoint is required
+    </div>
+
+    <div class="p-3 mb-2 bg-danger text-white" *ngIf="hasAddAlert && hasAvailabilityAlert && alertType === 'AVAILABILITY'">
+      You can only have one availability alert
+    </div>
+
+    <div class="p-3 mb-2 bg-danger text-white" *ngIf="hasAddAlert && hasPriceAlert && pricePoint !== '' && alertType === 'PRICE'">
+      You can only have one price alert
+    </div>
+
     <h1>_______________________________________________________________________________________________________</h1>
 
     <ng-container *ngIf="alert_items$ | async as alert_items">
