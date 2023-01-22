@@ -3,15 +3,44 @@ import {
   searchCardByKeyword,
   searchCardByKeywordFail,
   searchCardByKeywordSuccess,
-  clearSearchResult, updateCardQuality
+  clearSearchResult, updateCardQuality, getCard, getCardFail, getCardSuccess
 } from "./card.actions";
 import { CardState } from "./models/card-state.model";
+import {getDeck, getDeckFail, getDeckSuccess} from "../deck/deck.actions";
 
 const initialState: CardState = {
   isLoading: false,
   hasError: false,
   query: "",
-  searchedCards: []
+  searchedCards: [],
+  card_details: {
+    card: {
+      card_name: '',
+      cardmarket_id: '',
+      collector_number: '',
+      created_at: '',
+      entity_type: '',
+      is_multifaced: false,
+      last_modified: '',
+      oracle_id: '',
+      prices: {
+        usd_foil: '',
+        usd_etched: '',
+        eur_foil: '',
+        tix: '',
+        eur: ''
+      },
+      rarity: '',
+      released_at: '',
+      scryfall_id: '',
+      set_code: '',
+      set_id: '',
+      set_name: '',
+      set_type: ''
+    },
+    card_faces: []
+    }
+
 }
 
 export const cardReducer = createReducer(
@@ -33,5 +62,15 @@ export const cardReducer = createReducer(
         ...state,
         searchedCards: updatedCards
       };
+  }),
+  on(getCard, (state, {scryfall_id}) => ({...state, isLoading: true})),
+  on(getCardFail, (state) => ({...state, isLoading: false, hasError: true})),
+  on(getCardSuccess, (state, {card}) => {
+    return {
+      ...state,
+      isLoading: false,
+      hasError: false,
+      card_details: card
+    };
   }),
 )

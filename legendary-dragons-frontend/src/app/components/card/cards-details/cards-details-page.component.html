@@ -33,11 +33,9 @@
   <div class="modal-body card-modal text-black">
     <div class="d-flex justify-content-between">
       <div>
-        <h2>Value: {{displayAvailablePrice(card.prices)}}</h2>
-        <h2>Mana Costs: {{card.mana_cost}}</h2>
-        <h2>Card Text: {{card.oracle_text}}</h2>
-        <h2>Rarity: {{card.rarity | titlecase}}</h2>
+        <h2>Name: {{card.card_name}}</h2>
         <h2>Quality: {{card.quality}}</h2>
+        <h2>Rarity: {{card.rarity}}</h2>
         <h2>
           Deck location:
           <span *ngIf="card.deck_location !== ''" class="badge text-bg-info fw-normal">
@@ -55,8 +53,23 @@
         <h2>
           Added at: {{card.created_at | date:'dd/MM/yyyy HH:mm'}}
         </h2>
+        <h1>_______________________________________________________________________________________________________</h1>
+        <ng-container *ngIf="card_details$ | async as card_details">
+          <div class="container">
+            <div class="row">
+              <div class="col" *ngFor="let card_face of card_details.card_faces">
+                <img src={{card_face.image_url}} alt={{card_face.image_url}} image class="card-image" loading="lazy">
+                <h2>Name: {{card_face.card_name}}</h2>
+                <h2>Colors:
+                  <span *ngIf="card_face.colors.length === 0">Colorless</span>
+                  {{card_face.colors}}
+                </h2>                <h2>Mana Cost: {{card_face.mana_cost}}</h2>
+                <h2>Text: {{card_face.oracle_text}}</h2>
+              </div>
+            </div>
+          </div>
+        </ng-container>
       </div>
-      <img src={{card.image_url}} alt="{{card.card_name}} image" class="card-image" loading="lazy">
     </div>
   </div>
 </ng-template>
