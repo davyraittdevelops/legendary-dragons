@@ -5,6 +5,7 @@ import pytest
 from moto import mock_dynamodb
 from unittest.mock import patch
 from boto3.dynamodb.conditions import Key
+from datetime import datetime
 
 CONNECTION_ID = "abcdefg"
 TABLE_NAME = "test_wishlist"
@@ -60,14 +61,8 @@ def websocket_event():
             }
         },
         "body": json.dumps({
-            "action": "createWishlistItemReq",
-            "deck_id": "1",
-            "wishlist_item": {
-                "oracle_id": "1",
-                "image_url" : "https//img.png",
-                "cardmarket_id": "1",
-                "card_name": "Swords of Doom"
-            }
+            "action": "removeWishlistItemReq",
+            "wishlist_item_id": "1"
         }),
     }
 
@@ -79,20 +74,38 @@ def test_lamda_handler_success(websocket_event, table_definition):
     # 1. Create the DynamoDB Table
     dynamodb = boto3.resource("dynamodb")
     table = dynamodb.create_table(**table_definition)
+    now = datetime.utcnow().isoformat()
+
+    user_pk = "USER#user-123"
+    wishlist_item_sk = "WISHLIST#1"
+
+    table.put_item(Item={
+        "PK": user_pk,
+        "SK": wishlist_item_sk,
+        "entity_type": "WISHLIST_ITEM",
+        "user_id": "user-123",
+        "oracle_id": "1",
+        "image_url" : "https//img.png",
+        "cardmarket_id": "1",
+        "card_name": "Swords of Doom",
+        "created_at": now,
+        "last_modified": now,
+        "GSI1_PK": wishlist_item_sk,
+        "GSI1_SK": user_pk,
+        "GSI2_PK": "DECK#1",
+        "GSI2_SK": "WISHLIST#1"
+    })
 
     # Act
-    from functions.create_wishlist_item import app
+    from functions.remove_wishlist_item import app
     response = app.lambda_handler(websocket_event, {})
 
-    wishlist_item = table.query(
+    wishlist_items = table.query(
         KeyConditionExpression=Key("PK").eq("USER#user-123") &
         Key("SK").begins_with("WISHLIST")
-    )["Items"][0]
+    )["Items"]
 
     # Assert
     assert response["statusCode"] == 200
-    assert wishlist_item["entity_type"] == "WISHLIST_ITEM"
-    assert wishlist_item["oracle_id"] == "1"
-    assert wishlist_item["image_url"] == "https//img.png"
-    assert wishlist_item["card_market_id"] == "1"
-    assert wishlist_item["card_name"] == "Swords of Doom"
+    assert len(wishlist_items) == 0
+ 
