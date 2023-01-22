@@ -12,7 +12,6 @@ import {
 import {Observable, tap} from "rxjs";
 import {errorSelector, isLoadingSelector} from "../../../ngrx/inventory/inventory.selectors";
 import {alertItemsSelector} from "../../../ngrx/wishlist/wishlist.selectors";
-import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-wishlist-item',
@@ -46,6 +45,8 @@ export class WishlistItemComponent {
     this.hasAvailabilityAlert = false;
     this.hasAddAlertType = false;
     this.hasAddAlert = false;
+    this.pricePoint = "";
+    this.alertType = "";
 
     this.appStore.dispatch(getAlerts({wishlist_item_id: this.wishlist_item.wishlist_item_id}))
     this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title', size: 'xl'});
