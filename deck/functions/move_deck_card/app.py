@@ -20,38 +20,37 @@ eventbus = os.getenv("EVENT_BUS_NAME")
 
 def lambda_handler(event, context):
   body = json.loads(event["body"])
-  deck_card = body["deck_card"]
-  deck_id = body["deck_id"]
+  sk = body["sk"]
+  pk = "USER#" + event["requestContext"]["authorizer"]["userId"]
 
   save = table.get_item(
     Key={
-      "PK": deck_card,
-      "SK": deck_id
+      "PK": pk,
+      "SK": sk
     }
   )["Item"]
 
   logger.info(f"Saved info before move: {save}")
 
-  sk = save["SK"] + "#SIDE_DECK"
-  logger.info(sk)
-  if "#SIDE_DECK" in save["SK"]:
-    sk = "DECK#" + save["deck_id"]
+  entity_type = "SIDE_DECK_CARD"
+  if save["entity_type"] == entity_type:
+    entity_type = "DECK_CARD"
 
   logger.info(sk)
   delete = table.delete_item(
     Key={
-      "PK": deck_card,
-      "SK": deck_id
+      "PK": pk,
+      "SK": sk
     },
     ReturnValues='ALL_OLD'
   )
   logger.info("Succesfully deleted card from deck: ", delete)
 
   table.put_item(Item={
-      "PK": deck_card,
+      "PK": pk,
       "SK": sk,
-      "entity_type": "DECK_CARD",
-      "deck_id": deck_id,
+      "entity_type": entity_type,
+      "deck_id": save["deck_id"],
       "inventory_id": save["inventory_id"],
       "inventory_card_id": save["inventory_card_id"],
       "created_at": save["created_at"],
@@ -63,7 +62,7 @@ def lambda_handler(event, context):
       "quality": save["quality"],
       "image_url": save["image_url"],
       "GSI1_PK": sk,
-      "GSI1_SK": deck_card,
+      "GSI1_SK": pk,
       "user_id": save["user_id"]
     })
   logger.info(f"Succesfully moved to other deck, deck id now: {sk}")

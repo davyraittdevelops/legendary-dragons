@@ -59,8 +59,7 @@ def websocket_event():
     },
     "body": json.dumps({
       "action": "moveDeckCardReq",
-      "deck_card": "DECK_CARD#1",
-      "deck_id": "DECK#123"
+      "sk": "DECK#1#DECK_CARD#1"
     }),
   }
 
@@ -76,8 +75,8 @@ def test_lamda_handler_success(websocket_event, table_definition):
 
   table.put_item(
     Item={
-      "PK": "DECK_CARD#1",
-      "SK": "DECK#123",
+      "PK": "USER#user-123",
+      "SK": "DECK#1#DECK_CARD#1",
       "entity_type": "DECK_CARD",
       "deck_id": "123",
       "inventory_id": "123",
@@ -90,8 +89,8 @@ def test_lamda_handler_success(websocket_event, table_definition):
       "rarity": "meta",
       "quality": "rare",
       "image_url": "example-image-url.com",
-      "GSI1_PK": "DECK#123",
-      "GSI1_SK": "DECK_CARD#1",
+      "GSI1_PK": "DECK#1#DECK_CARD#1",
+      "GSI1_SK": "USER#user-123",
       "user_id": "user-123"
     }
   )
@@ -100,19 +99,13 @@ def test_lamda_handler_success(websocket_event, table_definition):
   from functions.move_deck_card import app
   response = app.lambda_handler(websocket_event, {})
 
-  deck_card = table.query(
-      KeyConditionExpression=Key("GSI1_PK").eq("DECK#123") &
-                             Key("GSI1_SK").begins_with("DECK_CARD"),
-      IndexName="GSI1"
-  )["Items"]
-  
-  side_deck_card = table.query(
-      KeyConditionExpression=Key("GSI1_PK").eq("DECK#123#SIDE_DECK") &
-                             Key("GSI1_SK").begins_with("DECK_CARD"),
-      IndexName="GSI1"
-  )["Items"]
+  deck_card = table.get_item(
+    Key={
+      "PK": "USER#user-123",
+      "SK": "DECK#1#DECK_CARD#1"
+    }
+  )["Item"]
 
   # Assert
   assert response["statusCode"] == 200
-  assert len(deck_card) == 0
-  assert len(side_deck_card) == 1
+  assert deck_card["entity_type"] == "SIDE_DECK_CARD"
