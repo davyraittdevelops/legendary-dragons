@@ -102,7 +102,7 @@ def test_lamda_handler_success(websocket_event, table_definition):
 
     wishlist_items = table.query(
         KeyConditionExpression=Key("PK").eq("USER#user-123") &
-        Key("SK").begins_with("WISHLIST")
+        Key("SK").begins_with("WISHLIST_ITEM#")
     )["Items"]
 
     # Assert

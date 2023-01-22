@@ -64,6 +64,7 @@ def websocket_price_event():
             "action": "removeAlertReq",
             "wishlist_item_id": "1", 
             "alert_item": {
+                "alert_type": "PRICE",
                 "entity_type": "ALERT#PRICE",
                 "price_point": "5.00",
                 "user_id": "user-123",
@@ -90,6 +91,7 @@ def websocket_availability_event():
             "action": "removeAlertReq",
             "wishlist_item_id": "1", 
             "alert_item": {
+                "alert_type": "AVAILABILITY",
                 "entity_type": "ALERT#AVAILABILITY",
                 "user_id": "user-123",
                 "wishlist_item_id": "1",
