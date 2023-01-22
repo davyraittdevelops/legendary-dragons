@@ -1,13 +1,19 @@
 <ng-container *ngIf="wishlist_items$ | async as wishlist_items">
-  <div class="container-fluid p-5 m-0" aria-label="collection">
+  <div class="container-fluid p-5 pt-4 m-0" aria-label="collection">
     <div class="row row-cols-auto gy-4">
       <app-add-wishlist-item-component class="col"></app-add-wishlist-item-component>
 
+      <div *ngIf="hasError$ | async" class="text-danger alert alert-warning me-2" role="alert">
+        An error has occured while loading your decks. Please try again.
+      </div>
+
       <app-wishlist-item class="col" *ngFor="let wishlist_item of wishlist_items" [wishlist_item]="wishlist_item">
-        <h1>{{wishlist_item.card_name}}</h1>
       </app-wishlist-item>
+
+      <div class="text-center ms-3" *ngIf="isLoading$ | async">
+        <span class="spinner-border spinner-border mt-3" role="status" aria-hidden="true">
+        </span>
+      </div>
     </div>
   </div>
-
 </ng-container>
- 

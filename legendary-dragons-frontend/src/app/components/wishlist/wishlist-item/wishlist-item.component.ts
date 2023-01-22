@@ -1,19 +1,14 @@
-import {Component, Input} from '@angular/core';
-import {InventoryCard} from "../../../models/inventory.model";
-import {WishlistAlert, WishlistAlertRequest, WishlistItem} from "../../../models/wishlist.model";
-import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
-import {Store} from "@ngrx/store";
-import {AppState} from "../../../app.state";
-import {getInventory} from "../../../ngrx/inventory/inventory.actions";
+import { Component, Input } from '@angular/core';
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
+import { Observable } from "rxjs";
+import { AppState } from "../../../app.state";
+import { WishlistAlert, WishlistItem } from "../../../models/wishlist.model";
 import {
-  createAlert,
-  createWishlistItem, getAlerts,
-  getWishlist, removeAlert,
-  removeWishlistItem
+    createAlert, getAlerts, removeAlert,
+    removeWishlistItem
 } from "../../../ngrx/wishlist/wishlist.actions";
-import {Observable} from "rxjs";
-import {errorSelector, isLoadingSelector} from "../../../ngrx/inventory/inventory.selectors";
-import {alertItemsSelector, wishlistItemsSelector} from "../../../ngrx/wishlist/wishlist.selectors";
+import { alertItemsSelector, errorSelector, isLoadingSelector } from "../../../ngrx/wishlist/wishlist.selectors";
 
 @Component({
   selector: 'app-wishlist-item',
@@ -28,7 +23,6 @@ export class WishlistItemComponent {
   pricePoint: any;
   alertType: any;
   isDisabled = false;
-
 
   constructor(private appStore: Store<AppState>, public modalService: NgbModal) {
     this.isLoading$ = this.appStore.select(isLoadingSelector);
