@@ -27,7 +27,7 @@
           <mat-option value="AVAILABILITY">Availability Alert</mat-option>
         </mat-select>
       </mat-form-field>
-      <div *ngIf="alertType === 'ALERT#PRICE'">
+      <div *ngIf="alertType === 'PRICE'">
         <input type="text" id="price_point" name="price_point" [(ngModel)]="pricePoint">
       </div>
       <button mat-raised-button color="primary" (click)="addAlert(wishlist_item)" >Add Alert</button>
