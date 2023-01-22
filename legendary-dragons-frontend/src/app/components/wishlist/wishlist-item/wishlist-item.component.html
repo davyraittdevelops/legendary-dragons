@@ -23,8 +23,8 @@
       <mat-form-field>
         <mat-label>Alert Type</mat-label>
         <mat-select [(ngModel)]="alertType">
-          <mat-option value="ALERT#PRICE">Price Alert</mat-option>
-          <mat-option value="ALERT#AVAILABILITY">Availability Alert</mat-option>
+          <mat-option value="PRICE">Price Alert</mat-option>
+          <mat-option value="AVAILABILITY">Availability Alert</mat-option>
         </mat-select>
       </mat-form-field>
       <div *ngIf="alertType === 'ALERT#PRICE'">

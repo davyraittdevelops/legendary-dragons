@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { InventoryCard } from 'src/app/models/inventory.model';
-import {WishlistAlert, WishlistItem} from 'src/app/models/wishlist.model';
+import {WishlistAlert, WishlistAlertRequest, WishlistItem} from 'src/app/models/wishlist.model';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -112,7 +112,7 @@ export class WebsocketService {
     )
   }
 
-  sendCreateAlert(alert_item: WishlistAlert, wishlist_item_id: string) {
+  sendCreateAlert(alert_item: WishlistAlertRequest, wishlist_item_id: string) {
     this.sendMessage('createAlertReq', {alert_item, wishlist_item_id});
   }
 
@@ -120,7 +120,7 @@ export class WebsocketService {
     this.sendMessage('getAlertsReq', {wishlist_item_id});
   }
 
-  sendRemoveAlertMessage(alert_item: WishlistAlert, wishlist_item_id: string) {
+  sendRemoveAlertMessage(alert_item: WishlistAlertRequest, wishlist_item_id: string) {
     this.sendMessage('removeAlertReq', {alert_item, wishlist_item_id});
   }
 }

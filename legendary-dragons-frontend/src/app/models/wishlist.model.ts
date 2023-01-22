@@ -10,8 +10,15 @@ export interface WishlistItem {
 }
 
 export interface WishlistAlert {
-  entity_type: string
   card_market_id: string
   price_point: string
   alert_id: string
+  entity_type: string
+}
+
+export interface WishlistAlertRequest {
+  card_market_id: string
+  price_point: string
+  alert_id: string
+  alert_type: string
 }
