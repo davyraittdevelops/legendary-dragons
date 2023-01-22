@@ -33,7 +33,7 @@ def lambda_handler(event, context):
         response = table.delete_item(
             Key={
                 "PK": f'USER#{user_id}',
-                "SK": f"WISHLIST#{wishlist_item_id}"
+                "SK": f"WISHLIST_ITEM#{wishlist_item_id}"
             }
             )
         logger.info(f'Result from table delete item : {response}')
