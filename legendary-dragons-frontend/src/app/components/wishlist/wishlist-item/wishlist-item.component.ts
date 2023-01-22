@@ -60,8 +60,8 @@ export class WishlistItemComponent {
 
   removeAlert(alert_item: WishlistAlert) {
     let alert_item_obj = JSON.parse(JSON.stringify(alert_item))
-    console.log(alert_item_obj)
-    // alert_item_obj.alert_type =
+    const alertType = alert_item.entity_type.replace('ALERT#', '')
+    alert_item_obj.alert_type = alertType
     this.appStore.dispatch(removeAlert({alert_item: alert_item_obj, wishlist_item_id: this.wishlist_item.wishlist_item_id}))
 
   }
