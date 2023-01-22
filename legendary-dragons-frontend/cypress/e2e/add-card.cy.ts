@@ -33,7 +33,7 @@ describe("Search, add and delete 'Swords to plowshares' to/from the inventory", 
     cy.get("button[aria-label=Close]").click();
 
     //act - delete
-    cy.get("button[name=removeCardFromInventory]").click()
+    cy.get("li[name=removeCardFromInventory]").click()
     //assert - delete
     cy.wait(2000);
     cy.get("div[aria-label=collection-card]", {timeout: 5000}).should("not.exist");

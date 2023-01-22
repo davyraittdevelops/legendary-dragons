@@ -93,23 +93,27 @@ def test_lamda_handler_success(websocket_event, table_definition,
     # Arrange
     dynamodb = boto3.resource("dynamodb")
     table = dynamodb.create_table(**table_definition)
+
+    user_pk = "USER#user-123"
+    inventory_sk = "INVENTORY#inv-12"
+
     table.put_item(Item={
-        "PK": "INVENTORY#inv-12",
-        "SK": "USER#user-123",
+        "PK": user_pk,
+        "SK": inventory_sk,
         "entity_type": "INVENTORY",
         "inventory_id": "inv-12",
         "user_id": "user-123",
-        "GSI1_PK": "USER#user-123",
-        "GSI1_SK": "INVENTORY#inv-12",
+        "GSI1_PK": inventory_sk,
+        "GSI1_SK": user_pk,
     })
     table.put_item(Item={
-        "PK": "INVENTORY_CARD#card-1",
-        "SK": "INVENTORY#inv-12",
-        "GSI1_PK": "INVENTORY#inv-12",
-        "GSI1_SK": "INVENTORY_CARD#card-1",
+        "PK": user_pk,
+        "SK": f"{inventory_sk}#INVENTORY_CARD#1",
+        "GSI1_PK": f"{inventory_sk}#INVENTORY_CARD#1",
+        "GSI1_SK": user_pk,
         "entity_type": "INVENTORY_CARD",
-        "inventory_id": "inv-12",
-        "card_id": "card-1",
+        "inventory_id": "1",
+        "card_id": "1",
         **inventory_card
     })
 

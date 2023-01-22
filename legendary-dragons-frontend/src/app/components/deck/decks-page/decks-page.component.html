@@ -1,4 +1,4 @@
-<div class="container-fluid p-5 m-0">
+<div class="container-fluid p-5 pt-2 m-0">
     <div class="row row-cols-auto">
       <div class="d-flex mb-3 mt-3 me-3 bg-light bg-opacity-25 rounded-1 p-0 shadow">
         <button type="button" (click)="open({content : content});" data-bs-toggle="modal" data-bs-target="#modal" class="btn btn-secondary opacity-25 flex-grow-1 add-deck-button" name=openCreateDeckModal>
@@ -24,8 +24,13 @@
 
             </h2>
             <p class="card-text fs-6">
-              Current deck value: {{deck.total_value}}
+              Current deck value:
             </p>
+
+            <span class="badge rounded-pill text-bg-success price-text fw-normal me-2 mt-2"
+                  *ngFor="let deckValue of deck.total_value | keyvalue">
+              {{deckValue.key.toUpperCase().replace("_", " ")}}: {{deckValue.value}}
+            </span>
           </div>
           <div class="btn-group p-0">
             <button type="button" class="btn action-button" [routerLink]="['/decks', deck.deck_id]" name="navigateToDeck">

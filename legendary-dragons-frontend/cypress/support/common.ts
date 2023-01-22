@@ -1,6 +1,6 @@
 export const loginUser = () => {
   cy.visit("/login");
-  cy.get("input[name=email]").type("ajdjbxombnywmxvkxu@tmmcv.com");
+  cy.get("input[name=email]").type("gigowa6186@ukbob.com");
   cy.get("input[name=password]").type("verySecurePassw0rd!").blur();
   cy.get("form").submit();
   cy.url().should("contain", "/dashboard");
@@ -15,7 +15,7 @@ export const removeAllInventoryCards = () => {
   cy.wait(3000);
   cy.get("body").then($body => {
     if ($body.find("div[aria-label=collection-card]").length > 0) {
-      cy.get("button[name=removeCardFromInventory]").click({multiple: true});
+      cy.get("li[name=removeCardFromInventory]").click({multiple: true});
       cy.wait(1000);
     }
   });

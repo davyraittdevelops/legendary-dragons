@@ -31,12 +31,15 @@ def lambda_handler(event, context):
 
     logger.info("Searching for decks in user %s", user_id)
     decks = table.query(
-        KeyConditionExpression=Key("GSI1_PK").eq(f"USER#{user_id}") &
-        Key("GSI1_SK").begins_with("DECK#"),
-        IndexName="GSI1"
-    )
+        KeyConditionExpression=Key("PK").eq(f"USER#{user_id}") &
+        Key("SK").begins_with("DECK#"),
+        FilterExpression="#entity_type = :entity_type",
+        ExpressionAttributeNames={"#entity_type": "entity_type"},
+        ExpressionAttributeValues={':entity_type': "DECK"},
+    )["Items"]
 
-    output["data"] = decks["Items"]
+    logger.info(decks)
+    output["data"] = decks
     apigateway.post_to_connection(
         ConnectionId=connection_id,
         Data=json.dumps(output, cls=DecimalEncoder)

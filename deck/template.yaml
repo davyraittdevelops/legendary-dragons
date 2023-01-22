@@ -387,12 +387,10 @@ Resources:
             Keys:
               SK:
                 S:
-                  - prefix: USER
                   - prefix: DECK
               PK:
                 S:
-                  - prefix: DECK
-                  - prefix: DECK_CARD
+                  - prefix: USER
       State: ENABLED
       Targets:
         - Id: "broadcast-deck-db-changes"

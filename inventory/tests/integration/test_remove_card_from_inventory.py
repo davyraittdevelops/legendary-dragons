@@ -1,6 +1,5 @@
 import os
 import json
-import botocore.client
 import boto3
 import pytest
 from moto import mock_dynamodb
@@ -63,9 +62,9 @@ def websocket_event():
         },
         "body": json.dumps({
             "action": "removeCardToInventoryReq",
-            "inventory_card_id": "d99a9a7d-d9ca-4c11-80ab-e39d5943a315",
+            "inventory_card_id": "1",
             "inventory_id": "inv-12",
-            
+
         }),
     }
 
@@ -79,27 +78,29 @@ def test_lamda_handler_success(websocket_event, table_definition):
     table = dynamodb.create_table(**table_definition)
     now = datetime.utcnow().isoformat()
 
+    user_pk = "USER#user-123"
+    inventory_card_sk = "INVENTORY#inv-12#INVENTORY_CARD#1"
+
     table.put_item(Item={
-        "PK": "INVENTORY_CARD#d99a9a7d-d9ca-4c11-80ab-e39d5943a315",
-        "SK": "INVENTORY#inv-12",
+        "PK": user_pk,
+        "SK": inventory_card_sk,
         "entity_type": "INVENTORY_CARD",
         "inventory_id": "inv-12",
         "user_id": "user-123",
-        "card_id": "d99a9a7d-d9ca-4c11-80ab-e39d5943a315",
+        "card_id": "1",
         "created_at": now,
         "last_modified": now,
-        "GSI1_PK": "INVENTORY#inv-12",
-        "GSI1_SK": "INVENTORY_CARD#d99a9a7d-d9ca-4c11-80ab-e39d5943a315"
+        "GSI1_PK": inventory_card_sk,
+        "GSI1_SK": user_pk
     })
-    
+
     # Act
     from functions.remove_card_from_inventory import app
     response = app.lambda_handler(websocket_event, {})
 
     inventory_card = table.query(
-        KeyConditionExpression=Key("GSI1_PK").eq("INVENTORY#inv-12") &
-        Key("GSI1_SK").begins_with("INVENTORY_CARD"),
-        IndexName="GSI1"
+        KeyConditionExpression=Key("PK").eq(user_pk) &
+        Key("SK").begins_with("INVENTORY")
     )["Items"]
 
     # Assert

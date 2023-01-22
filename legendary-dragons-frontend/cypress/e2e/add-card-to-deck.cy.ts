@@ -21,12 +21,13 @@ describe("Add 'Swords to Plowshares' to deck 'Main'", () => {
   it('passes', () => {
     //arrange
     cy.get("button[name=navigateToDeck]").click();
+
     //act
     cy.get("button[name=openAddDeckCardModal]").click();
     cy.get("div[role=document]").should("be.visible");
     cy.get("button[name=addCardToDeck]").click();
-    cy.get("button[aria-label=Close]").click();
-    cy.wait(3000);
+    cy.wait(3500);
+
     //assert
     cy.get("div[aria-label=deck-viewport]").should("be.visible");
     cy.get("div[aria-label=deck-viewport]").within(() => {
@@ -45,12 +46,13 @@ describe("Add 'Swords to Plowshares' to side-deck of deck 'Main'", () => {
   it('passes', () => {
     //arrange
     cy.get("button[name=navigateToDeck]").click();
+
     //act
     cy.get("button[name=openAddDeckCardModal]").click();
     cy.get("div[role=document]").should("be.visible");
     cy.get("button[name=addCardToSideDeck]").click();
-    cy.get("button[aria-label=Close]").click();
-    cy.wait(3000);
+    cy.wait(3500);
+
     //assert
     cy.get("div[aria-label=side-deck-viewport]").should("be.visible");
     cy.get("div[aria-label=side-deck-viewport]").within(() => {
