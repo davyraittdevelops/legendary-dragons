@@ -33,7 +33,7 @@ def lambda_handler(event, context):
             Key("SK").begins_with("WISHLIST_ITEM#"),
             FilterExpression="#entity_type = :entity_type",
              ExpressionAttributeNames={"#entity_type": "entity_type"},
-             ExpressionAttributeValues={"entity_type": "WISHLIST_ITEM"}
+             ExpressionAttributeValues={":entity_type": "WISHLIST_ITEM"}
         )['Items']
         logger.info(f'Result from table get item : {wishlist_items}')
     except Exception as error:
