@@ -1,7 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Store } from "@ngrx/store";
-import { Observable } from "rxjs";
+import { Observable, tap } from "rxjs";
+import { AlertType } from 'src/app/models/alert-type.enum';
 import { AppState } from "../../../app.state";
 import { WishlistAlert, WishlistItem } from "../../../models/wishlist.model";
 import {
@@ -20,14 +21,19 @@ export class WishlistItemComponent {
   alert_items$: Observable<WishlistAlert[]>;
   isLoading$: Observable<boolean>;
   hasError$: Observable<boolean>;
-  pricePoint: any;
+  alertTypeEnum = AlertType;
+  pricePoint: string = '';
   alertType: any;
-  isDisabled = false;
+  hasAvailabilityAlert: boolean = false;
 
   constructor(private appStore: Store<AppState>, public modalService: NgbModal) {
     this.isLoading$ = this.appStore.select(isLoadingSelector);
     this.hasError$ = this.appStore.select(errorSelector);
-    this.alert_items$ = this.appStore.select(alertItemsSelector);
+    this.alert_items$ = this.appStore.select(alertItemsSelector).pipe(
+      tap((alerts) => {
+        this.hasAvailabilityAlert = alerts.some(alert => alert.entity_type ===  `ALERT#${AlertType.AVAILABILITY}`)
+      })
+    );
   }
 
   open({content}: { content: any }) {
@@ -43,13 +49,21 @@ export class WishlistItemComponent {
   }
 
   addAlert(wishlist_item: WishlistItem) {
+    if (this.isInvalidPricePoint) {
+      return;
+    }
+
     const alert_item_obj = {
       card_market_id: this.wishlist_item.card_market_id,
-      price_point : this.pricePoint,
+      price_point : this.pricePoint.trim(),
       alert_type: this.alertType,
       alert_id: ''
     }
+
     this.appStore.dispatch(createAlert({alert_item: alert_item_obj, wishlist_item_id: wishlist_item.wishlist_item_id}))
+
+    this.alertType = '';
+    this.pricePoint = '';
   }
 
   removeAlert(alert_item: WishlistAlert) {
@@ -57,6 +71,9 @@ export class WishlistItemComponent {
     const alertType = alert_item.entity_type.replace('ALERT#', '')
     alert_item_obj.alert_type = alertType
     this.appStore.dispatch(removeAlert({alert_item: alert_item_obj, wishlist_item_id: this.wishlist_item.wishlist_item_id}))
+  }
 
+  get isInvalidPricePoint(): boolean {
+    return this.alertType === AlertType.PRICE && (isNaN(+this.pricePoint) || this.pricePoint.trim() === '');
   }
 }

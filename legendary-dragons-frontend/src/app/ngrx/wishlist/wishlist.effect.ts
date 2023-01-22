@@ -76,7 +76,6 @@ export class WishlistEffects {
       switchMap(() => {
         return this.websocketService.dataUpdates$().pipe(
           filter((event: any) => {
-            console.log('event is : ', event)
             return event['event_type'] === 'INSERT_WISHLIST_ITEM_RESULT'
           }),
           map((event: any) => createWishlistItemSuccess({wishlist_item: event["data"]})),
