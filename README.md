@@ -56,16 +56,15 @@ Within the scope of the Legendary Dragons Application, 3 actors have been identi
 
 The diagram displays the various contexts withing the Legendary Dragons application. The description below describes each context:
 
-- CardContext:
-- InventoryContext: The context for the inventory management for an user.
-- DeckContext:
-- WishlistContext:
-- IdentityAndAccessContext:
+- CardContext: The context for managing the cards from the Scryfall API.
+- InventoryContext: The context for the inventory management for a user.
+- DeckContext: The context for the deck management for a user.
+- WishlistContext: The context for the deck management for a user.
+- IdentityAndAccessContext: The context for authenticate & authorization of a user.
 
 ## Cloud Deployment diagram
 
 <img src="./diagrams/cdd.png" alt="CDD"/>
-
 
 ## DynamoDB Database design
 This section contains the database design for DynamoDB. The design can be imported with the tool NoSQLWorkbench
@@ -74,15 +73,25 @@ with the following file: [./diagrams/db/LegendaryDragons.json](./diagrams/db/Leg
 The following access patterns were identified for the design:
 
 1) Get Card by id
-
 ```python
 table.query(
     KeyConditionExpression=Key("PK").eq("CARD#asd-122343-fdff") &
     Key("SK").begins_with("CARD_FACE")
 )
 ```
+Required in:
+- Inventory card detail modal
+- Deck card detail modal
 
-2)
+2) Get inventory for a user
+```python
+table.query(
+    KeyConditionExpression=Key("PK").eq("USER#1234") &
+    Key("SK").begins_with("INVENTORY"),
+)["Items"]
+```
+Required in:
+- Inventory overview page in the application
 
 3)
 
@@ -134,10 +143,10 @@ table.query(
 <img src="./diagrams/db/Wishlists/GSI_Wishlists_GSI2.png" alt="gsi2 wishlists"/>
 
 ## REST API
+The Legendary Dragons application has one API Gateway configured as a RESTful API, which is used for register and login process for a user. The specification of the REST API can be found in the [./identity-and-access/swagger-spec.json](./identity-and-access/swagger-spec.json) file.
 
 ## Websockets
-
-Websocket documentation: http://websocket-documentation.s3-website-us-east-1.amazonaws.com/
+The Legendary Dragons application also has one API Gateway configured for websockets. The documentation can be read at: http://websocket-documentation.s3-website-us-east-1.amazonaws.com/. The specification can be found in the [./api-documentation/legendary_dragons_websocket.yml](./api-documentation/legendary_dragons_websocket.yml) file
 
 ## Wireframes
 
