@@ -28,12 +28,29 @@
         </mat-select>
       </mat-form-field>
       <div *ngIf="alertType === 'PRICE'">
-        <input type="text" id="price_point" name="price_point" (input)="onPriceChange($event)">
+        <div class="container">
+          <div class="row">
+            <div class="col">
+              <label class="form-label px-4" hidden>Price point</label>
+              <div class="spacing px-1">
+                <input
+                  type="number"
+                  id="price_point"
+                  name="price_point"
+                  class="form-control spacing"
+                  (input)="onPriceChange($event)"
+                  placeholder="0.00"
+                />
+              </div>
+            </div>
+            <div class="col">
+              <button mat-raised-button class="btn btn-light spacing" (click)="addAlert(wishlist_item)">Add Alert</button>
+            </div>
+          </div>
+        </div>
       </div>
-
-      <button mat-raised-button color="primary" (click)="addAlert(wishlist_item)">Add Alert</button>
     </div>
-    
+
     <div class="p-3 mb-2 bg-danger text-white" *ngIf="hasAddAlert && !hasAddAlertType">
       Alert type is required
     </div>
@@ -50,7 +67,7 @@
       You can only have one price alert
     </div>
 
-    <h1>_______________________________________________________________________________________________________</h1>
+    <div class="line" style="display:block; background-color:white; height:1px"></div>
 
     <ng-container *ngIf="alert_items$ | async as alert_items">
       <ul class="list-group" class="col" *ngFor="let alert_item of alert_items">

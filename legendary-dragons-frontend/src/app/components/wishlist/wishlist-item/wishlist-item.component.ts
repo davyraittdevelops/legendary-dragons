@@ -82,7 +82,7 @@ export class WishlistItemComponent {
     }
 
     if (this.alerts.length > 0) {
-      for (let alert of this.alerts) { 
+      for (const alert of this.alerts) { 
         if (this.alertType === "AVAILABILITY" && alert.entity_type ==="ALERT#AVAILABILITY") {
           this.hasAvailabilityAlert = true;
           return;
@@ -110,7 +110,7 @@ export class WishlistItemComponent {
     alert_item_obj.alert_type = alertType
     this.appStore.dispatch(removeAlert({alert_item: alert_item_obj, wishlist_item_id: this.wishlist_item.wishlist_item_id}))
 
-    for (let alert of this.alerts) { 
+    for (const alert of this.alerts) { 
       if (alert.entity_type !== "ALERT#AVAILABILITY") {
         this.hasAvailabilityAlert = false;
       }
