@@ -4,7 +4,7 @@
       <app-add-wishlist-item-component class="col"></app-add-wishlist-item-component>
 
       <div *ngIf="hasError$ | async" class="text-danger alert alert-warning me-2" role="alert">
-        An error has occured while loading your decks. Please try again.
+        An error has occured while loading your wishlist. Please try again.
       </div>
 
       <app-wishlist-item class="col" *ngFor="let wishlist_item of wishlist_items" [wishlist_item]="wishlist_item">

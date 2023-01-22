@@ -5,17 +5,11 @@
 
 <div class="btn-group card-action-footer" role="group" aria-label="Basic example">
   <button type="button"  (click)="open({content : content});"  class="btn btn-dark">
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
-      <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/>
-      <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
-    </svg>
+    <i class="bi bi-eye"></i>
   </button>
   <button type="button" class="btn btn-dark" name="removeWishlistItem" (click)="removeWishlistItem(wishlist_item)"
           [disabled]="isLoading$ | async">
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
-      <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
-      <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
-    </svg>
+    <i class="bi bi-trash"></i>
   </button>
 </div>
 
@@ -27,28 +21,46 @@
   </div>
 
   <div class="modal-body bg-body-secondary text-black">
-    <div>
-      <mat-form-field>
-        <mat-label>Alert Type</mat-label>
-        <mat-select [(ngModel)]="alertType">
-          <mat-option value="PRICE">Price Alert</mat-option>
-          <mat-option value="AVAILABILITY">Availability Alert</mat-option>
-        </mat-select>
-      </mat-form-field>
-      <div *ngIf="alertType === 'PRICE'">
-        <input type="text" id="price_point" name="price_point" [(ngModel)]="pricePoint">
-      </div>
-      <button mat-raised-button color="primary" (click)="addAlert(wishlist_item)" >Add Alert</button>
-    </div>
+    <mat-form-field>
+      <mat-label>Alert Type</mat-label>
+      <mat-select [(ngModel)]="alertType">
+        <mat-option value="PRICE">Price Alert</mat-option>
+        <mat-option value="AVAILABILITY">Availability Alert</mat-option>
+      </mat-select>
+    </mat-form-field>
 
+    <mat-form-field *ngIf="alertType === 'PRICE'" class="ms-3">
+      <mat-label>Price point</mat-label>
+      <input matInput [(ngModel)]="pricePoint">
+    </mat-form-field>
+
+    <button class="btn btn-outline-dark ms-2" (click)="addAlert(wishlist_item)" >Add Alert</button>
     <hr/>
 
+    <div *ngIf="hasError$ | async" class="text-danger alert alert-warning me-2" role="alert">
+      An error has occured. Please try again.
+    </div>
+
+    <div class="text-center mt-2 mb-2" *ngIf="isLoading$ | async">
+      <span class="spinner-border spinner-border mt-3" role="status" aria-hidden="true">
+      </span>
+    </div>
+
     <ng-container *ngIf="alert_items$ | async as alert_items">
-      <ul class="list-group" class="col" *ngFor="let alert_item of alert_items">
-        <li class="list-group-item">{{alert_item.entity_type}} || {{alert_item.price_point}}
-          <button mat-fab color="primary"  (click)="removeAlert(alert_item)"  aria-label="Example icon button with a delete icon"><mat-icon>delete</mat-icon>
-        </button></li>
+      <ul class="list-group" *ngFor="let alert_item of alert_items">
+        <li class="list-group-item fs-5">
+          <button class="btn btn-lg me-3" (click)="removeAlert(alert_item)"  aria-label="Button with a delete icon">
+            <i class="bi bi-trash"></i>
+          </button>
+          <ng-container *ngIf="alert_item.entity_type === 'ALERT#PRICE'; else availability_alert">
+            Price alert: < {{alert_item.price_point}}
+          </ng-container>
+        </li>
       </ul>
     </ng-container>
   </div>
+</ng-template>
+
+<ng-template #availability_alert>
+  Availability alert
 </ng-template>
