@@ -83,7 +83,6 @@ export class WishlistItemComponent {
 
     if (this.alerts.length > 0) {
       for (let alert of this.alerts) { 
-        console.log(alert)
         if (this.alertType === "AVAILABILITY" && alert.entity_type ==="ALERT#AVAILABILITY") {
           this.hasAvailabilityAlert = true;
           return;
