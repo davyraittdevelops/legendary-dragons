@@ -7,7 +7,7 @@ describe('Login user', () => {
     let loginForm = cy.get("form");
 
     //act
-    emailInput.type("ajdjbxombnywmxvkxu@tmmcv.com");
+    emailInput.type("gigowa6186@ukbob.com");
     passwordInput.type("verySecurePassw0rd!").blur();
     loginForm.submit();
 
@@ -27,7 +27,7 @@ describe('Login user with incorrect password', () => {
     let loginForm = cy.get("form");
 
     //act
-    emailInput.type("ajdjbxombnywmxvkxu@tmmcv.com");
+    emailInput.type("gigowa6186@ukbob.com");
     passwordInput.type("incorrectPassword").blur();
     loginForm.submit();
 
