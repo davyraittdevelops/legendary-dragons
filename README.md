@@ -181,6 +181,10 @@ The Legendary Dragons application also has one API Gateway configured for websoc
 
 # Requirements
 
+* :heavy_check_mark: = Done
+* :heavy_plus_sign: = Partially done
+* :x: = Not started
+
 ## Functionele eisen (20%)
 
 | Done | Requirement                                               |
@@ -189,10 +193,10 @@ The Legendary Dragons application also has one API Gateway configured for websoc
 | :heavy_check_mark:    | [MUST] Kaart collectie beheren                            |
 | :heavy_check_mark:    | [MUST] Decks (EDH/Commander) beheren                      |
 | :heavy_check_mark:    | [MUST] Side decks beheren                                 |
-| :x:    | [SHOULD] Wishlist beheren                                 |
+| :heavy_check_mark:    | [SHOULD] Wishlist beheren                                 |
 | :x:    | [SHOULD] Actuele waarde van de collectie en decks inzien  |
-| :x:    | [SHOULD] Price alert voor whishlist kaarten               |
-| :x:    | [SHOULD] Availability alert voor wishlist kaarten         |
+| :heavy_plus_sign:    | [SHOULD] Price alert voor whishlist kaarten               |
+| :heavy_plus_sign:    | [SHOULD] Availability alert voor wishlist kaarten         |
 
 ## Ontwikkelen van container- en serverless applicaties voor de Amazon Cloud (AWS) (5%)
 
