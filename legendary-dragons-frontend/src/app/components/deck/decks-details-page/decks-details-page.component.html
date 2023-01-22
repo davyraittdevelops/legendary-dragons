@@ -19,7 +19,11 @@
           <p class="fs-3">
             {{selectedDeck.deck_cards.length + selectedDeck.side_deck_cards.length}} cards
           </p>
-          <em class="fs-4 mt-2">{{selectedDeck.total_value | currency }}</em>
+
+          <span class="badge rounded-pill text-bg-success fw-normal fs-6 me-2 mt-2 mb-3"
+                *ngFor="let deckValue of selectedDeck.total_value | keyvalue">
+            {{deckValue.key.toUpperCase().replace("_", " ")}}: {{deckValue.value}}
+          </span>
         </div>
         <!--    For chart diagram    -->
         <div class="col col-6 text-center"></div>
