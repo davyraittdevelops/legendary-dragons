@@ -128,10 +128,6 @@ Resources:
       Principal: events.amazonaws.com
       SourceArn: !GetAtt WishlistEventRule.Arn
 
-
-
-
-
   CreateWishlistItemFunction:
     Type: AWS::Serverless::Function
     Properties:
