@@ -96,7 +96,8 @@ export class WishlistEffects {
       switchMap(() => {
         return this.websocketService.dataUpdates$().pipe(
           filter((event: any) => {
-            return event['event_type'] === 'CREATE_ALERT_RESULT'
+            console.log(event)
+            return event['event_type'] === 'INSERT_ALERT#AVAILABILITY_RESULT' || event['event_type'] === 'INSERT_ALERT#PRICE_RESULT'
           }),
           map((event: any) => createAlertSuccess({alert_item: event["data"]})),
           catchError((error) => {
@@ -117,7 +118,7 @@ export class WishlistEffects {
           filter((event: any) => {
             return event['event_type'] === 'REMOVE_WISHLIST_ITEM_RESULT'
           }),
-          map((event: any) => removeWishlistItemSuccess({wishlist_item_id: event["data"]})),
+          map((event: any) => removeWishlistItemSuccess({wishlist_item_id: event["data"].wishlist_item_id})),
           catchError((error) => {
             console.log(error);
             return of(removeWishlistItemFail({error: true}))
@@ -134,7 +135,8 @@ export class WishlistEffects {
       switchMap(() => {
         return this.websocketService.dataUpdates$().pipe(
           filter((event: any) => {
-            return event['event_type'] === 'REMOVE_ALERT_RESULT'
+            console.log(event)
+            return event['event_type'] === 'REMOVE_ALERT#PRICE_RESULT' || event['event_type'] === 'REMOVE_ALERT#AVAILABILITY_RESULT'
           }),
           map((event: any) => removeAlertSuccess({alert_item: event["data"]})),
           catchError((error) => {
