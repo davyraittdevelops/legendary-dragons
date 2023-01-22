@@ -14,42 +14,25 @@ if "DISABLE_XRAY" not in os.environ:
 dynamodb = boto3.resource("dynamodb")
 table = dynamodb.Table(os.getenv("TABLE_NAME"))
 
-
 def lambda_handler(event, context):
-    """Read neccesary information from the body/event."""
-    connection_id = event["requestContext"]["connectionId"]
-    domain_name = event["requestContext"]["domainName"]
-    stage = event["requestContext"]["stage"]
-    endpoint = f"https://{domain_name}/{stage}"
-    apigateway = boto3.client("apigatewaymanagementapi", endpoint_url=endpoint)
+    '''Remove alert for the given alert id'''
     body = json.loads(event["body"])
     user_id = event["requestContext"]["authorizer"]["userId"]
-
-    """Params from body."""
     wishlist_item_id = body['wishlist_item_id']
     alert_item =  body['alert_item']
     alert_id = alert_item['alert_id']
-    alert_type = alert_item['entity_type']
+    alert_type = alert_item['alert_type']
     
-    """Do query/data manipulation."""
     try:
-        if alert_type ==  'ALERT#PRICE':
-            response = table.delete_item(
-                Key={
-                    "PK": f'USER#{user_id}',
-                    "SK": f"WISHLIST_ITEM#{wishlist_item_id}#ALERT#PRICE#{alert_id}"
-                }
-            )
-            logger.info(f'Result from table delete item : {response}')
+        sk = f"WISHLIST_ITEM#{wishlist_item_id}#ALERT#{alert_type}#{alert_id}"
+        response = table.delete_item(
+            Key={
+                "PK": f'USER#{user_id}',
+                "SK": sk
+            }
+        )
+        logger.info(f'Result from table delete item : {response}')
 
-        if alert_type ==  'ALERT#AVAILABILITY':
-            response = table.delete_item(
-                Key={
-                    "PK": f'USER#{user_id}',
-                    "SK": f"WISHLIST_ITEM#{wishlist_item_id}#ALERT#AVAILABILITY#{alert_id}"
-                }
-            )
-            logger.info(f'Result from table remove item : {response}')
             
     except Exception as error:
         logger.info(f'Received an error: {error}')

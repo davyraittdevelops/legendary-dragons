@@ -14,21 +14,12 @@ if "DISABLE_XRAY" not in os.environ:
 dynamodb = boto3.resource("dynamodb")
 table = dynamodb.Table(os.getenv("TABLE_NAME"))
 
-
 def lambda_handler(event, context):
-    """Read neccesary information from the body/event."""
-    connection_id = event["requestContext"]["connectionId"]
-    domain_name = event["requestContext"]["domainName"]
-    stage = event["requestContext"]["stage"]
-    endpoint = f"https://{domain_name}/{stage}"
-    apigateway = boto3.client("apigatewaymanagementapi", endpoint_url=endpoint)
+    """Remove wishlist item for given ID."""
     body = json.loads(event["body"])
     user_id = event["requestContext"]["authorizer"]["userId"]
-
-    """Params from body."""
     wishlist_item_id = body['wishlist_item_id']
 
-    """Do query/data manipulation."""
     try:
         response = table.delete_item(
             Key={

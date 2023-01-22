@@ -17,19 +17,16 @@ dynamodb = boto3.resource("dynamodb")
 table = dynamodb.Table(os.getenv("TABLE_NAME"))
 
 def lambda_handler(event, context):
-    """Read neccesary information from the body/event."""
+    """Get alerts for user."""
     connection_id = event["requestContext"]["connectionId"]
     domain_name = event["requestContext"]["domainName"]
     stage = event["requestContext"]["stage"]
     endpoint = f"https://{domain_name}/{stage}"
     apigateway = boto3.client("apigatewaymanagementapi", endpoint_url=endpoint)
     user_id = event["requestContext"]["authorizer"]["userId"]
-    
-    """Params from body."""
     body = json.loads(event["body"])
     wishlist_item_id = body['wishlist_item_id']
 
-    """Do query/data manipulation.  """
     try:
         logger.info(f'Querying with the following wishlist_item_id {wishlist_item_id}')
         alert_items = table.query(
@@ -41,7 +38,6 @@ def lambda_handler(event, context):
     except Exception as error:
         logger.info(f'Received an error: {error}')
 
-    """Post output back to the connection."""
     output = {
         "event_type": "GET_ALERT_RESULT",
         "data": alert_items,

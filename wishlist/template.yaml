@@ -51,6 +51,10 @@ Resources:
           AttributeType: S
         - AttributeName: GSI1_SK
           AttributeType: S
+        - AttributeName: GSI2_PK
+          AttributeType: S
+        - AttributeName: GSI2_SK
+          AttributeType: S
       BillingMode: PAY_PER_REQUEST
       GlobalSecondaryIndexes:
         - IndexName: "GSI1"
@@ -58,6 +62,14 @@ Resources:
             - AttributeName: GSI1_PK
               KeyType: HASH
             - AttributeName: GSI1_SK
+              KeyType: RANGE
+          Projection:
+            ProjectionType: "ALL"
+        - IndexName: "GSI2"
+          KeySchema:
+            - AttributeName: GSI2_PK
+              KeyType: HASH
+            - AttributeName: GSI2_SK
               KeyType: RANGE
           Projection:
             ProjectionType: "ALL"
@@ -133,20 +145,8 @@ Resources:
     Properties:
       CodeUri: functions/create_wishlist_item/
       Policies:
-        - EventBridgePutEventsPolicy:
-            EventBusName: "connection-event-bus"
         - DynamoDBWritePolicy:
             TableName: !Ref WishlistTable
-        - Statement:
-          - Effect: Allow
-            Action:
-              - 'execute-api:ManageConnections'
-            Resource:
-              Fn::Sub:
-                - 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${WebSocketApi}/*'
-                - WebSocketApi:
-                    Fn::ImportValue:
-                      'Fn::Sub': "${LegDragonsWebSocketApi}"
 
   CreateWishlistItemPermission:
     Type: AWS::Lambda::Permission
@@ -188,8 +188,6 @@ Resources:
     Properties:
       CodeUri: functions/get_wishlist/
       Policies:
-        - EventBridgePutEventsPolicy:
-            EventBusName: "connection-event-bus"
         - DynamoDBReadPolicy:
             TableName: !Ref WishlistTable
         - Statement:
@@ -242,8 +240,6 @@ Resources:
     Properties:
       CodeUri: functions/get_alerts/
       Policies:
-        - EventBridgePutEventsPolicy:
-            EventBusName: "connection-event-bus"
         - DynamoDBReadPolicy:
             TableName: !Ref WishlistTable
         - Statement:
@@ -296,20 +292,8 @@ Resources:
     Properties:
       CodeUri: functions/remove_wishlist_item/
       Policies:
-        - EventBridgePutEventsPolicy:
-            EventBusName: "connection-event-bus"
         - DynamoDBCrudPolicy:
             TableName: !Ref WishlistTable
-        - Statement:
-          - Effect: Allow
-            Action:
-              - 'execute-api:ManageConnections'
-            Resource:
-              Fn::Sub:
-                - 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${WebSocketApi}/*'
-                - WebSocketApi:
-                    Fn::ImportValue:
-                      'Fn::Sub': "${LegDragonsWebSocketApi}"
 
   RemoveWishlistItemPermission:
     Type: AWS::Lambda::Permission
@@ -350,20 +334,8 @@ Resources:
     Properties:
       CodeUri: functions/create_alert/
       Policies:
-        - EventBridgePutEventsPolicy:
-            EventBusName: "connection-event-bus"
         - DynamoDBWritePolicy:
             TableName: !Ref WishlistTable
-        - Statement:
-          - Effect: Allow
-            Action:
-              - 'execute-api:ManageConnections'
-            Resource:
-              Fn::Sub:
-                - 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${WebSocketApi}/*'
-                - WebSocketApi:
-                    Fn::ImportValue:
-                      'Fn::Sub': "${LegDragonsWebSocketApi}"
 
   CreateAlertPermission:
     Type: AWS::Lambda::Permission
@@ -404,20 +376,8 @@ Resources:
     Properties:
       CodeUri: functions/remove_alert/
       Policies:
-        - EventBridgePutEventsPolicy:
-            EventBusName: "connection-event-bus"
         - DynamoDBCrudPolicy:
             TableName: !Ref WishlistTable
-        - Statement:
-          - Effect: Allow
-            Action:
-              - 'execute-api:ManageConnections'
-            Resource:
-              Fn::Sub:
-                - 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${WebSocketApi}/*'
-                - WebSocketApi:
-                    Fn::ImportValue:
-                      'Fn::Sub': "${LegDragonsWebSocketApi}"
 
   RemoveAlertPermission:
     Type: AWS::Lambda::Permission
@@ -452,4 +412,25 @@ Resources:
         Fn::Sub:
           arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${RemoveAlertFunction.Arn}/invocations
 
-# Outputs:
+Outputs:
+  StreamWishlistChangesFunction:
+    Description: "StreamWishlistChangesFunction ARN"
+    Value: !GetAtt StreamWishlistChangesFunction.Arn
+  CreateWishlistItemFunction:
+    Description: "CreateWishlistItemFunction ARN"
+    Value: !GetAtt CreateWishlistItemFunction.Arn
+  GetWishlistFunction:
+    Description: "GetWishlistFunction ARN"
+    Value: !GetAtt GetWishlistFunction.Arn
+  GetAlertsFunction:
+    Description: "GetAlertsFunction ARN"
+    Value: !GetAtt GetAlertsFunction.Arn
+  RemoveWishlistItemFunction:
+    Description: "RemoveWishlistItemFunction ARN"
+    Value: !GetAtt RemoveWishlistItemFunction.Arn
+  CreateAlertFunction:
+    Description: "CreateAlertFunction ARN"
+    Value: !GetAtt CreateAlertFunction.Arn
+  RemoveAlertFunction:
+    Description: "RemoveAlertFunction ARN"
+    Value: !GetAtt RemoveAlertFunction.Arn

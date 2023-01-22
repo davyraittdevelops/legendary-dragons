@@ -18,24 +18,21 @@ table = dynamodb.Table(os.getenv("TABLE_NAME"))
 
 """Create wishlist item"""
 def lambda_handler(event, context):
-    connection_id = event["requestContext"]["connectionId"]
-    domain_name = event["requestContext"]["domainName"]
-    stage = event["requestContext"]["stage"]
-    endpoint = f"https://{domain_name}/{stage}"
-    apigateway = boto3.client("apigatewaymanagementapi", endpoint_url=endpoint)
     body = json.loads(event["body"])
     user_id = event["requestContext"]["authorizer"]["userId"]
     wishlist_item_id = str(uuid.uuid4())
     deck_id = body['deck_id']
     wishlist_item = body['wishlist_item']
 
+    current_datetime = datetime.utcnow().isoformat()
+
     wishlist_item = {
         'PK': f'USER#{user_id}',
         'SK': f'WISHLIST_ITEM#{wishlist_item_id}',
         'wishlist_item_id' : wishlist_item_id,
         'entity_type': 'WISHLIST_ITEM',
-        'created_at':datetime.utcnow().isoformat(),
-        'last_modified': datetime.utcnow().isoformat(),
+        'created_at': current_datetime,
+        'last_modified': current_datetime,
         'oracle_id': wishlist_item['oracle_id'],
         'image_url' : wishlist_item['image_url'],
         'card_market_id': wishlist_item['cardmarket_id'],
