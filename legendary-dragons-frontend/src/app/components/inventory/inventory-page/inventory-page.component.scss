@@ -30,6 +30,7 @@
   position: fixed;
   bottom: 0;
   width: 100%;
+  padding: 10px;
 }
 
 .pagination::ng-deep .ngx-pagination .current {
@@ -38,4 +39,8 @@
 
 .pagination::ng-deep .ngx-pagination a:hover {
   background-color: transparent;
+}
+
+.pagination::ng-deep .ngx-pagination li:not(.pagination-previous):not(.pagination-next) {
+  display: none;
 }
