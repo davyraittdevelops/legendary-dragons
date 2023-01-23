@@ -2,7 +2,7 @@ Feature: Wishlist Context
 
 Scenario: Create price alert
    Given there is an user and this user is logged in
-   When I request to create a price alert
+   When I request to create a price alert with price point: '5.00'
    Then a price alert is created
 
 Scenario: Create availability alert

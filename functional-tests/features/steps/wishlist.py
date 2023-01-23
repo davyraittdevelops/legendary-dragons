@@ -9,14 +9,14 @@ logger.setLevel(logging.INFO)
 
 client = boto3.client("cognito-idp", region_name="us-east-1")
 
-def createPriceAlert(context):
+def createPriceAlert(context, price_point):
     context.ws.send(json.dumps({
         "action": "createAlertReq",
         "wishlist_item_id": "1", 
         "alert_item": {
             "entity_type": "ALERT#PRICE",
             "alert_type": "PRICE",
-            "price_point": "5.00",
+            "price_point": price_point,
             "wishlist_item_id": "1",
             "card_market_id": "1",
             "alert_id": "1"
@@ -115,9 +115,9 @@ def removeWishlistItem(context):
 def step_impl(context):
     loginAndConnectUser(context)
 
-@when("I request to create a price alert")
-def step_impl(context):
-    createPriceAlert(context)
+@when("I request to create a price alert with price point: '{price_point}'")
+def step_impl(context, price_point):
+    createPriceAlert(context, price_point)
 
 @when("I request to create a availability alert")
 def step_impl(context):
