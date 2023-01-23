@@ -1,8 +1,11 @@
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { Store } from "@ngrx/store";
 import { of } from 'rxjs';
 import { catchError, filter, map, switchMap, tap } from 'rxjs/operators';
+import { AppState } from "src/app/app.state";
 import { WebsocketService } from "src/app/services/websocket/websocket.service";
+import { updateInventoryCard } from "../inventory/inventory.actions";
 
 import {
   createDeck,
@@ -34,6 +37,7 @@ export class DeckEffects {
   constructor(
     private readonly actions$: Actions,
     private readonly websocketService: WebsocketService,
+    private store: Store<AppState>
   ) { }
 
   public addCardtoInventoryEffect$ = createEffect(() =>
@@ -130,6 +134,7 @@ export class DeckEffects {
             return event['event_type'] === 'INSERT_DECK_CARD_RESULT' || event['event_type'] === 'INSERT_SIDE_DECK_CARD_RESULT'
           }),
           map((event: any) => addCardToDeckSuccess({deckCard: event["data"], deckType: deck_type})),
+          tap(() => this.store.dispatch(updateInventoryCard())),
           catchError((error) => {
             console.log(error);
             return of(addCardToDeckFail({error: true}))

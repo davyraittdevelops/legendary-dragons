@@ -16,57 +16,66 @@
   <li class="list-group-item fs-6-text flex-fill rounded-0 text-truncate bg-dark text-white">
     {{card.quality }}
   </li>
-  <li class="list-group-item fs-6-text btn btn-sm bg-dark text-white rounded-0 flex-fill" id="card-remove-btn" name="removeCardFromInventory" (click)="removeCardFromInventory(card.card_id)">
+  <li class="list-group-item fs-6-text btn btn-sm bg-dark text-white rounded-0 flex-fill" id="card-remove-btn" (click)="removeCardFromInventory(card.card_id)">
     <i class="bi bi-x"></i>
   </li>
 </ul>
 
 <ng-template #content let-modal>
   <div class="modal-header card-modal bg-dark">
-    <h1 class="modal-title" id="modal-basic-title">{{card.card_name}}</h1>
+    <h1 class="modal-title" id="modal-basic-title">
+      {{card.card_name}}
+      <app-color-icon [colors]="card.colors"></app-color-icon>
+
+      <br/>
+      <span class="badge text-bg-success mt-1">
+        {{card.quality}}
+      </span>
+
+    </h1>
     <button type="button" class="btn-close btn-close-white" aria-label="Close"
             (click)="modal.dismiss('Cross click')"></button>
   </div>
 
   <div class="modal-body card-modal text-black">
     <div class="d-flex justify-content-between">
-      <div>
-        <h2>Name: {{card.card_name}}</h2>
-        <h2>Quality: {{card.quality}}</h2>
-        <h2>Rarity: {{card.rarity}}</h2>
+      <div class="w-100">
         <h2>
-          Deck location:
-          <span *ngIf="card.deck_location !== ''" class="badge text-bg-info fw-normal">
-            {{card.deck_location}}
-          </span>
-          <span *ngIf="card.deck_location == ''" class="badge text-bg-info fw-normal">
-            Unassigned
+          Deck <i class="bi bi-geo-alt-fill ms-1 me-1"></i>:
+          <span  class="badge text-bg-info fw-normal">
+            {{card.deck_location || "Unassigned"}}
           </span>
         </h2>
-        <h2>Set Name: {{card.set_name}}</h2>
-        <h2>Colors:
-          <span *ngIf="card.colors.length === 0">Colorless</span>
-          {{card.colors}}
+        <h2>
+          Rarity <i class="bi bi-stars ms-1 me-1"></i>:
+          {{card.rarity | titlecase}}
         </h2>
         <h2>
-          Added at: {{card.created_at | date:'dd/MM/yyyy HH:mm'}}
+          Set <i class="bi bi-collection-fill ms-1 me-1"></i>:
+          {{card.set_name}}
         </h2>
-        <h1>_______________________________________________________________________________________________________</h1>
-        <ng-container *ngIf="card_details$ | async as card_details">
+        <h2>
+          Added at <i class="bi bi-calendar-event-fill ms-1 me-1"></i>:
+          {{card.created_at | date:'dd/MM/yyyy HH:mm'}}
+        </h2>
+
+        <hr/>
+
+        <div class="text-center ms-3" *ngIf="isCardDetailLoading$ | async; else card_detail">
+          <span class="spinner-border spinner-border mt-3" role="status" aria-hidden="true"></span>
+        </div>
+
+        <ng-template #card_detail>
+          <ng-container *ngIf="card_details$ | async as card_details">
           <div class="container">
             <div class="row">
               <div class="col" *ngFor="let card_face of card_details.card_faces">
-                <img src={{card_face.image_url}} alt={{card_face.image_url}} image class="card-image" loading="lazy">
-                <h2>Name: {{card_face.card_name}}</h2>
-                <h2>Colors:
-                  <span *ngIf="card_face.colors.length === 0">Colorless</span>
-                  {{card_face.colors}}
-                </h2>                <h2>Mana Cost: {{card_face.mana_cost}}</h2>
-                <h2>Text: {{card_face.oracle_text}}</h2>
+                <app-card-face [colors]="card.colors" [card_face]="card_face"></app-card-face>
               </div>
             </div>
           </div>
-        </ng-container>
+          </ng-container>
+        </ng-template>
       </div>
     </div>
   </div>
