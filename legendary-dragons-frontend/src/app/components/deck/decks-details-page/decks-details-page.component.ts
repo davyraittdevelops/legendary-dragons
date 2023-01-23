@@ -56,7 +56,7 @@ export class DecksDetailsPageComponent implements OnInit {
     });
 
     this.selectedDeck$.subscribe(selectedDeck => {
-      this.deckCardsLimitReached = selectedDeck.deck_cards.length === 1
+      this.deckCardsLimitReached = selectedDeck.deck_cards.length === 100
     });
   }
 }
