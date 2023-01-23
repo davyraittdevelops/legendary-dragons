@@ -43,6 +43,7 @@ import { wishlistReducer } from './ngrx/wishlist/wishlist.reducer';
 import { WishlistEffects } from './ngrx/wishlist/wishlist.effect';
 import { WishlistItemComponent } from './components/wishlist/wishlist-item/wishlist-item.component';
 import {MatIconModule} from "@angular/material/icon";
+import { ColorIconComponent } from './components/card/color-icon/color-icon.component';
 
 @NgModule({
   declarations: [
@@ -63,6 +64,7 @@ import {MatIconModule} from "@angular/material/icon";
     CardsDetailsPageComponent,
     DeckCardsDetailsPageComponent,
     WishlistItemComponent,
+    ColorIconComponent,
   ],
     imports: [
         BrowserModule,
