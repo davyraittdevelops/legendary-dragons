@@ -79,13 +79,11 @@ export class InventoryEffects {
   public getInventoryEffect$ = createEffect(() =>
     this.actions$.pipe(
       ofType(getInventory),
-      tap(() => this.websocketService.sendGetInventoryMessage()),
+      tap(({paginatorKey}) => this.websocketService.sendGetInventoryMessage(paginatorKey)),
       switchMap(() => {
         return this.websocketService.dataUpdates$().pipe(
-          filter((event: any) => {
-            return event['event_type'] === 'GET_INVENTORY_RESULT'
-          }),
-          map((event: any) => getInventorySuccess({inventory: event["data"]})),
+          filter((event: any) => event['event_type'] === 'GET_INVENTORY_RESULT'),
+          map((event: any) => getInventorySuccess({inventory: event["data"], paginatorKey: event["paginatorKey"]})),
           catchError((error) => {
             console.log(error);
             return of(getInventoryFail({error: true}))

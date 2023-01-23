@@ -21,16 +21,15 @@ def lambda_handler(event, context):
     connection_id = event["requestContext"]["connectionId"]
     domain_name = event["requestContext"]["domainName"]
     stage = event["requestContext"]["stage"]
-    
 
     body = json.loads(event["body"])
     paginator_key = body["paginatorKey"]
     query_args = {}
 
-    if paginator_key: 
+    if paginator_key:
         query_args["ExclusiveStartKey"] = paginator_key
         logger.info(f"paginator: {paginator_key}")
-            
+
     endpoint = f"https://{domain_name}/{stage}"
     output = {
         "event_type": "GET_INVENTORY_RESULT",
@@ -43,18 +42,18 @@ def lambda_handler(event, context):
     user_id = event["requestContext"]["authorizer"]["userId"]
     inventory_response = table.query(
         KeyConditionExpression=Key("PK").eq(f"USER#{user_id}") &
-        Key("SK").begins_with("INVENTORY"), Limit=1,
-        **query_args 
+        Key("SK").begins_with("INVENTORY"), Limit=5,
+        **query_args
     )
 
     if 'LastEvaluatedKey' in inventory_response:
         output["paginatorKey"] = inventory_response["LastEvaluatedKey"]
-        
+
     inventory = {}
 
     if not paginator_key:
         logger.info("No paginator key, looking for Inventory")
-        
+
         inventory_idx = next(
             (idx for idx, item in enumerate(inventory_response["Items"]) if item["entity_type"] == "INVENTORY"),
             None
@@ -68,11 +67,11 @@ def lambda_handler(event, context):
                 Data=json.dumps(output)
             )
             return {"statusCode": 404}
-        
+
         inventory = inventory_response["Items"].pop(inventory_idx)
         logger.info(f"Found inventory with id {inventory['inventory_id']}")
 
-
+    logger.info("Found inventory cards: %s", len(inventory_response["Items"]))
     inventory["inventory_cards"] = inventory_response["Items"]
     output["data"] = inventory
 

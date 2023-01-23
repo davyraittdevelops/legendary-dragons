@@ -4,7 +4,7 @@
       <app-add-card-component [inventory_id]="inventory.inventory_id"
                               class="col"></app-add-card-component>
 
-      <app-cards-details-page class="col" *ngFor="let card of inventory.inventory_cards  | paginate: { itemsPerPage: 50, currentPage: activePage}"
+      <app-cards-details-page class="col" *ngFor="let card of inventory.inventory_cards"
                 [card]="card" [inventory_id]="inventory.inventory_id">
       </app-cards-details-page>
     </ng-container>
@@ -16,7 +16,22 @@
     </div>
   </div>
   <br>
-  <div class="pagination-container">
-    <pagination-controls class="pagination" (pageChange)="activePage = handlePageEvent($event)"></pagination-controls>
-  </div>
+
+
+  <ng-container *ngIf="paginator$ | async as paginator">
+    <div class="pagination-container">
+      <button class="btn btn-dark btn-lg me-1"
+              *ngFor="let page of paginator.pages; let i = index"
+              [ngClass]="{'active': paginator.currentPageIndex === i}"
+              (click)="navigateToExistingPage(page, paginator.currentPageIndex, i)"
+              [disabled]="(isLoading$ | async)">
+        {{ (i + 1) }}
+      </button>
+
+      <button class="btn btn-dark btn-lg" *ngIf="paginator.paginatorKey"
+              (click)="navigatePage(paginator.paginatorKey)" [disabled]="isLoading$ | async">
+        Next
+      </button>
+    </div>
+  </ng-container>
 </div>

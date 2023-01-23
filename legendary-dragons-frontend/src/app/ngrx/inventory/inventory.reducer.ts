@@ -11,18 +11,18 @@ import {
 import { InventoryState } from "./models/inventory-state.model";
 
 const initialState: InventoryState = {
-    isLoading: false,
-    hasError: false,
-    inventory: {
-      inventory_id: "",
-      created_at: "",
-      last_modified: "",
-      total_value: "",
-      inventory_cards: []
+  isLoading: false,
+  hasError: false,
+  inventory: {
+    inventory_id: "",
+    created_at: "",
+    last_modified: "",
+    total_value: "",
+    inventory_cards: []
   },
-
-  activePage: 0,
-  itemsPerPage: 1
+  paginatorKey: {},
+  pages: [],
+  currentPageIndex: 0,
 }
 
 export const inventoryReducer = createReducer(
@@ -57,8 +57,16 @@ export const inventoryReducer = createReducer(
     };
   }),
   on(addCardtoInventoryFail, (state) => ({...state, isLoading: false, hasError: true})),
-  on(getInventory, (state) => ({...state, isLoading: true})),
-  on(getInventorySuccess, (state, {inventory}) => ({...state, isLoading: false, hasError: false, inventory})),
+  on(getInventory, (state, {paginatorKey}) => {
+    const foundIndex = state.pages.findIndex((page) => page.SK === paginatorKey.SK);
+
+    if (foundIndex > -1)
+      return {...state, isLoading: true, hasError: false, currentPageIndex: foundIndex};
+
+    const pages = [...state.pages, paginatorKey];
+    return {...state, isLoading: true, pages, currentPageIndex: state.pages.length}
+  }),
+  on(getInventorySuccess, (state, {inventory, paginatorKey}) => ({...state, isLoading: false, hasError: false, inventory, paginatorKey})),
   on(getInventoryFail, (state) => ({...state, isLoading: false, hasError: true})),
   on(updateInventoryCardSuccess, (state, {inventoryCard}) => {
     const inventory = {...state.inventory};

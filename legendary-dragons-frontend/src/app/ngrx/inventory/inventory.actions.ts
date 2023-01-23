@@ -1,6 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 import { Inventory, InventoryCard, InventoryCardRequest } from 'src/app/models/inventory.model';
-
+import { PaginatorKey } from './models/inventory-state.model';
 
 export const addCardtoInventory = createAction(
   '[Add Card Component] Add To Inventory',
@@ -33,7 +33,8 @@ export const removeCardFromInventorySuccess = createAction(
 );
 
 export const getInventory = createAction(
-  '[Inventory Component] Get Inventory'
+  '[Inventory Component] Get Inventory',
+  props<{paginatorKey: PaginatorKey}>()
 );
 
 export const getInventoryFail = createAction(
@@ -43,7 +44,7 @@ export const getInventoryFail = createAction(
 
 export const getInventorySuccess = createAction(
   '[Inventory Component] Get Inventory Success',
-  props<{inventory: Inventory}>(),
+  props<{inventory: Inventory, paginatorKey: PaginatorKey}>(),
 );
 
 export const updateInventoryCard = createAction(
