@@ -20,17 +20,29 @@ on:
       - completed
 
 jobs:
-  notify:
+  build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./wishlist
 
     steps:
       - uses: actions/checkout@v3
 
       - name: Run functional tests
-
         run: 
           pip install -r requirements.txt
           behave
 
       - name: Run performance tests
-        run: ....
+        run: 
+          mvn install
+          mvn gatling:test -Dsimulation=RegisterAccountSimulation -Dduration=5 -DuserRate=1 -X
+          mvn gatling:test -Dsimulation=VisitFrontEndSimulation -Dduration=300 -DuserRate=30 -X
+          mvn gatling:test -Dsimulation=LoginAccountSimulation -Dduration=5 -DuserRate=1 -X
+          mvn gatling:test -Dsimulation=LoginThenConnectToWebSocketSimulation -Dduration=5 -DuserRate=1 -X
+          mvn gatling:test -Dsimulation=AddCardToInventorySimulation -Dduration=5 -DuserRate=1 -X
+          mvn gatling:test -Dsimulation=GetInventorySimulation -Dduration=5 -DuserRate=1 -X
+          mvn gatling:test -Dsimulation=AddCardToDeckSimulation -Dduration=5 -DuserRate=1 -X
+          mvn gatling:test -Dsimulation=CreateDeckAndRemoveSimulation -Dduration=5 -DuserRate=1 -X
+          
