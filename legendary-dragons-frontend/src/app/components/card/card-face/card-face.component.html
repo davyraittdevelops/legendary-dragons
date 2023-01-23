@@ -1,0 +1,13 @@
+<img src={{cardFace.image_url}} alt={{cardFace.image_url}} image class="card-image" loading="lazy">
+<h2>
+  Name: {{cardFace.card_name}}
+  <app-color-icon [colors]="colors"></app-color-icon>
+</h2>
+
+<blockquote class="blockquote">
+  <p>
+    {{cardFace.oracle_text}}
+  </p>
+</blockquote>
+
+<h2>Mana Cost <i class="bi bi-magic ms-1 me-1"></i>: {{cardFace.mana_cost}}</h2>
