@@ -80,6 +80,7 @@ def handle_price_alerts(price_alerts):
                 elif float(prices['eur']) < price_point or float(prices['usd']) < price_point :
                     print('Price is below the request price.. ', prices['eur'], '||' , prices['usd'], "< " , price_point)
                     print('Going to send an email to : ' , user_email)
+                    send_email_to_user(user_email)
 
         except Exception as e:
             logger.info(f"Error occured:  {e}")
