@@ -16,7 +16,7 @@
   <li class="list-group-item fs-6-text flex-fill rounded-0 text-truncate bg-dark text-white">
     {{card.quality }}
   </li>
-  <li class="list-group-item fs-6-text btn btn-sm bg-dark text-white rounded-0 flex-fill" id="card-remove-btn" name="removeCardFromInventory" (click)="removeCardFromInventory(card.card_id)">
+  <li class="list-group-item fs-6-text btn btn-sm bg-dark text-white rounded-0 flex-fill" id="card-remove-btn" (click)="removeCardFromInventory(card.card_id)">
     <i class="bi bi-x"></i>
   </li>
 </ul>
