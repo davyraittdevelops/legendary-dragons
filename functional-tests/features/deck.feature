@@ -35,6 +35,11 @@ Scenario: Remove card from side deck
   When I request to remove a card from the side deck
   Then the side deck collection is updated and the card is removed
 
+Scenario: Move deck card
+  Given there is an user, the registered user is logged in and has one card in their deck
+  When I request to move the card to the side deck
+  Then the side deck collection should contain the moved card
+
 Scenario: Remove deck
    Given there is an user and the registered user is logged in
    When I request to remove a deck

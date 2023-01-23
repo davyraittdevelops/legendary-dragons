@@ -2,7 +2,7 @@ from behave import given, when, then
 import logging
 import json
 import boto3
-from setup import registerVerifyLoginConnectUser
+from setup import loginAndConnectUser
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -91,7 +91,7 @@ def getDecks(context):
 
     context.detail["get_decks"] = json.loads(context.ws.recv())
 
-def removeCardFromMainDeck(context):
+def removeCardFromDeck(context):
     deck_card = {
         "inventory_card_id": "1",
         "card_name": "Abdel Adrian, Gorion's Ward",
@@ -113,7 +113,8 @@ def removeCardFromMainDeck(context):
         "action": "removeCardFromDeckReq",
         "deck_id": context.detail["create_deck"]["data"]["deck_id"],
         "deck_type": context.detail["deck_type"],
-        "deck_card": deck_card
+        "deck_card": deck_card,
+        "inventory_id": "09660b91-e394-44ca-882d-438eb1cc9d25"
     }))
 
     context.detail["removed_card_from_deck"] = json.loads(context.ws.recv())
@@ -141,11 +142,21 @@ def removeCardFromSideDeck(context):
         "action": "removeCardFromDeckReq",
         "deck_id": context.detail["create_deck"]["data"]["deck_id"],
         "deck_type": context.detail["deck_type"],
-        "deck_card": deck_card
+        "deck_card": deck_card,
+        "inventory_id": "09660b91-e394-44ca-882d-438eb1cc9d25"
     }))
 
     context.detail["removed_card_from_side_deck"] = json.loads(context.ws.recv())
 
+def moveCardToDeck(context):
+    context.ws.send(json.dumps({
+        "action": "moveDeckCardReq",
+        "deck_id": context.detail["create_deck"]["data"]["deck_id"],
+        "deck_card": "1",
+        "deck_type": "side_deck"
+    }))
+
+    context.detail["moved_card"] = json.loads(context.ws.recv())
 
 def removeDeck(context):
     context.ws.send(json.dumps({
@@ -158,7 +169,13 @@ def removeDeck(context):
 
 @given("there is an user and the registered user is logged in")
 def step_impl(context):
-    registerVerifyLoginConnectUser(context)
+    loginAndConnectUser(context)
+
+@given("there is an user, the registered user is logged in and has one card in their deck")
+def step_impl(context):
+    loginAndConnectUser(context)
+    context.detail["deck_type"] = "main_deck"
+    addCardToDeck(context)
     
 @when("I create a new deck")
 def step_impl(context):
@@ -185,7 +202,7 @@ def step_impl(context):
 @when("I request to remove a card from the main deck")
 def step_impl(context):
     context.detail["deck_type"] = "main_deck"
-    removeCardFromMainDeck(context)
+    removeCardFromDeck(context)
 
 @when("I request to remove a card from the side deck")
 def step_impl(context):
@@ -196,6 +213,10 @@ def step_impl(context):
 def step_impl(context):
     removeDeck(context)
 
+@when("I request to move the card to the side deck")
+def step_impl(context):
+    moveCardToDeck(context)
+
 @then("the deck should be created")
 def step_impl(context):
     assert context.detail["create_deck"]["event_type"] == "INSERT_DECK_RESULT"
@@ -205,7 +226,6 @@ def step_impl(context):
 
 @then("the main deck collection is updated and should contain the new card")
 def step_impl(context):
-    print(context.detail["card_added_to_deck"])
     assert context.detail["card_added_to_deck"]["event_type"] == "INSERT_DECK_CARD_RESULT"
     assert context.detail["card_added_to_deck"]["data"]["entity_type"] == "DECK_CARD"
     assert context.detail["card_added_to_deck"]["data"]["card_name"] == "Abdel Adrian, Gorion's Ward"
@@ -215,7 +235,6 @@ def step_impl(context):
 
 @then("the side deck collection is updated and should contain the new card")
 def step_impl(context):
-    print(context.detail["card_added_to_side_deck"])
     assert context.detail["card_added_to_side_deck"]["event_type"] == "INSERT_SIDE_DECK_CARD_RESULT"
     assert context.detail["card_added_to_side_deck"]["data"]["entity_type"] == "SIDE_DECK_CARD"
     assert context.detail["card_added_to_side_deck"]["data"]["card_name"] == "Black Lotus"
@@ -225,7 +244,6 @@ def step_impl(context):
 
 @then("I should be able to see my deck details including main deck and side deck cards")
 def step_impl(context):
-    print(context.detail["get_deck"])
     assert context.detail["get_deck"]["event_type"] == "GET_DECK_RESULT"
     assert context.detail["get_deck"]["data"]["deck"]["deck_id"] == context.detail["create_deck"]["data"]["deck_id"]
     assert context.detail["get_deck"]["data"]["deck"]["deck_name"] == "White-Blue: Azorius"
@@ -249,7 +267,6 @@ def step_impl(context):
 
 @then("I should be able to see all my decks")
 def step_impl(context):
-    print(context.detail["get_decks"])
     assert context.detail["get_decks"]["event_type"] == "GET_DECKS_RESULT"
     assert context.detail["get_decks"]["data"][0]["deck_type"] == "COMMANDER"
     assert context.detail["get_decks"]["data"][0]["entity_type"] == "DECK"
@@ -257,7 +274,6 @@ def step_impl(context):
 
 @then("the main deck collection is updated and the card is removed")
 def step_impl(context):
-    print(context.detail["removed_card_from_deck"])
     assert context.detail["removed_card_from_deck"]["event_type"] == "REMOVE_DECK_CARD_RESULT"
 
     assert context.detail["removed_card_from_deck"]["data"]["entity_type"] == "DECK_CARD"
@@ -267,17 +283,27 @@ def step_impl(context):
 
 @then("the side deck collection is updated and the card is removed")
 def step_impl(context):
-    print(context.detail["removed_card_from_side_deck"])
-    assert context.detail["removed_card_from_side_deck"]["event_type"] == "REMOVE_DECK_CARD_RESULT"
+    assert context.detail["removed_card_from_side_deck"]["event_type"] == "REMOVE_SIDE_DECK_CARD_RESULT"
 
-    assert context.detail["removed_card_from_side_deck"]["data"]["entity_type"] == "DECK_CARD"
-    assert context.detail["removed_card_from_side_deck"]["data"]["card_name"] == "Abdel Adrian, Gorion's Ward"
+    assert context.detail["removed_card_from_side_deck"]["data"]["entity_type"] == "SIDE_DECK_CARD"
+    assert context.detail["removed_card_from_side_deck"]["data"]["card_name"] == "Black Lotus"
     assert context.detail["removed_card_from_side_deck"]["data"]["quality"] == "damaged"
     assert context.detail["removed_card_from_side_deck"]["data"]["rarity"] == "uncommon"
 
+@then("the side deck collection should contain the moved card")
+def step_impl(context):
+    assert context.detail["moved_card"]["event_type"] == "MODIFY_SIDE_DECK_CARD_RESULT"
+    assert context.detail["moved_card"]["data"]["entity_type"] == "SIDE_DECK_CARD"
+    assert context.detail["moved_card"]["data"]["card_name"] == "Abdel Adrian, Gorion's Ward"
+    assert context.detail["moved_card"]["data"]["quality"] == "damaged"
+    assert context.detail["moved_card"]["data"]["rarity"] == "uncommon"
+    assert context.detail["moved_card"]["data"]["colors"] == "['W']"
+
+    context.detail["deck_type"] = "side_deck"
+    removeCardFromDeck(context)
+
 @then("the deck should be removed from all my decks")
 def step_impl(context):
-    print(context.detail["removed_deck"])
     assert context.detail["removed_deck"]["event_type"] == "REMOVE_DECK_RESULT"
     assert context.detail["removed_deck"]["data"]["entity_type"] == "DECK"
     assert context.detail["removed_deck"]["data"]["deck_name"] == "White-Blue: Azorius"

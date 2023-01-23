@@ -2,7 +2,7 @@ from behave import given, when, then
 import logging
 import json
 import boto3
-from setup import registerVerifyLoginConnectUser
+from setup import loginAndConnectUser
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -51,7 +51,7 @@ def removeCardFromInventory(context):
 
 @given("there is an existing user and the user is logged in")
 def step_impl(context):
-    registerVerifyLoginConnectUser(context)
+    loginAndConnectUser(context)
 
 @when("we add the card with the received data to the inventory")
 def step_impl(context):

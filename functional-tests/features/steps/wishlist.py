@@ -2,7 +2,7 @@ from behave import given, when, then
 import logging
 import json
 import boto3
-from setup import registerVerifyLoginConnectUser
+from setup import loginAndConnectUser
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -18,7 +18,8 @@ def createPriceAlert(context):
             "alert_type": "PRICE",
             "price_point": "5.00",
             "wishlist_item_id": "1",
-            "card_market_id": "1"
+            "card_market_id": "1",
+            "alert_id": "1"
         }
     }))
 
@@ -33,12 +34,12 @@ def createAvailabilityAlert(context):
             "alert_type": "AVAILABILITY",
             "user_id": "user-123",
             "wishlist_item_id": "1",
-            "card_market_id": "1"
+            "card_market_id": "1",
+            "alert_id": "1"
         }
     }))
 
     context.detail["availability_alert"] = json.loads(context.ws.recv())
-
 
 def getWishlist(context):
     context.ws.send(json.dumps({
@@ -112,7 +113,7 @@ def removeWishlistItem(context):
 
 @given("there is an user and this user is logged in")
 def step_impl(context):
-    registerVerifyLoginConnectUser(context)
+    loginAndConnectUser(context)
 
 @when("I request to create a price alert")
 def step_impl(context):
@@ -183,6 +184,7 @@ def step_impl(context):
     assert context.detail["removed_price_alert"]["data"]["price_point"] == "5.00"
     assert context.detail["removed_price_alert"]["data"]["card_market_id"] == "1"
     assert context.detail["removed_price_alert"]["data"]["wishlist_item_id"] == "1"
+
 @then("a availability alert is removed")
 def step_impl(context):
     assert context.detail["removed_availability_alert"]["event_type"] == "REMOVE_ALERT#AVAILABILITY_RESULT"
