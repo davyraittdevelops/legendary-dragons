@@ -128,4 +128,8 @@ export class WebsocketService {
   sendGetCardMessage(scryfall_id: any) {
     this.sendMessage('getCardReq', {scryfall_id});
   }
+
+  sendMoveDeckCardMessage(deck_id: string, deck_card: string, deck_type: string) {
+    this.sendMessage('moveDeckCardReq', {deck_id, deck_card, deck_type});
+  }
 }

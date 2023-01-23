@@ -5,10 +5,10 @@
     <button type="button" (click)="open({content : content});" class="btn btn-dark" name="openDeckCardDetailsModal">
       <i class="bi bi-eye"></i>
     </button>
-    <button type="button" class="btn btn-dark">
+    <button type="button" class="btn btn-dark" name="moveDeckCard" [disabled]="(deckCardsLimitReached && deckType == deckTypeEnum.SIDE) || (isDeckLoading$ | async)" (click)="moveDeckCard()">
       <i class="bi bi-arrow-left-right"></i>
     </button>
-    <button type="button" class="btn btn-dark" name="removeCardFromDeck" (click)="removeCardFromDeck()">
+    <button type="button" class="btn btn-dark" name="removeCardFromDeck" [disabled]="isDeckLoading$ | async" (click)="removeCardFromDeck()">
       <i class="bi bi-x"></i>
     </button>
   </div>

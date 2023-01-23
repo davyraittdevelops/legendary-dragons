@@ -18,13 +18,16 @@ import {
   addCardToDeckSuccess,
   removeCardFromDeck,
   removeCardFromDeckFail,
-  removeCardFromDeckSuccess
+  removeCardFromDeckSuccess,
+  moveDeckCard,
+  moveDeckCardFail,
+  moveDeckCardSuccess
 } from "./deck.actions";
 import { DeckState } from "./models/deck-state.model";
 
 const initialState: DeckState = {
   isLoading: false,
-  isAddCardLoading: false,
+  isDeckLoading: false,
   hasError: false,
   decks: [],
   selectedDeck: {
@@ -67,7 +70,7 @@ export const deckReducer = createReducer(
       selectedDeck: deck
     };
   }),
-  on(addCardToDeck, (state, {deck_id, deck_type, inventory_card}) => ({...state, isAddCardLoading: true})),
+  on(addCardToDeck, (state, {deck_id, deck_type, inventory_card}) => ({...state, isDeckLoading: true})),
   on(addCardToDeckSuccess, (state, {deckCard, deckType}) => {
     let newSelectedDeck = {...state.selectedDeck};
 
@@ -79,13 +82,13 @@ export const deckReducer = createReducer(
     return {
       ...state,
       hasError: false,
-      isAddCardLoading: false,
+      isDeckLoading: false,
       selectedDeck: newSelectedDeck
     };
 
   }),
-  on(addCardToDeckFail, (state) => ({...state, isAddCardLoading: false, hasError: true})),
-  on(removeCardFromDeck, (state, {deck_id, deck_card, inventory_id}) => ({...state, isLoading: true})),
+  on(addCardToDeckFail, (state) => ({...state, isDeckLoading: false, hasError: true})),
+  on(removeCardFromDeck, (state, {deck_id, deck_card, inventory_id}) => ({...state, isDeckLoading: true})),
   on(removeCardFromDeckSuccess, (state, {deck_id, deck_card, deck_type}) => {
     let newSelectedDeck = {...state.selectedDeck};
     if (deck_type == DeckType.SIDE)
@@ -96,10 +99,32 @@ export const deckReducer = createReducer(
     return {
       ...state,
       hasError: false,
-      isLoading: false,
+      isDeckLoading: false,
       selectedDeck: newSelectedDeck
     };
 
   }),
-  on(removeCardFromDeckFail, (state) => ({...state, isLoading: false, hasError: true})),
+  on(removeCardFromDeckFail, (state) => ({...state, isDeckLoading: false, hasError: true})),
+  on(moveDeckCard, (state, {deck_id, deck_card_id, deck_type}) => ({...state, isDeckLoading: true})),
+  on(moveDeckCardSuccess, (state, {deck_card, deck_type}) => {
+    let newSelectedDeck = {...state.selectedDeck};
+
+    if (deck_type == DeckType.SIDE) {
+      newSelectedDeck.side_deck_cards = [deck_card, ...state.selectedDeck.side_deck_cards];
+      newSelectedDeck.deck_cards = newSelectedDeck.deck_cards.filter(card => card.inventory_card_id !== deck_card.inventory_card_id);
+    } else {
+      newSelectedDeck.deck_cards = [deck_card, ...state.selectedDeck.deck_cards];
+      newSelectedDeck.side_deck_cards = newSelectedDeck.side_deck_cards.filter(card => card.inventory_card_id !== deck_card.inventory_card_id);
+    }
+    return {
+      ...state,
+      hasError: false,
+      isDeckLoading: false,
+      selectedDeck: newSelectedDeck
+    };
+
+  }),
+
+  on(moveDeckCardFail, (state) => ({...state, isDeckLoading: false, hasError: true})),
 )
+ 
