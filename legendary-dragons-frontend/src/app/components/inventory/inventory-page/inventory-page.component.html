@@ -4,7 +4,7 @@
       <app-add-card-component [inventory_id]="inventory.inventory_id"
                               class="col"></app-add-card-component>
 
-      <app-cards-details-page class="col" *ngFor="let card of inventory.inventory_cards  | paginate: { itemsPerPage: 1, currentPage: activePage}"
+      <app-cards-details-page class="col" *ngFor="let card of inventory.inventory_cards  | paginate: { itemsPerPage: 50, currentPage: activePage}"
                 [card]="card" [inventory_id]="inventory.inventory_id">
       </app-cards-details-page>
     </ng-container>
@@ -15,6 +15,7 @@
       </span>
     </div>
   </div>
+  <div class="pagination-container">
+    <pagination-controls class="pagination" (pageChange)="activePage = handlePageEvent($event)"></pagination-controls>
+  </div>
 </div>
-
-<pagination-controls class="pagination" (pageChange)="activePage = handlePageEvent($event)"></pagination-controls>

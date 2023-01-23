@@ -15,6 +15,10 @@
   margin: 0 10px;
 }
 
+.container-fluid {
+  position: relative;
+}
+
 /* add padding between the elements */
 @media only screen and (min-width: 960px) {
   .container{
@@ -22,15 +26,18 @@
   }
 }
 
-.pagination {
+.pagination-container {
+  display: flex;
   justify-content: center;
   background-color: transparent;
+  margin-top: auto;
+  justify-content: center;
   -webkit-text-fill-color: #d5a14b;
   font-size: 20px;
-  position: fixed;
   bottom: 0;
-  width: 100%;
+  width: 90%;
   padding: 10px;
+  position: absolute;
 }
 
 .pagination::ng-deep .ngx-pagination .current {

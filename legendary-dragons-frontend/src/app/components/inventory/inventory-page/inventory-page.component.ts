@@ -31,6 +31,12 @@ export class InventoryPageComponent implements OnInit {
   }
 
   public handlePageEvent(event: number): number {
+    window.scroll({ 
+      top: 0, 
+      left: 0, 
+      behavior: 'smooth' 
+    });
+
     this.activePage = event;
     return event;
   }
