@@ -17,13 +17,15 @@ table = dynamodb.Table(os.getenv("TABLE_NAME"))
 def lambda_handler(event, context):
   """Updates Inventory Card entry"""
   inventory_card = event["detail"]["inventory_card"]
+  logger.info(f'inventory {inventory_card}')
 
   try:
-    table.put_item(Item=inventory_card,
+    result = table.put_item(Item=inventory_card,
       ConditionExpression='attribute_exists(PK) AND attribute_exists(SK)'
     )
+    logger.info(f'result from put item {result}')
   except dynamodb.meta.client.exceptions.ConditionalCheckFailedException as e:
-    error = str(e)[str(e).index(":") + 1:len(str(e))]
+    error = extract_error_message(e)
     logger.info(f"Registration failed: {error}")
     return {
       "statusCode": 400,
@@ -31,3 +33,7 @@ def lambda_handler(event, context):
     }
 
   return {"statusCode": 200}
+
+
+def extract_error_message(error):
+  return str(error)[str(error).index(":") + 1:len(str(error))]

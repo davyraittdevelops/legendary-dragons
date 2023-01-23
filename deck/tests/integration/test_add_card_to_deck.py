@@ -64,6 +64,7 @@ def websocket_event():
       "action": "addCardToDeckReq",
       "deck_type": "deck",
       "deck_id": "123",
+      "deck_name": 'doom deck',
       "inventory_card": {
         "card_name": "Swords of Doom",
         "card_id": "1",
@@ -119,9 +120,8 @@ def test_lamda_handler_success(websocket_event, table_definition):
   stream_message = json.loads(messages[0].body)
 
   deck_card = table.query(
-      KeyConditionExpression=Key("GSI1_PK").eq("DECK#123") &
-                             Key("GSI1_SK").begins_with("DECK_CARD"),
-      IndexName="GSI1"
+      KeyConditionExpression=Key("PK").eq("USER#user-123") &
+                             Key("SK").begins_with("DECK#123#DECK_CARD"),
   )["Items"][0]
 
   # Assert
@@ -175,9 +175,8 @@ def test_lamda_handler_sidedeck(websocket_event, table_definition):
   stream_message = json.loads(messages[0].body)
 
   deck_card = table.query(
-      KeyConditionExpression=Key("GSI1_PK").eq("DECK#123#SIDE_DECK") &
-                             Key("GSI1_SK").begins_with("DECK_CARD"),
-      IndexName="GSI1"
+    KeyConditionExpression=Key("PK").eq("USER#user-123") &
+                             Key("SK").begins_with("DECK#123#DECK_CARD"),
   )["Items"][0]
 
   # Assert
@@ -186,5 +185,4 @@ def test_lamda_handler_sidedeck(websocket_event, table_definition):
   assert stream_message["detail-type"] == "CARD_ADDED_TO_DECK"
   assert deck_card
   assert deck_card["deck_id"] == "123"
-  assert deck_card["entity_type"] == "DECK_CARD"
-  assert deck_card["SK"] == "DECK#123#SIDE_DECK"
+  assert deck_card["entity_type"] == "SIDE_DECK_CARD"

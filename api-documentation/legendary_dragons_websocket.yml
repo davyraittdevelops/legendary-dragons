@@ -2,7 +2,7 @@ asyncapi: 2.5.0
 info:
   title: Legendary dragons websocket documentation
   version: '0.1.0'
-  description: Legendary Dragons is a Magic The Gathering collection management tool that allows users to track and organize their cards. Users can add, delete, and update cards in their collection, view detailed information about each card, and search for specific cards.  Additionally, it has a deck building feature that allows players to create and manage custom decks. It also includes a wishlist feature that allows users to keep track of cards they want to acquire. The tool is available as a web application and as a mobile application.
+  description: Legendary Dragons is a Magic The Gathering collection management tool that allows users to track and organize their cards. Users can add, delete, and update cards in their collection, view detailed information about each card, and search for specific cards.  Additionally, it has a deck building feature that allows players to create and manage custom decks. It also includes a wishlist feature that allows users to keep track of cards they want to acquire. The tool is available as a web application.
 
 
 servers:
@@ -11,57 +11,103 @@ servers:
     protocol: wss
 
 channels:
+# Connection
+
   $connect:
-    description: AWS Lambda function that creates a new item in a DynamoDB table to store WebSocket connections. It uses Boto3 library to interact with DynamoDB, and X-Ray SDK to trace and debug requests. The function extracts connection and user information from the event object and adds it to the table as an item with primary and sort keys and a Global Secondary Index. It also logs messages using the logging module and returns a JSON object with a status code of 200 on success.
-    subscribe:
+    publish:
+      summary: Creates a Websocket connection.
       message:
-        $ref: '#/components/messages/$connect'
+         $ref: '#/components/messages/$connect'
 
   $disconnect:
-    description: AWS Lambda function that deletes an item from a DynamoDB table storing WebSocket connections. It uses Boto3 library to interact with DynamoDB, and X-Ray SDK to trace and debug requests. The function extracts the connection ID and user ID from the event object and uses it to delete the item from the table. It also logs messages using the logging module and returns a JSON object with a status code of 200 on success.
     publish:
+      summary: Closes a Websocket connection.
       message:
-        $ref: '#/components/messages/$disconnect'
+          $ref: '#/components/messages/$disconnect'
 
-  addCardToInventoryReq:
-    description: AWS Lambda function that creates a new item in a DynamoDB table to store Magic The Gathering cards as part of an inventory. It uses Boto3 library to interact with DynamoDB, and X-Ray SDK to trace and debug requests. The function extracts the card information and the inventory and user ID from the event object, generates a unique card ID and adds it to the table as an item with primary and sort keys and a Global Secondary Index. It also logs messages using the logging module and returns a JSON object with a status code of 200 on success.
+
+# Card
+  searchCardsByKeyword:
     publish:
+      summary: Search a card by keyword.
       message:
-        $ref: '#/components/messages/addCardToInventoryReq'
+          $ref: '#/components/messages/searchCardsByKeywordReq'
 
-  getInventoryReq:
-    description: The function extracts the user ID from the event object, and queries the DynamoDB table using the user ID and a Global Secondary Index (GSI1) to retrieve the inventory for that user. It then queries the table again using the inventory ID and GSI1 to retrieve the inventory cards for that inventory. If the inventory is not found it returns a status code of 404, otherwise it returns a JSON object with a status code of 200 on success and sends the inventory data to the client via the AWS Api Gateway Management Api.
-    subscribe:
-      message:
-        $ref: '#/components/messages/getInventoryReq'
-
-  searchCardsByKeywordReq:
-    description: AWS Lambda function that queries the Scryfall API for Magic The Gathering cards based on a keyword given in the request. It uses the requests library to make GET requests to the Scryfall API, with a small delay before each request as recommended by the API docs. It maps the response to a specific format and logs the total number of cards found and the number of cards returned. It then sends the data in chunks, to avoid large payloads, using the AWS Api Gateway Management Api to a connected client specified by the connection ID. The function also uses the AWS X-Ray SDK to trace and debug requests. It returns a JSON object with a status code of 200 on success.
+  getCard:
     publish:
+      summary: Retrieves card details.
       message:
-        $ref: '#/components/messages/searchCardsByKeywordReq'
+          $ref: '#/components/messages/getCardReq'    
 
-  removeCardFromInventoryReq:
-    description: removeCardFromInventoryReq is an AWS Lambda function that removes a card from a DynamoDB table based on the provided inventory ID and card ID. It is triggered by a websocket event and it extracts the inventory ID and card ID from the event. It initializes a DynamoDB resource and table, and then uses the provided inventory ID and card ID to construct the primary key and sort key of the card item to be deleted. Then it uses the DynamoDB delete_item method to remove the card from the table. It returns a 200 status code if the deletion was successful.
+# Inventory
+  getInventory:
     publish:
+      summary: Retrieves the details of a inventory.
       message:
-        $ref: '#/components/messages/removeCardFromInventoryReq'
+          $ref: '#/components/messages/getInventoryReq'
+
+  addCardToInventory:
+    publish:
+      summary: Adds a card to the inventory.
+      message:
+          $ref: '#/components/messages/addCardToInventoryReq'
 
 
+  removeCardFromInventory:
+    publish:
+      summary: Removes a card from the inventory.
+      message:
+          $ref: '#/components/messages/removeCardFromInventoryReq'     
+
+# Deck
+
+  getDecks:
+    publish:
+      summary: Retrieves all decks.
+      message:
+          $ref: '#/components/messages/getDecksReq'    
+
+  getDeck:
+    publish:
+      summary: Retrieves deck details.
+      message:
+          $ref: '#/components/messages/getDeckReq'
+
+  createDeck:
+    publish:
+      summary: Creates a new deck.
+      message:
+          $ref: '#/components/messages/createDeckReq'       
+
+  removeDeck:
+    publish:
+      summary: Removes a deck.
+      message:
+          $ref: '#/components/messages/removeDeckReq'  
+
+  addCardToDeck:
+    publish:
+      summary: Adds a card to the deck.
+      message:
+          $ref: '#/components/messages/addCardToDeckReq'       
+
+  
 # COMPONENTS ATTACHED TO THE CHANNELS
-
 components:
   messages:
+
+# Connection
+
     $connect:
       payload:
         type: object
         properties:
           action:
             type: string
-            description: Action should be connect
+            description: Connect to Websocket (wss) url with a valid JWT token
           token:
             type: string
-            description: Token should be a valid jwt token retrieved from the /login function
+            description: Token should be a valid JWT token retrieved from the /login function
       examples:
         - name:  $connect
           payload:
@@ -72,19 +118,69 @@ components:
       payload:
         type: object
         properties:
+          action:
+            type: string
+            description: Disconnect to Websocket (wss) url
           connectionId:
             type: string
-            description: connectionId that will be terminated
+            description: The connectionId that will be terminated
       examples:
         - name:  $disconnect
           payload:
             action/route: $disconnect
+# Card
 
+    searchCardsByKeywordReq:
+      payload:
+        type: object
+        properties:
+          action:
+            type: string
+            description: searchCardsByKeywordReq
+          query:
+            type: string
+            description: Keyword query that will be searched in the scryfall api.
+      examples:
+        - name: searchCardsByKeywordReq
+          payload:
+            action: searchCardsByKeywordReq
+            query: 'Obelisk the tormentor'
 
+    getCardReq:
+      summary: Request to get a card details
+      payload:
+        type: object
+        properties:
+          action: 
+            type: string
+            description: getCardReq
+          scryfall_id:
+            type: string
+            description: The unique identifier for the card on Scryfall
+            example: 'scryfall_id_123'
+            
+
+# Inventory
+
+    getInventoryReq:
+      payload:
+        type: object
+        properties:
+          action: 
+            type: string
+            description: getInventoryReq
+      examples:
+        - name: getInventoryReq
+          payload:
+            action: getInventoryReq
+    
     addCardToInventoryReq:
       payload:
         type: object
         properties:
+          action:
+            type: string
+            description: addCardToInventoryReq
           inventory_id:
             type: string
             description: Inventory ID of the users inventory.
@@ -117,40 +213,13 @@ components:
               "scryfall_id" : "${rid4}"
           }'
 
-
-    getInventoryReq:
-      payload:
-        type: object
-        properties:
-          user_id:
-            type: string
-            description: We need user_id to find the matching inventory.
-      examples:
-        - name: getInventoryReq
-          payload:
-            action: getInventoryReq
-
-
-    searchCardsByKeywordReq:
-      payload:
-        type: object
-        properties:
-          query:
-            type: string
-            description: Keyword query that will be searched in the scryfall api.
-      examples:
-        - name: searchCardsByKeywordReq
-          payload:
-            action: searchCardsByKeywordReq
-            query: 'Obelisk the tormentor'
-
     removeCardFromInventoryReq:
       payload:
         type: object
         properties:
           action:
             type: string
-            description: Websocket action/route
+            description: removeCardFromInventoryReq
           card_id:
             type: string
             description: Card_id of the card that should be removed.
@@ -163,3 +232,114 @@ components:
             action: removeCardFromInventoryReq
             card_id: 01230-213123-422111-2312
             inventory_id: AFA3212-ASDFADF33-AFDFDA344-GFRD54
+
+# Deck
+
+    getDecksReq:
+      summary: Retrieve all decks associated with a user
+      payload:
+        type: object
+        properties:
+          action: 
+            type: string
+            description: getDecksReq
+          event_type:
+            type: string
+            description: Event type indicating the type of response message
+
+    getDeckReq:
+      summary: Request to get a deck details
+      payload:
+        type: object
+        properties:
+          action: 
+            type: string
+            description: getDeckReq
+          deck_id:
+            type: string
+            description: The unique identifier for the deck
+            example: 'deck_id_123'
+
+    createDeckReq:
+      summary: Request to create a new deck
+      payload:
+        type: object
+        properties:
+          action: 
+            type: string
+            description: createDeckReq
+          deck_name:
+            type: string
+            description: Name of the deck
+            example: 'My Deck'
+          deck_type:
+            type: string
+            description: Type of deck (main_deck or side_deck)
+            example: main_deck
+
+    removeDeckReq:
+      summary: Remove deck
+      payload:
+        type: object
+        properties:
+          action: 
+            type: string
+            description: removeDeckReq
+          deck_id:
+            type: string
+            description: The unique identifier for the deck
+            example: 'deck_id_123'
+
+    addCardToDeckReq:
+      summary: Request to add a card to a user's deck
+      payload:
+        type: object
+        properties:
+          action: 
+            type: string
+            description: addCardToDeckReq
+          deck_name:
+            type: string
+            description: Name of the deck
+            example: MODERN PRELIMINARY
+          deck_type:
+            type: string
+            description: Type of deck (main_deck or side_deck)
+            example: main_deck
+          deck_id:
+            type: string
+            description: ID of the deck
+            example: 'deck_id_123'
+          inventory_card:
+            type: object
+            properties:
+              card_id:
+                type: string
+                description: ID of the card
+                example: 'card_id_123'
+              inventory_id:
+                type: string
+                description: ID of the inventory
+                example: 'inventory_id_123'
+              card_name:
+                type: string
+                description: Name of the card
+                example: 'Fireball'
+              colors:
+                type: array
+                items:
+                  type: string
+                  example: 'red'
+              rarity:
+                type: string
+                description: Rarity of the card
+                example: 'rare'
+              quality:
+                type: string
+                description: Quality of the card
+                example: 'mint'
+              image_url:
+                type: string
+                description: URL of the card's image
+                example: 'https://example.com/image.jpg'
+  

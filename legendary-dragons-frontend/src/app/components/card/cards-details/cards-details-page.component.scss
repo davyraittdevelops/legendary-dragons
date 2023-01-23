@@ -16,10 +16,10 @@
   grid-row: 1;
 }
 
-.pointer {
-  cursor: pointer !important;
+.card-action-footer {
+  width: 287px !important;
 }
 
-.card-action-footer {
-  width: 100%;
+#card-remove-btn:hover {
+  background-color: #424649 !important;
 }

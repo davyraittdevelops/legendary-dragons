@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { InventoryCard } from 'src/app/models/inventory.model';
+import {WishlistAlert, WishlistAlertRequest, WishlistItem} from 'src/app/models/wishlist.model';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -86,5 +87,44 @@ export class WebsocketService {
     this.sendMessage('removeCardFromDeckReq', {
       deck_id, inventory_card
     });
+  }
+
+  sendGetWishlistMessage() {
+    this.sendMessage('getWishlistReq', {});
+  }
+
+  sendCreateWishlistItemMessage(wishlist_item: WishlistItem) {
+    this.sendMessage(
+      'createWishlistItemReq',
+      {wishlist_item: wishlist_item,
+        deck_id: 'not available for now'
+      }
+
+    )
+  }
+
+  sendRemoveWishlistItemMessage(wishlist_item_id: string) {
+    this.sendMessage(
+      'removeWishlistItemReq',
+      {
+        wishlist_item_id: wishlist_item_id
+      }
+    )
+  }
+
+  sendCreateAlert(alert_item: WishlistAlertRequest, wishlist_item_id: string) {
+    this.sendMessage('createAlertReq', {alert_item, wishlist_item_id});
+  }
+
+  sendGetAlertsMessage(wishlist_item_id : string) {
+    this.sendMessage('getAlertsReq', {wishlist_item_id});
+  }
+
+  sendRemoveAlertMessage(alert_item: WishlistAlertRequest, wishlist_item_id: string) {
+    this.sendMessage('removeAlertReq', {alert_item, wishlist_item_id});
+  }
+
+  sendGetCardMessage(scryfall_id: any) {
+    this.sendMessage('getCardReq', {scryfall_id});
   }
 }

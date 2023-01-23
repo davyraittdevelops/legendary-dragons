@@ -5,7 +5,7 @@ Scenario: Create deck
   When I create a new deck
   Then the deck should be created
 
-  Scenario: Add card to main deck
+Scenario: Add card to main deck
   Given there is an user and the registered user is logged in
   When I request to add a card to the main deck
   Then the main deck collection is updated and should contain the new card

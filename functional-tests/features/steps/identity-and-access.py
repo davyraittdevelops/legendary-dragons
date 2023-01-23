@@ -19,8 +19,18 @@ def step_impl(context):
 def step_impl(context):
     context.detail["email"] = "LegendaryDragonsMinor@gmail.com"
     context.detail["password"] = "Eindopdracht3!"
+
     registerUser(context, context.detail["email"], context.detail["password"])
     
+    body = {"nickname": context.nickname, "email": context.detail["email"], "password": context.detail["password"]}
+    logger.info(f"{context.base_url}/users/register")
+    response = requests.post(
+        f"{context.base_url}/users/register",
+        json.dumps(body)
+    )
+
+    context.status_code = response.status_code
+
 @when("we login the existing user")
 def step_impl(context):
     loginUser(context, context.detail["email"], context.detail["password"])

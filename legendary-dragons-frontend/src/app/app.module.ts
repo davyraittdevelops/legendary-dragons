@@ -16,8 +16,8 @@ import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from './app.component';
-import { CardFooterComponent } from './components/card/card-footer/card-footer.component';
 import { AddCardComponent } from './components/card/add-card-component/add-card-component';
+import { AddWishlistItemComponent } from './components/wishlist/add-wishlist-item-component/add-wishlist-item-component';
 import { DashboardComponent } from './components/general/dashboard/dashboard.component';
 import { AddCardToDeckComponent } from './components/deck/add-card-to-deck/add-card-to-deck.component';
 import { DecksDetailsPageComponent } from './components/deck/decks-details-page/decks-details-page.component';
@@ -39,6 +39,10 @@ import { UserEffects } from './ngrx/user/user.effect';
 import { userReducer } from './ngrx/user/user.reducer';
 import { DeckCardsDetailsPageComponent } from './components/deck/deck-cards-details/deck-cards-details-page.component';
 import { CardsDetailsPageComponent } from './components/card/cards-details/cards-details-page.component';
+import { wishlistReducer } from './ngrx/wishlist/wishlist.reducer';
+import { WishlistEffects } from './ngrx/wishlist/wishlist.effect';
+import { WishlistItemComponent } from './components/wishlist/wishlist-item/wishlist-item.component';
+import {MatIconModule} from "@angular/material/icon";
 
 @NgModule({
   declarations: [
@@ -54,43 +58,46 @@ import { CardsDetailsPageComponent } from './components/card/cards-details/cards
     DecksPageComponent,
     WishlistPageComponent,
     AddCardComponent,
-    CardFooterComponent,
+    AddWishlistItemComponent,
     AddCardToDeckComponent,
     CardsDetailsPageComponent,
-    DeckCardsDetailsPageComponent
-
+    DeckCardsDetailsPageComponent,
+    WishlistItemComponent,
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    RouterOutlet,
-    ReactiveFormsModule,
-    HttpClientModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatInputModule,
-    EffectsModule.forRoot([
-      UserEffects,
-      CardEffects,
-      InventoryEffects,
-      DeckEffects
-    ]),
-    BrowserAnimationsModule,
-    MatTabsModule,
-    FormsModule,
-    MatTableModule,
-    MatFormFieldModule,
-    MatInputModule,
-    NgbToastModule,
-    ScrollingModule,
-    StoreModule.forRoot({
-      user: userReducer,
-      card: cardReducer,
-      inventory: inventoryReducer,
-      deck: deckReducer
-    }),
-    StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() })
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        RouterOutlet,
+        ReactiveFormsModule,
+        HttpClientModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatInputModule,
+        EffectsModule.forRoot([
+            UserEffects,
+            CardEffects,
+            InventoryEffects,
+            DeckEffects,
+            WishlistEffects
+        ]),
+        BrowserAnimationsModule,
+        MatTabsModule,
+        FormsModule,
+        MatTableModule,
+        MatFormFieldModule,
+        MatInputModule,
+        NgbToastModule,
+        ScrollingModule,
+        StoreModule.forRoot({
+            user: userReducer,
+            card: cardReducer,
+            inventory: inventoryReducer,
+            deck: deckReducer,
+            wishlist: wishlistReducer
+        }),
+        StoreDevtoolsModule.instrument({maxAge: 25, logOnly: !isDevMode()}),
+        MatIconModule
+    ],
   providers: [],
   bootstrap: [AppComponent]
 })

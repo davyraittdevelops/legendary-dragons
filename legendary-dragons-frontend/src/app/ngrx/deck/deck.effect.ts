@@ -124,7 +124,7 @@ export class DeckEffects {
       switchMap(({deck_type}) => {
         return this.websocketService.dataUpdates$().pipe(
           filter((event: any) => {
-            return event['event_type'] === 'INSERT_DECK_CARD_RESULT'
+            return event['event_type'] === 'INSERT_DECK_CARD_RESULT' || event['event_type'] === 'INSERT_SIDE_DECK_CARD_RESULT'
           }),
           map((event: any) => addCardToDeckSuccess({deckCard: event["data"], deckType: deck_type})),
           catchError((error) => {
