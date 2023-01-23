@@ -46,6 +46,10 @@ export const getInventorySuccess = createAction(
   props<{inventory: Inventory}>(),
 );
 
+export const updateInventoryCard = createAction(
+  '[Add Card Component] Update Inventory Card'
+);
+
 export const updateInventoryCardFail = createAction(
   '[Add Card Component] Update Inventory Card Fail',
   props<{ error: boolean }>(),

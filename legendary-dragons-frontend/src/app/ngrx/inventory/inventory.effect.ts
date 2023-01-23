@@ -11,7 +11,7 @@ import {
   getInventoryFail,
   getInventorySuccess, removeCardFromInventory,
   removeCardFromInventoryFail,
-  removeCardFromInventorySuccess, updateInventoryCardFail, updateInventoryCardSuccess
+  removeCardFromInventorySuccess, updateInventoryCard, updateInventoryCardFail, updateInventoryCardSuccess
 } from "./inventory.actions";
 
 @Injectable()
@@ -24,9 +24,12 @@ export class InventoryEffects {
 
   public updateInventoryCardEffect$ = createEffect(() =>
     this.actions$.pipe(
+      ofType(updateInventoryCard),
       switchMap(() => {
         return this.websocketService.dataUpdates$().pipe(
-          filter((event: any) => event['event_type'] === 'MODIFY_INVENTORY_CARD_RESULT'),
+          filter((event: any) => {
+            return event['event_type'] === 'MODIFY_INVENTORY_CARD_RESULT'
+          }),
           map((event: any) => updateInventoryCardSuccess({inventoryCard: event["data"]})),
           catchError((error) => {
             console.log(error);
