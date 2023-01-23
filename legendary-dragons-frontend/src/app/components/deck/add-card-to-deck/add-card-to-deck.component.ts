@@ -18,6 +18,7 @@ import { errorSelector, inventorySelector } from "../../../ngrx/inventory/invent
 })
 export class AddCardToDeckComponent {
   @Input('deck_name') deckName: string = '';
+  @Input('deckCardsLimitReached') deckCardsLimitReached!: boolean;
 
   inventory$: Observable<Inventory>;
   isLoading$: Observable<boolean>;

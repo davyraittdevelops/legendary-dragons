@@ -3,7 +3,6 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Store } from "@ngrx/store";
 import { catchError, Observable, of, share } from "rxjs";
-import { logoutUser } from 'src/app/ngrx/user/user.actions';
 import { WebsocketService } from 'src/app/services/websocket/websocket.service';
 import { AppState } from "../../../app.state";
 import { Deck } from "../../../models/deck.model";
@@ -22,6 +21,7 @@ export class DecksDetailsPageComponent implements OnInit {
   isDeckLoading$: Observable<boolean>;
   hasError$: Observable<boolean>;
   DeckType = DeckType;
+  deckCardsLimitReached: boolean = false;
 
   deckId: string = "";
 
@@ -52,6 +52,14 @@ export class DecksDetailsPageComponent implements OnInit {
     this.activatedRoute.params.subscribe(params => {
       this.deckId = params["id"];
       this.appStore.dispatch(getDeck({deck_id: this.deckId}));
+    });
+
+    this.selectedDeck$.subscribe(selectedDeck => {
+      this.deckCardsLimitReached = false;
+
+      if (selectedDeck.deck_cards.length == 100) {
+        this.deckCardsLimitReached = true;
+      }
     });
   }
 }

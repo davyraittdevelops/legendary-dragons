@@ -19,6 +19,9 @@ export class DeckCardsDetailsPageComponent {
   @Input() card!: DeckCard;
   @Input('deckId') deckId!: string;
   @Input('deckType') deckType!: string;
+  @Input('deckCardsLimitReached') deckCardsLimitReached!: boolean;
+  deckTypeEnum = DeckType;
+
   content: any;
   inventory_id!: string;
   isDeckLoading$: Observable<boolean>;
@@ -51,7 +54,7 @@ export class DeckCardsDetailsPageComponent {
   }
 
   moveDeckCard() {
-    if (this.deckType ==  DeckType.SIDE)
+    if (this.deckType == DeckType.SIDE)
       this.deckType = DeckType.MAIN
     else
      this.deckType = DeckType.SIDE
