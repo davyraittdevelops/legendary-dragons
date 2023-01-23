@@ -34,8 +34,10 @@ def lambda_handler(event, context):
 
     output = {
         "event_type": "GET_CARD_RESULT",
-        "deck_id": card,
-        "data": card_faces
+        "data": {
+            "card" : card,
+            "card_faces" : card_faces
+        }
     }
 
     apigateway.post_to_connection(
