@@ -1,4 +1,4 @@
-import { Card } from "src/app/models/card.model";
+import {Card, CardDetail} from "src/app/models/card.model";
 
 export interface CardState {
   isLoading: boolean;
@@ -7,4 +7,5 @@ export interface CardState {
   searchedCards: Card[];
   page: number;
   itemsPerPage: number;
+  card_details: CardDetail
 }

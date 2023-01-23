@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CardFooterComponent } from './card-footer.component';
+import { ColorIconComponent } from './color-icon.component';
 
-describe('CardFooterComponent', () => {
-  let component: CardFooterComponent;
-  let fixture: ComponentFixture<CardFooterComponent>;
+describe('ColorIconComponent', () => {
+  let component: ColorIconComponent;
+  let fixture: ComponentFixture<ColorIconComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ CardFooterComponent ]
+      declarations: [ ColorIconComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(CardFooterComponent);
+    fixture = TestBed.createComponent(ColorIconComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

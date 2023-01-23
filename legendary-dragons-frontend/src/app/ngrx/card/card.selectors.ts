@@ -9,3 +9,4 @@ export const searchedCardSelector = createSelector(selectCard, (state) => state.
 export const querySelector = createSelector(selectCard, (state) => state.query);
 export const pageSelector = createSelector(selectCard, (state) => state.page);
 export const itemsPerPageSelector = createSelector(selectCard, (state) => state.itemsPerPage);
+export const cardDetailSelector = createSelector(selectCard, (state) => state.card_details);

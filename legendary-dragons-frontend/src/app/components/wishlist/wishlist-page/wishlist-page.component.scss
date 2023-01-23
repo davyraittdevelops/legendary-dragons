@@ -1,0 +1,24 @@
+.header-less-tabs.mat-tab-group .mat-tab-header {
+  display: none;
+}
+
+.container {
+  padding-top: 20px;
+  //display: flex;
+  //flex-direction: row;
+  justify-content: center; /* align elements to the left */
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.container > * {
+  margin: 0 10px;
+}
+
+/* add padding between the elements */
+@media only screen and (min-width: 960px) {
+  .container{
+    grid-gap: 20px;
+  }
+}
+

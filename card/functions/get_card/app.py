@@ -1,9 +1,8 @@
 import json
 import logging
 import os
-import time
-import requests
 import boto3
+from decimal import Decimal
 from aws_xray_sdk.core import patch_all
 from boto3.dynamodb.conditions import Key
 
@@ -35,8 +34,10 @@ def lambda_handler(event, context):
 
     output = {
         "event_type": "GET_CARD_RESULT",
-        "deck_id": card,
-        "data": card_faces
+        "data": {
+            "card" : card,
+            "card_faces" : card_faces
+        }
     }
 
     apigateway.post_to_connection(

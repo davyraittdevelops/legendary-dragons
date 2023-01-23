@@ -1,25 +1,29 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { DeckCard } from 'src/app/models/deck.model';
 import { Store } from '@ngrx/store';
 import { AppState } from 'src/app/app.state';
-import { DeckCard } from 'src/app/models/deck.model';
-import { InventoryCard } from 'src/app/models/inventory.model';
-import { removeCardFromInventory } from 'src/app/ngrx/inventory/inventory.actions';
+import { removeCardFromDeck } from "../../../ngrx/deck/deck.actions";
+import { inventorySelector } from "../../../ngrx/inventory/inventory.selectors";
+
 @Component({
   selector: 'app-deck-cards-details-page',
   templateUrl: './deck-cards-details-page.component.html',
   styleUrls: ['./deck-cards-details-page.component.scss']
 })
-
 export class DeckCardsDetailsPageComponent {
   @Input() card!: DeckCard;
+  @Input('deckId') deckId!: string;
+  @Input('deckType') deckType!: string;
   content: any;
+  inventory_id!: string;
 
   constructor(public modalService: NgbModal, private appStore: Store<AppState>) {
+    this.appStore.select(inventorySelector).subscribe(inventory => this.inventory_id = inventory.inventory_id);
   }
 
   open({content}: { content: any }) {
-    this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title', size: 'xl'});
+    this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title', size: 'lg'});
   }
 
   displayAvailablePrice(prices: any): string {
@@ -34,5 +38,9 @@ export class DeckCardsDetailsPageComponent {
     }
 
     return price;
+  }
+
+  removeCardFromDeck() {
+    this.appStore.dispatch(removeCardFromDeck({deck_id: this.deckId, deck_card: this.card, deck_type: this.deckType, inventory_id: this.inventory_id}));
   }
 }

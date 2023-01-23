@@ -72,8 +72,10 @@ Resources:
       EventBusName: "connection-event-bus"
       EventPattern:
         source:
+          - "legdragons.decks.remove_card_from_deck"
           - "legdragons.decks.add_card_to_deck"
         detail-type:
+          - "CARD_REMOVED_FROM_DECK"
           - "CARD_ADDED_TO_DECK"
       State: ENABLED
       Targets:
