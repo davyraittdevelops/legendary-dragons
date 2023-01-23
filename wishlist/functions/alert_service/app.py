@@ -16,11 +16,29 @@ if "DISABLE_XRAY" not in os.environ:
 dynamodb = boto3.resource("dynamodb")
 table = dynamodb.Table(os.getenv("TABLE_NAME"))
 cards_table = dynamodb.Table('cards')
+client = boto3.client("cognito-idp", region_name="us-east-1")
+user_pool_id = 'us-east-1_H1AyV4HD1'
 
 def lambda_handler(event, context):
     """Get alerts for user."""
+    price_alerts = []
+    availability_alerts = []
+    response = query_alerts()
+    
+    # Sort by price and availability alert
+    alerts = response['Items']
+    for alert in alerts:
+        if alert['entity_type'] == 'ALERT#AVAILABILITY':
+            availability_alerts.append(alert)
+        else:
+            price_alerts.append(alert)
 
-    # Specify the filter expression
+    handle_price_alerts(price_alerts)
+
+    return {"statusCode": 200}
+
+def query_alerts():
+     # Specify the filter expression
     filter_expression = "(entity_type = :entity_type1 OR entity_type = :entity_type2)"
 
     # Specify the expression attribute values
@@ -35,39 +53,38 @@ def lambda_handler(event, context):
         ExpressionAttributeValues=expression_attribute_values
     )
 
-    price_alerts = []
-    availability_alerts = []
+    return response 
 
-    # Print the filtered items
-    alerts = response['Items']
-    for alert in alerts:
-        if alert['entity_type'] == 'ALERT#AVAILABILITY':
-            availability_alerts.append(alert)
-        else:
-            price_alerts.append(alert)
 
-    print(price_alerts)
-    print(availability_alerts)
-
-    #Handle price alerts , read from our cached database
+def handle_price_alerts(price_alerts):
+     #Handle price alerts , read from our cached database
     for price_alert in price_alerts:
-        # print('checking for ' , price_alert)
         oracle_id = price_alert['alert_id']
-        pk = f'CARD_FACE#{oracle_id}'
-        sk = 'CARD#'
-
-        print(' trying with following params: ' , pk, sk)
+        user_id = price_alert['user_id']
+        price_point  = price_alert['price_point']
+        user_email = get_user_email_by_id(user_id)
 
         try:
-            card_matches = cards_table.query(
-                KeyConditionExpression=Key("GSI1_PK").eq(pk)
+            result = cards_table.query(
+                KeyConditionExpression=Key("GSI1_PK").eq(f'CARD_FACE#{oracle_id}')
                 &
-                Key("GSI1_SK").begins_with(sk),
+                Key("GSI1_SK").begins_with('CARD#'),
                 IndexName="GSI1"
             )
-            print('result of the query card_matches is: ', card_matches)
-        except Exception as e:
-            logger.info(f"help me! {e}")
-        #Query DB with our oracle ID, to check the current price of the card.
+            cards = result['Items']
+            print('Found this amount of cards with the oracle id: ' , len(cards))
+            for card in cards:
+                print(card)
+                prices = card['prices']
 
-    return {"statusCode": 200}
+        except Exception as e:
+            logger.info(f"Error occured:  {e}")
+
+def get_user_email_by_id(uid):
+    response = client.admin_get_user(
+    UserPoolId=user_pool_id,
+    Username=uid
+    )
+    email =  response["UserAttributes"][3]['Value']
+    print('email is ' , email)
+    return email

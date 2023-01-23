@@ -17,6 +17,8 @@ dynamodb = boto3.resource("dynamodb")
 table = dynamodb.Table(os.getenv("TABLE_NAME"))
 
 def lambda_handler(event, context):
+    print(event)
+
     '''Insert alert of type price/availability into the dynamodb'''
     body = json.loads(event["body"])
     user_id = event["requestContext"]["authorizer"]["userId"]
