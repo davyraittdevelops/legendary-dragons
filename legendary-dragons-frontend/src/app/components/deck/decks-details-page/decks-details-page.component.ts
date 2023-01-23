@@ -55,11 +55,7 @@ export class DecksDetailsPageComponent implements OnInit {
     });
 
     this.selectedDeck$.subscribe(selectedDeck => {
-      this.deckCardsLimitReached = false;
-
-      if (selectedDeck.deck_cards.length == 100) {
-        this.deckCardsLimitReached = true;
-      }
+      this.deckCardsLimitReached = selectedDeck.deck_cards.length === 1
     });
   }
 }
