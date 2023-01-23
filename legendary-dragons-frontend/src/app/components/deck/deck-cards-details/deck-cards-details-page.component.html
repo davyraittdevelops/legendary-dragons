@@ -13,20 +13,30 @@
 
 <ng-template #content let-modal>
   <div class="modal-header card-modal bg-dark">
-    <h1 class="modal-title" id="modal-basic-title">{{card.card_name}}</h1>
+    <h1 class="modal-title" id="modal-basic-title">
+      {{card.card_name}}
+
+      <app-color-icon [colors]="card.colors"></app-color-icon>
+
+      <br/>
+      <span class="badge text-bg-success mt-1">
+        {{card.quality}}
+      </span>
+    </h1>
     <button type="button" class="btn-close btn-close-white" aria-label="Close"
             (click)="modal.dismiss('Cross click')"></button>
   </div>
 
   <div class="modal-body card-modal text-black">
     <div class="d-flex justify-content-between">
-      <div>
-        <h2>Value: {{displayAvailablePrice(card.prices)}}</h2>
-        <h2>Rarity: {{card.rarity | titlecase}}</h2>
-        <h2>Quality: {{card.quality}}</h2>
-        <h2>Colors:
-          <span *ngIf="card.colors.length === 0">Colorless</span>
-          {{card.colors}}
+      <div class="">
+        <h2>
+          Value <i class="bi bi-tag-fill ms-1 me-1"></i>:
+          {{displayAvailablePrice(card.prices)}}
+        </h2>
+        <h2>
+          Rarity <i class="bi bi-stars ms-1 me-1"></i>:
+          {{card.rarity | titlecase}}
         </h2>
       </div>
       <img src={{card.image_url}} alt="{{card.card_name}} image" class="card-modal-image" loading="lazy">

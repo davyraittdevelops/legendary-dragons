@@ -1,25 +1,22 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { Store } from '@ngrx/store';
-import { AppState } from 'src/app/app.state';
 import { DeckCard } from 'src/app/models/deck.model';
-import { InventoryCard } from 'src/app/models/inventory.model';
-import { removeCardFromInventory } from 'src/app/ngrx/inventory/inventory.actions';
+
 @Component({
   selector: 'app-deck-cards-details-page',
   templateUrl: './deck-cards-details-page.component.html',
   styleUrls: ['./deck-cards-details-page.component.scss']
 })
-
 export class DeckCardsDetailsPageComponent {
   @Input() card!: DeckCard;
   content: any;
 
-  constructor(public modalService: NgbModal, private appStore: Store<AppState>) {
+
+  constructor(public modalService: NgbModal) {
   }
 
   open({content}: { content: any }) {
-    this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title', size: 'xl'});
+    this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title', size: 'lg'});
   }
 
   displayAvailablePrice(prices: any): string {
