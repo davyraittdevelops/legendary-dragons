@@ -4,7 +4,7 @@
     <span class="spinner-border mt-3 deck-loading-spinner" role="status" aria-hidden="true"></span>
   </div>
 
-  <div *ngIf="hasError$ | async" class="text-danger" class="alert alert-warning" role="alert">
+  <div *ngIf="hasError$ | async" class="text-danger alert alert-warning" role="alert">
     An error has occured while loading your deck. Please try again.
   </div>
 
@@ -40,7 +40,7 @@
           <cdk-virtual-scroll-viewport appendOnly itemSize="50" class="deck-viewport border border-2 border-light rounded-bottom shadow border-top-0 bg-light bg-opacity-25 border-opacity-25">
             <div class="card-position">
               <div class="row">
-                <app-deck-cards-details-page *ngFor="let card of selectedDeck.deck_cards" [card]="card" class="col mt-3">
+                <app-deck-cards-details-page class="col mt-3" *ngFor="let card of selectedDeck.deck_cards" [card]="card" [deckId]="selectedDeck.deck_id">
                 </app-deck-cards-details-page>
               </div>
             </div>
@@ -55,7 +55,7 @@
           <cdk-virtual-scroll-viewport appendOnly itemSize="50" class="deck-viewport border border-2 border-light rounded-bottom shadow border-top-0 bg-light bg-opacity-25 border-opacity-25">
             <div class="card-position">
               <div class="row">
-                <app-deck-cards-details-page class="col mt-3" *ngFor="let card of selectedDeck.side_deck_cards" [card]="card">
+                <app-deck-cards-details-page class="col mt-3" *ngFor="let card of selectedDeck.side_deck_cards" [card]="card" [deckId]="selectedDeck.deck_id">
                 </app-deck-cards-details-page>
               </div>
             </div>

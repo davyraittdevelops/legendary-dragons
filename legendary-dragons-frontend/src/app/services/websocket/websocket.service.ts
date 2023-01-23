@@ -1,9 +1,10 @@
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
-import { InventoryCard } from 'src/app/models/inventory.model';
-import {WishlistAlert, WishlistAlertRequest, WishlistItem} from 'src/app/models/wishlist.model';
-import { environment } from 'src/environments/environment';
+import {Injectable} from '@angular/core';
+import {Observable} from 'rxjs';
+import {webSocket, WebSocketSubject} from 'rxjs/webSocket';
+import {InventoryCard} from 'src/app/models/inventory.model';
+import {WishlistAlertRequest, WishlistItem} from 'src/app/models/wishlist.model';
+import {environment} from 'src/environments/environment';
+import {DeckCard} from "../../models/deck.model";
 
 @Injectable({
   providedIn: 'root'
@@ -83,9 +84,9 @@ export class WebsocketService {
     });
   }
 
-  sendRemoveCardFromDeckMessage(deck_id : string, inventory_card : InventoryCard) {
+  sendRemoveCardFromDeckMessage(deck_id : string, deck_card : DeckCard, inventory_id: string) {
     this.sendMessage('removeCardFromDeckReq', {
-      deck_id, inventory_card
+      deck_id, deck_card, inventory_id
     });
   }
 
