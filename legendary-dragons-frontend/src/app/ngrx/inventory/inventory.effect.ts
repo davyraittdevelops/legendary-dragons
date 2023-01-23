@@ -27,9 +27,7 @@ export class InventoryEffects {
       ofType(updateInventoryCard),
       switchMap(() => {
         return this.websocketService.dataUpdates$().pipe(
-          filter((event: any) => {
-            return event['event_type'] === 'MODIFY_INVENTORY_CARD_RESULT'
-          }),
+          filter((event: any) => event['event_type'] === 'MODIFY_INVENTORY_CARD_RESULT'),
           map((event: any) => updateInventoryCardSuccess({inventoryCard: event["data"]})),
           catchError((error) => {
             console.log(error);

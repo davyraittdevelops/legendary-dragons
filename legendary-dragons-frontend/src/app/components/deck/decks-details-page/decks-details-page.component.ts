@@ -36,12 +36,12 @@ export class DecksDetailsPageComponent implements OnInit {
       share(),
       catchError((error) => {
         // Token expired
-        // if (!('reason' in error)) {
-        //   this.appStore.dispatch(logoutUser());
+        if (!('reason' in error)) {
+          this.appStore.dispatch(logoutUser());
 
-        //   // TODO: Not working correctly..
-        //   this.router.navigate(["/login"]);
-        // }
+          // TODO: Not working correctly..
+          this.router.navigate(["/login"]);
+        }
 
         return of(error);
       })
