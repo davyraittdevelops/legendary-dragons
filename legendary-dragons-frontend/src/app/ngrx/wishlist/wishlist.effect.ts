@@ -76,7 +76,6 @@ export class WishlistEffects {
       switchMap(() => {
         return this.websocketService.dataUpdates$().pipe(
           filter((event: any) => {
-            console.log('event is : ', event)
             return event['event_type'] === 'INSERT_WISHLIST_ITEM_RESULT'
           }),
           map((event: any) => createWishlistItemSuccess({wishlist_item: event["data"]})),
@@ -96,7 +95,6 @@ export class WishlistEffects {
       switchMap(() => {
         return this.websocketService.dataUpdates$().pipe(
           filter((event: any) => {
-            console.log(event)
             return event['event_type'] === 'INSERT_ALERT#AVAILABILITY_RESULT' || event['event_type'] === 'INSERT_ALERT#PRICE_RESULT'
           }),
           map((event: any) => createAlertSuccess({alert_item: event["data"]})),
@@ -135,7 +133,6 @@ export class WishlistEffects {
       switchMap(() => {
         return this.websocketService.dataUpdates$().pipe(
           filter((event: any) => {
-            console.log(event)
             return event['event_type'] === 'REMOVE_ALERT#PRICE_RESULT' || event['event_type'] === 'REMOVE_ALERT#AVAILABILITY_RESULT'
           }),
           map((event: any) => removeAlertSuccess({alert_item: event["data"]})),

@@ -2,13 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { AppState } from 'src/app/app.state';
-import { Inventory } from 'src/app/models/inventory.model';
-import { getInventory } from 'src/app/ngrx/inventory/inventory.actions';
-import { errorSelector, inventorySelector, isLoadingSelector } from 'src/app/ngrx/inventory/inventory.selectors';
-import {getWishlist} from "../../../ngrx/wishlist/wishlist.actions";
-import {wishlistItemsSelector} from "../../../ngrx/wishlist/wishlist.selectors";
-import {WishlistItem} from "../../../models/wishlist.model";
-import {tap} from "rxjs/operators";
+import { WishlistItem } from "../../../models/wishlist.model";
+import { getWishlist } from "../../../ngrx/wishlist/wishlist.actions";
+import { errorSelector, isLoadingSelector, wishlistItemsSelector } from "../../../ngrx/wishlist/wishlist.selectors";
 
 @Component({
   selector: 'app-wishlist-page',
@@ -29,5 +25,4 @@ export class WishlistPageComponent implements OnInit {
   ngOnInit(): void {
     this.appStore.dispatch(getWishlist())
   }
-
 }
