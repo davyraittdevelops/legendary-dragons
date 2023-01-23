@@ -9,6 +9,7 @@ import { AppState } from "../../../app.state";
 import { Deck } from "../../../models/deck.model";
 import { getDeck } from "../../../ngrx/deck/deck.actions";
 import { deckByIdSelector, errorSelector, isAddCardLoadingSelector, isLoadingSelector } from "../../../ngrx/deck/deck.selectors";
+import {DeckType} from "../../../models/deck-type.enum";
 
 @Component({
   selector: 'app-decks-details-page',
@@ -20,6 +21,7 @@ export class DecksDetailsPageComponent implements OnInit {
   isLoading$: Observable<boolean>;
   isAddCardLoading$: Observable<boolean>;
   hasError$: Observable<boolean>;
+  DeckType = DeckType;
 
   deckId: string = "";
 

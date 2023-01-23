@@ -1,7 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 import {Deck, DeckCard} from 'src/app/models/deck.model';
 import { InventoryCard } from 'src/app/models/inventory.model';
-import {Card} from "../../models/card.model";
 
 export const createDeck = createAction(
   '[Deck Component] Create Deck',
@@ -79,7 +78,7 @@ export const addCardToDeckSuccess = createAction(
 
 export const removeCardFromDeck = createAction(
   '[Deck Detail Component] Remove Card From Deck',
-  props<{ deck_id: string, inventory_card: InventoryCard }>(),
+  props<{ deck_id: string, deck_card: DeckCard, deck_type: string, inventory_id: string }>(),
 );
 
 export const removeCardFromDeckFail = createAction(
@@ -89,5 +88,5 @@ export const removeCardFromDeckFail = createAction(
 
 export const removeCardFromDeckSuccess = createAction(
   '[Deck Detail Component] Remove Card From Deck Success',
-  props<{deck_id: string, deck_card: DeckCard}>(),
+  props<{deck_id: string, deck_card: DeckCard, deck_type: string}>(),
 );

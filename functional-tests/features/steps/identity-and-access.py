@@ -1,9 +1,10 @@
 from behave import given, when, then
-import requests
 import logging
 import uuid
-import json
 import boto3
+import requests
+import json
+from setup import registerUser, loginUser
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -21,28 +22,11 @@ def step_impl(context):
     context.detail["email"] = "LegendaryDragonsMinor@gmail.com"
     context.detail["password"] = "Eindopdracht3!"
 
-    body = {"nickname": context.nickname, "email": context.detail["email"], "password": context.detail["password"]}
-    logger.info(f"{context.base_url}/users/register")
-    response = requests.post(
-        f"{context.base_url}/users/register",
-        json.dumps(body)
-    )
-    
-    context.status_code = response.status_code
-    
+    registerUser(context, context.detail["email"], context.detail["password"])
 
 @when("we login the existing user")
 def step_impl(context):
-    body = {"email": context.detail["email"], "password": context.detail["password"]}
-    logger.info(f"{context.base_url}/users/login")
-
-    response = requests.post(
-        f"{context.base_url}/users/login",
-        json.dumps(body)
-    )
-
-    context.status_code = response.status_code
-    context.headers = response.headers
+    loginUser(context, context.detail["email"], context.detail["password"])
 
 @then("the user should be registered")
 def step_impl(context):
@@ -58,3 +42,10 @@ def step_impl(context):
     assert context.status_code == 200
 
     # Assertion for headers
+
+    client.admin_delete_user(
+        UserPoolId="us-east-1_H1AyV4HD1",
+        Username=context.detail["email"]
+    )
+
+    
