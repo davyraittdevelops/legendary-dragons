@@ -61,7 +61,7 @@ def websocket_event():
       "action": "moveDeckCardReq",
       "deck_id": "1",
       "deck_card": "1",
-      "deck_type": "deck"
+      "deck_type": "side_deck"
     }),
   }
 
