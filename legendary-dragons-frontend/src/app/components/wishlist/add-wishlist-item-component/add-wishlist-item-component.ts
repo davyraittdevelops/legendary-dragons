@@ -31,7 +31,7 @@ export class AddWishlistItemComponent implements OnInit {
   scryfall_id: string = ""
 
   filterValue: string = "";
-  displayedColumns: string[] = ['name', 'setName', 'released', 'rarity', 'value','imageUrl', 'addCard'];
+  displayedColumns: string[] = ['name', 'imageUrl', 'addCard'];
 
   constructor(public modalService: NgbModal, private appStore: Store<AppState>,
               private toastService: ToastService) {

@@ -123,4 +123,8 @@ export class WebsocketService {
   sendRemoveAlertMessage(alert_item: WishlistAlertRequest, wishlist_item_id: string) {
     this.sendMessage('removeAlertReq', {alert_item, wishlist_item_id});
   }
+
+  sendGetCardMessage(scryfall_id: any) {
+    this.sendMessage('getCardReq', {scryfall_id});
+  }
 }
