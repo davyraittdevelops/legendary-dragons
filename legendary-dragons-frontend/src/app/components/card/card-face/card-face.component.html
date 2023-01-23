@@ -10,4 +10,13 @@
   </p>
 </blockquote>
 
-<h2>Mana Cost <i class="bi bi-magic ms-1 me-1"></i>: {{cardFace.mana_cost}}</h2>
+<h2>
+  Mana Cost <i class="bi bi-magic ms-1 me-1"></i>:
+
+  <img alt="{{mana}} icon"
+       loading="lazy"
+       class="color-icon ms-1"
+       src="https://svgs.scryfall.io/card-symbols/{{mana}}.svg"
+       *ngFor="let mana of extractManaCost(cardFace.mana_cost)" />
+
+</h2>

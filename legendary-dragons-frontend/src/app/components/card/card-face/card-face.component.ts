@@ -10,8 +10,16 @@ export class CardFaceComponent implements OnInit {
   @Input('card_face') cardFace!: CardFaceDetail;
   @Input('colors') colors: string[] = [];
 
-  constructor() { }
+  constructor() {
+
+  }
 
   ngOnInit(): void {
+  }
+
+  extractManaCost(manaCost: string): string[] {
+    return manaCost.split(/[{}]/)
+      .filter((mana) => mana !== '')
+      .map((mana) => mana.replace('/', ''));
   }
 }
