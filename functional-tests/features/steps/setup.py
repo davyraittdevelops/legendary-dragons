@@ -17,9 +17,9 @@ def registerUser(context, email, password):
         json.dumps(body)
     )
 
-    # client.admin_confirm_sign_up(
-    # UserPoolId="us-east-1_H1AyV4HD1",
-    # Username="LegendaryDragonsMinor@gmail.com")
+    client.admin_confirm_sign_up(
+    UserPoolId="us-east-1_H1AyV4HD1",
+    Username="LegendaryDragonsMinor@gmail.com")
 
     context.detail["email"] = email
     context.detail["password"] = password
