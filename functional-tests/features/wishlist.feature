@@ -17,7 +17,7 @@ Scenario: Get alerts
 
 Scenario: Remove price alert
    Given there is an user and this user is logged in
-   When I request to remove a price alert
+   When I request to remove a price alert with price point: '5.00'
    Then a price alert is removed
 
 Scenario: Remove availability alert

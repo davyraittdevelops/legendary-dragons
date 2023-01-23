@@ -71,14 +71,14 @@ def getAlerts(context):
 
     context.detail["get_alerts"] = json.loads(context.ws.recv())
 
-def removePriceAlert(context):
+def removePriceAlert(context, price_point):
     context.ws.send(json.dumps({
         "action": "removeAlertReq",
         "wishlist_item_id": "1", 
         "alert_item": {
             "entity_type": "ALERT#PRICE",
             "alert_type": "PRICE",
-            "price_point": "5.00",
+            "price_point": price_point,
             "wishlist_item_id": "1",
             "card_market_id": "1",
             "alert_id": context.detail["price_alert"]["data"]["alert_id"]
@@ -127,9 +127,9 @@ def step_impl(context):
 def step_impl(context):
     getAlerts(context)
 
-@when("I request to remove a price alert")
-def step_impl(context):
-    removePriceAlert(context)
+@when("I request to remove a price alert with price point: '{price_point}'")
+def step_impl(context, price_point):
+    removePriceAlert(context, price_point)
 
 @when("I request to remove a availability alert")
 def step_impl(context):
