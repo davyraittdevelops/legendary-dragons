@@ -14,7 +14,6 @@ import {inventorySelector} from "../../../ngrx/inventory/inventory.selectors";
   templateUrl: './deck-cards-details-page.component.html',
   styleUrls: ['./deck-cards-details-page.component.scss']
 })
-
 export class DeckCardsDetailsPageComponent {
   @Input() card!: DeckCard;
   @Input('deckId') deckId!: string;
@@ -32,7 +31,7 @@ export class DeckCardsDetailsPageComponent {
   }
 
   open({content}: { content: any }) {
-    this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title', size: 'xl'});
+    this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title', size: 'lg'});
   }
 
   displayAvailablePrice(prices: any): string {
