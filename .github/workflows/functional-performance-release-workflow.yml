@@ -12,7 +12,9 @@ on:
       - 'Wishlist Release workflow'
     types:
       - completed
-  workflow_dispatch:
+  push:
+    branches: ['feature/functional-performance-pipelines']
+  workflow_dispatch: 
 
 jobs:
   build:
