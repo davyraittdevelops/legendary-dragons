@@ -1,6 +1,6 @@
 export const loginUser = () => {
   cy.visit("/login");
-  cy.get("input[name=email]").type("gigowa6186@ukbob.com");
+  cy.get("input[name=email]").type("yonefi8791@quamox.com");
   cy.get("input[name=password]").type("verySecurePassw0rd!").blur();
   cy.get("form").submit();
   cy.url().should("contain", "/dashboard");

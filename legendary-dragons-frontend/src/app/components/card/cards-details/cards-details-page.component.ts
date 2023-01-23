@@ -1,17 +1,14 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Store } from '@ngrx/store';
+import { Observable } from "rxjs";
 import { AppState } from 'src/app/app.state';
 import { InventoryCard } from 'src/app/models/inventory.model';
 import { removeCardFromInventory } from 'src/app/ngrx/inventory/inventory.actions';
-import {Observable} from "rxjs";
-import {WishlistAlert} from "../../../models/wishlist.model";
-import {errorSelector, isLoadingSelector} from "../../../ngrx/inventory/inventory.selectors";
-import {alertItemsSelector} from "../../../ngrx/wishlist/wishlist.selectors";
-import {cardDetailSelector} from "../../../ngrx/card/card.selectors";
-import {getAlerts} from "../../../ngrx/wishlist/wishlist.actions";
-import {getCard} from "../../../ngrx/card/card.actions";
-import {CardDetail} from "../../../models/card.model";
+import { CardDetail } from "../../../models/card.model";
+import { getCard } from "../../../ngrx/card/card.actions";
+import * as CardSelector from "../../../ngrx/card/card.selectors";
+import { errorSelector, isLoadingSelector } from "../../../ngrx/inventory/inventory.selectors";
 @Component({
   selector: 'app-cards-details-page',
   templateUrl: './cards-details-page.component.html',
@@ -24,12 +21,14 @@ export class CardsDetailsPageComponent {
   content: any;
   card_details$: Observable<CardDetail>;
   isLoading$: Observable<boolean>;
+  isCardDetailLoading$: Observable<boolean>;
   hasError$: Observable<boolean>;
 
   constructor(public modalService: NgbModal, private appStore: Store<AppState>) {
     this.isLoading$ = this.appStore.select(isLoadingSelector);
     this.hasError$ = this.appStore.select(errorSelector);
-    this.card_details$ = this.appStore.select(cardDetailSelector);
+    this.card_details$ = this.appStore.select(CardSelector.cardDetailSelector);
+    this.isCardDetailLoading$ = this.appStore.select(CardSelector.isLoadingSelector)
   }
 
 

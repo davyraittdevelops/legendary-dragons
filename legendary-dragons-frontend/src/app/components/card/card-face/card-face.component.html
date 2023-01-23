@@ -1,0 +1,22 @@
+<img src={{cardFace.image_url}} alt={{cardFace.image_url}} image class="card-image" loading="lazy">
+<h2>
+  Name: {{cardFace.card_name}}
+  <app-color-icon [colors]="colors"></app-color-icon>
+</h2>
+
+<blockquote class="blockquote">
+  <p>
+    {{cardFace.oracle_text}}
+  </p>
+</blockquote>
+
+<h2>
+  Mana Cost <i class="bi bi-magic mx-1"></i>:
+
+  <img alt="{{mana}} icon"
+       loading="lazy"
+       class="color-icon ms-1"
+       src="https://svgs.scryfall.io/card-symbols/{{mana}}.svg"
+       *ngFor="let mana of extractManaCost(cardFace.mana_cost)" />
+
+</h2>

@@ -1,0 +1,9 @@
+<span *ngIf="colors.length === 0" class="badge rounded-pill text-bg-light">
+  Colorless
+</span>
+
+<img alt="{{color}} icon"
+     loading="lazy"
+     class="color-icon me-1"
+     src="https://svgs.scryfall.io/card-symbols/{{color}}.svg"
+     *ngFor="let color of colors" />

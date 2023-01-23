@@ -22,10 +22,10 @@ export class DashboardComponent implements OnInit{
       share(),
       catchError((error) => {
         // Token expired
-        // if (!('reason' in error)) {
-        //   this.appStore.dispatch(logoutUser());
-        //   this.router.navigate(["/login"]);
-        // }
+        if (!('reason' in error)) {
+          this.appStore.dispatch(logoutUser());
+          this.router.navigate(["/login"]);
+        }
 
         return of(error);
       })

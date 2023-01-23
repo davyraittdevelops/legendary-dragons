@@ -1,17 +1,16 @@
-import {Component, Input} from '@angular/core';
-import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
-import {Store} from '@ngrx/store';
-import {AppState} from 'src/app/app.state';
-import {DeckCard} from 'src/app/models/deck.model';
-import {removeCardFromDeck} from "../../../ngrx/deck/deck.actions";
-import {inventorySelector} from "../../../ngrx/inventory/inventory.selectors";
+import { Component, Input } from '@angular/core';
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { DeckCard } from 'src/app/models/deck.model';
+import { Store } from '@ngrx/store';
+import { AppState } from 'src/app/app.state';
+import { removeCardFromDeck } from "../../../ngrx/deck/deck.actions";
+import { inventorySelector } from "../../../ngrx/inventory/inventory.selectors";
 
 @Component({
   selector: 'app-deck-cards-details-page',
   templateUrl: './deck-cards-details-page.component.html',
   styleUrls: ['./deck-cards-details-page.component.scss']
 })
-
 export class DeckCardsDetailsPageComponent {
   @Input() card!: DeckCard;
   @Input('deckId') deckId!: string;
@@ -24,7 +23,7 @@ export class DeckCardsDetailsPageComponent {
   }
 
   open({content}: { content: any }) {
-    this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title', size: 'xl'});
+    this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title', size: 'lg'});
   }
 
   displayAvailablePrice(prices: any): string {
