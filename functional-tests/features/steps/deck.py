@@ -119,7 +119,6 @@ def step_impl(context):
 def step_impl(context):
     getDeck(context)
 
-
 @then("the deck should be created")
 def step_impl(context):
     assert context.detail["create_deck"]["event_type"] == "INSERT_DECK_RESULT"
