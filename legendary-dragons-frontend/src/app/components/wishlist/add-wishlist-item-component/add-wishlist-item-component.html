@@ -45,22 +45,6 @@
               </td>
             </ng-container>
 
-            <ng-container matColumnDef="setName">
-              <th mat-header-cell *matHeaderCellDef>Set </th>
-              <td mat-cell *matCellDef="let element"> {{element.set_name | titlecase}} </td>
-            </ng-container>
-
-            <ng-container matColumnDef="released">
-              <th mat-header-cell *matHeaderCellDef> Released</th>
-              <td mat-cell *matCellDef="let element"> {{element.released_at | date:'dd/MM/yyyy'}} </td>
-            </ng-container>
-
-            <ng-container matColumnDef="rarity">
-              <th mat-header-cell *matHeaderCellDef> Rarity </th>
-              <td mat-cell *matCellDef="let element"> {{element.rarity | titlecase}}
-              </td>
-            </ng-container>
-
             <ng-container matColumnDef="value">
               <th mat-header-cell *matHeaderCellDef> Value </th>
               <td mat-cell *matCellDef="let element"> {{displayAvailablePrice(element.prices)}} </td>
@@ -72,7 +56,6 @@
                 <img [src]="element.card_faces[0].image_url" loading="lazy"/>
               </td>
             </ng-container>
-
 
             <ng-container matColumnDef="addCard">
               <th mat-header-cell *matHeaderCellDef>Add card</th>
