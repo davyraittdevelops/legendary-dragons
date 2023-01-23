@@ -24,6 +24,7 @@ Globals:
     Environment:
         Variables:
           TABLE_NAME: !Ref WishlistTable
+          # CARD_TABLE_NAME: !Ref WishlistTable
           EVENT_BUS_NAME:
             Fn::ImportValue:
                 !Sub "${LegDragonsConnectionsEventBus}"

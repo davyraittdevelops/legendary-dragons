@@ -48,5 +48,11 @@ def lambda_handler(event, context):
     print(price_alerts)
     print(availability_alerts)
 
+    #Handle price alerts , read from our cached database
+    for price_alert in price_alerts:
+        print('checking for ' , price_alert)
+        print(price_alert['wishlist_item_id'])
+        oracle_id = price_alert['wishlist_item_id']
+        #Query DB with our oracle ID, to check the current price of the card.
 
     return {"statusCode": 200}

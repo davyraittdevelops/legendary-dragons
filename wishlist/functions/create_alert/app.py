@@ -20,10 +20,12 @@ def lambda_handler(event, context):
     '''Insert alert of type price/availability into the dynamodb'''
     body = json.loads(event["body"])
     user_id = event["requestContext"]["authorizer"]["userId"]
-    alert_id = str(uuid.uuid4())
     wishlist_item_id = body['wishlist_item_id']
     alert_item = body['alert_item']
+    print('alert item is: ', alert_item)
     current_datetime = datetime.utcnow().isoformat()
+    alert_id = alert_item['alert_id']
+
 
     alert = {
         'PK' : f'USER#{user_id}',

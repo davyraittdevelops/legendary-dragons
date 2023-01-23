@@ -49,11 +49,12 @@ export class WishlistItemComponent {
   }
 
   addAlert(wishlist_item: WishlistItem) {
+    console.log(wishlist_item)
     const alert_item_obj = {
       card_market_id: this.wishlist_item.card_market_id,
       price_point : this.pricePoint,
       alert_type: this.alertType,
-      alert_id: ''
+      alert_id: this.wishlist_item.oracle_id
     }
     this.appStore.dispatch(createAlert({alert_item: alert_item_obj, wishlist_item_id: wishlist_item.wishlist_item_id}))
   }
