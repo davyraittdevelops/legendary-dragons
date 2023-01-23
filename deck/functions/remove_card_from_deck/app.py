@@ -1,7 +1,6 @@
 import json
 import logging
 import os
-import uuid
 
 import boto3
 from datetime import datetime
@@ -23,6 +22,7 @@ def lambda_handler(event, context):
   body = json.loads(event["body"])
 
   user_id = event["requestContext"]["authorizer"]["userId"]
+  inventory_id = body["inventory_id"]
   deck_id = body["deck_id"]
   deck_card = body["deck_card"]
 
@@ -30,6 +30,7 @@ def lambda_handler(event, context):
   sk = f"DECK#{deck_id}#DECK_CARD#{deck_card['inventory_card_id']}"
     
   try:
+    update_inventory_card_deck_location(user_id, inventory_id, deck_card['inventory_card_id'])
     logger.info("Removing card from deck")
     result = table.delete_item(
       Key={
@@ -42,3 +43,21 @@ def lambda_handler(event, context):
   except Exception as error:
     logger.info(f"Error deleting card from deck, {error}")
   return {"statusCode": 200}
+
+def update_inventory_card_deck_location(user_id, inventory_id, inventory_card_id):
+  events_client.put_events(Entries=[
+    {
+      "Time": datetime.now(),
+      "Source": "legdragons.decks.remove_card_from_deck",
+      "DetailType": "CARD_REMOVED_FROM_DECK",
+      "Detail": json.dumps({
+        "user_id": user_id,
+        "inventory_id": inventory_id,
+        "inventory_card_id": inventory_card_id,
+        "fields": {
+          "deck_location": ""
+        }
+      }),
+      "EventBusName": eventbus
+    }
+  ])

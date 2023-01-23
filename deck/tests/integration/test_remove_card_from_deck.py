@@ -59,6 +59,7 @@ def websocket_deck_event():
     },
     "body": json.dumps({
       "action": "removeCardFromDeckReq",
+      "inventory_id": "456",
       "deck_id": "123",
       "deck_card": {
         "card_name": "Swords of Doom",
@@ -88,6 +89,7 @@ def websocket_side_deck_event():
       },
       "body": json.dumps({
         "action": "removeCardFromDeckReq",
+        "inventory_id": "456",
         "deck_id": "123",
         "deck_card": {
           "card_name": "Swords of Hounds",
