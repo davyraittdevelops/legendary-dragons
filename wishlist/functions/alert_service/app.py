@@ -18,36 +18,35 @@ table = dynamodb.Table(os.getenv("TABLE_NAME"))
 
 def lambda_handler(event, context):
     """Get alerts for user."""
-    print('event is : ' , event)
 
-    availability_alert = {
-        "card_market_id": '7801',
-        'entity_type': 'ALERT#AVAILABILITY'
+            # Specify the filter expression
+    filter_expression = "(entity_type = :entity_type1 OR entity_type = :entity_type2)"
+
+    # Specify the expression attribute values
+    expression_attribute_values = {
+        ':entity_type1': "ALERT#AVAILABILITY",
+        ':entity_type2': "ALERT#PRICE"
     }
 
-    price_alert = {
-        "card_market_id": '7801',
-        'entity_type': 'ALERT#AVAILABILITY'
-    }
+    # Use the scan method to retrieve all items from the table
+    response = table.scan(
+        FilterExpression=filter_expression,
+        ExpressionAttributeValues=expression_attribute_values
+    )
 
-    alerts = []
+    price_alerts = []
+    availability_alerts = []
 
-    alerts.append(availability_alert)
-    alerts.append(price_alert)
-
+    # Print the filtered items
+    alerts = response['Items']
     for alert in alerts:
-        print(alert)
+        if alert['entity_type'] == 'ALERT#AVAILABILITY':
+            availability_alerts.append(alert)
+        else:
+            price_alerts.append(alert)
 
+    print(price_alerts)
+    print(availability_alerts)
 
-    # try:
-    #     logger.info(f'Querying with the following wishlist_item_id {wishlist_item_id}')
-    #     alert_items = table.query(
-    #         KeyConditionExpression=Key("PK").eq(f"USER#{user_id}") 
-    #         &
-    #         Key("SK").begins_with(f"WISHLIST_ITEM#{wishlist_item_id}#ALERT#")
-    #     )['Items']
-    #     logger.info(f'Result from table get item : {alert_items}')
-    # except Exception as error:
-    #     logger.info(f'Received an error: {error}')
 
     return {"statusCode": 200}
