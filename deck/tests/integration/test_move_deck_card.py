@@ -59,7 +59,9 @@ def websocket_event():
     },
     "body": json.dumps({
       "action": "moveDeckCardReq",
-      "sk": "DECK#1#DECK_CARD#1"
+      "deck_id": "1",
+      "deck_card": "1",
+      "deck_type": "deck"
     }),
   }
 
