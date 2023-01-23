@@ -26,9 +26,9 @@ def lambda_handler(event, context):
 
   pk = "USER#" + event["requestContext"]["authorizer"]["userId"]
   sk = "DECK#" + deck_id + "#DECK_CARD#" + deck_card
-  entity_type = "SIDE_DECK_CARD"
+  entity_type = "DECK_CARD"
   if deck_type == "side_deck":
-    entity_type = "DECK_CARD"
+    entity_type = "SIDE_DECK_CARD"
 
   try:
     table.update_item(
