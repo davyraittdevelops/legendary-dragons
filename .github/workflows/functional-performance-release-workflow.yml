@@ -12,8 +12,6 @@ on:
       - 'Wishlist Release workflow'
     types:
       - completed
-  push:
-    branches: ['feature/functional-performance-pipelines']
   workflow_dispatch: 
 
 jobs:
