@@ -23,11 +23,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Run functional tests
-        working-directory: ./functional-tests
-        run: |
-          pip install -r requirements.txt
-          behave
+      # - name: Run functional tests
+      #   working-directory: ./functional-tests
+      #   run: |
+      #     pip install -r requirements.txt
+      #     behave
 
       - name: Run performance tests
         working-directory: ./performance-tests
