@@ -1,6 +1,16 @@
 <div class="container-fluid p-5 pt-4 m-0" aria-label="collection">
   <div class="row row-cols-auto gy-4">
     <ng-container *ngIf="inventory$ | async as inventory">
+
+      <div class="col-12 text-end">
+
+
+        <p class="fs-5">
+
+          Total cards: {{inventory.total_cards}} <i class="bi bi-files"></i>
+        </p>
+      </div>
+
       <app-add-card-component [inventory_id]="inventory.inventory_id"
                               class="col"></app-add-card-component>
 

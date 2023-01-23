@@ -42,9 +42,12 @@ def lambda_handler(event, context):
     user_id = event["requestContext"]["authorizer"]["userId"]
     inventory_response = table.query(
         KeyConditionExpression=Key("PK").eq(f"USER#{user_id}") &
-        Key("SK").begins_with("INVENTORY"), Limit=5,
+        Key("SK").begins_with("INVENTORY"),
+        Limit=49,
         **query_args
     )
+
+    scanned_count = inventory_response["ScannedCount"]
 
     if 'LastEvaluatedKey' in inventory_response:
         output["paginatorKey"] = inventory_response["LastEvaluatedKey"]
@@ -69,11 +72,13 @@ def lambda_handler(event, context):
             return {"statusCode": 404}
 
         inventory = inventory_response["Items"].pop(inventory_idx)
+        scanned_count -= 1
         logger.info(f"Found inventory with id {inventory['inventory_id']}")
 
     logger.info("Found inventory cards: %s", len(inventory_response["Items"]))
     inventory["inventory_cards"] = inventory_response["Items"]
     output["data"] = inventory
+    output["total_cards"] = scanned_count
 
     logger.info(f"Sending inventory result to client with id: {connection_id}")
 
