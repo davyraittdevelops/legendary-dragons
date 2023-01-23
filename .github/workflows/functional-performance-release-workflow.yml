@@ -3,18 +3,12 @@ name: Functional and performance test workflow
 on: 
   workflow_run: 
     workflows:
-      - 'Card Feature workflow'
       - 'Card Release workflow'
-      - 'Connection Feature workflow'
       - 'Connection Release workflow'
-      - 'Deck Feature workflow'
       - 'Deck Release workflow'
-      - 'Identity & Access Feature workflow'
       - 'Identity & Access Release workflow'
-      - 'Inventory Feature workflow'
       - 'Inventory Release workflow'
       - 'Layered Stack Release workflow'
-      - 'Wishlist Feature workflow'
       - 'Wishlist Release workflow'
     types:
       - completed
@@ -45,4 +39,4 @@ jobs:
           mvn gatling:test -Dsimulation=GetInventorySimulation -Dduration=5 -DuserRate=1 -X
           mvn gatling:test -Dsimulation=AddCardToDeckSimulation -Dduration=5 -DuserRate=1 -X
           mvn gatling:test -Dsimulation=CreateDeckAndRemoveSimulation -Dduration=5 -DuserRate=1 -X
-          
+
