@@ -12,6 +12,7 @@ on:
       - 'Wishlist Release workflow'
     types:
       - completed
+  workflow_dispatch:
 
 jobs:
   build:
