@@ -40,7 +40,7 @@
           <cdk-virtual-scroll-viewport appendOnly itemSize="50" class="deck-viewport border border-2 border-light rounded-bottom shadow border-top-0 bg-light bg-opacity-25 border-opacity-25">
             <div class="card-position">
               <div class="row">
-                <app-deck-cards-details-page class="col mt-3" *ngFor="let card of selectedDeck.deck_cards" [card]="card" [deckId]="selectedDeck.deck_id">
+                <app-deck-cards-details-page class="col mt-3" *ngFor="let card of selectedDeck.deck_cards" [card]="card" [deckId]="selectedDeck.deck_id" [deckType]="DeckType.MAIN">
                 </app-deck-cards-details-page>
               </div>
             </div>
@@ -55,7 +55,7 @@
           <cdk-virtual-scroll-viewport appendOnly itemSize="50" class="deck-viewport border border-2 border-light rounded-bottom shadow border-top-0 bg-light bg-opacity-25 border-opacity-25">
             <div class="card-position">
               <div class="row">
-                <app-deck-cards-details-page class="col mt-3" *ngFor="let card of selectedDeck.side_deck_cards" [card]="card" [deckId]="selectedDeck.deck_id">
+                <app-deck-cards-details-page class="col mt-3" *ngFor="let card of selectedDeck.side_deck_cards" [card]="card" [deckId]="selectedDeck.deck_id" [deckType]="DeckType.SIDE">
                 </app-deck-cards-details-page>
               </div>
             </div>

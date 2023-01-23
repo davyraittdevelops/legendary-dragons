@@ -86,9 +86,9 @@ export const deckReducer = createReducer(
   }),
   on(addCardToDeckFail, (state) => ({...state, isAddCardLoading: false, hasError: true})),
   on(removeCardFromDeck, (state, {deck_id, deck_card, inventory_id}) => ({...state, isLoading: true})),
-  on(removeCardFromDeckSuccess, (state, {deck_id, deck_card}) => {
+  on(removeCardFromDeckSuccess, (state, {deck_id, deck_card, deck_type}) => {
     let newSelectedDeck = {...state.selectedDeck};
-    if (newSelectedDeck.deck_type == DeckType.SIDE)
+    if (deck_type == DeckType.SIDE)
       newSelectedDeck.side_deck_cards = newSelectedDeck.side_deck_cards.filter(card => card.inventory_card_id !== deck_card.inventory_card_id);
     else
       newSelectedDeck.deck_cards = newSelectedDeck.deck_cards.filter(card => card.inventory_card_id !== deck_card.inventory_card_id);

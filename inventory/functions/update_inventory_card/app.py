@@ -22,13 +22,16 @@ def lambda_handler(event, context):
   inventory_card_id = event_detail["inventory_card_id"]
   new_field_values = event_detail["fields"]
 
+  pk = "USER#" + user_id
+  sk = "INVENTORY#" + inventory_id + "#INVENTORY_CARD#" + inventory_card_id
+
   expression = generate_update_query(new_field_values)
 
   try:
     result = table.update_item(
       Key={
-        "PK": f"USER#{user_id}",
-        "SK": f"INVENTORY#{inventory_id}#INVENTORY_CARD#{inventory_card_id}"
+        "PK": pk,
+        "SK": sk
       },
       ConditionExpression='attribute_exists(PK) AND attribute_exists(SK)',
       UpdateExpression=expression["UpdateExpression"],

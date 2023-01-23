@@ -78,7 +78,7 @@ export const addCardToDeckSuccess = createAction(
 
 export const removeCardFromDeck = createAction(
   '[Deck Detail Component] Remove Card From Deck',
-  props<{ deck_id: string, deck_card: DeckCard, inventory_id: string }>(),
+  props<{ deck_id: string, deck_card: DeckCard, deck_type: string, inventory_id: string }>(),
 );
 
 export const removeCardFromDeckFail = createAction(
@@ -88,5 +88,5 @@ export const removeCardFromDeckFail = createAction(
 
 export const removeCardFromDeckSuccess = createAction(
   '[Deck Detail Component] Remove Card From Deck Success',
-  props<{deck_id: string, deck_card: DeckCard}>(),
+  props<{deck_id: string, deck_card: DeckCard, deck_type: string}>(),
 );

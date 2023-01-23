@@ -1,7 +1,6 @@
 import json
 import logging
 import os
-import uuid
 
 import boto3
 from datetime import datetime
@@ -56,7 +55,7 @@ def update_inventory_card_deck_location(user_id, inventory_id, inventory_card_id
         "inventory_id": inventory_id,
         "inventory_card_id": inventory_card_id,
         "fields": {
-          "deck_location": "Unassigned"
+          "deck_location": ""
         }
       }),
       "EventBusName": eventbus

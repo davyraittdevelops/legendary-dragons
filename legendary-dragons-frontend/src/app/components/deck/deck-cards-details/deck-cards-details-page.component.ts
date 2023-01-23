@@ -15,6 +15,7 @@ import {inventorySelector} from "../../../ngrx/inventory/inventory.selectors";
 export class DeckCardsDetailsPageComponent {
   @Input() card!: DeckCard;
   @Input('deckId') deckId!: string;
+  @Input('deckType') deckType!: string;
   content: any;
   inventory_id!: string;
 
@@ -41,6 +42,6 @@ export class DeckCardsDetailsPageComponent {
   }
 
   removeCardFromDeck() {
-    this.appStore.dispatch(removeCardFromDeck({deck_id: this.deckId, deck_card: this.card, inventory_id: this.inventory_id}));
+    this.appStore.dispatch(removeCardFromDeck({deck_id: this.deckId, deck_card: this.card, deck_type: this.deckType, inventory_id: this.inventory_id}));
   }
 }
