@@ -9,6 +9,7 @@ import { Deck } from "../../../models/deck.model";
 import { getDeck } from "../../../ngrx/deck/deck.actions";
 import { deckByIdSelector, errorSelector, isDeckLoadingSelector, isLoadingSelector } from "../../../ngrx/deck/deck.selectors";
 import {DeckType} from "../../../models/deck-type.enum";
+import { logoutUser } from 'src/app/ngrx/user/user.actions';
 
 @Component({
   selector: 'app-decks-details-page',
