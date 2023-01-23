@@ -125,6 +125,8 @@ object Scenarios {
     .pause(1)
     .exec(Requests.addCardToDeck)
     .pause(2)
+    .exec(Requests.moveDeckCard)
+    .pause(1)
     .exec(Requests.removeCardFromDeck)
     .pause(2)
     .exec(Requests.getDeck)
@@ -132,4 +134,5 @@ object Scenarios {
     .exec(Requests.removeDeck)
     .pause(2)
     .exec(Requests.removeCardFromInventory)
+
 }
