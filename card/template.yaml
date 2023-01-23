@@ -221,3 +221,4 @@ Outputs:
   SearchCardByKeywordFunctionIamRole:
     Description: "Implicit IAM Role created for Search Card By Keyword function"
     Value: !GetAtt SearchCardByKeywordFunctionRole.Arn
+

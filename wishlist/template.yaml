@@ -15,6 +15,7 @@ Parameters:
     Type: String
     Default: "legendary-dragons-connection-LegDragonsBroadcastArn"
 
+
 Globals:
   Api:
     TracingEnabled: True
@@ -24,11 +25,9 @@ Globals:
     Environment:
         Variables:
           TABLE_NAME: !Ref WishlistTable
-          # CARD_TABLE_NAME: !Ref WishlistTable
           EVENT_BUS_NAME:
             Fn::ImportValue:
                 !Sub "${LegDragonsConnectionsEventBus}"
-
     Architectures:
       - x86_64
     Tracing: Active
@@ -206,6 +205,7 @@ Resources:
                 - WebSocketApi:
                     Fn::ImportValue:
                       'Fn::Sub': "${LegDragonsWebSocketApi}"
+                      
       
 
   # GET WISHLIST ITEMS BY USER ID

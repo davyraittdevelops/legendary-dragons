@@ -15,11 +15,12 @@ if "DISABLE_XRAY" not in os.environ:
 
 dynamodb = boto3.resource("dynamodb")
 table = dynamodb.Table(os.getenv("TABLE_NAME"))
+cards_table = dynamodb.Table('cards')
 
 def lambda_handler(event, context):
     """Get alerts for user."""
 
-            # Specify the filter expression
+    # Specify the filter expression
     filter_expression = "(entity_type = :entity_type1 OR entity_type = :entity_type2)"
 
     # Specify the expression attribute values
@@ -50,9 +51,23 @@ def lambda_handler(event, context):
 
     #Handle price alerts , read from our cached database
     for price_alert in price_alerts:
-        print('checking for ' , price_alert)
-        print(price_alert['wishlist_item_id'])
-        oracle_id = price_alert['wishlist_item_id']
+        # print('checking for ' , price_alert)
+        oracle_id = price_alert['alert_id']
+        pk = f'CARD_FACE#{oracle_id}'
+        sk = 'CARD#'
+
+        print(' trying with following params: ' , pk, sk)
+
+        try:
+            card_matches = cards_table.query(
+                KeyConditionExpression=Key("GSI1_PK").eq(pk)
+                &
+                Key("GSI1_SK").begins_with(sk),
+                IndexName="GSI1"
+            )
+            print('result of the query card_matches is: ', card_matches)
+        except Exception as e:
+            logger.info(f"help me! {e}")
         #Query DB with our oracle ID, to check the current price of the card.
 
     return {"statusCode": 200}
