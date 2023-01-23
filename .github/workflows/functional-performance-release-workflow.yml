@@ -1,0 +1,37 @@
+#TODO first functional, then performance. make sure functional is succesful first. 
+name: Functional and performance test workflow
+
+on: 
+  workflow_run: 
+    workflows:
+      - 'Card Feature workflow'
+      - 'Card Release workflow'
+      - 'Connection Feature workflow'
+      - 'Connection Release workflow'
+      - 'Deck Feature workflow'
+      - 'Deck Release workflow'
+      - 'Identity & Access Feature workflow'
+      - 'Identity & Access Release workflow'
+      - 'Inventory Feature workflow'
+      - 'Inventory Release workflow'
+      - 'Layered Stack Release workflow'
+      - 'Wishlist Feature workflow'
+      - 'Wishlist Release workflow'
+    types:
+      - completed
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Run functional tests
+
+        run: 
+          pip install -r requirements.txt
+          behave
+
+      - name: Run performance tests
+        run: ....
