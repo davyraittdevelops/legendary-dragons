@@ -25,22 +25,16 @@ def lambda_handler(event, context):
   user_id = event["requestContext"]["authorizer"]["userId"]
   deck_id = body["deck_id"]
   deck_card = body["deck_card"]
-  deck_type = body["deck_type"]
-  entity_type = "DECK_CARD"
 
   pk = f"USER#{user_id}"
   sk = f"DECK#{deck_id}#DECK_CARD#{deck_card['inventory_card_id']}"
-
-  if deck_type == "side_deck":
-    entity_type = "SIDE_DECK_CARD"
     
   try:
     logger.info("Removing card from deck")
     result = table.delete_item(
       Key={
         "PK": pk,
-        "SK": sk,
-        "entity_type": entity_type
+        "SK": sk
       },
       ReturnValues="ALL_OLD"
     )
