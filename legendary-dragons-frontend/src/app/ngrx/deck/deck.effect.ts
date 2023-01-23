@@ -139,13 +139,13 @@ export class DeckEffects {
   public removeCardFromDeckEffect$ = createEffect(() =>
     this.actions$.pipe(
       ofType(removeCardFromDeck),
-      tap(({deck_id, inventory_card}) => this.websocketService.sendRemoveCardFromDeckMessage(deck_id, inventory_card)),
-      switchMap(() => {
+      tap(({deck_id, deck_card, deck_type, inventory_id}) => this.websocketService.sendRemoveCardFromDeckMessage(deck_id, deck_card, inventory_id)),
+      switchMap(({deck_type}) => {
         return this.websocketService.dataUpdates$().pipe(
           filter((event: any) => {
-            return event['event_type'] === 'CARD_REMOVED_FROM_DECK'
+            return event['event_type'] === 'REMOVE_DECK_CARD_RESULT' || event['event_type'] === 'REMOVE_SIDE_DECK_CARD_RESULT'
           }),
-          map((event: any) => removeCardFromDeckSuccess({deck_id: event["deck_id"], deck_card: event["data"]})),
+          map((event: any) => removeCardFromDeckSuccess({deck_id: event["deck_id"], deck_card: event["data"], deck_type: deck_type})),
           catchError((error) => {
             console.log(error);
             return of(removeCardFromDeckFail({error: true}))

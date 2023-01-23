@@ -222,6 +222,8 @@ Resources:
     Properties:
       CodeUri: functions/remove_card_from_deck/
       Policies:
+        - EventBridgePutEventsPolicy:
+            EventBusName: "connection-event-bus"
         - DynamoDBCrudPolicy:
             TableName: !Ref DeckTable
 
