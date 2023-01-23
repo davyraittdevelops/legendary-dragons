@@ -1,4 +1,3 @@
-#TODO first functional, then performance. make sure functional is succesful first. 
 name: Functional and performance test workflow
 
 on: 
