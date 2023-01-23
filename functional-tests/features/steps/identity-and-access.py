@@ -32,7 +32,7 @@ def step_impl(context):
 def step_impl(context):
     client.admin_confirm_sign_up(
     UserPoolId="us-east-1_H1AyV4HD1",
-    Username=context.detail["email"])
+    Username="LegendaryDragonsMinor@gmail.com")
 
     logger.info(f"statuscode: ${context.status_code}")
     assert context.status_code == 201
