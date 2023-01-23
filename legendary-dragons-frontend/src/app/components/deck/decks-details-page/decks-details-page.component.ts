@@ -8,7 +8,7 @@ import { WebsocketService } from 'src/app/services/websocket/websocket.service';
 import { AppState } from "../../../app.state";
 import { Deck } from "../../../models/deck.model";
 import { getDeck } from "../../../ngrx/deck/deck.actions";
-import { deckByIdSelector, errorSelector, isAddCardLoadingSelector, isLoadingSelector } from "../../../ngrx/deck/deck.selectors";
+import { deckByIdSelector, errorSelector, isDeckLoadingSelector, isLoadingSelector } from "../../../ngrx/deck/deck.selectors";
 import {DeckType} from "../../../models/deck-type.enum";
 
 @Component({
@@ -19,7 +19,7 @@ import {DeckType} from "../../../models/deck-type.enum";
 export class DecksDetailsPageComponent implements OnInit {
   selectedDeck$: Observable<Deck>;
   isLoading$: Observable<boolean>;
-  isAddCardLoading$: Observable<boolean>;
+  isDeckLoading$: Observable<boolean>;
   hasError$: Observable<boolean>;
   DeckType = DeckType;
 
@@ -29,7 +29,7 @@ export class DecksDetailsPageComponent implements OnInit {
               private websocketService : WebsocketService, private router: Router) {
     this.selectedDeck$ = this.appStore.select(deckByIdSelector);
     this.isLoading$ = this.appStore.select(isLoadingSelector);
-    this.isAddCardLoading$ = this.appStore.select(isAddCardLoadingSelector);
+    this.isDeckLoading$ = this.appStore.select(isDeckLoadingSelector);
     this.hasError$ = this.appStore.select(errorSelector);
   }
 

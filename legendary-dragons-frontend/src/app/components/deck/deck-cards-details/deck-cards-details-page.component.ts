@@ -1,9 +1,12 @@
 import {Component, Input} from '@angular/core';
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {Store} from '@ngrx/store';
+import { Observable } from 'rxjs';
 import {AppState} from 'src/app/app.state';
+import { DeckType } from 'src/app/models/deck-type.enum';
 import {DeckCard} from 'src/app/models/deck.model';
-import {removeCardFromDeck} from "../../../ngrx/deck/deck.actions";
+import { isDeckLoadingSelector } from 'src/app/ngrx/deck/deck.selectors';
+import {moveDeckCard, removeCardFromDeck} from "../../../ngrx/deck/deck.actions";
 import {inventorySelector} from "../../../ngrx/inventory/inventory.selectors";
 
 @Component({
@@ -18,9 +21,11 @@ export class DeckCardsDetailsPageComponent {
   @Input('deckType') deckType!: string;
   content: any;
   inventory_id!: string;
+  isDeckLoading$: Observable<boolean>;
 
   constructor(public modalService: NgbModal, private appStore: Store<AppState>) {
     this.appStore.select(inventorySelector).subscribe(inventory => this.inventory_id = inventory.inventory_id);
+    this.isDeckLoading$ = this.appStore.select(isDeckLoadingSelector);
   }
 
   open({content}: { content: any }) {
@@ -43,5 +48,14 @@ export class DeckCardsDetailsPageComponent {
 
   removeCardFromDeck() {
     this.appStore.dispatch(removeCardFromDeck({deck_id: this.deckId, deck_card: this.card, deck_type: this.deckType, inventory_id: this.inventory_id}));
+  }
+
+  moveDeckCard() {
+    if (this.deckType ==  DeckType.SIDE)
+      this.deckType = DeckType.MAIN
+    else
+     this.deckType = DeckType.SIDE
+
+    this.appStore.dispatch(moveDeckCard({deck_id: this.deckId, deck_card_id: this.card.inventory_card_id, deck_type: this.deckType}));
   }
 }

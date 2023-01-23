@@ -5,7 +5,7 @@ import { Store } from "@ngrx/store";
 import { Observable } from "rxjs";
 import { DeckType } from 'src/app/models/deck-type.enum';
 import { addCardToDeck } from 'src/app/ngrx/deck/deck.actions';
-import { isAddCardLoadingSelector } from 'src/app/ngrx/deck/deck.selectors';
+import { isDeckLoadingSelector } from 'src/app/ngrx/deck/deck.selectors';
 import { AppState } from "../../../app.state";
 import { Inventory, InventoryCard } from "../../../models/inventory.model";
 import { getInventory } from "../../../ngrx/inventory/inventory.actions";
@@ -29,7 +29,7 @@ export class AddCardToDeckComponent {
 
   constructor(private appStore: Store<AppState>, public modalService: NgbModal,
               private activatedRoute: ActivatedRoute) {
-    this.isLoading$ = this.appStore.select(isAddCardLoadingSelector);
+    this.isLoading$ = this.appStore.select(isDeckLoadingSelector);
     this.hasError$ = this.appStore.select(errorSelector);
     this.inventory$ = this.appStore.select(inventorySelector);
   }

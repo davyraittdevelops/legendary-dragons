@@ -22,7 +22,10 @@ import {
   addCardToDeckSuccess,
   removeCardFromDeck,
   removeCardFromDeckFail,
-  removeCardFromDeckSuccess
+  removeCardFromDeckSuccess,
+  moveDeckCard,
+  moveDeckCardFail,
+  moveDeckCardSuccess
 } from "./deck.actions";
 
 @Injectable()
@@ -155,4 +158,22 @@ export class DeckEffects {
     )
   );
 
+    public moveDeckCardEffect$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(moveDeckCard),
+      tap(({deck_id, deck_card_id, deck_type}) => this.websocketService.sendMoveDeckCardMessage(deck_id, deck_card_id, deck_type)),
+      switchMap(({deck_type}) => {
+        return this.websocketService.dataUpdates$().pipe(
+          filter((event: any) => {
+            return event['event_type'] === 'MODIFY_DECK_CARD_RESULT' || event['event_type'] === 'MODIFY_SIDE_DECK_CARD_RESULT'
+          }),
+          map((event: any) => moveDeckCardSuccess({deck_card: event["data"], deck_type: deck_type})),
+          catchError((error) => {
+            console.log(error);
+            return of(moveDeckCardFail({error: true}))
+          })
+        )
+      })
+    )
+  );
 }

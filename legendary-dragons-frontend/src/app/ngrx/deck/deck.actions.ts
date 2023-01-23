@@ -90,3 +90,18 @@ export const removeCardFromDeckSuccess = createAction(
   '[Deck Detail Component] Remove Card From Deck Success',
   props<{deck_id: string, deck_card: DeckCard, deck_type: string}>(),
 );
+
+export const moveDeckCard = createAction(
+  '[Deck Detail Component] Move Card From Deck',
+  props<{ deck_id: string, deck_card_id: string, deck_type: string }>(),
+);
+
+export const moveDeckCardFail = createAction(
+  '[Deck Detail Component] Move Card From Deck Fail',
+  props<{ error: boolean }>(),
+);
+
+export const moveDeckCardSuccess = createAction(
+  '[Deck Detail Component] Move Card From Deck Success',
+  props<{deck_card: DeckCard, deck_type: string}>(),
+);
