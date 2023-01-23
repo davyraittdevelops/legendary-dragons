@@ -58,12 +58,12 @@ def query_alerts():
 
 def handle_price_alerts(price_alerts):
      #Handle price alerts , read from our cached database
+
     for price_alert in price_alerts:
         oracle_id = price_alert['alert_id']
         user_id = price_alert['user_id']
-        price_point  = price_alert['price_point']
+        price_point = float(price_alert['price_point'])
         user_email = get_user_email_by_id(user_id)
-
         try:
             result = cards_table.query(
                 KeyConditionExpression=Key("GSI1_PK").eq(f'CARD_FACE#{oracle_id}')
@@ -72,10 +72,15 @@ def handle_price_alerts(price_alerts):
                 IndexName="GSI1"
             )
             cards = result['Items']
-            print('Found this amount of cards with the oracle id: ' , len(cards))
             for card in cards:
-                print(card)
                 prices = card['prices']
+                print(prices)
+                if prices['eur'] is None or prices['usd'] is None:
+                    print('break it ')
+                    break
+                elif price_point < float(prices['eur']) or price_point < float(prices['usd']):
+                    print('Price is below the request price.. ', price_point , ' -- ' , prices['eur'], '||' , prices['usd'])
+                    print('Going to send an email to : ' , user_email)
 
         except Exception as e:
             logger.info(f"Error occured:  {e}")
@@ -86,5 +91,38 @@ def get_user_email_by_id(uid):
     Username=uid
     )
     email =  response["UserAttributes"][3]['Value']
-    print('email is ' , email)
     return email
+
+def send_email_to_user(destination):
+     # Create an SES client
+    ses = boto3.client('ses')
+
+    # Define the email parameters
+    recipient = 'davyraitt2@hotmail.com'
+    sender = 'alerts@legendarydragons.cloud-native-minor.it'
+    subject = 'Test email from Lambda'
+    body = 'This is a test email sent from a Lambda function.'
+
+    # Send the email
+    response = ses.send_email(
+        Destination={
+            'ToAddresses': [
+                recipient,
+            ],
+        },
+        Message={
+            'Body': {
+                'Text': {
+                    'Charset': 'UTF-8',
+                    'Data': body,
+                },
+            },
+            'Subject': {
+                'Charset': 'UTF-8',
+                'Data': subject,
+            },
+        },
+        Source=sender,
+    )
+
+    print(response)
