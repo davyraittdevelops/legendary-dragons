@@ -76,10 +76,9 @@ def handle_price_alerts(price_alerts):
                 prices = card['prices']
                 print(prices)
                 if prices['eur'] is None or prices['usd'] is None:
-                    print('break it ')
                     break
-                elif price_point < float(prices['eur']) or price_point < float(prices['usd']):
-                    print('Price is below the request price.. ', price_point , ' -- ' , prices['eur'], '||' , prices['usd'])
+                elif float(prices['eur']) < price_point or float(prices['usd']) < price_point :
+                    print('Price is below the request price.. ', prices['eur'], '||' , prices['usd'], "< " , price_point)
                     print('Going to send an email to : ' , user_email)
 
         except Exception as e:
