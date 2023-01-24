@@ -14,6 +14,9 @@ Parameters:
   LegDragonsBroadcastArn:
     Type: String
     Default: "legendary-dragons-connection-LegDragonsBroadcastArn"
+  CardAlertQueue:
+    Type: String
+    Default: "legendary-dragons-card-CardAlertQueue"
 
 
 Globals:
@@ -25,6 +28,9 @@ Globals:
     Environment:
         Variables:
           TABLE_NAME: !Ref WishlistTable
+          CARD_ALERT_QUEUE:
+            Fn::ImportValue:
+                !Sub "${CardAlertQueue}"
           EVENT_BUS_NAME:
             Fn::ImportValue:
                 !Sub "${LegDragonsConnectionsEventBus}"
