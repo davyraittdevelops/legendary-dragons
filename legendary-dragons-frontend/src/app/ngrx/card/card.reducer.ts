@@ -1,12 +1,10 @@
 import { createReducer, on } from "@ngrx/store";
 import {
-  searchCardByKeyword,
+  clearSearchResult, getCard, getCardFail, getCardSuccess, searchCardByKeyword,
   searchCardByKeywordFail,
-  searchCardByKeywordSuccess,
-  clearSearchResult, updateCardQuality, getCard, getCardFail, getCardSuccess
+  searchCardByKeywordSuccess, updateCardQuality
 } from "./card.actions";
 import { CardState } from "./models/card-state.model";
-import {getDeck, getDeckFail, getDeckSuccess} from "../deck/deck.actions";
 
 const initialState: CardState = {
   isLoading: false,
@@ -39,8 +37,7 @@ const initialState: CardState = {
       set_type: ''
     },
     card_faces: []
-    }
-
+  }
 }
 
 export const cardReducer = createReducer(
@@ -59,9 +56,9 @@ export const cardReducer = createReducer(
     let updatedCards = state.searchedCards.map(c => c.scryfall_id === updatedCard.scryfall_id ? updatedCard : c);
 
     return {
-        ...state,
-        searchedCards: updatedCards
-      };
+      ...state,
+      searchedCards: updatedCards
+    };
   }),
   on(getCard, (state, {scryfall_id}) => ({...state, isLoading: true})),
   on(getCardFail, (state) => ({...state, isLoading: false, hasError: true})),

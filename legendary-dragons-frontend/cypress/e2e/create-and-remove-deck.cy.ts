@@ -25,7 +25,7 @@ describe('Create and remove a deck', () => {
 
     // Assert - Create
     cy.get("div[role=document]").should("not.be.visible");
-    cy.get(".card-title", {timeout: 5000}).contains("Main");
+    cy.get(".card-title").contains("Main");
     cy.get("button[name=navigateToDeck]").should("be.visible");
 
     // Act - Delete
@@ -33,6 +33,6 @@ describe('Create and remove a deck', () => {
     cy.wait(1500);
 
     // Assert - Delete
-    cy.get(".card-title", {timeout: 5000}).should("not.exist");
+    cy.get(".card-title").should("not.exist");
   })
 })
