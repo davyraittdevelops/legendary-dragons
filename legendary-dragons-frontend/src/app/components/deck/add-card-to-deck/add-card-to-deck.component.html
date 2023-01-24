@@ -30,12 +30,13 @@
       <div class="input-group">
         <select class="form-select w-50" name="typeLineFilterSelect" [(ngModel)]="typeLineFilter">
           <option selected value="">Type Line</option>
-          <option value="artifact">Artifact</option>
-          <option value="creature">Creature</option>
-          <option value="enchantment">Enchantment</option>
-          <option value="instant">Planeswalker</option>
-          <option value="sorcery">Sorcery</option>
-          <option value="land">Land</option>
+          <option value="Artifact">Artifact</option>
+          <option value="Creature">Creature</option>
+          <option value="Enchantment">Enchantment</option>
+          <option value="Instant">Instant</option>
+          <option value="Planeswalker">Planeswalker</option>
+          <option value="Sorcery">Sorcery</option>
+          <option value="Land">Land</option>
         </select>
 
         <select class="form-select w-50" name="colorFilterSelect" [(ngModel)]="colorFilter">
@@ -98,6 +99,23 @@
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
           </table>
+        </ng-container>
+
+        <ng-container *ngIf="paginator$ | async as paginator">
+          <div class="mt-2 text-center">
+            <button class="btn btn-dark btn-lg me-1"
+                    *ngFor="let page of paginator.pages; let i = index"
+                    [ngClass]="{'active': paginator.currentPageIndex ===  i}"
+                    (click)="navigateToExistingPage(page, paginator.currentPageIndex, i)"
+                    [disabled]="(isSearchLoading$ | async)">
+              {{ (i + 1) }}
+            </button>
+
+            <button class="btn btn-dark btn-lg" *ngIf="paginator.paginatorKey"
+                    (click)="navigatePage(paginator.paginatorKey)" [disabled]="isSearchLoading$ | async">
+              Next
+            </button>
+          </div>
         </ng-container>
       </ng-container>
     </ng-container>

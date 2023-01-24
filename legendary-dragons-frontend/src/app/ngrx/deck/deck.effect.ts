@@ -37,7 +37,7 @@ export class DeckEffects {
     private store: Store<AppState>
   ) { }
 
-  public addCardtoInventoryEffect$ = createEffect(() =>
+  public createDeckEffect$ = createEffect(() =>
     this.actions$.pipe(
       ofType(createDeck),
       tap(({deck_name, deck_type}) => this.websocketService.sendCreateDeckMessage(deck_name, deck_type)),

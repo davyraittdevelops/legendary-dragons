@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Store } from "@ngrx/store";
@@ -8,8 +8,9 @@ import { addCardToDeck } from 'src/app/ngrx/deck/deck.actions';
 import { isAddCardLoadingSelector } from 'src/app/ngrx/deck/deck.selectors';
 import { AppState } from "../../../app.state";
 import { Inventory, InventoryCard } from "../../../models/inventory.model";
-import { searchInventoryCard } from "../../../ngrx/inventory/inventory.actions";
-import { errorSelector, inventorySelector, isLoadingSelector } from "../../../ngrx/inventory/inventory.selectors";
+import { clearPaginator, searchInventoryCard } from "../../../ngrx/inventory/inventory.actions";
+import { errorSelector, inventorySelector, isLoadingSelector, paginatorSelector } from "../../../ngrx/inventory/inventory.selectors";
+import { PaginatorKey, Paginator } from 'src/app/ngrx/inventory/models/inventory-state.model';
 
 interface Filter {
   deck_location?: string;
@@ -22,12 +23,13 @@ interface Filter {
   templateUrl: './add-card-to-deck.component.html',
   styleUrls: ['./add-card-to-deck.component.scss']
 })
-export class AddCardToDeckComponent {
+export class AddCardToDeckComponent implements OnDestroy {
   @Input('deck_name') deckName: string = '';
 
   inventory$: Observable<Inventory>;
   isLoading$: Observable<boolean>;
   isSearchLoading$: Observable<boolean>;
+  paginator$: Observable<Paginator>;
   hasError$: Observable<boolean>;
 
   displayedColumns: string[] = ['Image', 'Name', 'MainDeck', 'SideDeck'];
@@ -44,6 +46,7 @@ export class AddCardToDeckComponent {
     this.isSearchLoading$ = this.appStore.select(isLoadingSelector);
     this.hasError$ = this.appStore.select(errorSelector);
     this.inventory$ = this.appStore.select(inventorySelector);
+    this.paginator$ = this.appStore.select(paginatorSelector);
   }
 
   ngOnInit(): void {
@@ -51,6 +54,10 @@ export class AddCardToDeckComponent {
     this.activatedRoute.params.subscribe(params => {
       this.deckId = params["id"];
     });
+  }
+
+  ngOnDestroy(): void {
+    this.appStore.dispatch(clearPaginator());
   }
 
   open({content}: { content: any }): void {
@@ -81,11 +88,26 @@ export class AddCardToDeckComponent {
     this.modalService.dismissAll();
   }
 
+  navigateToExistingPage(key: PaginatorKey, currentPageIndex: number, selectedIndex: number): void {
+    if (currentPageIndex === selectedIndex)
+      return;
+
+    this.navigatePage(key);
+  }
+
+  navigatePage(key: PaginatorKey): void {
+    this.appStore.dispatch(searchInventoryCard(
+      {paginatorKey: key, cardName: this.cardNameFilter.trim(), filter: this.filter}
+    ));
+  }
+
+
   clearFilter(): void {
     this.cardNameFilter = '';
     this.colorFilter = '';
     this.typeLineFilter = '';
     this.filter = {deck_location: ''};
     this.appStore.dispatch(searchInventoryCard({paginatorKey: {}, cardName: '', filter: this.filter}));
+    this.appStore.dispatch(clearPaginator());
   }
 }

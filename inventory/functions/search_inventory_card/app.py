@@ -98,6 +98,9 @@ def generate_filter_query(fields):
         if field == "colors":
             expression_value = f" #{field} in (:{field}) and"
 
+        if field == "type_line":
+            expression_value = f" contains(#{field}, :{field}) and"
+
         expression["FilterExpression"] += expression_value
         expression["ExpressionAttributeNames"][f"#{field}"] = field
         expression["ExpressionAttributeValues"][f":{field}"] = value
