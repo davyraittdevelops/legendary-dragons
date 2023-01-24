@@ -19,7 +19,7 @@ describe('Create and remove a card in wishlist', () => {
     // Act - Create
     cy.get("input[name=keywordSearch]").type("Swords to plowshares");
     cy.get("input[name=keywordSearch]").type("{enter}");
-    cy.get("button[name=addCardToWishlist]").click();
+    cy.get("button[name=addCardToWishlist]").eq(0).click();
     cy.get("button[aria-label=Close]").click();
 
     // Assert - Create
