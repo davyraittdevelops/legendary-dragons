@@ -64,9 +64,9 @@ export const removeAllWishlistCards = () => {
   cy.get("#mat-tab-label-0-2").click();
   cy.wait(2000);
   cy.get("body").then($body => {
-    if ($body.find("div[aria-label=Basic example]").length > 0) {
+    if ($body.find("div[aria-label=Basic-example]").length > 0) {
       cy.get("button[name=removeWishlistItem]").click({multiple: true});
     }
   });
-  cy.get("div[aria-label=Basic example]").should("not.exist")
+  cy.get("div[aria-label=Basic-example]").should("not.exist")
 }
