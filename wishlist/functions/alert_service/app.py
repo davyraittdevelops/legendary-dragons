@@ -60,9 +60,11 @@ def handle_price_alerts(price_alerts):
      #Handle price alerts , read from our cached database
 
     for price_alert in price_alerts:
+        print(price_alert)
         oracle_id = price_alert['alert_id']
         user_id = price_alert['user_id']
         price_point = float(price_alert['price_point'])
+        card_name = price_alert['card_name']
         user_email = get_user_email_by_id(user_id)
         try:
             result = cards_table.query(
@@ -79,8 +81,7 @@ def handle_price_alerts(price_alerts):
                     break
                 elif float(prices['eur']) < price_point or float(prices['usd']) < price_point :
                     print('Price is below the request price.. ', prices['eur'], '||' , prices['usd'], "< " , price_point)
-                    print('Going to send an email to : ' , user_email)
-                    send_email_to_user(user_email)
+                    send_email_to_user(user_email, card_name, prices, price_point)
 
         except Exception as e:
             logger.info(f"Error occured:  {e}")
@@ -93,15 +94,17 @@ def get_user_email_by_id(uid):
     email =  response["UserAttributes"][3]['Value']
     return email
 
-def send_email_to_user(destination):
+def send_email_to_user(destination, card_name, current_card_prices, target_price):
      # Create an SES client
     ses = boto3.client('ses')
 
     # Define the email parameters
     recipient = 'davyraitt2@hotmail.com'
     sender = 'alerts@legendarydragons.cloud-native-minor.it'
-    subject = 'Test email from Lambda'
-    body = 'This is a test email sent from a Lambda function.'
+    subject = 'Price Alert'
+    eur_price = float(current_card_prices['eur'])
+    usd_price = float(current_card_prices['usd'])
+    body = f'Congratulations! The price alert for the card {card_name} has been triggere. The current card price is {eur_price}€ or {usd_price}$ and your alert was set to {target_price}$/€. '
 
     # Send the email
     response = ses.send_email(

@@ -40,7 +40,8 @@ def lambda_handler(event, context):
         'user_id' : user_id,
         'GSI1_PK': f'WISHLIST_ITEM#{wishlist_item_id}#ALERT#AVAILABILITY#{alert_id}',
         'GSI1_SK': f'USER{user_id}',
-        'wishlist_item_id' : wishlist_item_id
+        'wishlist_item_id' : wishlist_item_id,
+        'card_name' : alert_item['card_name']
     }
 
     if alert_item['alert_type'] == 'PRICE': 
