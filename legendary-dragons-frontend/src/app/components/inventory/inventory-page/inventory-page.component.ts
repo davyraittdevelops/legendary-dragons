@@ -3,7 +3,7 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { AppState } from 'src/app/app.state';
 import { Inventory } from 'src/app/models/inventory.model';
-import { getInventory } from 'src/app/ngrx/inventory/inventory.actions';
+import { clearPaginator, getInventory, searchInventoryCard } from 'src/app/ngrx/inventory/inventory.actions';
 import { errorSelector, inventorySelector, isLoadingSelector, paginatorSelector } from 'src/app/ngrx/inventory/inventory.selectors';
 import { PaginatorKey, Paginator } from 'src/app/ngrx/inventory/models/inventory-state.model';
 
@@ -19,6 +19,7 @@ export class InventoryPageComponent implements OnInit {
   paginator$: Observable<Paginator>;
 
   query: string = '';
+  filterActive: boolean = false;
 
   constructor(private appStore: Store<AppState>) {
     this.isLoading$ = this.appStore.select(isLoadingSelector);
@@ -28,7 +29,7 @@ export class InventoryPageComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.appStore.dispatch(getInventory({paginatorKey: {}}))
+    this.clearFilter();
   }
 
   navigateToExistingPage(key: PaginatorKey, currentPageIndex: number, selectedIndex: number): void {
@@ -40,13 +41,30 @@ export class InventoryPageComponent implements OnInit {
 
 
   navigatePage(key: PaginatorKey): void {
+    if (this.filterActive) {
+      this.appStore.dispatch(searchInventoryCard(
+        {paginatorKey: key, cardName: this.query, filter: {}}
+      ));
+      return;
+    }
+
     this.appStore.dispatch(getInventory({paginatorKey: key}));
   }
 
-  searchCard(name: string): void {
-    if (name.trim() === '')
+  searchCard(): void {
+    if (this.query.trim() === '')
       return;
 
-    console.log(name);
+    this.filterActive = true;
+    this.appStore.dispatch(searchInventoryCard(
+      {paginatorKey: {}, cardName: this.query, filter: {}}
+    ));
+  }
+
+  clearFilter(): void {
+    this.filterActive = false;
+    this.query = '';
+    this.appStore.dispatch(clearPaginator());
+    this.appStore.dispatch(getInventory({paginatorKey: {}}));
   }
 }

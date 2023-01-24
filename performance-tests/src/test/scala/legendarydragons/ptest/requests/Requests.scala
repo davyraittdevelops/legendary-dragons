@@ -131,6 +131,6 @@ object Requests {
   // TODO: Update deck_card when move card lambda has been changed
   val moveDeckCard = ws("moveDeckCardReq")
     .sendText(
-      """{"action": "moveDeckCardReq", "deck_id": "${deckId}", "deck_card": "${inventoryCardId}", "deck_type": "side_deck"}"""
+      """{"action": "moveDeckCardReq", "deck_id": "${deckId}", "deck_card_id": "${inventoryCardId}", "deck_type": "side_deck"}"""
     ).await(10)(checkMoveDeckCardReply)
 }

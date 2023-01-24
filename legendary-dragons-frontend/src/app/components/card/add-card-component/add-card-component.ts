@@ -18,7 +18,7 @@ import { Card } from "../../../models/card.model";
 })
 
 export class AddCardComponent implements OnInit {
-  @Input('inventory_id') inventoryId: string = '';
+  @Input('inventory_id') inventoryId!: string;
   searchedCards$: Observable<Card[]>;
   isLoading$: Observable<boolean>;
   hasError$: Observable<boolean>;
@@ -94,9 +94,10 @@ export class AddCardComponent implements OnInit {
       colors: card.card_faces[0].colors,
       prices: card.prices,
       rarity: card.rarity,
-      quality: card.quality ,
+      quality: card.quality,
       deck_location: "",
-      image_url: card.card_faces[0].image_url
+      image_url: card.card_faces[0].image_url,
+      type_line: card.card_faces[0].type_line
     }
     this.appStore.dispatch(addCardtoInventory({inventoryId: this.inventoryId, inventoryCard}))
     this.toastService.showSuccess(`${inventoryCard.card_name} successfully added to the inventory!`);

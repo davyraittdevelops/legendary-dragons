@@ -3,16 +3,20 @@ import {
   addCardtoInventory,
   addCardtoInventoryFail,
   addCardtoInventorySuccess,
+  clearPaginator,
   getInventory,
   getInventoryFail,
   getInventorySuccess,
   removeCardFromInventory,
   removeCardFromInventoryFail,
   removeCardFromInventorySuccess,
+  searchInventoryCard,
+  searchInventoryCardFail,
+  searchInventoryCardSuccess,
   updateInventoryCardFail,
-  updateInventoryCardSuccess,
+  updateInventoryCardSuccess
 } from "./inventory.actions";
-import { InventoryState } from "./models/inventory-state.model";
+import { InventoryState, PaginatorKey } from "./models/inventory-state.model";
 
 const initialState: InventoryState = {
   isLoading: false,
@@ -29,6 +33,16 @@ const initialState: InventoryState = {
   pages: [],
   currentPageIndex: 0,
 }
+
+const inventoryPaginatorUpdateState = (state: InventoryState, paginatorKey: PaginatorKey) => {
+  const foundIndex = state.pages.findIndex((page) => page.SK === paginatorKey.SK);
+
+    if (foundIndex > -1)
+      return {...state, isLoading: true, hasError: false, currentPageIndex: foundIndex};
+
+  const pages = [...state.pages, paginatorKey];
+  return {...state, isLoading: true, pages, currentPageIndex: state.pages.length}
+};
 
 export const inventoryReducer = createReducer(
   initialState,
@@ -63,15 +77,7 @@ export const inventoryReducer = createReducer(
     };
   }),
   on(removeCardFromInventoryFail, (state) => ({...state, isLoading: false, hasError: true})),
-  on(getInventory, (state, {paginatorKey}) => {
-    const foundIndex = state.pages.findIndex((page) => page.SK === paginatorKey.SK);
-
-    if (foundIndex > -1)
-      return {...state, isLoading: true, hasError: false, currentPageIndex: foundIndex};
-
-    const pages = [...state.pages, paginatorKey];
-    return {...state, isLoading: true, pages, currentPageIndex: state.pages.length}
-  }),
+  on(getInventory, (state, {paginatorKey}) => inventoryPaginatorUpdateState(state, paginatorKey)),
   on(getInventorySuccess, (state, {inventory, paginatorKey}) => ({...state, isLoading: false, hasError: false, inventory, paginatorKey})),
   on(getInventoryFail, (state) => ({...state, isLoading: false, hasError: true})),
   on(updateInventoryCardSuccess, (state, {inventoryCard}) => {
@@ -82,4 +88,16 @@ export const inventoryReducer = createReducer(
     return {...state, hasError: false, inventory}
   }),
   on(updateInventoryCardFail, (state) => ({...state, hasError: true})),
+  on(searchInventoryCard, (state, {paginatorKey}) => inventoryPaginatorUpdateState(state, paginatorKey)),
+  on(searchInventoryCardSuccess, (state, {inventoryCards, paginatorKey, totalCards}) => {
+    const inventory = {
+      ...state.inventory,
+      total_cards: totalCards,
+      inventory_cards: inventoryCards
+    };
+
+    return {...state, isLoading: false, hasError: false, inventory, paginatorKey}
+  }),
+  on(searchInventoryCardFail, (state) => ({...state, isLoading: false, hasError: true})),
+  on(clearPaginator, (state) => ({...state, paginatorKey: {}, pages: [], currentPageIndex: 0})),
 )
