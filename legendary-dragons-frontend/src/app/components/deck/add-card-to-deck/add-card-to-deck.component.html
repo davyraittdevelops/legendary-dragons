@@ -80,7 +80,7 @@
             <ng-container matColumnDef="MainDeck">
               <th mat-header-cell *matHeaderCellDef>Action</th>
               <td mat-cell *matCellDef="let card">
-                <button type="button" (click)="addCardToDeck(card);" class="btn btn-dark" name="addCardToDeck">
+                <button type="button" [disabled]="deckCardsLimitReached" (click)="addCardToDeck(card);" class="btn btn-dark" name="addCardToDeck">
                   <i class="bi bi-arrow-bar-left"></i>
                   Add to deck
                 </button>

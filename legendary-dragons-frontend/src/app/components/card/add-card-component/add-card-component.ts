@@ -18,7 +18,7 @@ import { Card } from "../../../models/card.model";
 })
 
 export class AddCardComponent implements OnInit {
-  @Input('inventory_id') inventoryId: string = '';
+  @Input('inventory_id') inventoryId!: string;
   searchedCards$: Observable<Card[]>;
   isLoading$: Observable<boolean>;
   hasError$: Observable<boolean>;

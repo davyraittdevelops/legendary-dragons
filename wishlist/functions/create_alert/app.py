@@ -17,13 +17,15 @@ dynamodb = boto3.resource("dynamodb")
 table = dynamodb.Table(os.getenv("TABLE_NAME"))
 
 def lambda_handler(event, context):
+
     '''Insert alert of type price/availability into the dynamodb'''
     body = json.loads(event["body"])
     user_id = event["requestContext"]["authorizer"]["userId"]
-    alert_id = str(uuid.uuid4())
     wishlist_item_id = body['wishlist_item_id']
     alert_item = body['alert_item']
     current_datetime = datetime.utcnow().isoformat()
+    alert_id = alert_item['alert_id']
+
 
     alert = {
         'PK' : f'USER#{user_id}',
@@ -36,7 +38,8 @@ def lambda_handler(event, context):
         'user_id' : user_id,
         'GSI1_PK': f'WISHLIST_ITEM#{wishlist_item_id}#ALERT#AVAILABILITY#{alert_id}',
         'GSI1_SK': f'USER{user_id}',
-        'wishlist_item_id' : wishlist_item_id
+        'wishlist_item_id' : wishlist_item_id,
+        'card_name' : alert_item['card_name']
     }
 
     if alert_item['alert_type'] == 'PRICE': 

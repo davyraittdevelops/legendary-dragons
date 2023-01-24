@@ -7,7 +7,14 @@ import {
   getInventory,
   getInventoryFail,
   getInventorySuccess,
-  removeCardFromInventory, removeCardFromInventorySuccess, searchInventoryCard, searchInventoryCardFail, searchInventoryCardSuccess, updateInventoryCardFail, updateInventoryCardSuccess,
+  removeCardFromInventory,
+  removeCardFromInventoryFail,
+  removeCardFromInventorySuccess,
+  searchInventoryCard,
+  searchInventoryCardFail,
+  searchInventoryCardSuccess,
+  updateInventoryCardFail,
+  updateInventoryCardSuccess
 } from "./inventory.actions";
 import { InventoryState, PaginatorKey } from "./models/inventory-state.model";
 
@@ -69,7 +76,7 @@ export const inventoryReducer = createReducer(
       }
     };
   }),
-  on(addCardtoInventoryFail, (state) => ({...state, isLoading: false, hasError: true})),
+  on(removeCardFromInventoryFail, (state) => ({...state, isLoading: false, hasError: true})),
   on(getInventory, (state, {paginatorKey}) => inventoryPaginatorUpdateState(state, paginatorKey)),
   on(getInventorySuccess, (state, {inventory, paginatorKey}) => ({...state, isLoading: false, hasError: false, inventory, paginatorKey})),
   on(getInventoryFail, (state) => ({...state, isLoading: false, hasError: true})),
