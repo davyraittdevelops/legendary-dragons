@@ -26,8 +26,7 @@ def lambda_handler(event, context):
     print('SQS TARGET IS : ' , target_sqs)
     for alert in alerts:
         result = sqs.send_message(QueueUrl=target_sqs, MessageBody=json.dumps(alert))
-        print('result from sending to sqs is: ' , result)
-
+        logger.info(f'Sending sqs result is {result}')
     return {"statusCode": 200}
 
 def get_all_alerts():

@@ -23,14 +23,11 @@ table = dynamodb.Table(os.getenv("TABLE_NAME"))
 def lambda_handler(event, context):
     """Accepts alerts and checks them against the card database."""
     entries = event['Records']
-    print('userpoolid is : ' , user_pool)
     for entry in entries:
         alert = json.loads(entry['body'])
         if alert['entity_type'] == 'ALERT#AVAILABILITY':
-            # handle_availability_alert(alert)
-            print('availability alert... implement later')
+            handle_availability_alert(alert)
         else:
-            print('price alert... implement later')
             handle_price_alert(alert)
     
     return {"statusCode": 200}
@@ -42,20 +39,39 @@ def handle_price_alert(price_alert):
         user_id = price_alert['user_id']
         price_point = float(price_alert['price_point'])
         card_name = price_alert['card_name']
+        subject = 'Price alert triggered'
 
         user_email = get_user_email_by_id(user_id)
         cards = query_cards_table(oracle_id)
 
-        print('Result from querying cards table is : ' , cards)
         for card in cards:
             prices = card['prices']
-            print(prices)
-            if prices['eur'] is None or prices['usd'] is None:
-                break
-            elif float(prices['eur']) < price_point or float(prices['usd']) < price_point :
-                print('Price is below the request price.. ', prices['eur'], '||' , prices['usd'], "< " , price_point)
-                send_email_to_user(user_email, card_name, prices, price_point)
-     
+            for key, value in prices.items():
+                if value is not None:
+                    if float(value) < price_point:
+                        body = f'Congratulations! The price alert for the card {card_name} has been triggered. The current card price is {value} {key} and your alert price value was set to {price_point}'
+                        send_email_to_user(user_email, body, subject) 
+                        break
+
+def handle_availability_alert(availability_alert):
+        oracle_id = availability_alert['alert_id']
+        user_id = availability_alert['user_id']
+        card_name = availability_alert['card_name']
+        subject = 'Availability alert triggered'
+
+
+        user_email = get_user_email_by_id(user_id)
+        cards = query_cards_table(oracle_id)
+
+        for card in cards:
+            prices = card['prices']
+            for key, value in prices.items():
+                if value is not None:
+                    body = f'Congratulations! The availability alert for the card {card_name} has been triggered. The card is available for {value} {key}'
+                    send_email_to_user(user_email, body, subject)
+                    break
+
+                
 
 def query_cards_table(oracle_id): 
     result = table.query(
@@ -74,14 +90,11 @@ def get_user_email_by_id(uid):
     email =  response["UserAttributes"][3]['Value']
     return email
 
-def send_email_to_user(destination, card_name, current_card_prices, target_price):
+def send_email_to_user(destination, body ):
     # Define the email parameters
     recipient = destination
     sender = 'alerts@legendarydragons.cloud-native-minor.it'
-    subject = 'Price Alert'
-    eur_price = float(current_card_prices['eur'])
-    usd_price = float(current_card_prices['usd'])
-    body = f'Congratulations! The price alert for the card {card_name} has been triggered. The current card price is {eur_price}€ or {usd_price}$ and your alert was set to {target_price}$/€. '
+    subject = 'Alert triggered'
 
     # Send the email
     response = ses.send_email(
@@ -104,5 +117,4 @@ def send_email_to_user(destination, card_name, current_card_prices, target_price
         },
         Source=sender,
     )
-
-    print(response)
+    logger.info(f'Result from sending the email is : {response}')
