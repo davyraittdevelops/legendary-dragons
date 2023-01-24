@@ -17,6 +17,9 @@ Parameters:
   CardAlertQueue:
     Type: String
     Default: "legendary-dragons-card-CardAlertQueue"
+  LegDragonsUserPoolClient:
+    Type: String
+    Default: "legendary-dragons-cognito-LegDragonUserPoolClient"
 
 
 Globals:
@@ -27,7 +30,9 @@ Globals:
     Runtime: python3.9
     Environment:
         Variables:
-          TABLE_NAME: !Ref WishlistTable
+          COGNITO_CLIENT:
+            Fn::ImportValue:
+              !Sub "${LegDragonsUserPoolClient}"
           CARD_ALERT_QUEUE:
             Fn::ImportValue:
                 !Sub "${CardAlertQueue}"

@@ -15,7 +15,6 @@ if "DISABLE_XRAY" not in os.environ:
 
 dynamodb = boto3.resource("dynamodb")
 table = dynamodb.Table(os.getenv("TABLE_NAME"))
-cards_table = dynamodb.Table('cards')
 sqs = boto3.client('sqs')
 target_sqs = os.getenv("CARD_ALERT_QUEUE")
 

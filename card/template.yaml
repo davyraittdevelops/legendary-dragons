@@ -12,6 +12,9 @@ Parameters:
   LegDragonsConnectionsEventBus:
     Type: String
     Default: "legendary-dragons-connection-event-bus-LegDragonsConnectionsEventBus"
+  LegDragonUserPool:
+    Type: String
+    Default: "legendary-dragons-cognito-LegDragonUserPool"
 
 Globals:
   Api:
@@ -22,6 +25,9 @@ Globals:
     Environment:
         Variables:
           TABLE_NAME: !Ref CardTable
+          COGNITO_CLIENT:
+            Fn::ImportValue:
+              !Sub "${LegDragonUserPool}"
     Architectures:
       - x86_64
     Tracing: Active
