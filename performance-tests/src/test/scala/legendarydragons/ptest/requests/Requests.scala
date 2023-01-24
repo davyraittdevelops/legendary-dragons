@@ -75,7 +75,7 @@ object Requests {
       """{"action": "createDeckReq", "deck_name": "${deckName}", "deck_type": "${deckType}"}"""
     ).await(20)(checkCreateDeckReply)
 
-  val checkGetDecksReply = ws.checkTextMessage("Get Deck Check")
+  val checkGetDecksReply = ws.checkTextMessage("Get Decks Check")
     .check(
       regex("GET_DECKS_RESULT")
     )
@@ -104,7 +104,7 @@ object Requests {
 
   val addCardToDeck = ws("addCardToDeckReq")
     .sendText(
-      """{"action": "addCardToDeckReq", "deck_id": "${deckId}", "inventory_card": ${inventoryCard}, "deck_type": "deck",  "deck_name": "${deckName}" } """
+      """{"action": "addCardToDeckReq", "deck_id": "${deckId}", "inventory_card": ${inventoryCard}, "deck_type": "main",  "deck_name": "${deckName}" } """
     ).await(10)(checkAddCardToDeckReply)
 
   val checkGetDeckReply = ws.checkTextMessage("Get Deck Reply")
@@ -120,7 +120,7 @@ object Requests {
   val checkRemoveSideDeckCardFromDeckReply = ws.checkTextMessage("Remove Side Deck Card from Deck Reply")
     .check(regex("REMOVE_SIDE_DECK_CARD_RESULT"))
 
-  val removeCardFromDeck = ws("removeCardFromDeckReq")
+  val removeSideDeckCardFromDeck = ws("removeCardFromDeckReq")
     .sendText(
       """{"action": "removeCardFromDeckReq", "deck_id": "${deckId}", "deck_card": ${deckCard}, "inventory_id": "${inventoryId}" } """
     ).await(20)(checkRemoveSideDeckCardFromDeckReply)
@@ -128,6 +128,7 @@ object Requests {
   val checkMoveDeckCardReply = ws.checkTextMessage("Move Deck Card Reply")
     .check(regex("MODIFY_SIDE_DECK_CARD_RESULT"))
 
+  // TODO: Update deck_card when move card lambda has been changed
   val moveDeckCard = ws("moveDeckCardReq")
     .sendText(
       """{"action": "moveDeckCardReq", "deck_id": "${deckId}", "deck_card": "${inventoryCardId}", "deck_type": "side_deck"}"""

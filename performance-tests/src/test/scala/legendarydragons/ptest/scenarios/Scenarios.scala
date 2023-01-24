@@ -104,7 +104,7 @@ object Scenarios {
     .pause(1)
     .exec(Requests.removeDeck)
 
-  def AddCardToDeckScenario() = scenario("CreateDeckScenario")
+  def AddCardToDeckScenario() = scenario("AddCardToDeckScenario")
     .feed(emailFeeder)
     .exec(Requests.loginAccount.check(header("x-amzn-Remapped-Authorization").saveAs("token")))
     .exec { session =>
@@ -127,7 +127,7 @@ object Scenarios {
     .pause(2)
     .exec(Requests.moveDeckCard)
     .pause(1)
-    .exec(Requests.removeCardFromDeck)
+    .exec(Requests.removeSideDeckCardFromDeck)
     .pause(2)
     .exec(Requests.getDeck)
     .pause(1)
