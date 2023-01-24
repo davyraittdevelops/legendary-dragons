@@ -30,6 +30,7 @@ Globals:
     Runtime: python3.9
     Environment:
         Variables:
+          TABLE_NAME: !Ref WishlistTable
           COGNITO_CLIENT:
             Fn::ImportValue:
               !Sub "${LegDragonsUserPoolClient}"
@@ -43,7 +44,7 @@ Globals:
       - x86_64
     Tracing: Active
 
-Resources: 
+Resources:
   WishlistTable:
     Type: AWS::DynamoDB::Table
     Properties:
@@ -112,7 +113,7 @@ Resources:
       EventSourceArn: !GetAtt WishlistTable.StreamArn
       FunctionName: !GetAtt StreamWishlistChangesFunction.Arn
       StartingPosition: LATEST
-  
+
   WishlistEventRule:
     Type: AWS::Events::Rule
     Properties:
@@ -216,8 +217,8 @@ Resources:
                 - WebSocketApi:
                     Fn::ImportValue:
                       'Fn::Sub': "${LegDragonsWebSocketApi}"
-                      
-      
+
+
 
   # GET WISHLIST ITEMS BY USER ID
   GetWishlistFunction:
@@ -270,7 +271,7 @@ Resources:
       IntegrationUri:
         Fn::Sub:
           arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GetWishlistFunction.Arn}/invocations
-  
+
   # GET ALERTS
   GetAlertsFunction:
     Type: AWS::Serverless::Function
