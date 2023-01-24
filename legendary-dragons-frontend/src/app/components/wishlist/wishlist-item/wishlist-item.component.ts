@@ -49,7 +49,6 @@ export class WishlistItemComponent {
   }
 
   addAlert(wishlist_item: WishlistItem) {
-    console.log(wishlist_item)
     const alert_item_obj = {
       card_market_id: this.wishlist_item.card_market_id,
       price_point : this.pricePoint,
