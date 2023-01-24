@@ -15,10 +15,7 @@ export const removeAllInventoryCards = () => {
   cy.wait(4000);
   cy.get("body").then($body => {
     if ($body.find("div[aria-label=collection-card]").length > 0) {
-      cy.get("li[id=card-remove-btn]").each(($el) => {
-        cy.wrap($el).click();
-        cy.wait(500);
-      });
+      cy.get("button[name=removeCardFromInventory]").click({multiple: true});
     }
   });
   cy.get("div[aria-label=collection-card]").should("not.exist");
@@ -42,10 +39,7 @@ export const removeAllDecks = () => {
   cy.wait(4000);
   cy.get("body").then($body => {
     if ($body.find("div[aria-label=deck]").length > 0) {
-      cy.get("button[name=removeDeck]").each(($el) => {
-        cy.wrap($el).click();
-        cy.wait(500);
-      })
+      cy.get("button[name=removeDeck]").click({multiple: true});
     }
   });
   cy.get("div[aria-label=deck]").should("not.exist");
@@ -67,10 +61,7 @@ export const removeAllWishlistCards = () => {
   cy.wait(2000);
   cy.get("body").then($body => {
     if ($body.find("div[aria-label=Basic-example]").length > 0) {
-      cy.get("button[name=removeWishlistItem]").each(($el) => {
-        cy.wrap($el).click();
-        cy.wait(500);
-      });
+      cy.get("button[name=removeWishlistItem]").click({multiple: true});
     }
   });
   cy.get("div[aria-label=Basic-example]").should("not.exist")
