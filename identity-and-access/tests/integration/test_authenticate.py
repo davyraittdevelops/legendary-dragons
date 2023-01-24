@@ -74,7 +74,6 @@ def test_lambda_handler(event, **kwargs):
     email = "legendary-dragons@example.test.nl"
     password = "Pytest2022!"
     nickname = "Legendary Dragons"
-
     cognito = cognito_pool()
     client_id = cognito["app_client"]["UserPoolClient"]["ClientId"]
     os.environ["APP_CLIENT_ID"] = client_id

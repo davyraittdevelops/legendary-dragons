@@ -45,6 +45,7 @@ def handle_price_alert(price_alert):
 
         user_email = get_user_email_by_id(user_id)
         cards = query_cards_table(oracle_id)
+        logger.info(f'@@@@@@@@@@@@@@@@@@@@@@@ ' , cards)
 
         for card in cards:
             prices = card['prices']
@@ -88,7 +89,11 @@ def get_user_email_by_id(uid):
     UserPoolId=user_pool,
     Username=uid
     )
-    email =  response["UserAttributes"][3]['Value']
+    
+    for user_attribute in response["UserAttributes"]:
+        if user_attribute['Name'] == 'email':
+            email =  user_attribute['Value']
+
     return email
 
 def send_email_to_user(destination, body, subject ):
