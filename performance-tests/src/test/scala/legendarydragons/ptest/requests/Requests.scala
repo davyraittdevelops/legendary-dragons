@@ -128,9 +128,76 @@ object Requests {
   val checkMoveDeckCardReply = ws.checkTextMessage("Move Deck Card Reply")
     .check(regex("MODIFY_SIDE_DECK_CARD_RESULT"))
 
-  // TODO: Update deck_card when move card lambda has been changed
   val moveDeckCard = ws("moveDeckCardReq")
     .sendText(
       """{"action": "moveDeckCardReq", "deck_id": "${deckId}", "deck_card_id": "${inventoryCardId}", "deck_type": "side_deck"}"""
     ).await(10)(checkMoveDeckCardReply)
+
+  // Wishlist
+
+  val checkCreateWishlistItemReply = ws.checkTextMessage("Create Wishlist Item Reply")
+    .check(
+      regex("INSERT_WISHLIST_ITEM_RESULT"),
+      jsonPath("$.data.wishlist_item_id").saveAs("wishlistItemId")
+    )
+
+  val createWishlistItem = ws("createWistlistItemReq")
+    .sendText(
+      """{"action": "createWishlistItemReq", "deck_id": "",
+        |"wishlist_item": {"oracle_id": "8937f17f-f052-416a-b5d4-b91b9f0793c9", "card_name": "Monkey-",
+        |"cardmarket_id": "313782", "image_url": "foobar" } }""".stripMargin
+    ).await(15)(checkCreateWishlistItemReply)
+
+  val checkRemoveWishlistItemReply = ws.checkTextMessage("Remove Wishlist Item Reply")
+    .check(regex("REMOVE_WISHLIST_ITEM_RESULT"))
+
+  val removeWishlistItem = ws("removeWistlistItemReq")
+    .sendText(
+      """{"action": "removeWishlistItemReq", "wishlist_item_id": "${wishlistItemId}" }"""
+    ).await(15)(checkRemoveWishlistItemReply)
+
+  val checkGetWishlistReply = ws.checkTextMessage("Get Wishlist Reply")
+    .check(
+      regex("GET_WISHLIST_RESULT")
+    )
+
+  val getWishlist = ws("getWishlistReq")
+    .sendText("""{"action": "getWishlistReq" }""")
+    .await(15)(checkGetWishlistReply)
+
+  // Wishlist: Alerts
+
+  val checkCreateAlertReply = ws.checkTextMessage("Create Wishlist Item Reply")
+    .check(
+      regex("INSERT_ALERT#PRICE_RESULT"),
+      jsonPath("$.data.alert_id").saveAs("alertId")
+    )
+
+  val createAlert = ws("createAlertReq")
+    .sendText(
+      """{"action": "createAlertReq", "wishlist_item_id": "${wishlistItemId}",
+        | "alert_item": {
+        | "card_market_id": "313782", "alert_id": "8937f17f-f052-416a-b5d4-b91b9f0793c9", "card_name": "Monkey-",
+        | "alert_type": "PRICE", "price_point": "0.01"
+        | } }""".stripMargin
+    ).await(15)(checkCreateAlertReply)
+
+  val checkGetAlertsReply = ws.checkTextMessage("get Alerts Reply")
+    .check(regex("GET_ALERT_RESULT"))
+
+  val getAlerts = ws("getAlertsReq")
+    .sendText("""{"action": "getAlertsReq", "wishlist_item_id": "${wishlistItemId}" }""")
+    .await(15)(checkGetAlertsReply)
+
+  val checkRemoveAlertReply = ws.checkTextMessage("Remove Wishlist Item Reply")
+    .check(
+      regex("REMOVE_ALERT#PRICE_RESULT")
+    )
+
+  val removeAlert = ws("removeAlertReq")
+    .sendText(
+      """{"action": "removeAlertReq", "wishlist_item_id": "${wishlistItemId}",
+        | "alert_item": { "alert_id": "${alertId}", "alert_type": "PRICE"}
+        | }""".stripMargin
+    ).await(15)(checkRemoveAlertReply)
 }
