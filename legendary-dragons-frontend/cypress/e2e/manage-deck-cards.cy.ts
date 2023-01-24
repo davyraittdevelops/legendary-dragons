@@ -112,7 +112,7 @@ describe("Remove 'Swords to Plowshares' from the side-deck of deck 'Main'", () =
 });
 
 describe("Move deck card from deck to side-deck", () => {
-  it.only('passes', () => {
+  it('passes', () => {
     //arrange
     cy.get("button[name=navigateToDeck]").click();
     cy.get("button[name=openAddDeckCardModal]").click();
