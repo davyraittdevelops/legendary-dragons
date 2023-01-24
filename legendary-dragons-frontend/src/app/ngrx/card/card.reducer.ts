@@ -11,8 +11,6 @@ const initialState: CardState = {
   hasError: false,
   query: "",
   searchedCards: [],
-  page: 0,
-  itemsPerPage: 1,
   card_details: {
     card: {
       card_name: '',

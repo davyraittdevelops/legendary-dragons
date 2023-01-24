@@ -9,7 +9,7 @@
         <div class="w-100 text-start">
           <mat-form-field class="w-90 fs-5 text-light">
             <mat-label>Search for a card</mat-label>
-            <input matInput placeholder="Jace" name="keywordSearch" color="white" #input [(ngModel)]="query" (keyup.enter)="searchCard(query)">
+            <input matInput placeholder="Jace" name="inventorySearch" color="white" #input [(ngModel)]="query" (keyup.enter)="searchCard(query)">
 
           </mat-form-field>
           <button class="btn btn-lg text-white" (click)="searchCard(query)">

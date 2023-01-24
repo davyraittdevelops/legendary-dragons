@@ -39,17 +39,6 @@
   position: absolute;
 }
 
-.pagination::ng-deep .ngx-pagination .current {
-  background: #13395d;
-}
-
-.pagination::ng-deep .ngx-pagination a:hover {
-  background-color: transparent;
-}
-
-.pagination::ng-deep .ngx-pagination li:not(.pagination-previous):not(.pagination-next) {
-  display: none;
-}
 
 // TODO: fix styling
 
