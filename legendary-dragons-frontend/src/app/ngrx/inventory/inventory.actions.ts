@@ -75,3 +75,5 @@ export const searchInventoryCardSuccess = createAction(
   '[Inventory Component] Search Inventory Card Success',
   props<{inventoryCards: InventoryCard[], totalCards: number, paginatorKey: PaginatorKey}>(),
 );
+
+export const clearPaginator = createAction('[Inventory Page Component] Clear Paginator');

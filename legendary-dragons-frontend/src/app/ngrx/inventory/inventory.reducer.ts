@@ -3,6 +3,7 @@ import {
   addCardtoInventory,
   addCardtoInventoryFail,
   addCardtoInventorySuccess,
+  clearPaginator,
   getInventory,
   getInventoryFail,
   getInventorySuccess,
@@ -91,4 +92,5 @@ export const inventoryReducer = createReducer(
     return {...state, isLoading: false, hasError: false, inventory, paginatorKey}
   }),
   on(searchInventoryCardFail, (state) => ({...state, isLoading: false, hasError: true})),
+  on(clearPaginator, (state) => ({...state, paginatorKey: {}, pages: [], currentPageIndex: 0})),
 )

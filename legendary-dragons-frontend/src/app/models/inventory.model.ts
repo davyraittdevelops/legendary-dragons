@@ -41,4 +41,5 @@ export interface InventoryCardRequest {
   quality: string;
   deck_location: string;
   image_url: string;
+  type_line: string;
 }
