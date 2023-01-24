@@ -129,4 +129,8 @@ export class WebsocketService {
   sendGetCardMessage(scryfall_id: any) {
     this.sendMessage('getCardReq', {scryfall_id});
   }
+
+  sendSearchInventoryCardMessage(paginatorKey: PaginatorKey, filter: object, cardName: string = '') {
+    this.sendMessage('searchInventoryCardReq', {paginatorKey, filter, card_name: cardName})
+  }
 }

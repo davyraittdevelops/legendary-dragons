@@ -6,7 +6,7 @@ import {
   getInventory,
   getInventoryFail,
   getInventorySuccess,
-  removeCardFromInventory, removeCardFromInventorySuccess, updateInventoryCardFail, updateInventoryCardSuccess,
+  removeCardFromInventory, removeCardFromInventorySuccess, searchInventoryCard, searchInventoryCardFail, searchInventoryCardSuccess, updateInventoryCardFail, updateInventoryCardSuccess,
 } from "./inventory.actions";
 import { InventoryState } from "./models/inventory-state.model";
 
@@ -78,4 +78,18 @@ export const inventoryReducer = createReducer(
     return {...state, hasError: false, inventory}
   }),
   on(updateInventoryCardFail, (state) => ({...state, hasError: true})),
+
+  // Duplication
+  on(searchInventoryCard, (state, {paginatorKey}) => {
+    const foundIndex = state.pages.findIndex((page) => page.SK === paginatorKey.SK);
+
+    if (foundIndex > -1)
+      return {...state, isLoading: true, hasError: false, currentPageIndex: foundIndex};
+
+    const pages = [...state.pages, paginatorKey];
+    return {...state, isLoading: true, pages, currentPageIndex: state.pages.length}
+  }),
+  on(searchInventoryCardSuccess, (state, {inventory, paginatorKey}) => ({...state, isLoading: false, hasError: false, inventory, paginatorKey})),
+  on(searchInventoryCardFail, (state) => ({...state, isLoading: false, hasError: true})),
+
 )

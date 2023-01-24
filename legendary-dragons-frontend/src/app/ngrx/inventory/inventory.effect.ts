@@ -11,7 +11,7 @@ import {
   getInventoryFail,
   getInventorySuccess, removeCardFromInventory,
   removeCardFromInventoryFail,
-  removeCardFromInventorySuccess, updateInventoryCard, updateInventoryCardFail, updateInventoryCardSuccess
+  removeCardFromInventorySuccess, searchInventoryCard, searchInventoryCardFail, searchInventoryCardSuccess, updateInventoryCard, updateInventoryCardFail, updateInventoryCardSuccess
 } from "./inventory.actions";
 
 @Injectable()
@@ -91,6 +91,31 @@ export class InventoryEffects {
           catchError((error) => {
             console.log(error);
             return of(getInventoryFail({error: true}))
+          })
+        )
+      })
+    )
+  );
+
+  public searchInventoryCardEffect$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(searchInventoryCard),
+      tap(({paginatorKey, filter, cardName}) => this.websocketService.sendSearchInventoryCardMessage(paginatorKey, filter, cardName)),
+      switchMap(() => {
+        return this.websocketService.dataUpdates$().pipe(
+          filter((event: any) => {
+            console.log(event)
+            return event['event_type'] === 'GET_INVENTORY_CARD_RESULT'
+          }),
+          map((event: any) => {
+            console.log(event);
+            const inventory = event["data"];
+            inventory["total_cards"] = event["total_cards"];
+            return searchInventoryCardSuccess({inventory: event["data"], paginatorKey: event["paginatorKey"]})
+          }),
+          catchError((error) => {
+            console.log(error);
+            return of(searchInventoryCardFail({error: true}))
           })
         )
       })
