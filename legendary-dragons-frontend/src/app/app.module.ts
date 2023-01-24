@@ -45,6 +45,7 @@ import { UserEffects } from './ngrx/user/user.effect';
 import { userReducer } from './ngrx/user/user.reducer';
 import { WishlistEffects } from './ngrx/wishlist/wishlist.effect';
 import { wishlistReducer } from './ngrx/wishlist/wishlist.reducer';
+import { AddCardModalComponent } from './components/deck/add-card-modal/add-card-modal.component';
 
 @NgModule({
   declarations: [
@@ -67,6 +68,7 @@ import { wishlistReducer } from './ngrx/wishlist/wishlist.reducer';
     WishlistItemComponent,
     ColorIconComponent,
     CardFaceComponent,
+    AddCardModalComponent,
   ],
   imports: [
     BrowserModule,
