@@ -104,7 +104,7 @@ def send_email_to_user(destination, card_name, current_card_prices, target_price
     subject = 'Price Alert'
     eur_price = float(current_card_prices['eur'])
     usd_price = float(current_card_prices['usd'])
-    body = f'Congratulations! The price alert for the card {card_name} has been triggere. The current card price is {eur_price}€ or {usd_price}$ and your alert was set to {target_price}$/€. '
+    body = f'Congratulations! The price alert for the card {card_name} has been triggered. The current card price is {eur_price}€ or {usd_price}$ and your alert was set to {target_price}$/€. '
 
     # Send the email
     response = ses.send_email(
