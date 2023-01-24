@@ -12,10 +12,10 @@ export const logout = () => {
 
 export const removeAllInventoryCards = () => {
   cy.visit("/dashboard");
-  cy.wait(4000);
+  cy.wait(5000);
   cy.get("body").then($body => {
     if ($body.find("div[aria-label=collection-card]").length > 0) {
-      cy.get("button[name=removeCardFromInventory]").click({multiple: true});
+      cy.get("li[id=card-remove-btn]").click({multiple: true});
     }
   });
   cy.get("div[aria-label=collection-card]").should("not.exist");
