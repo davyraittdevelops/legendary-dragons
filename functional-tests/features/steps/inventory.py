@@ -12,6 +12,7 @@ client = boto3.client("cognito-idp", region_name="us-east-1")
 def getInventory(context):
     context.ws.send(json.dumps({
         "action": "getInventoryReq",
+        "paginatorKey": {}
     }))
 
     context.detail["get_inventory"] = json.loads(context.ws.recv())

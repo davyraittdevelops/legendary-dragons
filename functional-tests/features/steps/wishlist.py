@@ -19,7 +19,8 @@ def createPriceAlert(context, price_point):
             "price_point": price_point,
             "wishlist_item_id": "1",
             "card_market_id": "1",
-            "alert_id": "1"
+            "alert_id": "1",
+            "card_name": "Black Lotus"
         }
     }))
 
@@ -34,8 +35,9 @@ def createAvailabilityAlert(context):
             "alert_type": "AVAILABILITY",
             "user_id": "user-123",
             "wishlist_item_id": "1",
-            "card_market_id": "1",
-            "alert_id": "1"
+            "card_market_id": "2",
+            "alert_id": "2",
+            "card_name": "Black Lotus"
         }
     }))
 
@@ -97,7 +99,7 @@ def removeAvailabilityAlert(context):
             "user_id": "user-123",
             "wishlist_item_id": "1",
             "alert_id": context.detail["availability_alert"]["data"]["alert_id"],
-            "card_market_id": "1"
+            "card_market_id": "2"
         }
     }))
 
@@ -149,6 +151,12 @@ def step_impl(context):
 
 @then("a price alert is created")
 def step_impl(context):
+    print(context.detail["price_alert"])
+    print(context.detail["modify_price_alert"] )
+    assert context.detail["modify_price_alert"]["event_type"] == "INSERT_ALERT#PRICE_RESULT"
+
+    
+
     assert context.detail["price_alert"]["event_type"] == "INSERT_ALERT#PRICE_RESULT"
     assert context.detail["price_alert"]["data"]["entity_type"] == "ALERT#PRICE"
     assert context.detail["price_alert"]["data"]["price_point"] == "5.00"
