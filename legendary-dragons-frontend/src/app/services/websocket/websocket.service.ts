@@ -129,12 +129,12 @@ export class WebsocketService {
   sendGetCardMessage(scryfall_id: any) {
     this.sendMessage('getCardReq', {scryfall_id});
   }
-
+  
   sendSearchInventoryCardMessage(paginatorKey: PaginatorKey, filter: object, cardName: string = '') {
     this.sendMessage('searchInventoryCardReq', {paginatorKey, filter, card_name: cardName})
   }
-
-  sendMoveDeckCardMessage(deck_id: string, deck_card: string, deck_type: string) {
-    this.sendMessage('moveDeckCardReq', {deck_id, deck_card, deck_type});
+  
+  sendMoveDeckCardMessage(deck_id: string, deck_card_id: string, deck_type: string) {
+    this.sendMessage('moveDeckCardReq', {deck_id, deck_card_id, deck_type});
   }
 }
