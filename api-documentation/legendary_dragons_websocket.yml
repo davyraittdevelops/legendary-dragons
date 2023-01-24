@@ -52,12 +52,17 @@ channels:
       message:
           $ref: '#/components/messages/addCardToInventoryReq'
 
-
   removeCardFromInventory:
     publish:
       summary: Removes a card from the inventory.
       message:
-          $ref: '#/components/messages/removeCardFromInventoryReq'     
+          $ref: '#/components/messages/removeCardFromInventoryReq'    
+
+  searchInventoryCard:
+    publish:
+      summary: Search a card in the inventory.
+      message:
+          $ref: '#/components/messages/searchInventoryCardReq'
 
 # Deck
 
@@ -85,13 +90,63 @@ channels:
       message:
           $ref: '#/components/messages/removeDeckReq'  
 
+  moveDeckCard:
+    publish:
+      summary: Moves a card from main deck to side deck and visa versa
+      message:
+          $ref: '#/components/messages/moveDeckCardReq'            
+
   addCardToDeck:
     publish:
       summary: Adds a card to the deck.
       message:
-          $ref: '#/components/messages/addCardToDeckReq'       
+          $ref: '#/components/messages/addCardToDeckReq'     
 
-  
+  removeCardFromDeck:
+    publish:
+      summary: Removes a card from deck.
+      message:
+          $ref: '#/components/messages/removeCardFromDeckReq' 
+
+
+# Wishlist   
+
+  createAlert:
+    publish:
+      summary: Creates a price or availability alert.
+      message:
+          $ref: '#/components/messages/createAlertReq' 
+
+  getWishlist:
+    publish:
+      summary: Retrieves wishlist details.
+      message:
+          $ref: '#/components/messages/getWishlistReq' 
+
+  createWishlistItem:
+    publish:
+      summary: Creates a wishlist item.
+      message:
+          $ref: '#/components/messages/createWishlistItemReq'
+
+  getAlerts:
+    publish:
+      summary: Get the alerts of a wishlist item.
+      message:
+          $ref: '#/components/messages/getAlertsReq'           
+
+  removeAlert:
+    publish:
+      summary: Removes a price or availability alert.
+      message:
+          $ref: '#/components/messages/removeAlertReq'  
+
+  removeWishlistItem:
+    publish:
+      summary: Removes a wishlist item.
+      message:
+          $ref: '#/components/messages/removeWishlistItemReq'  
+
 # COMPONENTS ATTACHED TO THE CHANNELS
 components:
   messages:
@@ -185,8 +240,43 @@ components:
             type: string
             description: Inventory ID of the users inventory.
           inventory_card:
-            type: string
-            description: Card that will be added to the inventory.
+            type: object
+            properties:
+              scryfall_id:
+                type: string
+                description: The scryfall id of the card
+                example: 'scryfall_id_1'              
+              oracle_id:
+                type: string
+                description: The oracle id of the card
+                example: 'oracle_id_1'              
+              card_name:
+                type: string
+                description: Name of the card
+                example: 'Fireball'
+              colors:
+                type: array
+                items:
+                  type: string
+                  description: 'color(s) of the card, example: ["B", "R"]'
+                  example: ["B", "R"]
+              rarity:
+                type: string
+                description: The rarity of the card
+                example: 'uncommon'
+              quality:
+                type: string
+                description: The quality of the card
+                example: 'damaged'
+              prices:
+                type: object
+                items:
+                  type: string
+                  description: 'prices of the card, example:  
+                  {"usd": "0.12", "usd_foil": "0.77","usd_etched": null,
+                  "eur": "0.05","eur_foil": "0.40","tix": null}'
+                  example: '{"eur": "0.05"}'
+
       examples:
         - name: TODO ADD NAME
           summary: TODO ADD SUMMARY
@@ -222,10 +312,33 @@ components:
             description: removeCardFromInventoryReq
           card_id:
             type: string
-            description: Card_id of the card that should be removed.
+            description: Id of the card that should be removed.
           inventory_id:
             type: string
             description: Inventory ID of the user.
+      examples:
+        - name: removeCardFromInventoryReq
+          payload:
+            action: removeCardFromInventoryReq
+            card_id: 01230-213123-422111-2312
+            inventory_id: AFA3212-ASDFADF33-AFDFDA344-GFRD54
+            
+    searchInventoryCardReq:
+      payload:
+        type: object
+        properties:
+          action:
+            type: string
+            description: searchInventoryCardReq
+          card_name:
+            type: string
+            description: The name of the card
+          paginator_key:
+            type: string
+            description: The paginator key for retrieving the page results.
+          filter:
+            type: object
+            description: A filter (color and type) for searching cards
       examples:
         - name: removeCardFromInventoryReq
           payload:
@@ -243,9 +356,6 @@ components:
           action: 
             type: string
             description: getDecksReq
-          event_type:
-            type: string
-            description: Event type indicating the type of response message
 
     getDeckReq:
       summary: Request to get a deck details
@@ -274,8 +384,8 @@ components:
             example: 'My Deck'
           deck_type:
             type: string
-            description: Type of deck (main_deck or side_deck)
-            example: main_deck
+            description: Type of deck (EDH/COMMANDER)
+            example: COMMANDER
 
     removeDeckReq:
       summary: Remove deck
@@ -290,6 +400,27 @@ components:
             description: The unique identifier for the deck
             example: 'deck_id_123'
 
+    moveDeckCardReq:
+      summary: Move deck card
+      payload:
+        type: object
+        properties:
+          action: 
+            type: string
+            description: moveDeckCardReq
+          deck_id:
+            type: string
+            description: The unique identifier for the deck
+            example: 'deck_id_123'
+          deck_card_id:
+            type: string
+            description: The unique identifier for the deck card
+            example: 'deck_card_id_123'
+          deck_type:
+            type: string
+            description: The card will be moved to this deck type
+            example: 'side_deck'
+             
     addCardToDeckReq:
       summary: Request to add a card to a user's deck
       payload:
@@ -317,6 +448,14 @@ components:
                 type: string
                 description: ID of the card
                 example: 'card_id_123'
+              scryfall_id:
+                type: string
+                description: The unique identifier for the card on Scryfall
+                example: 'scryfall_id_123'
+              oracle_id:
+                type: string
+                description: The oracle id of the card
+                example: 'oracle_id_1'   
               inventory_id:
                 type: string
                 description: ID of the inventory
@@ -329,7 +468,8 @@ components:
                 type: array
                 items:
                   type: string
-                  example: 'red'
+                  description: 'color(s) of the card, example: ["B", "R"]'
+                  example: ["B", "R"]
               rarity:
                 type: string
                 description: Rarity of the card
@@ -342,4 +482,189 @@ components:
                 type: string
                 description: URL of the card's image
                 example: 'https://example.com/image.jpg'
-  
+            
+    removeCardFromDeckReq:
+      summary: Request to remove a card from user's deck
+      payload:
+        type: object
+        properties:
+          action: 
+            type: string
+            description: removeCardFromDeckReq
+          deck_id:
+            type: string
+            description: ID of the deck
+            example: 'deck_id_123'
+          deck_type:
+            type: string
+            description: Type of deck (main_deck or side_deck)
+            example: main_deck
+          inventory_id:
+            type: string
+            description: The id of the inventory of the user
+            example: 1
+          deck_card:
+            type: object
+            properties:
+              card_id:
+                type: string
+                description: ID of the card
+                example: 'card_id_123'
+              scryfall_id:
+                type: string
+                description: The unique identifier for the card on Scryfall
+                example: 'scryfall_id_123'
+              oracle_id:
+                type: string
+                description: The oracle id of the card
+                example: 'oracle_id_1'   
+              inventory_id:
+                type: string
+                description: ID of the inventory
+                example: 'inventory_id_123'
+              card_name:
+                type: string
+                description: Name of the card
+                example: 'Fireball'
+              colors:
+                type: array
+                items:
+                  type: string
+                  description: 'color(s) of the card, example: ["B", "R"]'
+                  example: ["B", "R"]
+              rarity:
+                type: string
+                description: Rarity of the card
+                example: 'rare'
+              quality:
+                type: string
+                description: Quality of the card
+                example: 'mint'
+              image_url:
+                type: string
+                description: URL of the card's image
+                example: 'https://example.com/image.jpg'
+              deck_location:
+                type: string
+                description: In wich deck the card is located
+                example: 'White-Blue: Azorius'   
+
+
+# Wishlist                
+
+    createAlertReq:
+      summary: Creates a price or availabilty alert
+      payload:
+        type: object
+        properties:
+          action: 
+            type: string
+            description: createAlertReq
+          wishlist_item_id:
+            type: string
+            description: The wishlist item id
+            example: 'wishlist_item_id_1'
+          alert_item:
+            type: object
+            properties:
+              alert_type:
+                type: string
+                description: PRICE or AVAILABILITY
+                example: 'PRICE'
+              price_point:
+                type: string
+                description: The price point of the alert (only needed if PRICE alert)
+                example: '5.00'
+              wishlist_item_id:
+                type: string
+                description: The alert will be created for this wishlist item id
+                example: 'wishlist_item_id_1'
+
+    getWishlistReq:
+      summary: Request to get a wishlist details
+      payload:
+        type: object
+        properties:
+          action: 
+            type: string
+            description: getWishlistReq
+
+    createWishlistItemReq:
+      summary: Request to create a wishlist item
+      payload:
+        type: object
+        properties:
+          action: 
+            type: string
+            description: createWishlistItemReq
+          deck_id: 
+            type: string
+            description: for adding a wishlist item to a deck
+          wishlist_item:
+            type: object
+            properties:
+              oracle_id:
+                type: string
+                description: The oracle id of the card
+                example: 'oracle_id_1'   
+              image_url:
+                type: string
+                description: URL of the card's image
+                example: 'https://example.com/image.jpg'
+              card_name:
+                type: string
+                description: Name of the card
+                example: 'Fireball'
+                
+    getAlertsReq:
+      summary: Request to get a wishlist details
+      payload:
+        type: object
+        properties:
+          action: 
+            type: string
+            description: getAlertsReq
+          wishlist_item_id:
+            type: string
+            description: The alerts will be retrieved from this wishlist item id
+            example: 'wishlist_item_id_1'
+                                 
+    removeAlertReq:
+      summary: Request remove a price or availability alert
+      payload:
+        type: object
+        properties:
+          action: 
+            type: string
+            description: removeAlertReq
+          wishlist_item_id:
+            type: string
+            description: Removes a price or availability alert from this wishlist item id
+            example: 'wishlist_item_id_1'
+          alert_item:
+            type: object
+            properties:
+              alert_type:
+                type: string
+                description: PRICE or AVAILABILITY
+                example: 'PRICE'
+              price_point:
+                type: string
+                description: The price point of the alert (only needed if PRICE alert)
+                example: '5.00'
+              wishlist_item_id:
+                type: string
+                description: The alert will be created for this wishlist item id
+                example: 'wishlist_item_id_1'
+
+    removeWishlistItemReq:
+      summary: Request to remove a wishlist item
+      payload:
+        type: object
+        properties:
+          action: 
+            type: string
+            description: removeWishlistItemReq
+          wishlist_item_id: 
+            type: string
+            description: The wishlist item id
