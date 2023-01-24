@@ -23,7 +23,7 @@ describe('Create and remove a card in wishlist', () => {
     cy.get("button[aria-label=Close]").click();
 
     // Assert - Create
-    let wishlistCard = cy.get("div[aria-label=wishlist-card]", {timeout: 5000});
+    let wishlistCard = cy.get("div[aria-label=wishlist-card]");
     wishlistCard.should('be.visible');
     wishlistCard.eq(0).click();
     let cardDetails = cy.get("div[role=document]");
@@ -36,6 +36,6 @@ describe('Create and remove a card in wishlist', () => {
     cy.wait(1500);
 
     // Assert - Delete
-    cy.get("div[aria-label=wishlist-card]", {timeout: 5000}).should("not.exist");
+    cy.get("div[aria-label=wishlist-card]").should("not.exist");
   })
 })
