@@ -105,3 +105,17 @@ export const moveDeckCardSuccess = createAction(
   '[Deck Detail Component] Move Card From Deck Success',
   props<{deck_card: DeckCard, deck_type: string}>(),
 );
+
+export const updateDeck = createAction(
+  '[Deck Detail Component] Update Deck'
+);
+
+export const updateDeckFail = createAction(
+  '[Deck Detail Component] Update Deck Fail',
+  props<{ error: boolean }>(),
+);
+
+export const updateDeckSuccess = createAction(
+  '[Deck Detail Component] Update Deck Success',
+  props<{ deck: Deck}>()
+);

@@ -1,5 +1,7 @@
 import os
 import json
+from decimal import Decimal
+
 import pytest
 import boto3
 from moto import mock_dynamodb, mock_events, mock_sqs
@@ -15,7 +17,8 @@ OS_ENV = {
     "AWS_SESSION_TOKEN": "testing",
     "AWS_DEFAULT_REGION": "us-east-1",
     "DISABLE_XRAY": "True",
-    "TABLE_NAME": TABLE_NAME
+    "TABLE_NAME": TABLE_NAME,
+    "EVENT_BUS_NAME": "test-event-bus"
 }
 
 @pytest.fixture()
@@ -67,7 +70,7 @@ def websocket_deck_event():
         "colors": ["R"],
         "inventory_id": "123",
         "entity_type": "DECK_CARD",
-        "prices": {"usd": "0.05"},
+        "prices": {"eur": None, "usd_foil": None, "usd": "0.05", "usd_etched": None, "eur_foil": None, "tix": None},
         "rarity": "meta",
         "quality": "rare",
         "image_url": "example-image-url.com",
@@ -97,7 +100,7 @@ def websocket_side_deck_event():
           "colors": ["R"],
           "inventory_id": "123",
           "entity_type": "SIDE_DECK_CARD",
-          "prices": {"usd": "0.10"},
+          "prices": {"eur": None, "usd_foil": None, "usd": "0.10", "usd_etched": None, "eur_foil": None, "tix": None},
           "rarity": "meta",
           "quality": "rare",
           "image_url": "example-image-url.com",
@@ -115,10 +118,24 @@ def test_lamda_handler_success(websocket_deck_event, table_definition):
   dynamodb = boto3.resource("dynamodb")
   table = dynamodb.create_table(**table_definition)
 
+  table.put_item(Item={
+    "PK": "USER#user-123",
+    "SK": "DECK#123",
+    "total_value": {
+      "usd": 14,
+      "usd_foil": 0,
+      "usd_etched": 0,
+      "eur": 0,
+      "eur_foil": 0,
+      "tix": 0
+    },
+    "is_valid": True
+  })
+
   table.put_item(
     Item={
       "PK": "USER#user-123",
-      "SK": "DECK#123",
+      "SK": "DECK#123#DECK_CARD#1",
       "entity_type": "DECK_CARD",
       "deck_id": "123",
       "inventory_id": "123",
@@ -131,7 +148,7 @@ def test_lamda_handler_success(websocket_deck_event, table_definition):
       "rarity": "meta",
       "quality": "rare",
       "image_url": "example-image-url.com",
-      "GSI1_PK": "DECK#123",
+      "GSI1_PK": "DECK#123#DECK_CARD#2",
       "GSI1_SK": "USER#user-123",
       "user_id": "user-123"
     }
@@ -146,9 +163,22 @@ def test_lamda_handler_success(websocket_deck_event, table_definition):
                              Key("SK").begins_with("DECK#123#DECK_CARD")
   )["Items"]
 
+  deck = table.query(
+      KeyConditionExpression=Key("PK").eq("USER#user-123") &
+                             Key("SK").eq("DECK#123"),
+  )["Items"][0]
+
   # Assert
   assert response["statusCode"] == 200
   assert len(deck_cards) == 0
+
+  total_values = deck["total_value"]
+  assert total_values["usd"] == Decimal("13.95")
+  assert total_values["usd_foil"] == 0
+  assert total_values["usd_etched"] == 0
+  assert total_values["eur"] == 0
+  assert total_values["eur_foil"] == 0
+  assert total_values["tix"] == 0
 
 @patch.dict(os.environ, OS_ENV, clear=True)
 @mock_dynamodb
@@ -160,10 +190,24 @@ def test_lamda_handler_sidedeck(websocket_side_deck_event, table_definition):
   dynamodb = boto3.resource("dynamodb")
   table = dynamodb.create_table(**table_definition)
 
+  table.put_item(Item={
+    "PK": "USER#user-123",
+    "SK": "DECK#123",
+    "total_value": {
+      "usd": 14,
+      "usd_foil": 0,
+      "usd_etched": 0,
+      "eur": 0,
+      "eur_foil": 0,
+      "tix": 0
+    },
+    "is_valid": True
+  })
+
   table.put_item(
     Item={
       "PK": "USER#user-123",
-      "SK": "DECK#123",
+      "SK": "DECK#123#DECK_CARD#2",
       "entity_type": "SIDE_DECK_CARD",
       "deck_id": "123",
       "inventory_id": "123",
@@ -176,7 +220,7 @@ def test_lamda_handler_sidedeck(websocket_side_deck_event, table_definition):
       "rarity": "meta",
       "quality": "rare",
       "image_url": "example-image-url.com",
-      "GSI1_PK": "DECK#123",
+      "GSI1_PK": "DECK#123#DECK_CARD#2",
       "GSI1_SK": "USER#user-123",
       "user_id": "user-123"
     }
