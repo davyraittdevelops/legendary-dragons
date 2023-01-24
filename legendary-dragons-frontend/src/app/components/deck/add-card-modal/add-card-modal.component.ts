@@ -4,17 +4,11 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { AppState } from 'src/app/app.state';
 import { DeckType } from 'src/app/models/deck-type.enum';
-import { Inventory, InventoryCard } from 'src/app/models/inventory.model';
+import { Filter, Inventory, InventoryCard } from 'src/app/models/inventory.model';
 import { addCardToDeck } from 'src/app/ngrx/deck/deck.actions';
 import { Paginator, PaginatorKey } from 'src/app/ngrx/inventory/models/inventory-state.model';
 import { clearPaginator, searchInventoryCard } from "../../../ngrx/inventory/inventory.actions";
 import { inventorySelector, isLoadingSelector, paginatorSelector } from "../../../ngrx/inventory/inventory.selectors";
-
-interface Filter {
-  deck_location?: string;
-  colors?: string[];
-  type_line?: string;
-}
 
 @Component({
   selector: 'app-add-card-modal',
@@ -34,6 +28,7 @@ export class AddCardModalComponent implements OnInit, OnDestroy {
   inventory$: Observable<Inventory>;
   isSearchLoading$: Observable<boolean>;
   paginator$: Observable<Paginator>;
+  deckType = DeckType;
 
   displayedColumns: string[] = ['Image', 'Name', 'MainDeck', 'SideDeck'];
   cardNameFilter: string = '';
@@ -78,17 +73,9 @@ export class AddCardModalComponent implements OnInit, OnDestroy {
     this.appStore.dispatch(clearPaginator());
   }
 
-  addCardToDeck(card: InventoryCard): void {
+  addCardToDeck(card: InventoryCard, deckType: string): void {
     this.appStore.dispatch(addCardToDeck({
-      deck_id: this.deckId, deck_type: DeckType.MAIN,
-      inventory_card: card, deck_name: this.deckName
-    }));
-    this.modal.close();
-  }
-
-  addCardToSideDeck(card: InventoryCard): void {
-    this.appStore.dispatch(addCardToDeck({
-      deck_id: this.deckId, deck_type: DeckType.SIDE,
+      deck_id: this.deckId, deck_type: deckType,
       inventory_card: card, deck_name: this.deckName
     }));
     this.modal.close();

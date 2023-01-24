@@ -75,7 +75,7 @@
             <ng-container matColumnDef="MainDeck">
               <th mat-header-cell *matHeaderCellDef>Action</th>
               <td mat-cell *matCellDef="let card">
-                <button type="button" [disabled]="deckCardsLimitReached" (click)="addCardToDeck(card);" class="btn btn-dark" name="addCardToDeck">
+                <button type="button" [disabled]="deckCardsLimitReached" (click)="addCardToDeck(card, deckType.MAIN);" class="btn btn-dark" name="addCardToDeck">
                   <i class="bi bi-arrow-bar-left"></i>
                   Add to deck
                 </button>
@@ -84,7 +84,7 @@
             <ng-container matColumnDef="SideDeck">
               <th mat-header-cell *matHeaderCellDef></th>
               <td mat-cell *matCellDef="let card">
-                <button type="button" (click)="addCardToSideDeck(card);" class="btn btn-dark" name="addCardToSideDeck">
+                <button type="button" (click)="addCardToDeck(card, deckType.SIDE);" class="btn btn-dark" name="addCardToSideDeck">
                   <i class="bi bi-arrow-bar-right"></i>
                   Add to side deck
                 </button>

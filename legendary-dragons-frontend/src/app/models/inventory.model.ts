@@ -43,3 +43,9 @@ export interface InventoryCardRequest {
   image_url: string;
   type_line: string;
 }
+
+export interface Filter {
+  deck_location?: string;
+  colors?: string[];
+  type_line?: string;
+}
