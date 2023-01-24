@@ -21,7 +21,7 @@ dynamodb = boto3.resource("dynamodb")
 table = dynamodb.Table(os.getenv("TABLE_NAME"))
 
 def lambda_handler(event, context):
-    """Accepts alerts and checks them against the card database."""
+    """Accepts alerts and checks them against the card database for price/availability values."""
     entries = event['Records']
     for entry in entries:
         alert = json.loads(entry['body'])
@@ -59,7 +59,6 @@ def handle_availability_alert(availability_alert):
         card_name = availability_alert['card_name']
         subject = 'Availability alert triggered'
 
-
         user_email = get_user_email_by_id(user_id)
         cards = query_cards_table(oracle_id)
 
@@ -90,11 +89,10 @@ def get_user_email_by_id(uid):
     email =  response["UserAttributes"][3]['Value']
     return email
 
-def send_email_to_user(destination, body ):
+def send_email_to_user(destination, body, subject ):
     # Define the email parameters
     recipient = destination
     sender = 'alerts@legendarydragons.cloud-native-minor.it'
-    subject = 'Alert triggered'
 
     # Send the email
     response = ses.send_email(
