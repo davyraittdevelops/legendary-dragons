@@ -14,6 +14,13 @@ Parameters:
   LegDragonsBroadcastArn:
     Type: String
     Default: "legendary-dragons-connection-LegDragonsBroadcastArn"
+  CardAlertQueue:
+    Type: String
+    Default: "legendary-dragons-card-CardAlertQueue"
+  LegDragonsUserPoolClient:
+    Type: String
+    Default: "legendary-dragons-cognito-LegDragonUserPoolClient"
+
 
 Globals:
   Api:
@@ -23,11 +30,15 @@ Globals:
     Runtime: python3.9
     Environment:
         Variables:
-          TABLE_NAME: !Ref WishlistTable
+          COGNITO_CLIENT:
+            Fn::ImportValue:
+              !Sub "${LegDragonsUserPoolClient}"
+          CARD_ALERT_QUEUE:
+            Fn::ImportValue:
+                !Sub "${CardAlertQueue}"
           EVENT_BUS_NAME:
             Fn::ImportValue:
                 !Sub "${LegDragonsConnectionsEventBus}"
-
     Architectures:
       - x86_64
     Tracing: Active
@@ -181,6 +192,32 @@ Resources:
         Fn::Sub:
           arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${CreateWishlistItemFunction.Arn}/invocations
 
+  AlertServiceFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/alert_service/
+      Events:
+        Schedule:
+          Type: Schedule
+          Properties:
+            Description: Runs the lambda every day at 23.45PM.
+            Enabled: True
+            Schedule: "cron(45 23 * * ? *)"
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref WishlistTable
+        - Statement:
+          - Effect: Allow
+            Action:
+              - 'execute-api:ManageConnections'
+            Resource:
+              Fn::Sub:
+                - 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${WebSocketApi}/*'
+                - WebSocketApi:
+                    Fn::ImportValue:
+                      'Fn::Sub': "${LegDragonsWebSocketApi}"
+                      
+      
 
   # GET WISHLIST ITEMS BY USER ID
   GetWishlistFunction:

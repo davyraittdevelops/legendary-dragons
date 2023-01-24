@@ -12,6 +12,9 @@ Parameters:
   LegDragonsConnectionsEventBus:
     Type: String
     Default: "legendary-dragons-connection-event-bus-LegDragonsConnectionsEventBus"
+  LegDragonUserPool:
+    Type: String
+    Default: "legendary-dragons-cognito-LegDragonUserPool"
 
 Globals:
   Api:
@@ -22,6 +25,9 @@ Globals:
     Environment:
         Variables:
           TABLE_NAME: !Ref CardTable
+          COGNITO_CLIENT:
+            Fn::ImportValue:
+              !Sub "${LegDragonUserPool}"
     Architectures:
       - x86_64
     Tracing: Active
@@ -158,6 +164,28 @@ Resources:
       FunctionName: !Ref SearchCardByKeywordFunction
       Principal: apigateway.amazonaws.com
 
+  #Alert procesor 
+  CardAlertQueue:
+    Type: 'AWS::SQS::Queue'
+    Properties:
+      QueueName: CardAlertQueue
+
+  ProcessCardAlertFunction:
+      Type: AWS::Serverless::Function
+      Properties:
+        CodeUri: functions/process_card_alert/
+        Environment:
+          Variables:
+            DATABASE_NAME: "cards"
+        Policies:
+          - DynamoDBReadPolicy:
+              TableName: !Ref CardTable
+        Events:
+          SQSEvent:
+            Type: SQS
+            Properties:
+              Queue: !GetAtt CardAlertQueue.Arn
+              Enabled: True
 
   # Get card code
   GetCardFunction:
@@ -213,7 +241,7 @@ Resources:
       Action: lambda:InvokeFunction
       FunctionName: !Ref GetCardFunction
       Principal: apigateway.amazonaws.com
-
+            
 Outputs:
   SearchCardByKeywordFunction:
     Description: "Search Card By Keyword Lambda Function ARN"
@@ -221,3 +249,9 @@ Outputs:
   SearchCardByKeywordFunctionIamRole:
     Description: "Implicit IAM Role created for Search Card By Keyword function"
     Value: !GetAtt SearchCardByKeywordFunctionRole.Arn
+  CardAlertQueue:
+    Description: "CardAlertQueue"
+    Value: !Ref CardAlertQueue
+    Export:
+      Name: !Sub "${AWS::StackName}-CardAlertQueue"
+
