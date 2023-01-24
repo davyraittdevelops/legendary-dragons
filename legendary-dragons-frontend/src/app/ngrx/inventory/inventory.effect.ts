@@ -104,15 +104,13 @@ export class InventoryEffects {
       switchMap(() => {
         return this.websocketService.dataUpdates$().pipe(
           filter((event: any) => {
-            console.log(event)
             return event['event_type'] === 'GET_INVENTORY_CARD_RESULT'
           }),
-          map((event: any) => {
-            console.log(event);
-            const inventory = event["data"];
-            inventory["total_cards"] = event["total_cards"];
-            return searchInventoryCardSuccess({inventory: event["data"], paginatorKey: event["paginatorKey"]})
-          }),
+          map((event: any) => searchInventoryCardSuccess({
+            inventoryCards: event["data"],
+            totalCards: event["total_cards"],
+            paginatorKey: event["paginatorKey"]
+          })),
           catchError((error) => {
             console.log(error);
             return of(searchInventoryCardFail({error: true}))

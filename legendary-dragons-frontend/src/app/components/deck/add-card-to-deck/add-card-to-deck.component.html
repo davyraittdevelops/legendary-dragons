@@ -12,25 +12,64 @@
 
   <div class="modal-body bg-body-secondary text-black">
     <ng-container *ngIf="inventory$ | async as inventory">
-      <!-- <mat-form-field>
-           <mat-label>Filter</mat-label>
-           <input matInput (keyup)="applyFilter($event)" placeholder="Search" #input>
-           </mat-form-field> -->
+      <p class="mb-1 text-end fs-5">
+        Total cards {{inventory.total_cards}} <i class="bi bi-files"></i>
+      </p>
 
-      <ng-container *ngIf="availableCards(inventory.inventory_cards) as cards">
+      <mat-form-field class="w-90 fs-5">
+        <mat-label>Card name</mat-label>
+        <input matInput (keyup.enter)="applyFilter()" placeholder="Search" #input
+               [readonly]="isSearchLoading$ | async"
+               [(ngModel)]="cardNameFilter">
+      </mat-form-field>
+
+      <button class="btn" (click)="applyFilter()" [disabled]="isSearchLoading$ | async">
+        <i class="bi bi-search"></i>
+      </button>
+
+      <div class="input-group">
+        <select class="form-select w-50" name="typeLineFilterSelect" [(ngModel)]="typeLineFilter">
+          <option selected value="">Type Line</option>
+          <option value="artifact">Artifact</option>
+          <option value="creature">Creature</option>
+          <option value="enchantment">Enchantment</option>
+          <option value="instant">Planeswalker</option>
+          <option value="sorcery">Sorcery</option>
+        </select>
+
+        <select class="form-select w-50" name="colorFilterSelect" [(ngModel)]="colorFilter">
+          <option selected value="">Colors</option>
+          <option value="W">White</option>
+          <option value="U">Blue</option>
+          <option value="B">Black</option>
+          <option value="R">Red</option>
+          <option value="G">Green</option>
+        </select>
+      </div>
+
+      <div class="text-end mt-3 mb-3">
+        <button class="btn btn-outline-dark" (click)="clearFilter()">
+          Clear filter
+        </button>
+      </div>
+
+      <ng-container *ngIf="inventory.inventory_cards as cards">
         <div class="text-center" *ngIf="cards.length === 0">
-          <h1>All cards from the inventory seem to be assigned to a deck</h1>
+          <h1>No results found</h1>
         </div>
 
         <ng-container *ngIf="cards.length > 0">
+
           <p class="mb-3 text-end fs-6">
-            {{cards.length}} card/-s unassigned.
+            Found {{cards.length}} unassigned <i class="bi bi-files"></i>
           </p>
 
           <table mat-table [dataSource]="cards">
             <ng-container matColumnDef="Image">
               <th mat-header-cell *matHeaderCellDef> Image </th>
-              <td mat-cell *matCellDef="let card"><img [src]="card.image_url"  class="small-image"> </td>
+              <td mat-cell *matCellDef="let card">
+                <img [src]="card.image_url" class="small-image" loading="lazy">
+              </td>
             </ng-container>
             <ng-container matColumnDef="Name">
               <th mat-header-cell *matHeaderCellDef> Name </th>

@@ -73,5 +73,5 @@ export const searchInventoryCardFail = createAction(
 
 export const searchInventoryCardSuccess = createAction(
   '[Inventory Component] Search Inventory Card Success',
-  props<{inventory: Inventory, paginatorKey: PaginatorKey}>(),
+  props<{inventoryCards: InventoryCard[], totalCards: number, paginatorKey: PaginatorKey}>(),
 );
