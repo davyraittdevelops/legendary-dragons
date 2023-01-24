@@ -20,12 +20,12 @@ eventbus = os.getenv("EVENT_BUS_NAME")
 
 def lambda_handler(event, context):
   body = json.loads(event["body"])
-  deck_card = body["deck_card"]
+  deck_card_id = body["deck_card_id"]
   deck_id = body["deck_id"]
   deck_type = body["deck_type"]
 
   pk = "USER#" + event["requestContext"]["authorizer"]["userId"]
-  sk = "DECK#" + deck_id + "#DECK_CARD#" + deck_card
+  sk = "DECK#" + deck_id + "#DECK_CARD#" + deck_card_id
   entity_type = "DECK_CARD"
   if deck_type == "side_deck":
     entity_type = "SIDE_DECK_CARD"
