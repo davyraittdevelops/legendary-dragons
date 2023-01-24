@@ -72,6 +72,9 @@ with the following file: [./diagrams/db/LegendaryDragons.json](./diagrams/db/Leg
 
 The following access patterns were identified for the design:
 
+
+#### Card
+
 1) Get Card by id
 ```python
 table.query(
@@ -83,7 +86,10 @@ Required in:
 - Inventory card detail modal
 - Deck card detail modal
 
-2) Get inventory for a user
+
+#### Inventory
+
+1) Get inventory for a user
 ```python
 table.query(
     KeyConditionExpression=Key("PK").eq("USER#1234") &
@@ -91,15 +97,65 @@ table.query(
 )["Items"]
 ```
 Required in:
-- Inventory overview page in the application
+- Inventory overview page
 
-3)
+2) Inventory Cards Search
+```python
+table.query(
+KeyConditionExpression=Key("GSI1_PK").eq(f"USER#1234") & Key("GSI1_SK").begins_with(f"INVENTORY_CARD#1"),
+IndexName="GSI1",
+)
+```
+Required in:
+- Inventory overview page
+- Add card to deck modal
 
-4)
 
-5)
+#### Deck
 
-6)
+1) Get Decks
+```python
+table.query(
+    KeyConditionExpression=Key("PK").eq("USER#1234") &
+    Key("SK").begins_with("DECK#"),
+)["Items"]
+```
+Required in:
+- Decks page
+
+2) Get Deck by Id
+```python
+table.query(
+    KeyConditionExpression=Key("PK").eq("USER#1234") &
+    Key("SK").begins_with("DECK#1"),
+)["Items"]
+```
+Required in:
+- Decks details page
+
+
+#### Wishlist
+
+1) Get wishlist
+```python
+table.query(
+    KeyConditionExpression=Key("PK").eq("USER#1234") &
+    Key("SK").begins_with("WISHLIST_ITEM#"),
+)["Items"]
+```
+Required in:
+- Wishlist page
+
+2) Get Alerts
+```python
+table.query(
+    KeyConditionExpression=Key("PK").eq("USER#1234") &
+    Key("SK").begins_with("WISHLIST_ITEM#1#ALERT#"),
+)["Items"]
+```
+Required in:
+- Wishlist item modal
+
 
 ### Connections
 
