@@ -68,7 +68,9 @@ def websocket_price_event():
                 "price_point": "5.00",
                 "user_id": "user-123",
                 "wishlist_item_id": "1",
-                "card_market_id": "1"
+                "card_market_id": "1",
+                "alert_id": "1",
+                "card_name": "Black Lotus"
             }
         }),
     }
@@ -93,7 +95,9 @@ def websocket_availability_event():
                 "entity_type": "ALERT#AVAILABILITY",
                 "user_id": "user-123",
                 "wishlist_item_id": "1",
-                "card_market_id": "1"
+                "card_market_id": "1",
+                "alert_id": "2",
+                "card_name": "Black Lotus"
             }
         }),
     }
