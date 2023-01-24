@@ -235,6 +235,19 @@ def test_lamda_handler_sidedeck(websocket_side_deck_event, table_definition):
                              Key("SK").begins_with("DECK#123#DECK_CARD")
   )["Items"]
 
+  deck = table.query(
+      KeyConditionExpression=Key("PK").eq("USER#user-123") &
+                             Key("SK").eq("DECK#123"),
+  )["Items"][0]
+
   # Assert
   assert response["statusCode"] == 200
   assert len(side_deck_cards) == 0
+
+  total_values = deck["total_value"]
+  assert total_values["usd"] == Decimal("13.90")
+  assert total_values["usd_foil"] == 0
+  assert total_values["usd_etched"] == 0
+  assert total_values["eur"] == 0
+  assert total_values["eur_foil"] == 0
+  assert total_values["tix"] == 0
