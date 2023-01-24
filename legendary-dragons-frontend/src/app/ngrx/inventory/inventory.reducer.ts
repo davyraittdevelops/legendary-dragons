@@ -6,7 +6,11 @@ import {
   getInventory,
   getInventoryFail,
   getInventorySuccess,
-  removeCardFromInventory, removeCardFromInventorySuccess, updateInventoryCardFail, updateInventoryCardSuccess,
+  removeCardFromInventory,
+  removeCardFromInventoryFail,
+  removeCardFromInventorySuccess,
+  updateInventoryCardFail,
+  updateInventoryCardSuccess,
 } from "./inventory.actions";
 import { InventoryState } from "./models/inventory-state.model";
 
@@ -58,7 +62,7 @@ export const inventoryReducer = createReducer(
       }
     };
   }),
-  on(addCardtoInventoryFail, (state) => ({...state, isLoading: false, hasError: true})),
+  on(removeCardFromInventoryFail, (state) => ({...state, isLoading: false, hasError: true})),
   on(getInventory, (state, {paginatorKey}) => {
     const foundIndex = state.pages.findIndex((page) => page.SK === paginatorKey.SK);
 
