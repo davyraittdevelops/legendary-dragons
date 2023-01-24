@@ -15,8 +15,9 @@ export const removeAllInventoryCards = () => {
   cy.wait(2000);
   cy.get("body").then($body => {
     if ($body.find("div[aria-label=collection-card]").length > 0) {
-      cy.get("li[id=card-remove-btn]").click({multiple: true});
-      cy.wait(1000);
+      cy.get("li[id=card-remove-btn]").each(($el) => {
+        cy.wrap($el).click();
+      });
     }
   });
   cy.get("div[aria-label=collection-card]").should("not.exist");
@@ -40,7 +41,9 @@ export const removeAllDecks = () => {
   cy.wait(2000);
   cy.get("body").then($body => {
     if ($body.find("div[aria-label=deck]").length > 0) {
-      cy.get("button[name=removeDeck]").click({multiple: true});
+      cy.get("button[name=removeDeck]").each(($el) => {
+        cy.wrap($el).click();
+      })
     }
   });
   cy.get("div[aria-label=deck]").should("not.exist");

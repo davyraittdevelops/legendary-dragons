@@ -72,7 +72,7 @@ def websocket_event():
         },
         "body": json.dumps({
             "action": "getInventoryReq",
-            "inventory_id": "inv-12",
+            "paginatorKey": {},
         }),
     }
 
@@ -95,7 +95,7 @@ def test_lamda_handler_success(websocket_event, table_definition,
     table = dynamodb.create_table(**table_definition)
 
     user_pk = "USER#user-123"
-    inventory_sk = "INVENTORY#inv-12"
+    inventory_sk = "INVENTORY#3b90345a-99cc-11ed-a8fc-0242ac120002"
 
     table.put_item(Item={
         "PK": user_pk,
@@ -108,14 +108,15 @@ def test_lamda_handler_success(websocket_event, table_definition,
     })
     table.put_item(Item={
         "PK": user_pk,
-        "SK": f"{inventory_sk}#INVENTORY_CARD#1",
-        "GSI1_PK": f"{inventory_sk}#INVENTORY_CARD#1",
+        "SK": f"{inventory_sk}#INVENTORY_CARD#4efa1ab0-99cc-11ed-a8fc-0242ac120002",
+        "GSI1_PK": f"{inventory_sk}#INVENTORY_CARD#4efa1ab0-99cc-11ed-a8fc-0242ac120002",
         "GSI1_SK": user_pk,
         "entity_type": "INVENTORY_CARD",
         "inventory_id": "1",
         "card_id": "1",
         **inventory_card
     })
+
 
     with patch("botocore.client.BaseClient._make_api_call", new=mock_make_api_call):
         # Act

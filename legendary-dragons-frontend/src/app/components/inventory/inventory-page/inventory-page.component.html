@@ -1,6 +1,23 @@
-<div class="container-fluid p-5 pt-4 m-0" aria-label="collection">
+<div class="container-fluid p-5 pt-3 m-0" aria-label="collection">
   <div class="row row-cols-auto gy-4">
     <ng-container *ngIf="inventory$ | async as inventory">
+
+      <div class="col-12 text-end">
+        <p class="fs-5">
+          Total cards: {{inventory.total_cards}} <i class="bi bi-files"></i>
+        </p>
+        <div class="w-100 text-start">
+          <mat-form-field class="w-90 fs-5 text-light">
+            <mat-label>Search for a card</mat-label>
+            <input matInput placeholder="Jace" name="inventorySearch" color="white" #input [(ngModel)]="query" (keyup.enter)="searchCard(query)">
+
+          </mat-form-field>
+          <button class="btn btn-lg text-white" (click)="searchCard(query)">
+            <i class="bi bi-search"></i>
+          </button>
+        </div>
+      </div>
+
       <app-add-card-component [inventory_id]="inventory.inventory_id"
                               class="col"></app-add-card-component>
 
@@ -15,4 +32,23 @@
       </span>
     </div>
   </div>
+
+  <br>
+
+  <ng-container *ngIf="paginator$ | async as paginator">
+    <div class="pagination-container">
+      <button class="btn btn-dark btn-lg me-1"
+              *ngFor="let page of paginator.pages; let i = index"
+              [ngClass]="{'active': paginator.currentPageIndex === i}"
+              (click)="navigateToExistingPage(page, paginator.currentPageIndex, i)"
+              [disabled]="(isLoading$ | async)">
+        {{ (i + 1) }}
+      </button>
+
+      <button class="btn btn-dark btn-lg" *ngIf="paginator.paginatorKey"
+              (click)="navigatePage(paginator.paginatorKey)" [disabled]="isLoading$ | async">
+        Next
+      </button>
+    </div>
+  </ng-container>
 </div>

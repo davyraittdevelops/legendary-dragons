@@ -3,6 +3,7 @@ export interface Inventory {
   created_at: string;
   last_modified: string;
   total_value: string;
+  total_cards: number;
   inventory_cards: InventoryCard[];
 }
 

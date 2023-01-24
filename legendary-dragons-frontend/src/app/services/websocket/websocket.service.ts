@@ -3,6 +3,7 @@ import {Observable} from 'rxjs';
 import {webSocket, WebSocketSubject} from 'rxjs/webSocket';
 import {InventoryCard} from 'src/app/models/inventory.model';
 import {WishlistAlertRequest, WishlistItem} from 'src/app/models/wishlist.model';
+import { PaginatorKey } from 'src/app/ngrx/inventory/models/inventory-state.model';
 import {environment} from 'src/environments/environment';
 import {DeckCard} from "../../models/deck.model";
 
@@ -58,8 +59,8 @@ export class WebsocketService {
     )
   }
 
-  sendGetInventoryMessage() {
-    this.sendMessage('getInventoryReq', {});
+  sendGetInventoryMessage(paginatorKey: PaginatorKey) {
+    this.sendMessage('getInventoryReq', {paginatorKey});
   }
 
   sendCreateDeckMessage(deck_name: string, deck_type: string) {
