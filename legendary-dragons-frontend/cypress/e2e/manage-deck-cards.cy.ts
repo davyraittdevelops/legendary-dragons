@@ -110,3 +110,49 @@ describe("Remove 'Swords to Plowshares' from the side-deck of deck 'Main'", () =
     });
   });
 });
+
+describe("Move deck card from deck to side-deck", () => {
+  it('passes', () => {
+    //arrange
+    cy.get("button[name=navigateToDeck]").click();
+    cy.get("button[name=openAddDeckCardModal]").click();
+    cy.get("div[role=document]").should("be.visible");
+    cy.get("button[name=addCardToDeck]").click();
+
+    //act
+    cy.get("div[aria-label=deck-viewport]").should("be.visible");
+    cy.get("div[aria-label=deck-viewport]").within(() => {
+      cy.get("div[aria-label=deck-card]").should("exist");
+      cy.get("button[name=moveDeckCard]").click();
+    });
+
+    //assert
+    cy.get("div[aria-label=side-deck-viewport").should("be.visible");
+    cy.get("div[aria-label=side-deck-viewport").within(() => {
+      cy.get("div[aria-label=deck-card]").should("exist");
+    });
+  });
+});
+
+describe("Move deck card from side-deck to deck", () => {
+  it('passes', () => {
+    //arrange
+    cy.get("button[name=navigateToDeck]").click();
+    cy.get("button[name=openAddDeckCardModal]").click();
+    cy.get("div[role=document]").should("be.visible");
+    cy.get("button[name=addCardToSideDeck]").click();
+
+    //act
+    cy.get("div[aria-label=side-deck-viewport]").should("be.visible");
+    cy.get("div[aria-label=side-deck-viewport]").within(() => {
+      cy.get("div[aria-label=deck-card]").should("exist");
+      cy.get("button[name=moveDeckCard]").click();
+    });
+
+    //assert
+    cy.get("div[aria-label=deck-viewport").should("be.visible");
+    cy.get("div[aria-label=deck-viewport").within(() => {
+      cy.get("div[aria-label=deck-card]").should("exist");
+    });
+  });
+});
