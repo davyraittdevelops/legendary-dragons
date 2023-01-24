@@ -151,12 +151,6 @@ def step_impl(context):
 
 @then("a price alert is created")
 def step_impl(context):
-    print(context.detail["price_alert"])
-    print(context.detail["modify_price_alert"] )
-    assert context.detail["modify_price_alert"]["event_type"] == "INSERT_ALERT#PRICE_RESULT"
-
-    
-
     assert context.detail["price_alert"]["event_type"] == "INSERT_ALERT#PRICE_RESULT"
     assert context.detail["price_alert"]["data"]["entity_type"] == "ALERT#PRICE"
     assert context.detail["price_alert"]["data"]["price_point"] == "5.00"
@@ -168,7 +162,7 @@ def step_impl(context):
     assert context.detail["availability_alert"]["event_type"] == "INSERT_ALERT#AVAILABILITY_RESULT"
     assert context.detail["availability_alert"]["data"]["entity_type"] == "ALERT#AVAILABILITY"
     assert context.detail["availability_alert"]["data"]["wishlist_item_id"] == "1" 
-    assert context.detail["availability_alert"]["data"]["card_market_id"] == "1" 
+    assert context.detail["availability_alert"]["data"]["card_market_id"] == "2" 
 
 @then("I should be able to see my alerts")
 def step_impl(context):
@@ -179,11 +173,13 @@ def step_impl(context):
     assert context.detail["get_alerts"]["data"][1]["price_point"] == "5.00"
     assert context.detail["get_alerts"]["data"][1]["wishlist_item_id"] == "1"
     assert context.detail["get_alerts"]["data"][1]["card_market_id"] == "1"
+    assert context.detail["get_alerts"]["data"][1]["card_name"] == "Black Lotus"
 
     # Availability alert
     assert context.detail["get_alerts"]["data"][0]["entity_type"] == "ALERT#AVAILABILITY"
     assert context.detail["get_alerts"]["data"][0]["wishlist_item_id"] == "1"
-    assert context.detail["get_alerts"]["data"][0]["card_market_id"] == "1"
+    assert context.detail["get_alerts"]["data"][0]["card_market_id"] == "2"
+    assert context.detail["get_alerts"]["data"][0]["card_name"] == "Black Lotus"
 
 @then("a price alert is removed")
 def step_impl(context):
@@ -197,7 +193,7 @@ def step_impl(context):
 def step_impl(context):
     assert context.detail["removed_availability_alert"]["event_type"] == "REMOVE_ALERT#AVAILABILITY_RESULT"
     assert context.detail["removed_availability_alert"]["data"]["entity_type"] == "ALERT#AVAILABILITY"
-    assert context.detail["removed_availability_alert"]["data"]["card_market_id"] == "1"
+    assert context.detail["removed_availability_alert"]["data"]["card_market_id"] == "2"
     assert context.detail["removed_availability_alert"]["data"]["wishlist_item_id"] == "1"
 
 
