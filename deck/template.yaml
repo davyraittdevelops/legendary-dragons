@@ -269,6 +269,8 @@ Resources:
             EventBusName: "connection-event-bus"
         - DynamoDBWritePolicy:
             TableName: !Ref DeckTable
+        - DynamoDBReadPolicy:
+            TableName: !Ref DeckTable
 
   AddCardToDeckPermission:
     Type: AWS::Lambda::Permission

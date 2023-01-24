@@ -1,9 +1,10 @@
 import json
 import logging
 import os
+from decimal import Decimal
+from datetime import datetime
 
 import boto3
-from datetime import datetime
 from aws_xray_sdk.core import patch_all
 
 logger = logging.getLogger()
@@ -30,6 +31,7 @@ def lambda_handler(event, context):
   sk = f"DECK#{deck_id}#DECK_CARD#{deck_card['inventory_card_id']}"
     
   try:
+    update_deck_total_value(user_id, deck_id, deck_card["prices"])
     update_inventory_card_deck_location(user_id, inventory_id, deck_card['inventory_card_id'])
     logger.info("Removing card from deck")
     result = table.delete_item(
@@ -61,3 +63,33 @@ def update_inventory_card_deck_location(user_id, inventory_id, inventory_card_id
       "EventBusName": eventbus
     }
   ])
+
+def update_deck_total_value(user_id, deck_id, inventory_card_prices):
+  pk = "USER#" + user_id
+  sk = "DECK#" + deck_id
+  deck = table.get_item(
+      Key={
+        "PK": pk,
+        "SK": sk
+      }
+  )["Item"]
+
+  deck_total_values = dict(sorted(deck["total_value"].items()))
+  inventory_card_prices = dict(sorted(inventory_card_prices.items()))
+
+  new_total_values = {}
+  for (key, value), (key2, value2) in zip(deck_total_values.items(), inventory_card_prices.items()):
+    new_value = value - Decimal(value2.replace(',','.')) if value2 else value
+    new_total_values[key] = new_value if new_value >= 0 else 0
+
+  table.update_item(
+      Key={
+        "PK": pk,
+        "SK": sk
+      },
+      ConditionExpression='attribute_exists(PK) AND attribute_exists(SK)',
+      UpdateExpression='set total_value = :new_total_values',
+      ExpressionAttributeValues={
+        ":new_total_values": new_total_values
+      }
+  )
