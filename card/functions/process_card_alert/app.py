@@ -21,6 +21,8 @@ dynamodb = boto3.resource("dynamodb")
 table = dynamodb.Table(os.getenv("TABLE_NAME"))
 
 def lambda_handler(event, context):
+    print(event)
+
     """Accepts alerts and checks them against the card database for price/availability values."""
     entries = event['Records']
     for entry in entries:
