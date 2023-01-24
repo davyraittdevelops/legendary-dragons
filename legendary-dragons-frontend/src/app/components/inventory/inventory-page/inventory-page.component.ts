@@ -18,6 +18,8 @@ export class InventoryPageComponent implements OnInit {
   hasError$: Observable<boolean>;
   paginator$: Observable<Paginator>;
 
+  query: string = '';
+
   constructor(private appStore: Store<AppState>) {
     this.isLoading$ = this.appStore.select(isLoadingSelector);
     this.hasError$ = this.appStore.select(errorSelector);
@@ -39,5 +41,12 @@ export class InventoryPageComponent implements OnInit {
 
   navigatePage(key: PaginatorKey): void {
     this.appStore.dispatch(getInventory({paginatorKey: key}));
+  }
+
+  searchCard(name: string): void {
+    if (name.trim() === '')
+      return;
+
+    console.log(name);
   }
 }

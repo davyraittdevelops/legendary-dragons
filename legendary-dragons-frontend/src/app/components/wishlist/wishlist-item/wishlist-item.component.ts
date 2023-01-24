@@ -31,13 +31,18 @@ export class WishlistItemComponent {
     this.hasError$ = this.appStore.select(errorSelector);
     this.alert_items$ = this.appStore.select(alertItemsSelector).pipe(
       tap((alerts) => {
-        this.hasAvailabilityAlert = alerts.some(alert => alert.entity_type ===  `ALERT#${AlertType.AVAILABILITY}`)
+        // Run this in next JS cycle
+        setTimeout(() => {
+          this.hasAvailabilityAlert = alerts.some(alert => alert.entity_type ===  `ALERT#${AlertType.AVAILABILITY}`)
+        }, 0);
+
       })
     );
   }
 
   open({content}: { content: any }) {
     this.appStore.dispatch(getAlerts({wishlist_item_id: this.wishlist_item.wishlist_item_id}))
+    // TODO: dispatch clearAlerts after closing the modal service to fix setTimeout
     this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title', size: 'xl'});
   }
 

@@ -35,7 +35,7 @@ export class AddCardToDeckComponent {
   }
 
   ngOnInit(): void {
-    this.appStore.dispatch(getInventory());
+    this.appStore.dispatch(getInventory({paginatorKey: {}}));
 
     this.activatedRoute.params.subscribe(params => {
       this.deckId = params["id"];
