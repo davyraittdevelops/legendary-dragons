@@ -13,6 +13,7 @@ export default {
           /\.(e2e|spec)\.ts$/,
           /node_modules/,
           /(ngfactory|ngstyle)\.js/,
+          /ngrx/,
         ],
       },
     ],
