@@ -1,29 +1,31 @@
-import { createReducer, on } from "@ngrx/store";
-import { DeckType } from "src/app/models/deck-type.enum";
+import {createReducer, on} from "@ngrx/store";
+import {DeckType} from "src/app/models/deck-type.enum";
 import {
-  createDeck,
-  createDeckSuccess,
-  createDeckFail,
-  removeDeck,
-  removeDeckSuccess,
-  removeDeckFail,
-  getDecks,
-  getDecksSuccess,
-  getDecksFail,
-  getDeck,
-  getDeckFail,
-  getDeckSuccess,
   addCardToDeck,
   addCardToDeckFail,
   addCardToDeckSuccess,
+  createDeck,
+  createDeckFail,
+  createDeckSuccess,
+  getDeck,
+  getDeckFail,
+  getDecks,
+  getDecksFail,
+  getDecksSuccess,
+  getDeckSuccess,
+  moveDeckCard,
+  moveDeckCardFail,
+  moveDeckCardSuccess,
   removeCardFromDeck,
   removeCardFromDeckFail,
   removeCardFromDeckSuccess,
-  moveDeckCard,
-  moveDeckCardFail,
-  moveDeckCardSuccess
+  removeDeck,
+  removeDeckFail,
+  removeDeckSuccess,
+  updateDeckFail,
+  updateDeckSuccess
 } from "./deck.actions";
-import { DeckState } from "./models/deck-state.model";
+import {DeckState} from "./models/deck-state.model";
 
 const initialState: DeckState = {
   isLoading: false,
@@ -126,5 +128,16 @@ export const deckReducer = createReducer(
   }),
 
   on(moveDeckCardFail, (state) => ({...state, isDeckLoading: false, hasError: true})),
+  on(updateDeckSuccess, (state, {deck}) => {
+    let selectedDeck = {...state.selectedDeck};
+    selectedDeck.total_value = deck.total_value;
+
+    return {
+      ...state,
+      hasError: false,
+      isDeckLoading: false,
+      selectedDeck: selectedDeck
+    };
+  }),
+  on(updateDeckFail, (state) => ({...state, hasError: true})),
 )
- 

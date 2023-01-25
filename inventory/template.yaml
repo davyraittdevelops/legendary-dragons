@@ -73,6 +73,8 @@ Resources:
       Policies:
         - DynamoDBWritePolicy:
             TableName: !Ref InventoryTable
+        - DynamoDBReadPolicy:
+            TableName: !Ref InventoryTable
 
   UpdateInventoryCardFunction:
     Type: AWS::Serverless::Function
