@@ -31,9 +31,12 @@ def lambda_handler(event, context):
     )
     api_body = cards_response.json()
 
-    mapped_cards = map(card_entry, api_body["data"])
-    logger.info(f"Found {api_body['total_cards']} total cards")
-    logger.info(f"Returning {len(api_body['data'])} cards")
+    mapped_cards = []
+
+    if "data" in api_body:
+        mapped_cards = map(card_entry, api_body["data"])
+        logger.info(f"Found {api_body['total_cards']} total cards")
+        logger.info(f"Returning {len(api_body['data'])} cards")
 
     connection_id = event["requestContext"]["connectionId"]
     domain_name = event["requestContext"]["domainName"]
