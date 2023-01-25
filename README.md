@@ -250,9 +250,9 @@ The Legendary Dragons application also has one API Gateway configured for websoc
 | :heavy_check_mark:    | [MUST] Decks (EDH/Commander) beheren                      |
 | :heavy_check_mark:    | [MUST] Side decks beheren                                 |
 | :heavy_check_mark:    | [SHOULD] Wishlist beheren                                 |
-| :x:    | [SHOULD] Actuele waarde van de collectie en decks inzien  |
-| :heavy_plus_sign:    | [SHOULD] Price alert voor whishlist kaarten               |
-| :heavy_plus_sign:    | [SHOULD] Availability alert voor wishlist kaarten         |
+| :heavy_plus_sign:    | [SHOULD] Actuele waarde van de collectie en decks inzien  |
+| :heavy_check_mark:    | [SHOULD] Price alert voor whishlist kaarten               |
+| :heavy_check_mark:    | [SHOULD] Availability alert voor wishlist kaarten         |
 
 ## Ontwikkelen van container- en serverless applicaties voor de Amazon Cloud (AWS) (5%)
 
@@ -316,7 +316,7 @@ The Legendary Dragons application also has one API Gateway configured for websoc
 | :heavy_check_mark:    | [MUST] Unit-/integratie testen voor de backend                      |
 | :heavy_check_mark:    | [SHOULD] SonarQube Quality Gate is passed. (e.g. Codecoverage >80%) |
 | :heavy_check_mark:    | [SHOULD] Functionele testen voor de backend (system level)          |
-| :x:    | [COULD] Functionele tests opgenomen in de CI/CD pipeline            |
+| :heavy_check_mark:    | [COULD] Functionele tests opgenomen in de CI/CD pipeline            |
 | :heavy_check_mark:    | [COULD] Unittest en/of Cypresstesten voor de frontend               |
 
 ## Kennis van cloud- en serverless architecturen. (10%)
@@ -341,8 +341,8 @@ The Legendary Dragons application also has one API Gateway configured for websoc
 | :heavy_check_mark:    | [SHOULD] IAM Roles en Permissions correct toegepast (Least priveledge)                                |
 | :heavy_check_mark:    | [SHOULD] SSL/TLS beveiliging toegepast op endpoints                                                   |
 | :heavy_check_mark:    | [SHOULD] Kosten zijn beheerst gebleven                                                                |
-| :x:    | [SHOULD] Security van de applicaties is getest en bevat geen voor de handliggende OWASP top 10 issues |
-| :x:    | [COULD] Performance testen opgenomen in de CI/CD pipeline                                             |
+| :heavy_check_mark:    | [SHOULD] Security van de applicaties is getest en bevat geen voor de handliggende OWASP top 10 issues |
+| :heavy_check_mark:    | [COULD] Performance testen opgenomen in de CI/CD pipeline                                             |
 
 ## Toepassen van Agile Scrum en DevOps principes (15%)
 
