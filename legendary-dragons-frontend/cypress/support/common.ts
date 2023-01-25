@@ -66,3 +66,28 @@ export const removeAllWishlistCards = () => {
   });
   cy.get("div[aria-label=Basic-example]").should("not.exist")
 }
+
+// export const removeAllWishlistAlerts = () => {
+//   cy.visit("/dashboard");
+//   cy.get("#mat-tab-label-0-2").click();
+//   cy.wait(2000);
+//   cy.get("button[name=detailWishlistItem]").click();
+//   cy.wait(2000);
+//   cy.get("body").then($body => {
+//     if ($body.find("ul[class=list-group]").length > 0) {
+//       cy.get("button[name=alert-0-remove-btn]").click({multiple: true});
+//     }
+//   });
+// }
+
+export const createWishlistCard = () => {
+  cy.visit("/dashboard");
+  cy.get("#mat-tab-label-0-2").click();
+  cy.wait(2000);
+  cy.get("button[name=openAddCardModal]").click();
+  cy.get("div[role=document]").should("be.visible");
+  cy.get("input[name=keywordSearch]").type("Swords to plowshares");
+  cy.get("input[name=keywordSearch]").type("{enter}");
+  cy.get("button[name=addCardToWishlist]").eq(0).click();
+  cy.get("button[aria-label=Close]").click();
+}
