@@ -7,6 +7,7 @@ Legendary Dragons is a Magic The Gathering collection management tool that allow
 - [Architecture](#architecture)
 - [Starting the CI/CD Pipelines](#starting-the-cicd-pipelines)
 - [AWS](#aws)
+- [OWASP TOP 10](#owasp-/-security)
 - [Requirements](#requirements)
 
 # SonarQube Projects
@@ -207,24 +208,31 @@ The Legendary Dragons application also has one API Gateway configured for websoc
 ## Wireframes
 
 **Homepage**:
+
 <img src="./diagrams/wireframes/Homepage.png" alt="home"/>
 
 **Register**:
+
 <img src="./diagrams/wireframes/Register.png" alt="register"/>
 
 **Login**:
+
 <img src="./diagrams/wireframes/Login.png" alt="login"/>
 
 **Inventory**:
+
 <img src="./diagrams/wireframes/Homepage - Inventory selected.png" alt="inventory"/>
 
 **Decks Mainpage**:
+
 <img src="./diagrams/wireframes/Decks - mainpage.png" alt="decks main page"/>
 
 **Decks detail**:
+
 <img src="./diagrams/wireframes/Decks - deck selected.png" alt="decks selected"/>
 
 **Wishlist**:
+
 <img src="./diagrams/wireframes/Wishlist.png" alt="wishlist"/>
 
 ## Retrospectives
@@ -259,8 +267,8 @@ A feature pipeline is configured for the following contexts:
 
 ## Release pipelines
 
-When a pull request is merged the release pipelines will be triggered. 
-The layered stack will build the Cognito context, the connections event bus and the websocket API gateway when there is a change made to either of these services. 
+When a pull request is merged the release pipelines will be triggered.
+The layered stack will build the Cognito context, the connections event bus and the websocket API gateway when there is a change made to either of these services.
 The other contexts use the services which results in a layered stack. The frontend release pipeline builds the application and deploys it to a S3 Bucket.
 
 A release pipeline is configured for the following contexts:
@@ -278,12 +286,34 @@ A release pipeline is configured for the following contexts:
 The `Functional and performance test` pipeline will run when a pull request is merged and if one of the pipelines above if successful, with the exception of the `Frontend` release pipeline.
 
 # AWS
+All of the infrastructure of the application is setup with Serverless Application Model (SAM) with layered stacks.
+
+## CloudFormation Stacks
+- [legendary-dragons-wishlist](https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/stackinfo?stackId=arn%3Aaws%3Acloudformation%3Aus-east-1%3A861259332787%3Astack%2Flegendary-dragons-wishlist%2Ff6ac2630-99b9-11ed-a882-1232682a975b)
+- [legendary-dragons-card](https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/stackinfo?stackId=arn%3Aaws%3Acloudformation%3Aus-east-1%3A861259332787%3Astack%2Flegendary-dragons-card%2F7944b630-97e3-11ed-b0c4-0a0fee2a77e3)
+- [legendary-dragons-deck](https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/stackinfo?stackId=arn%3Aaws%3Acloudformation%3Aus-east-1%3A861259332787%3Astack%2Flegendary-dragons-deck%2F6077cd70-93f8-11ed-bb05-0e50ef923d43)
+- [legendary-dragons-connection](https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/stackinfo?stackId=arn%3Aaws%3Acloudformation%3Aus-east-1%3A861259332787%3Astack%2Flegendary-dragons-connection%2Fde26baa0-90d4-11ed-a996-12e04ed04423)
+- [legendary-dragons-connection-event-bus](https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/stackinfo?stackId=arn%3Aaws%3Acloudformation%3Aus-east-1%3A861259332787%3Astack%2Flegendary-dragons-connection-event-bus%2F28b126e0-90cc-11ed-9615-12a3e46dd37f)
+- [legendary-dragons-inventory](https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/stackinfo?stackId=arn%3Aaws%3Acloudformation%3Aus-east-1%3A861259332787%3Astack%2Flegendary-dragons-inventory%2Fe8d7fde0-9031-11ed-9090-129065128371)
+- [legendary-dragons-identity-and-access](https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/stackinfo?stackId=arn%3Aaws%3Acloudformation%3Aus-east-1%3A861259332787%3Astack%2Flegendary-dragons-identity-and-access%2Ffa13f550-822b-11ed-adc9-0e8d6118be6f)
+- [legendary-dragons-cognito](https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/stackinfo?stackId=arn%3Aaws%3Acloudformation%3Aus-east-1%3A861259332787%3Astack%2Flegendary-dragons-cognito%2F80f36a00-8156-11ed-81c9-1201435d387f)
+- [legendary-dragons-frontend](https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/stackinfo?stackId=arn%3Aaws%3Acloudformation%3Aus-east-1%3A861259332787%3Astack%2Flegendary-dragons-frontend%2F10f06ba0-8128-11ed-b0e4-0efa1bbdbc6b)
+- [legendary-dragons-ws-api-gateway](https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/stackinfo?stackId=arn%3Aaws%3Acloudformation%3Aus-east-1%3A861259332787%3Astack%2Flegendary-dragons-ws-api-gateway%2F6196ee40-810e-11ed-b00e-0ea4e0e637e5)
+
+## CloudFront
+
+- [Legendary Dragons Production](https://www.legendarydragons.cloud-native-minor.it)
+
+- [CloudFront Distrubtion](https://us-east-1.console.aws.amazon.com/cloudfront/v3/home?region=us-east-1#/distributions/E2NYU2TQVP1L0T)
+
+## EC2
+An EC2 instance was created to for the attempt of a self hosted GitHub runner. The instance is shutdown, but can be found [here](https://us-east-1.console.aws.amazon.com/ec2/home?region=us-east-1#InstanceDetails:instanceId=i-0948197efb73a1287)
 
 # OWASP / Security
 
 Here, we will test and document the 10 most important security risks in our application.
 
-# 1. Injection
+## 1. Injection
 
 We use input validation where necessary. Input validation is an important step in preventing injection attacks.
 To prevent SQL injection, we use parameterized queries with DynamoDB. The values are passed as parameters to the query and are not directly integrated into the query. This makes it more difficult for hackers to insert dangerous instructions, as they are not directly integrated into the query. See an example below where a card is retrieved by its ID:
@@ -302,39 +332,39 @@ table.update_item(
 )
 ```
 
-# 2.  Authentication errors
+## 2.  Authentication errors
 * We use strong password policy and do not use hard-coded passwords.
 * We use 2FA (two-factor authentication). 2FA is an additional security layer added to the traditional password-based authentication process. Instead of using just a password, 2FA requires a user to use two different factors to log in:
 * A verification email that is sent to the email address used during the registration process.
 
-# 3.  Sensitive data
+## 3.  Sensitive data
 * We use the AWS Cognito service which provides encryption. This means that sensitive information such as user passwords are encrypted.
 To limit this risk, it is important to restrict access to management interfaces to only authorized users. This can be done through authentication and authorization controls, such as 2-factor authentication and role-based access policy.
 * We use a verification email.
 
-# 4.  Failing access controls
+## 4.  Failing access controls
 * To limit this risk, it is important to restrict access to management interfaces to only authorized users. This can be done through authentication and authorization controls, such as 2-factor authentication and role-based access policy.
 * We use a verification email.
 
-# 5.  Incorrect configuration
+## 5.  Incorrect configuration
 * A way to prevent security mistakes in architecture and design is by applying input and output validation. Input validation means checking the input data for validity and suitability for the specific purpose they are used for. This prevents users from entering invalid or dangerous data. Output validation means checking the output of an application for validity and suitability for the specific situation it is used in. This prevents users from receiving dangerous or invalid data. And this is implemented in our implementation.
 
-# 6.  Insufficient security of communication channels
+## 6.  Insufficient security of communication channels
 * We use AWS API Gateway. AWS API Gateway is a service that can be used to create, publish, secure, and manage APIs. With API Gateway, you can secure APIs using SSL/TLS encryption. For example, you can upload a certificate to the service and then configure all traffic to the API to go through HTTPS. This encrypts all data sent to and from the API with SSL/TLS.
 
-# 7. Incorrect management of changes and configurations
+## 7. Incorrect management of changes and configurations
 * A way to limit this risk is by using automation for application change management.
 * Automation is the process of implementing systems and software that can automate repetitive manual tasks, such as implementing changes and configurations. This allows for more efficient work and can reduce errors. We do this through GitHub actions pipelines.
 
-# 8.  Insufficient data security
+## 8.  Insufficient data security
 * A way to limit this risk is by using access control to restrict data access to only those users who have permission. Access control is a process of setting rules for who has access to which data and for what purposes. This allows for monitoring of who has access to which data and how this data is used.
 * For this, we use AWS Identity and Access Management (IAM) in our application.
 
-# 9.  Insufficient security of software dependencies
+## 9.  Insufficient security of software dependencies
 * A way to limit this risk is by keeping dependencies up-to-date and regularly checking them for security issues. It is important to use the latest versions of dependencies as they often fix security issues that were present in previous versions.
 * In our implementation, we primarily use LTS (Long-Term Support) versions of software which have resolved issues and security problems.
 
-# 10.  Insufficient logging and monitoring
+## 10.  Insufficient logging and monitoring
 * A way to limit this risk is by using logging and monitoring. Logging is the process of recording data about activities within an application. Monitoring is the process of monitoring this data in real-time to quickly identify problems. This allows for quick action to be taken if a security issue is found.
 
 * Our application has a good logging and monitoring strategy.
