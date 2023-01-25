@@ -59,11 +59,9 @@ export class WishlistItemComponent {
         tap((result) => {
           triggerCount += 1
           if (triggerCount == 2) {
-            if (result.length == 0)
-            {
+            if (result.length == 0) {
               this.appStore.dispatch(removeWishlistItem({wishlist_item_id: wishlist_item.wishlist_item_id}))
             }
-
             else {
               this.toastService.showDanger('There are still alerts on this wishlist item.');
             }
