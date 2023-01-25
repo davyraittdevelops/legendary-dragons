@@ -31,7 +31,6 @@ export class UserEffects {
               return loginUserSuccess({jwt})
             }),
             catchError(error => {
-              console.log(error)
               return of(loginUserFail({error: true}));
             })
           )
@@ -46,7 +45,6 @@ export class UserEffects {
         return this.userService.registerUser(user).pipe(
           map(() => registerUserSuccess()),
           catchError((error) => {
-            console.log(error);
             return of(registerUserFail({error: true}))
           })
         )
