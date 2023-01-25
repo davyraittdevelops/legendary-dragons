@@ -9,11 +9,15 @@ from moto import mock_cognitoidp
 from moto import mock_ses
 from moto.core import DEFAULT_ACCOUNT_ID
 from moto.ses import ses_backends
-
 import logging
 
+ses_backend = ses_backends[DEFAULT_ACCOUNT_ID]['global']
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
+
+
+
+
 
 OS_ENV = {
     "AWS_ACCESS_KEY_ID": "testing",
@@ -86,6 +90,8 @@ def cognito_pool():
 def test_lambda_handler(event, table_definition):
     # Arrange
     dynamodb = boto3.resource("dynamodb")
+    conn = boto3.client("ses", region_name="us-east-1")
+    conn.verify_email_identity(EmailAddress="alerts@legendarydragons.cloud-native-minor.it")
 
     table = dynamodb.create_table(**table_definition)
 
@@ -121,8 +127,8 @@ def test_lambda_handler(event, table_definition):
         "SK": "CARD_FACE#23d4f436-a417-4a26-b5b8-c698f11a186b",
         "card_name" : "Acid Web Spider",
         "entity_type" : "CARD",
-        "GSI1_SK": "CARD_FACE#23d4f436-a417-4a26-b5b8-c698f11a186b",
-        "GSI1_PK": "CARD#968a25a5-9ec1-47fa-bf1f-e65eb75fdb00",
+        "GSI1_PK": "CARD_FACE#23d4f436-a417-4a26-b5b8-c698f11a186b",
+        "GSI1_SK": "CARD#968a25a5-9ec1-47fa-bf1f-e65eb75fdb00",
         "oracle_id" : "23d4f436-a417-4a26-b5b8-c698f11a186b",
         "prices" : {"eur": "0.20"}
     })
@@ -132,9 +138,8 @@ def test_lambda_handler(event, table_definition):
     response = app.lambda_handler(event, {})
 
     # Assert
-    ses_backend = ses_backends[DEFAULT_ACCOUNT_ID]
+    # ses_backend = ses_backends[DEFAULT_ACCOUNT_ID]
     messages = ses_backend.sent_messages # sent_messages is a List of Message objects
-    logger.info(messages)
-
-    assert 1 == 0
+    message = messages.pop()
+    assert message.body == 'Congratulations! The price alert for the card Acid Web Spider has been triggered. The current card price is 0.20 eur and your alert price value was set to 10.0'
 
