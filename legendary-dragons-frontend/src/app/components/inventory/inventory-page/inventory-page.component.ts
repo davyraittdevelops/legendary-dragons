@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { AppState } from 'src/app/app.state';
 import { Inventory } from 'src/app/models/inventory.model';
 import { clearPaginator, getInventory, searchInventoryCard } from 'src/app/ngrx/inventory/inventory.actions';
@@ -24,7 +24,9 @@ export class InventoryPageComponent implements OnInit {
   constructor(private appStore: Store<AppState>) {
     this.isLoading$ = this.appStore.select(isLoadingSelector);
     this.hasError$ = this.appStore.select(errorSelector);
-    this.inventory$ = this.appStore.select(inventorySelector);
+    this.inventory$ = this.appStore.select(inventorySelector).pipe(tap(inv => {
+      console.log(inv)
+    }));
     this.paginator$ = this.appStore.select(paginatorSelector);
   }
 

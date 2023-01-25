@@ -92,6 +92,8 @@ def test_lamda_handler_success(websocket_event, table_definition):
             "eur_foil": 0,
             "tix": 0
         },
+        
+        "total_cards": 50
     })
 
     # Act

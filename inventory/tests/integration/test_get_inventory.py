@@ -105,6 +105,7 @@ def test_lamda_handler_success(websocket_event, table_definition,
         "user_id": "user-123",
         "GSI1_PK": inventory_sk,
         "GSI1_SK": user_pk,
+        "total_cards": "50"
     })
     table.put_item(Item={
         "PK": user_pk,

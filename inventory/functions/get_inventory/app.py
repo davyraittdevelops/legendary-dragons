@@ -47,7 +47,7 @@ def lambda_handler(event, context):
         **query_args
     )
 
-    scanned_count = inventory_response["ScannedCount"]
+    scanned_count = -1
 
     if 'LastEvaluatedKey' in inventory_response:
         output["paginatorKey"] = inventory_response["LastEvaluatedKey"]
@@ -72,7 +72,8 @@ def lambda_handler(event, context):
             return {"statusCode": 404}
 
         inventory = inventory_response["Items"].pop(inventory_idx)
-        scanned_count -= 1
+        scanned_count = inventory["total_cards"]
+        logger.info("total cards: %s", scanned_count)
         logger.info(f"Found inventory with id {inventory['inventory_id']}")
 
     logger.info("Found inventory cards: %s", len(inventory_response["Items"]))

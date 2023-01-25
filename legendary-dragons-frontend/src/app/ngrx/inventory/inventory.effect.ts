@@ -120,7 +120,7 @@ export class InventoryEffects {
           map((event: any) => {
             const inventory = event["data"];
             inventory["total_cards"] = event["total_cards"];
-            return getInventorySuccess({inventory: event["data"], paginatorKey: event["paginatorKey"]})
+            return getInventorySuccess({inventory: inventory, paginatorKey: event["paginatorKey"]})
           }),
           catchError((error) => {
             console.log(error);
