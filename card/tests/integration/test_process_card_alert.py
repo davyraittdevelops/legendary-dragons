@@ -10,10 +10,8 @@ from moto.core import DEFAULT_ACCOUNT_ID
 from moto.ses import ses_backends
 import logging
 
-ses_backend = ses_backends[DEFAULT_ACCOUNT_ID]['global']
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
-
 
 OS_ENV = {
     "AWS_ACCESS_KEY_ID": "testing",
@@ -132,11 +130,13 @@ def test_lambda_handler(event, table_definition):
         "prices": {"eur": "0.20"}
     })
 
+    logger.info(ses_backends[DEFAULT_ACCOUNT_ID].keys())
+    ses_backend = ses_backends[DEFAULT_ACCOUNT_ID]['global']
+
     # Act
     from functions.process_card_alert import app
     response = app.lambda_handler(event, {})
 
-    logger.info(ses_backends[DEFAULT_ACCOUNT_ID].keys())
     # sent_messages is a List of Message objects
     messages = ses_backend.sent_messages
     message = messages.pop()
