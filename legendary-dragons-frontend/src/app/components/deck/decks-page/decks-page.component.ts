@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 import { AppState } from 'src/app/app.state';
 import { createDeck, getDecks, removeDeck } from 'src/app/ngrx/deck/deck.actions';
 import { decksSelector, errorSelector, isLoadingSelector } from 'src/app/ngrx/deck/deck.selectors';
+import { ToastService } from 'src/app/services/toast/toast.service';
 import { Deck } from "../../../models/deck.model";
 
 @Component({
@@ -23,7 +24,7 @@ export class DecksPageComponent implements OnInit {
     decktype: new FormControl('', Validators.required)
   })
 
-  constructor(public modalService: NgbModal, private appStore: Store<AppState>) {
+  constructor(public modalService: NgbModal, private appStore: Store<AppState>, private toastService: ToastService) {
     this.decks$ = this.appStore.select(decksSelector);
     this.isLoading$ = this.appStore.select(isLoadingSelector);
     this.hasError$ = this.appStore.select(errorSelector);
@@ -36,6 +37,11 @@ export class DecksPageComponent implements OnInit {
 
   open({content}: { content: any }) {
     this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title', size: 'm'});
+  }
+
+  hasItems(totalValue: any): boolean {
+    const values: string[] = Object.values(totalValue)
+    return values.some((value: string) => +value > 0);
   }
 
   get name() {
@@ -56,7 +62,12 @@ export class DecksPageComponent implements OnInit {
     this.form.reset();
   }
 
-  removeDeck(deckId: string): void {
-    this.appStore.dispatch(removeDeck({deck_id: deckId}));
+  removeDeck(deck: Deck): void {
+    if (this.hasItems(deck.total_value)) {
+      this.toastService.showDanger(`Unable to delete deck! All cards located ${deck.deck_name} in needs to be removed first.`)
+      return;
+    }
+
+    this.appStore.dispatch(removeDeck({deck_id: deck.deck_id}));
   }
 }

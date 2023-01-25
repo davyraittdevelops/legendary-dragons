@@ -139,7 +139,6 @@ export class WishlistEffects {
             return event['event_type'] === 'REMOVE_ALERT#PRICE_RESULT' || event['event_type'] === 'REMOVE_ALERT#AVAILABILITY_RESULT'
           }),
           map((event: any) => removeAlertSuccess({alert_item: event["data"]})),
-          // tap(this.store.dispatch(getAlerts))
           catchError((error) => {
             console.log(error);
             return of(removeAlertFail({error: true}))

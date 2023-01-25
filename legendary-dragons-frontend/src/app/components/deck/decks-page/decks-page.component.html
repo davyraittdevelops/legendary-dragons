@@ -19,11 +19,7 @@
               <span class="badge rounded-pill text-bg-info fw-normal">
                 {{deck.deck_type}}
               </span>
-
             </h2>
-            <p class="card-text fs-6">
-              Current deck value:
-            </p>
 
             <span class="badge rounded-pill text-bg-success price-text fw-normal me-2 mt-2"
                   *ngFor="let deckValue of deck.total_value | keyvalue">
@@ -34,7 +30,8 @@
             <button type="button" class="btn action-button" [routerLink]="['/decks', deck.deck_id]" name="navigateToDeck">
               <i class="bi bi-eye"></i>
             </button>
-            <button type="button" class="btn delete-icon action-button" (click)="removeDeck(deck.deck_id)" name="removeDeck" [disabled]="isLoading$ | async">
+            <button type="button" class="btn delete-icon action-button" (click)="removeDeck(deck)" name="removeDeck"
+                    [disabled]="(isLoading$ | async)">
               <i class="bi bi-trash"></i>
             </button>
           </div>
