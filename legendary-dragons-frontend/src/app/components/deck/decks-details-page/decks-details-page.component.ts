@@ -1,22 +1,22 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from "@angular/router";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Store } from "@ngrx/store";
-import { catchError, Observable, of, share } from "rxjs";
+import { Observable, share } from "rxjs";
+import { logoutUser } from 'src/app/ngrx/user/user.actions';
 import { WebsocketService } from 'src/app/services/websocket/websocket.service';
 import { AppState } from "../../../app.state";
+import { DeckType } from "../../../models/deck-type.enum";
 import { Deck } from "../../../models/deck.model";
 import { getDeck } from "../../../ngrx/deck/deck.actions";
 import { deckByIdSelector, errorSelector, isDeckLoadingSelector, isLoadingSelector } from "../../../ngrx/deck/deck.selectors";
-import {DeckType} from "../../../models/deck-type.enum";
-import { logoutUser } from 'src/app/ngrx/user/user.actions';
 
 @Component({
   selector: 'app-decks-details-page',
   templateUrl: './decks-details-page.component.html',
   styleUrls: ['./decks-details-page.component.scss']
 })
-export class DecksDetailsPageComponent implements OnInit {
+export class DecksDetailsPageComponent implements OnInit, OnDestroy {
   selectedDeck$: Observable<Deck>;
   isLoading$: Observable<boolean>;
   isDeckLoading$: Observable<boolean>;
@@ -35,20 +35,18 @@ export class DecksDetailsPageComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.websocketService.dataUpdates$().pipe(
-      share(),
-      catchError((error) => {
+    this.websocketService.dataUpdates$().pipe(share()).subscribe({
+      error: (error) => {
         // Token expired
         if (!('reason' in error)) {
           this.appStore.dispatch(logoutUser());
-
-          // TODO: Not working correctly..
           this.router.navigate(["/login"]);
         }
-
-        return of(error);
-      })
-    ).subscribe();
+        else if ('reason' in error) {
+          window.location.reload();
+        }
+      }
+    });
 
     this.activatedRoute.params.subscribe(params => {
       this.deckId = params["id"];
@@ -58,5 +56,9 @@ export class DecksDetailsPageComponent implements OnInit {
     this.selectedDeck$.subscribe(selectedDeck => {
       this.deckCardsLimitReached = selectedDeck.deck_cards.length === 100
     });
+  }
+
+  ngOnDestroy(): void {
+    this.websocketService.closeConnection();
   }
 }
