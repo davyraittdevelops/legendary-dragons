@@ -31,7 +31,7 @@ Within the scope of the Legendary Dragons Application, 3 actors have been identi
 | Actor          | Goal                      | Description                                                                                     |
 |----------------|---------------------------|-------------------------------------------------------------------------------------------------|
 | Anonymous User | Register                  | The anonymous user must register to start using the application                                 |
-| User           | Log in                    | The user must login to start managing his card collection                                       |
+| User           | Log in                    | The user must login to start managing their card collection                                     |
 | User           | Manage deck / side-decks  | The user can add & delete cards from their decks/side-decks                                     |
 | User           | Manage card collection    | The user can add & delete MTG cards to their collection                                         |
 | User           | Search card by keyword    | The user can search for a specific MTG card                                                     |
@@ -60,7 +60,7 @@ The diagram displays the various contexts withing the Legendary Dragons applicat
 - CardContext: The context for managing the cards from the Scryfall API.
 - InventoryContext: The context for the inventory management for a user.
 - DeckContext: The context for the deck management for a user.
-- WishlistContext: The context for the deck management for a user.
+- WishlistContext: The context for the wishlist management for a user.
 - IdentityAndAccessContext: The context for authenticate & authorization of a user.
 
 ## Cloud Deployment diagram
