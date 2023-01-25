@@ -80,8 +80,33 @@ export const inventoryReducer = createReducer(
   }),
   on(removeCardFromInventoryFail, (state) => ({...state, isLoading: false, hasError: true})),
   on(getInventory, (state, {paginatorKey}) => inventoryPaginatorUpdateState(state, paginatorKey)),
-  on(getInventorySuccess, (state, {inventory, paginatorKey}) => ({...state, isLoading: false, hasError: false, inventory, paginatorKey})),
   on(getInventoryFail, (state) => ({...state, isLoading: false, hasError: true})),
+  on(getInventorySuccess, (state, {inventory, paginatorKey}) => {
+    const inventoryCards: number =+ inventory.total_cards;
+
+    const inventoryInit = {
+      ...state, 
+      hasError: false, 
+      isLoading: false, 
+      paginatorKey: paginatorKey,
+      inventory: inventory
+    }
+
+    const newInventoryResult = {
+      ...state.inventory,
+      total_cards : inventoryCards,
+      inventory_cards: inventory.inventory_cards
+    };
+
+    if (state.currentPageIndex == 0) {
+      return inventoryInit;
+    }
+
+    return {
+      ...inventoryInit,
+      inventory: newInventoryResult
+    };
+  }),
   on(updateInventoryCardSuccess, (state, {inventoryCard}) => {
     const inventory = {...state.inventory};
     const filteredInventoryCards = inventory.inventory_cards.filter((card) => card.card_id !== inventoryCard.card_id);

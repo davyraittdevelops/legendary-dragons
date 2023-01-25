@@ -65,6 +65,7 @@ def update_inventory_total_value(user_id, inventory_id, card_prices):
     )["Item"]
 
     inventory_total_values = dict(sorted(inventory["total_value"].items()))
+    inventory_total_cards = int(inventory["total_cards"]) + 1
     card_prices = dict(sorted(card_prices.items()))
 
     new_total_values = {}
@@ -76,9 +77,10 @@ def update_inventory_total_value(user_id, inventory_id, card_prices):
             "PK": f"USER#{user_id}",
             "SK": f"INVENTORY#{inventory_id}"
         },
-        UpdateExpression='set total_value = :new_total_values',
+        UpdateExpression='set total_value = :new_total_values, total_cards = :new_total_cards',
         ExpressionAttributeValues={
-            ":new_total_values": new_total_values
+            ":new_total_values": new_total_values,
+            ":new_total_cards": str(inventory_total_cards)
         },
         ConditionExpression='attribute_exists(PK) AND attribute_exists(SK)',
     )
