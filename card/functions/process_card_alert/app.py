@@ -50,7 +50,7 @@ def handle_price_alert(price_alert):
                 if float(value) < price_point:
                     body = f'Congratulations! The price alert for the card {card_name} has been triggered. The current card price is {value} {key} and your alert price value was set to {price_point}'
                     send_email_to_user(user_email, body, subject)
-                    break
+                    return
 
 
 def handle_availability_alert(availability_alert):
@@ -68,7 +68,7 @@ def handle_availability_alert(availability_alert):
             if value is not None:
                 body = f'Congratulations! The availability alert for the card {card_name} has been triggered. The card is available for {value} {key}'
                 send_email_to_user(user_email, body, subject)
-                break
+                return
 
 
 def query_cards_table(oracle_id):
@@ -82,14 +82,18 @@ def query_cards_table(oracle_id):
 
 
 def get_user_email_by_id(uid):
-    response = cognito_client.admin_get_user(
-        UserPoolId=user_pool,
-        Username=uid
-    )
+    try: 
+        response = cognito_client.admin_get_user(
+            UserPoolId=user_pool,
+            Username=uid
+        )
 
-    for user_attribute in response["UserAttributes"]:
-        if user_attribute['Name'] == 'email':
-            email = user_attribute['Value']
+        for user_attribute in response["UserAttributes"]:
+            if user_attribute['Name'] == 'email':
+                email = user_attribute['Value']
+    except Exception as e:
+        print('Error')
+        return 'errors@legendarydragons.cloud-native-minor.it'
 
     return email
 
