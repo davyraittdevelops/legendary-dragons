@@ -83,9 +83,9 @@ table.query(
     Key("SK").begins_with("CARD_FACE")
 )
 ```
-Required in:
-- Inventory card detail modal
-- Deck card detail modal
+- Required in:
+  - Inventory card detail modal
+  - Deck card detail modal
 
 
 2) Get Card Face by oracle id
@@ -96,10 +96,8 @@ table.query(
     IndexName="GSI1"
 )
 ```
-
-Required in:
-- Sending alert emails
-
+- Required in:
+  - Sending alert emails
 
 #### Inventory
 
@@ -110,17 +108,16 @@ table.query(
     Key("SK").begins_with("INVENTORY"),
 )["Items"]
 ```
-Required in:
-- Inventory overview page
-
+- Required in:
+  - Inventory overview page
 
 2) Get a inventory by id for a user
 
 ```python
 table.get_item(Key={"PK": "USER#1", "SK": "INVENTORY#1"})
 ```
-Required in:
-- Update inventory total value
+- Required in:
+  - Update inventory total value
 
 
 3) Get Inventory Card by name for a user
@@ -130,9 +127,9 @@ KeyConditionExpression=Key("GSI1_PK").eq(f"USER#1234") & Key("GSI1_SK").begins_w
 IndexName="GSI1",
 )
 ```
-Required in:
-- Inventory overview page
-- Add card to deck modal
+- Required in:
+  - Inventory overview page
+  - Add card to deck modal
 
 
 #### Deck
@@ -144,8 +141,8 @@ table.query(
     Key("SK").begins_with("DECK#"),
 )["Items"]
 ```
-Required in:
-- Decks overview page
+- Required in:
+  - Decks overview page
 
 
 2) Get a specific Deck by id with its Deck cards for a user
@@ -155,15 +152,15 @@ table.query(
     Key("SK").begins_with("DECK#1"),
 )["Items"]
 ```
-Required in:
-- Decks details page
+- Required in:
+  - Decks details page
 
 3) Get a specific deck by id for a user
 ```python
 table.get_item(Key={"PK": "USER#1", "SK": "DECK#1"})
 ```
-Required in:
-- Update deck total value
+- Required in:
+  - Update deck total value
 
 
 #### Wishlist
@@ -175,8 +172,8 @@ table.query(
     Key("SK").begins_with("WISHLIST_ITEM#"),
 )["Items"]
 ```
-Required in:
-- Wishlist page
+- Required in:
+  - Wishlist page
 
 2) Get Alerts for a user
 ```python
@@ -185,8 +182,8 @@ table.query(
     Key("SK").begins_with("WISHLIST_ITEM#1#ALERT#"),
 )["Items"]
 ```
-Required in:
-- Wishlist item modal
+- Required in:
+  - Wishlist item modal
 
 
 ### Connections
