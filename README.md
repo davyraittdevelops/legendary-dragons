@@ -233,6 +233,50 @@ The Legendary Dragons application also has one API Gateway configured for websoc
 
 # Starting the CI/CD Pipelines
 
+The following GitHub secrets are needed to run the pipelines and they are already configured:
+
+* `AWS_ACCESS_KEY_ID`
+* `AWS_SECRET_ACCESS_KEY`
+* `DISTRIBUTION_ID`
+* `SONAR_HOST_URL`
+* `SONAR_TOKEN`
+
+## Feature pipelines
+
+The pipelines are run in GitHub Actions. When creating a pull request, a seperate workflow is used for each context
+for running tests building and verifying that the application works. Also a feature workflow is used for testing
+and building the application when working in a branch with the name: `feature/{branch-name}`.
+
+A feature pipeline is configured for the following contexts:
+
+* `Card`
+* `Connection`
+* `Deck`
+* `Frontend`
+* `Identity & Access`
+* `Inventory`
+* `Wishlist`
+
+## Release pipelines
+
+When a pull request is merged the release pipelines will be triggered. 
+The layered stack will build the Cognito context, the connections event bus and the websocket API gateway when there is a change made to either of these services. 
+The other contexts use the services which results in a layered stack. The frontend release pipeline builds the application and deploys it to a S3 Bucket.
+
+A release pipeline is configured for the following contexts:
+
+* `Card`
+* `Connection`
+* `Deck`
+* `Frontend`
+* `Functional and performance test`
+* `Identity & Access`
+* `Inventory`
+* `Layered Stack`
+* `Wishlist`
+
+The `Functional and performance test` pipeline will run when a pull request is merged and if one of the pipelines above if successful, with the exception of the `Frontend` release pipeline.
+
 # AWS
 
 # OWASP / Security
