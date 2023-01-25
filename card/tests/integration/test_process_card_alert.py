@@ -141,5 +141,5 @@ def test_lambda_handler(event, table_definition):
     message = messages.pop()
 
     # Assert
-    assert response["statusCode"] == 201
+    assert response["statusCode"] == 200
     assert message.body == 'Congratulations! The price alert for the card Acid Web Spider has been triggered. The current card price is 0.20 eur and your alert price value was set to 10.0'
