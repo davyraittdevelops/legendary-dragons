@@ -92,7 +92,6 @@ def get_user_email_by_id(uid):
             if user_attribute['Name'] == 'email':
                 email = user_attribute['Value']
     except Exception as e:
-        print('Error')
         return 'errors@legendarydragons.cloud-native-minor.it'
 
     return email
