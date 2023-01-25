@@ -18,17 +18,19 @@ afterEach(() => {
 })
 
 describe("Add and remove 'Swords to Plowshares' to/from deck 'Main'", () => {
-  it.only('passes', () => {
+  it('passes', () => {
     //arrange
     cy.get("button[name=navigateToDeck]").click();
 
     //act - add
     cy.get("button[name=openAddDeckCardModal]").click();
     cy.get("div[role=document]").should("be.visible");
-    cy.get("select[name=typeLineFilterSelect]").select("Instant");
-    cy.get("select[name=colorFilterSelect]").select("White");
-    cy.get("button[name=applyFilter]").click();
-    cy.get("button[name=addCardToDeck]").click();
+    cy.get("div[role=document").within(() => {
+      cy.get("select[name=typeLineFilterSelect]").select("Instant");
+      cy.get("select[name=colorFilterSelect]").select("White");
+      cy.get("button[name=applyFilter]").click();
+      cy.get("button[name=addCardToDeck]").click();
+    });
 
     //assert - add
     cy.get("div[aria-label=deck-viewport]").should("be.visible");
@@ -84,11 +86,12 @@ describe("Add and remove 'Swords to Plowshares' to/from side-deck of deck 'Main'
 
     //act - add
     cy.get("button[name=openAddDeckCardModal]").click();
-    cy.get("div[role=document]").should("be.visible");
-    cy.get("typeLineFilterSelect").select("Instant");
-    cy.get("colorFilterSelect").select("White");
-    cy.get("button[name=applyFilter]").click();
-    cy.get("button[name=addCardToSideDeck]").click();
+    cy.get("div[role=document").within(() => {
+      cy.get("select[name=typeLineFilterSelect]").select("Instant");
+      cy.get("select[name=colorFilterSelect]").select("White");
+      cy.get("button[name=applyFilter]").click();
+      cy.get("button[name=addCardToSideDeck]").click();
+    });
 
     //assert - add
     cy.get("div[aria-label=side-deck-viewport]").should("be.visible");

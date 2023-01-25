@@ -18,7 +18,7 @@
                [(ngModel)]="cardNameFilter">
       </mat-form-field>
 
-      <button class="btn" (click)="applyFilter()" [disabled]="isSearchLoading$ | async">
+      <button class="btn" name="applyFilter" (click)="applyFilter()" [disabled]="isSearchLoading$ | async">
         <i class="bi bi-search"></i>
       </button>
 
