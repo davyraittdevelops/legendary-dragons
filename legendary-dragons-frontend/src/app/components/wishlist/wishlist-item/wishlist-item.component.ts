@@ -62,7 +62,8 @@ export class WishlistItemComponent {
       card_market_id: this.wishlist_item.card_market_id,
       price_point : this.pricePoint.trim(),
       alert_type: this.alertType,
-      alert_id: ''
+      alert_id: wishlist_item.oracle_id,
+      card_name : wishlist_item.card_name
     }
 
     this.appStore.dispatch(createAlert({alert_item: alert_item_obj, wishlist_item_id: wishlist_item.wishlist_item_id}))

@@ -4,7 +4,6 @@ export const loginUser = () => {
   cy.get("input[name=password]").type("verySecurePassw0rd!").blur();
   cy.get("form").submit();
   cy.url().should("contain", "/dashboard");
-  cy.reload();
 }
 
 export const logout = () => {
@@ -12,12 +11,11 @@ export const logout = () => {
 }
 
 export const removeAllInventoryCards = () => {
-  cy.wait(2000);
+  cy.visit("/dashboard");
+  cy.wait(5000);
   cy.get("body").then($body => {
     if ($body.find("div[aria-label=collection-card]").length > 0) {
-      cy.get("li[id=card-remove-btn]").each(($el) => {
-        cy.wrap($el).click();
-      });
+      cy.get("li[id=card-remove-btn]").click({multiple: true});
     }
   });
   cy.get("div[aria-label=collection-card]").should("not.exist");
@@ -38,12 +36,10 @@ export const addCardToInventory = () => {
 export const removeAllDecks = () => {
   cy.visit("/dashboard");
   cy.get("#mat-tab-label-0-1").click();
-  cy.wait(2000);
+  cy.wait(4000);
   cy.get("body").then($body => {
     if ($body.find("div[aria-label=deck]").length > 0) {
-      cy.get("button[name=removeDeck]").each(($el) => {
-        cy.wrap($el).click();
-      })
+      cy.get("button[name=removeDeck]").click({multiple: true});
     }
   });
   cy.get("div[aria-label=deck]").should("not.exist");
@@ -57,4 +53,16 @@ export const createDeck = () => {
   cy.get("input[name=name]").type("Main");
   cy.get("input[name=decktype]").type("EDH/Commander");
   cy.get("button[name=createDeck]").click();
+}
+
+export const removeAllWishlistCards = () => {
+  cy.visit("/dashboard");
+  cy.get("#mat-tab-label-0-2").click();
+  cy.wait(2000);
+  cy.get("body").then($body => {
+    if ($body.find("div[aria-label=Basic-example]").length > 0) {
+      cy.get("button[name=removeWishlistItem]").click({multiple: true});
+    }
+  });
+  cy.get("div[aria-label=Basic-example]").should("not.exist")
 }

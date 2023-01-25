@@ -24,6 +24,7 @@ def lambda_handler(event, context):
     inventory_id = body["inventory_id"]
     card_id = str(uuid.uuid4())
     card = body["inventory_card"]
+    card_name_lowercase = card['card_name'].lower().strip()
 
     now = datetime.utcnow().isoformat()
     pk = f"USER#{user_id}"
@@ -41,8 +42,8 @@ def lambda_handler(event, context):
         "created_at": now,
         "last_modified": now,
         **card,
-        "GSI1_PK": sk,
-        "GSI1_SK": pk
+        "GSI1_PK": pk,
+        "GSI1_SK": f"INVENTORY_CARD#{card_name_lowercase}"
     })
 
     return {"statusCode": 200}

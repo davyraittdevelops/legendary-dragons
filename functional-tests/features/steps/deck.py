@@ -152,7 +152,7 @@ def moveCardToDeck(context):
     context.ws.send(json.dumps({
         "action": "moveDeckCardReq",
         "deck_id": context.detail["create_deck"]["data"]["deck_id"],
-        "deck_card": "1",
+        "deck_card_id": "1",
         "deck_type": "side_deck"
     }))
 
