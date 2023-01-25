@@ -57,12 +57,10 @@ def lambda_handler(event, context):
     return {"statusCode": 200}
 
 def update_inventory_total_value(user_id, inventory_id, card_prices):
-    pk = "USER#" + user_id
-    sk = "INVENTORY#" + inventory_id
     inventory = table.get_item(
         Key={
-            "PK": pk,
-            "SK": sk
+            "PK": f"USER#{user_id}",
+            "SK": f"INVENTORY#{inventory_id}"
         }
     )["Item"]
 
@@ -75,12 +73,12 @@ def update_inventory_total_value(user_id, inventory_id, card_prices):
 
     table.update_item(
         Key={
-            "PK": pk,
-            "SK": sk
+            "PK": f"USER#{user_id}",
+            "SK": f"INVENTORY#{inventory_id}"
         },
-        ConditionExpression='attribute_exists(PK) AND attribute_exists(SK)',
         UpdateExpression='set total_value = :new_total_values',
         ExpressionAttributeValues={
             ":new_total_values": new_total_values
-        }
+        },
+        ConditionExpression='attribute_exists(PK) AND attribute_exists(SK)',
     )
