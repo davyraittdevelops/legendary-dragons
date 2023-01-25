@@ -17,17 +17,17 @@ afterEach(() => {
   logout();
 })
 
-describe("Add 'Swords to Plowshares' to deck 'Main'", () => {
+describe("Add and remove 'Swords to Plowshares' to/from deck 'Main'", () => {
   it('passes', () => {
     //arrange
     cy.get("button[name=navigateToDeck]").click();
 
-    //act
+    //act - add
     cy.get("button[name=openAddDeckCardModal]").click();
     cy.get("div[role=document]").should("be.visible");
     cy.get("button[name=addCardToDeck]").click();
 
-    //assert
+    //assert - add
     cy.get("div[aria-label=deck-viewport]").should("be.visible");
     cy.get("div[aria-label=deck-viewport]").within(() => {
       cy.get("div[aria-label=deck-card]").should("exist");
@@ -39,7 +39,7 @@ describe("Add 'Swords to Plowshares' to deck 'Main'", () => {
 
     cy.get("button[aria-label=Close]").click();
 
-    cy.get("P[aria-label=deck-prices]").should("be.visible");
+    cy.get("p[aria-label=deck-prices]").should("be.visible");
     cy.get("p[aria-label=deck-prices]").within(() => {
       cy.get("span").should("have.length", 6);
       cy.get("span").eq(0).contains("EUR: 1.98");
@@ -49,66 +49,19 @@ describe("Add 'Swords to Plowshares' to deck 'Main'", () => {
       cy.get("span").eq(4).contains("USD ETCHED: 0");
       cy.get("span").eq(5).contains("USD FOIL: 0");
     });
-  });
-});
 
-describe("Add 'Swords to Plowshares' to side-deck of deck 'Main'", () => {
-  it('passes', () => {
-    //arrange
-    cy.get("button[name=navigateToDeck]").click();
-
-    //act
-    cy.get("button[name=openAddDeckCardModal]").click();
-    cy.get("div[role=document]").should("be.visible");
-    cy.get("button[name=addCardToSideDeck]").click();
-
-    //assert
-    cy.get("div[aria-label=side-deck-viewport]").should("be.visible");
-    cy.get("div[aria-label=side-deck-viewport]").within(() => {
-      cy.get("div[aria-label=deck-card]").should("exist");
-      cy.get("button[name=openDeckCardDetailsModal]").click();
-    });
-    let deckCardDetails = cy.get("div[role=document]");
-    deckCardDetails.should("be.visible");
-    cy.contains("Swords to Plowshares");
-
-    cy.get("button[aria-label=Close]").click();
-
-    cy.get("P[aria-label=deck-prices]").should("be.visible");
-    cy.get("p[aria-label=deck-prices]").within(() => {
-      cy.get("span").should("have.length", 6);
-      cy.get("span").eq(0).contains("EUR: 1.98");
-      cy.get("span").eq(1).contains("EUR FOIL: 0");
-      cy.get("span").eq(2).contains("TIX: 0");
-      cy.get("span").eq(3).contains("USD: 2.19");
-      cy.get("span").eq(4).contains("USD ETCHED: 0");
-      cy.get("span").eq(5).contains("USD FOIL: 0");
-    });
-  });
-});
-
-describe("Remove 'Swords to Plowshares' from deck 'Main'", () => {
-  it('passes', () => {
-    //arrange
-    cy.get("button[name=navigateToDeck]").click();
-    cy.get("button[name=openAddDeckCardModal]").click();
-    cy.get("div[role=document]").should("be.visible");
-    cy.get("button[name=addCardToDeck]").click();
-
-    //act
-    cy.get("div[aria-label=deck-viewport]").should("be.visible");
+    //act - remove
     cy.get("div[aria-label=deck-viewport]").within(() => {
       cy.get("div[aria-label=deck-card]").should("exist");
       cy.get("button[name=removeCardFromDeck]").click();
     });
 
-    //assert
-    cy.get("div[aria-label=deck-viewport").should("be.visible");
+    //assert - remove
     cy.get("div[aria-label=deck-viewport").within(() => {
       cy.get("div[aria-label=deck-card]").should("not.exist");
     });
 
-    cy.get("P[aria-label=deck-prices]").should("be.visible");
+    cy.get("p[aria-label=deck-prices]").should("be.visible");
     cy.get("p[aria-label=deck-prices]").within(() => {
       cy.get("span").should("have.length", 6);
       cy.get("span").eq(0).contains("EUR: 0");
@@ -121,28 +74,51 @@ describe("Remove 'Swords to Plowshares' from deck 'Main'", () => {
   });
 });
 
-describe("Remove 'Swords to Plowshares' from the side-deck of deck 'Main'", () => {
+describe("Add and remove 'Swords to Plowshares' to/from side-deck of deck 'Main'", () => {
   it('passes', () => {
     //arrange
     cy.get("button[name=navigateToDeck]").click();
+
+    //act - add
     cy.get("button[name=openAddDeckCardModal]").click();
     cy.get("div[role=document]").should("be.visible");
     cy.get("button[name=addCardToSideDeck]").click();
 
-    //act
+    //assert - add
     cy.get("div[aria-label=side-deck-viewport]").should("be.visible");
+    cy.get("div[aria-label=side-deck-viewport]").within(() => {
+      cy.get("div[aria-label=deck-card]").should("exist");
+      cy.get("button[name=openDeckCardDetailsModal]").click();
+    });
+    let deckCardDetails = cy.get("div[role=document]");
+    deckCardDetails.should("be.visible");
+    cy.contains("Swords to Plowshares");
+
+    cy.get("button[aria-label=Close]").click();
+
+    cy.get("p[aria-label=deck-prices]").should("be.visible");
+    cy.get("p[aria-label=deck-prices]").within(() => {
+      cy.get("span").should("have.length", 6);
+      cy.get("span").eq(0).contains("EUR: 1.98");
+      cy.get("span").eq(1).contains("EUR FOIL: 0");
+      cy.get("span").eq(2).contains("TIX: 0");
+      cy.get("span").eq(3).contains("USD: 2.19");
+      cy.get("span").eq(4).contains("USD ETCHED: 0");
+      cy.get("span").eq(5).contains("USD FOIL: 0");
+    });
+
+    //act - remove
     cy.get("div[aria-label=side-deck-viewport]").within(() => {
       cy.get("div[aria-label=deck-card]").should("exist");
       cy.get("button[name=removeCardFromDeck]").click();
     });
 
-    //assert
-    cy.get("div[aria-label=side-deck-viewport").should("be.visible");
+    //assert - remove
     cy.get("div[aria-label=side-deck-viewport").within(() => {
       cy.get("div[aria-label=deck-card]").should("not.exist");
     });
 
-    cy.get("P[aria-label=deck-prices]").should("be.visible");
+    cy.get("p[aria-label=deck-prices]").should("be.visible");
     cy.get("p[aria-label=deck-prices]").within(() => {
       cy.get("span").should("have.length", 6);
       cy.get("span").eq(0).contains("EUR: 0");
