@@ -22,3 +22,8 @@ Outputs:
     Value: !GetAtt ConnectionEventBus.Arn
     Export:
       Name: !Sub "${AWS::StackName}-LegDragonsConnectionsEventBus"
+  LegDragonsConnectionsEventBusName:
+    Description: "Legendary Dragons Connection Event Bus Name"
+    Value: !GetAtt ConnectionEventBus.Name
+    Export:
+      Name: !Sub "${AWS::StackName}-LegDragonsConnectionsEventBusName"
