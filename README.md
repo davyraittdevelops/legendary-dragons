@@ -7,7 +7,7 @@ Legendary Dragons is a Magic The Gathering collection management tool that allow
 - [Architecture](#architecture)
 - [Starting the CI/CD Pipelines](#starting-the-cicd-pipelines)
 - [AWS](#aws)
-- [OWASP TOP 10](#owasp-/-security)
+- [OWASP](#owasp)
 - [Requirements](#requirements)
 
 # SonarQube Projects
@@ -88,9 +88,22 @@ Required in:
 - Deck card detail modal
 
 
+2) Get Card Face by oracle id
+```python
+table.query(
+    KeyConditionExpression=Key("GSI1_PK").eq(f'CARD_FACE#{oracle_id}') &
+    Key("GSI1_SK").begins_with('CARD#'),
+    IndexName="GSI1"
+)
+```
+
+Required in:
+- Sending alert emails
+
+
 #### Inventory
 
-1) Get inventory for a user
+1) Get inventory & inventory cards for a user
 ```python
 table.query(
     KeyConditionExpression=Key("PK").eq("USER#1234") &
@@ -100,10 +113,20 @@ table.query(
 Required in:
 - Inventory overview page
 
-2) Inventory Cards Search
+
+2) Get a inventory by id for a user
+
+```python
+table.get_item(Key={"PK": "USER#1", "SK": "INVENTORY#1"})
+```
+Required in:
+- Update inventory total value
+
+
+3) Get Inventory Card by name for a user
 ```python
 table.query(
-KeyConditionExpression=Key("GSI1_PK").eq(f"USER#1234") & Key("GSI1_SK").begins_with(f"INVENTORY_CARD#1"),
+KeyConditionExpression=Key("GSI1_PK").eq(f"USER#1234") & Key("GSI1_SK").begins_with(f"INVENTORY_CARD#sword"),
 IndexName="GSI1",
 )
 ```
@@ -114,7 +137,7 @@ Required in:
 
 #### Deck
 
-1) Get Decks
+1) Get Decks for a user
 ```python
 table.query(
     KeyConditionExpression=Key("PK").eq("USER#1234") &
@@ -122,9 +145,10 @@ table.query(
 )["Items"]
 ```
 Required in:
-- Decks page
+- Decks overview page
 
-2) Get Deck by Id
+
+2) Get a specific Deck by id with its Deck cards for a user
 ```python
 table.query(
     KeyConditionExpression=Key("PK").eq("USER#1234") &
@@ -134,10 +158,17 @@ table.query(
 Required in:
 - Decks details page
 
+3) Get a specific deck by id for a user
+```python
+table.get_item(Key={"PK": "USER#1", "SK": "DECK#1"})
+```
+Required in:
+- Update deck total value
+
 
 #### Wishlist
 
-1) Get wishlist
+1) Get wishlist items for a user
 ```python
 table.query(
     KeyConditionExpression=Key("PK").eq("USER#1234") &
@@ -147,7 +178,7 @@ table.query(
 Required in:
 - Wishlist page
 
-2) Get Alerts
+2) Get Alerts for a user
 ```python
 table.query(
     KeyConditionExpression=Key("PK").eq("USER#1234") &
@@ -306,10 +337,15 @@ All of the infrastructure of the application is setup with Serverless Applicatio
 
 - [CloudFront Distrubtion](https://us-east-1.console.aws.amazon.com/cloudfront/v3/home?region=us-east-1#/distributions/E2NYU2TQVP1L0T)
 
+## S3
+
+- [legendary-dragons-frontend](https://s3.console.aws.amazon.com/s3/buckets/legendary-dragons-frontend?region=us-east-1)
+- [websocket-documentation](https://s3.console.aws.amazon.com/s3/buckets/websocket-documentation?region=us-east-1&tab=objects)
+
 ## EC2
 An EC2 instance was created to for the attempt of a self hosted GitHub runner. The instance is shutdown, but can be found [here](https://us-east-1.console.aws.amazon.com/ec2/home?region=us-east-1#InstanceDetails:instanceId=i-0948197efb73a1287)
 
-# OWASP / Security
+# OWASP
 
 Here, we will test and document the 10 most important security risks in our application.
 
@@ -333,24 +369,24 @@ table.update_item(
 ```
 
 ## 2.  Authentication errors
-* We use strong password policy and do not use hard-coded passwords.
-* We use 2FA (two-factor authentication). 2FA is an additional security layer added to the traditional password-based authentication process. Instead of using just a password, 2FA requires a user to use two different factors to log in:
-* A verification email that is sent to the email address used during the registration process.
+* We use strong password policy (10 characters and must include lowercase/uppercase letters, numbers and symbols) and do not use hard-coded passwords/tokens.
+* A verification email that is sent to the email address used during the registration process to give access to use the application.
 
 ## 3.  Sensitive data
 * We use the AWS Cognito service which provides encryption. This means that sensitive information such as user passwords are encrypted.
-To limit this risk, it is important to restrict access to management interfaces to only authorized users. This can be done through authentication and authorization controls, such as 2-factor authentication and role-based access policy.
-* We use a verification email.
+To limit this risk, it is important to restrict access to management interfaces to only authorized users. This can be done through authentication and authorization controls
+* A websocket connection can only accepted if a valid JWT token from AWS Cognito is provided. This protects all the routes behind the API Gateway for the websocket routes.
 
 ## 4.  Failing access controls
-* To limit this risk, it is important to restrict access to management interfaces to only authorized users. This can be done through authentication and authorization controls, such as 2-factor authentication and role-based access policy.
-* We use a verification email.
+* To limit this risk, it is important to restrict access to management interfaces to only authorized users. This can be done through authentication and authorization controls.
+* Changing URL parameters in the frontend doesn't give another user access to which it doesn't have the privileges of.
 
 ## 5.  Incorrect configuration
 * A way to prevent security mistakes in architecture and design is by applying input and output validation. Input validation means checking the input data for validity and suitability for the specific purpose they are used for. This prevents users from entering invalid or dangerous data. Output validation means checking the output of an application for validity and suitability for the specific situation it is used in. This prevents users from receiving dangerous or invalid data. And this is implemented in our implementation.
 
 ## 6.  Insufficient security of communication channels
-* We use AWS API Gateway. AWS API Gateway is a service that can be used to create, publish, secure, and manage APIs. With API Gateway, you can secure APIs using SSL/TLS encryption. For example, you can upload a certificate to the service and then configure all traffic to the API to go through HTTPS. This encrypts all data sent to and from the API with SSL/TLS.
+* We use AWS API Gateway. AWS API Gateway is a service that can be used to create, publish, secure, and manage APIs. With API Gateway, you can secure APIs using SSL/TLS encryption. For example, you can upload a certificate to the service and then configure all traffic to the API to go through HTTPS. This encrypts all data sent to and from the API with SSL/TLS. Lastly, the required routes for API Gateway have been closed behind authentication.
+* SSL/TLS is added for the Cloudfront distribution.
 
 ## 7. Incorrect management of changes and configurations
 * A way to limit this risk is by using automation for application change management.
@@ -358,7 +394,7 @@ To limit this risk, it is important to restrict access to management interfaces 
 
 ## 8.  Insufficient data security
 * A way to limit this risk is by using access control to restrict data access to only those users who have permission. Access control is a process of setting rules for who has access to which data and for what purposes. This allows for monitoring of who has access to which data and how this data is used.
-* For this, we use AWS Identity and Access Management (IAM) in our application.
+* For this, we use AWS Identity and Access Management (IAM) in our application with Least Privileges principles in mind.
 
 ## 9.  Insufficient security of software dependencies
 * A way to limit this risk is by keeping dependencies up-to-date and regularly checking them for security issues. It is important to use the latest versions of dependencies as they often fix security issues that were present in previous versions.
