@@ -130,8 +130,7 @@ def test_lambda_handler(event, table_definition):
         "prices": {"eur": "0.20"}
     })
 
-    logger.info(ses_backends[DEFAULT_ACCOUNT_ID].keys())
-    ses_backend = ses_backends[DEFAULT_ACCOUNT_ID]['global']
+    ses_backend = ses_backends[DEFAULT_ACCOUNT_ID]['us-east-1']
 
     # Act
     from functions.process_card_alert import app
