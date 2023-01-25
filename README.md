@@ -243,21 +243,21 @@ The Legendary Dragons application also has one API Gateway configured for websoc
 
 ## Functionele eisen (20%)
 
-| Done | Requirement                                               |
-|------|-----------------------------------------------------------|
+| Done | Requirement                                                                |
+|------|----------------------------------------------------------------------------|
 | :heavy_check_mark:    | [MUST] Gebruikers registratie, authenticatie, autorisatie |
 | :heavy_check_mark:    | [MUST] Kaart collectie beheren                            |
 | :heavy_check_mark:    | [MUST] Decks (EDH/Commander) beheren                      |
 | :heavy_check_mark:    | [MUST] Side decks beheren                                 |
 | :heavy_check_mark:    | [SHOULD] Wishlist beheren                                 |
-| :heavy_plus_sign:    | [SHOULD] Actuele waarde van de collectie en decks inzien  |
+| :heavy_plus_sign:    | [SHOULD] Actuele waarde van de collectie en decks inzien   |
 | :heavy_check_mark:    | [SHOULD] Price alert voor whishlist kaarten               |
 | :heavy_check_mark:    | [SHOULD] Availability alert voor wishlist kaarten         |
 
 ## Ontwikkelen van container- en serverless applicaties voor de Amazon Cloud (AWS) (5%)
 
-| Done | Requirement                                           |
-|------|-------------------------------------------------------|
+| Done | Requirement                                                            |
+|------|------------------------------------------------------------------------|
 | :heavy_check_mark:    | [SHOULD] Applicatie functioneert als integraal geheel |
 | :heavy_check_mark:    | [SHOULD] Lambda's correct toegepast                   |
 | :heavy_check_mark:    | [SHOULD] WebSocket / REST principes correct toegepast |
@@ -266,8 +266,8 @@ The Legendary Dragons application also has one API Gateway configured for websoc
 
 ## Ontwikkelen van front-end applicaties deployed in de Amazon Cloud (AWS) (5%)
 
-| Done | Requirement                                              |
-|------|----------------------------------------------------------|
+| Done | Requirement                                                               |
+|------|---------------------------------------------------------------------------|
 | :heavy_check_mark:    | [SHOULD] Applicatie functioneert als integraal geheel    |
 | :heavy_check_mark:    | [SHOULD] CloudFront/S3 frontend deployment               |
 | :heavy_check_mark:    | [SHOULD] Framework (Angular/React/Vue) correct toegepast |
@@ -277,17 +277,17 @@ The Legendary Dragons application also has one API Gateway configured for websoc
 
 ## Ontwikkelen van applicaties met SQL- en NoSQL-databases. (5%)
 
-| Done | Requirement                                                        |
-|------|--------------------------------------------------------------------|
+| Done | Requirement                                                                         |
+|------|-------------------------------------------------------------------------------------|
 | :heavy_check_mark:    | [SHOULD] DynamoDB correct toegepast                                |
 | :heavy_check_mark:    | [SHOULD] Eventual consistency correct toegepast                    |
 | :heavy_check_mark:    | [SHOULD] Access patterns correct geïdentificeerd en toegepast      |
-| :x:    | [COULD] Distributed transacties correct toegepast (Step Functions) |
+| :x:    | [COULD] Distributed transacties correct toegepast (Step Functions)                |
 
 ## Toepassen van Container- en Serverless technologie voor de deployment van applicaties (5%)
 
-| Done | Requirement                                    |
-|------|------------------------------------------------|
+| Done | Requirement                                                     |
+|------|-----------------------------------------------------------------|
 | :heavy_check_mark:    | [SHOULD] API Gateway correct toegepast         |
 | :heavy_check_mark:    | [SHOULD] EventBridge/SNS/SQS correct toegepast |
 | :heavy_check_mark:    | [SHOULD] Logging correct toegepast             |
@@ -295,21 +295,21 @@ The Legendary Dragons application also has one API Gateway configured for websoc
 
 ## Toepassen van CI, CD en Infra-as-Code voor het inrichten van applicaties in een cloudomgeving (10%)
 
-| Done | Requirement                                                          |
-|------|----------------------------------------------------------------------|
+| Done | Requirement                                                                           |
+|------|---------------------------------------------------------------------------------------|
 | :heavy_check_mark:    | [MUST] CDK, CloudFormation en/of SAM correct toegepast               |
 | :heavy_check_mark:    | [MUST] CD pipeline voor de infrastructuur ingericht                  |
 | :heavy_check_mark:    | [MUST] Source code beschikbaar in monorepo in GitHub                 |
 | :heavy_check_mark:    | [MUST] CI pipeline voor de backend ingericht                         |
 | :heavy_check_mark:    | [MUST] CD pipeline voor de backend ingericht                         |
-| :x:    | [SHOULD] OTAP principe toegepast om staging en productie te scheiden |
+| :x:    | [SHOULD] OTAP principe toegepast om staging en productie te scheiden                |
 | :heavy_check_mark:    | [COULD] CI pipeline voor de frontend ingericht                       |
-| :heavy_check_mark:    | [COULD] CD pipeline voor de frontend ingericht                                                                     |
+| :heavy_check_mark:    | [COULD] CD pipeline voor de frontend ingericht                       |
 
 ## Borgen van de kwaliteit van applicaties en geautomatiseerd testen (10%)
 
-| Done | Requirement                                                         |
-|------|---------------------------------------------------------------------|
+| Done | Requirement                                                                          |
+|------|--------------------------------------------------------------------------------------|
 | :heavy_check_mark:    | [MUST] Code reviews by peers                                        |
 | :heavy_check_mark:    | [MUST] Git feature branching met merge requests toegepast           |
 | :heavy_check_mark:    | [MUST] QA via Sonar                                                 |
@@ -321,8 +321,8 @@ The Legendary Dragons application also has one API Gateway configured for websoc
 
 ## Kennis van cloud- en serverless architecturen. (10%)
 
-| Done | Requirement                                                                  |
-|------|------------------------------------------------------------------------------|
+| Done | Requirement                                                                                   |
+|------|-----------------------------------------------------------------------------------------------|
 | :heavy_check_mark:    | [MUST] Events, Commands en Aggregates geïdentificeerd middels Event storming |
 | :heavy_check_mark:    | [MUST] Domein model volgens DDD principes                                    |
 | :heavy_check_mark:    | [MUST] Databaseontwerp opgesteld                                             |
@@ -333,8 +333,8 @@ The Legendary Dragons application also has one API Gateway configured for websoc
 
 ## Kennis van cloudinfrastructuur, monitoring, performance, reliability, security en kosten (15%)
 
-| Done | Requirement                                                                                           |
-|------|-------------------------------------------------------------------------------------------------------|
+| Done | Requirement                                                                                                            |
+|------|------------------------------------------------------------------------------------------------------------------------|
 | :heavy_check_mark:    | [MUST] CloudWatch Monitoring dashboard ingericht en bijgehouden                                       |
 | :heavy_check_mark:    | [MUST] Authenticatie en autorisatie toegepast (AWS Cognito)                                           |
 | :heavy_check_mark:    | [MUST] Performance tests opgezet en regelmatig uitgevoerd                                             |
@@ -346,8 +346,8 @@ The Legendary Dragons application also has one API Gateway configured for websoc
 
 ## Toepassen van Agile Scrum en DevOps principes (15%)
 
-| Done | Requirement                                          |
-|------|------------------------------------------------------|
+| Done | Requirement                                                           |
+|------|-----------------------------------------------------------------------|
 | :heavy_check_mark:    | [MUST] Backlog opgesteld en bijgehouden              |
 | :heavy_check_mark:    | [MUST] Sprint review (demo) gehouden                 |
 | :heavy_check_mark:    | [MUST] Sprint planning gehouden                      |
@@ -357,8 +357,8 @@ The Legendary Dragons application also has one API Gateway configured for websoc
 
 ## Open plus punten
 
-| Done | Requirement                 |
-|------|-----------------------------|
+| Done | Requirement                                  |
+|------|----------------------------------------------|
 | :heavy_check_mark:    | Use Case diagram            |
 | :heavy_check_mark:    | Context Map                 |
 | :heavy_check_mark:    | Wireframes                  |
