@@ -10,7 +10,6 @@ afterEach(() => {
   logout();
 });
 
-//TODO: add a remove all wishlistalerts!
 describe('Create and remove a card price alert', () => {
   it('passes', () => {
     // Arrange
@@ -35,7 +34,7 @@ describe('Create and remove a card price alert', () => {
 
     // Assert - Delete
     cy.get("div > ul").should("not.exist")
-    
+
     cy.get("button[aria-label=Close]").click();
   })
 })
