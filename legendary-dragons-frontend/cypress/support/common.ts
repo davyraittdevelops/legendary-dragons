@@ -67,19 +67,6 @@ export const removeAllWishlistCards = () => {
   cy.get("div[aria-label=Basic-example]").should("not.exist")
 }
 
-// export const removeAllWishlistAlerts = () => {
-//   cy.visit("/dashboard");
-//   cy.get("#mat-tab-label-0-2").click();
-//   cy.wait(2000);
-//   cy.get("button[name=detailWishlistItem]").click();
-//   cy.wait(2000);
-//   cy.get("body").then($body => {
-//     if ($body.find("ul[class=list-group]").length > 0) {
-//       cy.get("button[name=alert-0-remove-btn]").click({multiple: true});
-//     }
-//   });
-// }
-
 export const createWishlistCard = () => {
   cy.visit("/dashboard");
   cy.get("#mat-tab-label-0-2").click();
