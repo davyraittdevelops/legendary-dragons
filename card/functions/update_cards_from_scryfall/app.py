@@ -16,9 +16,9 @@ events_client = boto3.client("events")
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table(os.environ["TABLE_NAME"])
 
+
 def lambda_handler(event, context):
     """Get the most recent card update from Scryfall and update our database."""
- 
     logger.info("Retrieve all bulk data items")
     bulk_data_items = requests.get(os.environ["SCRYFALL_BULK_DATA_URL"]).json()
 
@@ -37,21 +37,18 @@ def lambda_handler(event, context):
         card_face_list.extend(card_faces)
 
     write_to_database(card_list, card_face_list)
-    
+
     return {"statusCode": 200}
 
+
 def write_to_database(card_list, card_faces_list):
-    logger.info(f'Length of card_list is :  {len(card_list)}' )
-    logger.info(f'Length of card_faces_list is :  {len(card_faces_list)}' )
-
-
-    """Import the update objects in the database"""
+    logger.info(f'Length of card_list is :  {len(card_list)}')
+    logger.info(f'Length of card_faces_list is :  {len(card_faces_list)}')
     logger.info("Import the update objects in the database")
     with table.batch_writer() as writer:
         for card in card_list:
             writer.put_item(Item=card)
         for card_face in card_faces_list:
-            print('Working with ' , card_face['card_name'])
             writer.put_item(Item=card_face)
 
 
@@ -64,7 +61,7 @@ def card_entry(card):
         oracle_id = card['oracle_id']
     else:
         oracle_id = card['card_faces'][0]['oracle_id']
-    
+
     card_id = "CARD#" + card["id"]
     card_face_oracle_id = "CARD_FACE#" + oracle_id
 
@@ -113,7 +110,7 @@ def card_face_entry(card):
     else:
         multiverse_id = multiverse[0] if multiverse_len >= 1 else None
         card_faces.append(create_card_face(card, multiverse_id, oracle_id,scryfall_id, type_line, 0))
-    
+
     return card_faces
 
 
@@ -135,14 +132,14 @@ def create_card_face(card, multiverse_id, oracle_id, scryfall_id, type_line, idx
         "entity_type": "CARD_FACE",
         "scryfall_id": scryfall_id,
         "oracle_id": oracle_id,
-        "multiverse_id": multiverse_id,        
+        "multiverse_id": multiverse_id,
         "card_name": card["name"],
         "oracle_text": card["oracle_text"],
         "mana_cost": card["mana_cost"],
         "colors": card["colors"] if "colors" in card else colors,
-        "type_line": type_line, 
+        "type_line": type_line,
         "image_url": image,
-        "GSI1_PK":card_scryfall_id,
+        "GSI1_PK": card_scryfall_id,
         "GSI1_SK": card_face_oracle_id,
         "created_at":  datetime.utcnow().isoformat(),
         "last_modified":  datetime.utcnow().isoformat(),
