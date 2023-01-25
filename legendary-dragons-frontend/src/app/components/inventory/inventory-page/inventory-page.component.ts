@@ -24,9 +24,7 @@ export class InventoryPageComponent implements OnInit {
   constructor(private appStore: Store<AppState>) {
     this.isLoading$ = this.appStore.select(isLoadingSelector);
     this.hasError$ = this.appStore.select(errorSelector);
-    this.inventory$ = this.appStore.select(inventorySelector).pipe(tap(inv => {
-      console.log(inv)
-    }));
+    this.inventory$ = this.appStore.select(inventorySelector);
     this.paginator$ = this.appStore.select(paginatorSelector);
   }
 
