@@ -56,7 +56,7 @@ export const inventoryReducer = createReducer(
       return {...state, isLoading: false, hasError: false};
 
     const cards = [...state.inventory.inventory_cards, inventoryCard];
-    const newInventory = {...state.inventory, inventory_cards: cards, total_cards: state.inventory.total_cards + 1};
+    const newInventory = {...state.inventory, inventory_cards: cards, total_cards: (+state.inventory.total_cards) + 1};
 
     return {...state, isLoading: false, hasError: false, inventory: newInventory};
   }),
@@ -73,7 +73,7 @@ export const inventoryReducer = createReducer(
         created_at: state.inventory.created_at,
         last_modified: state.inventory.last_modified,
         total_value: state.inventory.total_value,
-        total_cards: state.inventory.total_cards - 1,
+        total_cards: (+state.inventory.total_cards) - 1,
         inventory_cards: state.inventory.inventory_cards.filter(card => card.card_id !== inventoryCard.card_id)
       }
     };
@@ -85,9 +85,9 @@ export const inventoryReducer = createReducer(
     const inventoryCards: number =+ inventory.total_cards;
 
     const inventoryInit = {
-      ...state, 
-      hasError: false, 
-      isLoading: false, 
+      ...state,
+      hasError: false,
+      isLoading: false,
       paginatorKey: paginatorKey,
       inventory: inventory,
       total_cards : inventoryCards,
