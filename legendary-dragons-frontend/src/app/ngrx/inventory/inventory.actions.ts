@@ -61,6 +61,20 @@ export const updateInventoryCardSuccess = createAction(
   props<{ inventoryCard: InventoryCard}>()
 );
 
+export const updateInventory = createAction(
+  '[Add Card Component] Update Inventory'
+);
+
+export const updateInventoryFail = createAction(
+  '[Add Card Component] Update Inventory Fail',
+  props<{ error: boolean }>(),
+);
+
+export const updateInventorySuccess = createAction(
+  '[Add Card Component] Update Inventory Success',
+  props<{ inventory: Inventory}>()
+);
+
 export const searchInventoryCard = createAction(
   '[Inventory Component] Search Inventory Card',
   props<{paginatorKey: PaginatorKey, filter: object, cardName: string}>()
