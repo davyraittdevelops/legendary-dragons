@@ -12,7 +12,10 @@
     <ng-container *ngIf="selectedDeck$ | async as selectedDeck">
       <!-- Row 1  -->
       <div class="row mt-3">
-        <div class="col col-6 text-center">
+        <div class="col col-12 text-center">
+          <a href="/dashboard" class="btn p-0 arrow-button add-icon" type="button">
+            <i class="bi bi-arrow-left-square-fill text-white"></i>
+          </a>
           <h1 class="fs-2 fw-bold">{{ selectedDeck.deck_name }}
             <span class="badge text-bg-dark">{{selectedDeck.deck_type}}</span>
           </h1>

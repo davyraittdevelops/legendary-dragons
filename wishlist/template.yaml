@@ -11,6 +11,9 @@ Parameters:
   LegDragonsConnectionsEventBus:
     Type: String
     Default: "legendary-dragons-connection-event-bus-LegDragonsConnectionsEventBus"
+  LegDragonsConnectionsEventBusName:
+    Type: String
+    Default: "legendary-dragons-connection-event-bus-LegDragonsConnectionsEventBusName"
   LegDragonsBroadcastArn:
     Type: String
     Default: "legendary-dragons-connection-LegDragonsBroadcastArn"
@@ -95,7 +98,9 @@ Resources:
       CodeUri: functions/stream_wishlist_changes/
       Policies:
         - EventBridgePutEventsPolicy:
-            EventBusName: "connection-event-bus"
+            EventBusName:
+              Fn::ImportValue:
+                !Sub "${LegDragonsConnectionsEventBusName}"
         - DynamoDBStreamReadPolicy:
             TableName: !Ref WishlistTable
             StreamName: !Select [3, !Split ["/", !GetAtt WishlistTable.StreamArn]]
@@ -118,7 +123,9 @@ Resources:
     Type: AWS::Events::Rule
     Properties:
       Name: wishlist-broadcast-rule
-      EventBusName: "connection-event-bus"
+      EventBusName:
+        Fn::ImportValue:
+          !Sub "${LegDragonsConnectionsEventBusName}"
       EventPattern:
         source:
           - "wishlist.database"

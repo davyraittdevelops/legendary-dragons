@@ -25,7 +25,12 @@ describe("Add and remove 'Swords to Plowshares' to/from deck 'Main'", () => {
     //act - add
     cy.get("button[name=openAddDeckCardModal]").click();
     cy.get("div[role=document]").should("be.visible");
-    cy.get("button[name=addCardToDeck]").click();
+    cy.get("div[role=document").within(() => {
+      cy.get("select[name=typeLineFilterSelect]").select("Instant");
+      cy.get("select[name=colorFilterSelect]").select("White");
+      cy.get("button[name=applyFilter]").click();
+      cy.get("button[name=addCardToDeck]").click();
+    });
 
     //assert - add
     cy.get("div[aria-label=deck-viewport]").should("be.visible");
@@ -81,8 +86,12 @@ describe("Add and remove 'Swords to Plowshares' to/from side-deck of deck 'Main'
 
     //act - add
     cy.get("button[name=openAddDeckCardModal]").click();
-    cy.get("div[role=document]").should("be.visible");
-    cy.get("button[name=addCardToSideDeck]").click();
+    cy.get("div[role=document").within(() => {
+      cy.get("select[name=typeLineFilterSelect]").select("Instant");
+      cy.get("select[name=colorFilterSelect]").select("White");
+      cy.get("button[name=applyFilter]").click();
+      cy.get("button[name=addCardToSideDeck]").click();
+    });
 
     //assert - add
     cy.get("div[aria-label=side-deck-viewport]").should("be.visible");
@@ -150,6 +159,7 @@ describe("Move deck card from deck to side-deck", () => {
     cy.get("div[aria-label=side-deck-viewport").should("be.visible");
     cy.get("div[aria-label=side-deck-viewport").within(() => {
       cy.get("div[aria-label=deck-card]").should("exist");
+      cy.get("button[name=removeCardFromDeck]").click();
     });
   });
 });
@@ -173,6 +183,7 @@ describe("Move deck card from side-deck to deck", () => {
     cy.get("div[aria-label=deck-viewport").should("be.visible");
     cy.get("div[aria-label=deck-viewport").within(() => {
       cy.get("div[aria-label=deck-card]").should("exist");
+      cy.get("button[name=removeCardFromDeck]").click();
     });
   });
 });

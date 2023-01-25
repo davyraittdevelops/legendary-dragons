@@ -92,6 +92,7 @@ def test_lamda_handler_success(websocket_event, table_definition):
             "eur_foil": 0,
             "tix": 0
         },
+        "total_cards": 50
     })
 
     # Act
@@ -120,3 +121,4 @@ def test_lamda_handler_success(websocket_event, table_definition):
     assert total_values["eur"] == 0
     assert total_values["eur_foil"] == 0
     assert total_values["tix"] == 0
+    assert inventory["total_cards"] == "51"

@@ -45,23 +45,26 @@
       An error has occured. Please try again.
     </div>
 
-    <div class="text-center mt-2 mb-2" *ngIf="isLoading$ | async">
+    <div class="text-center mt-2 mb-2" *ngIf="(isLoading$ | async); else alert_items">
       <span class="spinner-border spinner-border mt-3" role="status" aria-hidden="true">
       </span>
     </div>
 
-    <ng-container *ngIf="alert_items$ | async as alert_items">
-      <ul class="list-group" *ngFor="let alert_item of alert_items; let i = index">
-        <li class="list-group-item fs-5">
-          <button class="btn btn-lg me-3" (click)="removeAlert(alert_item)" aria-label="Button with a delete icon" [disabled]="isLoading$ | async" name="alert-{{i}}-remove-btn">
-            <i class="bi bi-trash"></i>
-          </button>
-          <ng-container *ngIf="alert_item.entity_type === 'ALERT#PRICE'; else availability_alert">
-            Price alert: < {{alert_item.price_point}}
-          </ng-container>
-        </li>
-      </ul>
-    </ng-container>
+    <ng-template #alert_items>
+      <ng-container *ngIf="alert_items$ | async as alert_items">
+        <ul class="list-group" *ngFor="let alert_item of alert_items; let i = index">
+          <li class="list-group-item fs-5">
+            <button class="btn btn-lg me-3" (click)="removeAlert(alert_item)" aria-label="Button with a delete icon" [disabled]="isLoading$ | async" name="alert-{{i}}-remove-btn">
+              <i class="bi bi-trash"></i>
+            </button>
+            <ng-container *ngIf="alert_item.entity_type === 'ALERT#PRICE'; else availability_alert">
+              Price alert: < {{alert_item.price_point}}
+            </ng-container>
+          </li>
+        </ul>
+      </ng-container>
+    </ng-template>
+
   </div>
 </ng-template>
 

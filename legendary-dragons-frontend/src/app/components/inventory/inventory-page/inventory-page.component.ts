@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { AppState } from 'src/app/app.state';
 import { Inventory } from 'src/app/models/inventory.model';
 import { clearPaginator, getInventory, searchInventoryCard } from 'src/app/ngrx/inventory/inventory.actions';

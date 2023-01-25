@@ -31,7 +31,6 @@ export class UserEffects {
               return loginUserSuccess({jwt})
             }),
             catchError(error => {
-              console.log(error)
               return of(loginUserFail({error: true}));
             })
           )

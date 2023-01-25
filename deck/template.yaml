@@ -11,6 +11,9 @@ Parameters:
   LegDragonsConnectionsEventBus:
     Type: String
     Default: "legendary-dragons-connection-event-bus-LegDragonsConnectionsEventBus"
+  LegDragonsConnectionsEventBusName:
+    Type: String
+    Default: "legendary-dragons-connection-event-bus-LegDragonsConnectionsEventBusName"
   LegDragonsBroadcastArn:
     Type: String
     Default: "legendary-dragons-connection-LegDragonsBroadcastArn"
@@ -223,7 +226,9 @@ Resources:
       CodeUri: functions/remove_card_from_deck/
       Policies:
         - EventBridgePutEventsPolicy:
-            EventBusName: "connection-event-bus"
+            EventBusName:
+              Fn::ImportValue:
+                !Sub "${LegDragonsConnectionsEventBusName}"
         - DynamoDBCrudPolicy:
             TableName: !Ref DeckTable
 
@@ -266,7 +271,9 @@ Resources:
       CodeUri: functions/add_card_to_deck/
       Policies:
         - EventBridgePutEventsPolicy:
-            EventBusName: "connection-event-bus"
+            EventBusName:
+              Fn::ImportValue:
+                !Sub "${LegDragonsConnectionsEventBusName}"
         - DynamoDBWritePolicy:
             TableName: !Ref DeckTable
         - DynamoDBReadPolicy:
@@ -352,7 +359,9 @@ Resources:
       CodeUri: functions/stream_deck_changes/
       Policies:
         - EventBridgePutEventsPolicy:
-            EventBusName: "connection-event-bus"
+            EventBusName:
+              Fn::ImportValue:
+                !Sub "${LegDragonsConnectionsEventBusName}"
         - DynamoDBStreamReadPolicy:
             TableName: !Ref DeckTable
             # Reason: https://github.com/aws/serverless-application-model/issues/289#issuecomment-939738271
@@ -407,7 +416,9 @@ Resources:
     Type: AWS::Events::Rule
     Properties:
       Name: deck-broadcast-rule
-      EventBusName: "connection-event-bus" # or arn
+      EventBusName:
+        Fn::ImportValue:
+          !Sub "${LegDragonsConnectionsEventBusName}"
       EventPattern:
         source:
           - "deck.database"
