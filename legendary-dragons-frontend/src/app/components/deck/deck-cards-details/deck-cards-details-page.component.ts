@@ -7,7 +7,6 @@ import { DeckType } from 'src/app/models/deck-type.enum';
 import {DeckCard} from 'src/app/models/deck.model';
 import { isDeckLoadingSelector } from 'src/app/ngrx/deck/deck.selectors';
 import {moveDeckCard, removeCardFromDeck} from "../../../ngrx/deck/deck.actions";
-import {inventorySelector} from "../../../ngrx/inventory/inventory.selectors";
 
 @Component({
   selector: 'app-deck-cards-details-page',
@@ -22,11 +21,9 @@ export class DeckCardsDetailsPageComponent {
   deckTypeEnum = DeckType;
 
   content: any;
-  inventory_id!: string;
   isDeckLoading$: Observable<boolean>;
 
   constructor(public modalService: NgbModal, private appStore: Store<AppState>) {
-    this.appStore.select(inventorySelector).subscribe(inventory => this.inventory_id = inventory.inventory_id);
     this.isDeckLoading$ = this.appStore.select(isDeckLoadingSelector);
   }
 
@@ -49,7 +46,7 @@ export class DeckCardsDetailsPageComponent {
   }
 
   removeCardFromDeck() {
-    this.appStore.dispatch(removeCardFromDeck({deck_id: this.deckId, deck_card: this.card, deck_type: this.deckType, inventory_id: this.inventory_id}));
+    this.appStore.dispatch(removeCardFromDeck({deck_id: this.deckId, deck_card: this.card, deck_type: this.deckType, inventory_id: this.card.inventory_id}));
   }
 
   moveDeckCard() {

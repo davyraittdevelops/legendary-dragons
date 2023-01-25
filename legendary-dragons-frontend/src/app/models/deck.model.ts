@@ -12,6 +12,7 @@ export interface Deck {
 
 export interface DeckCard {
   inventory_card_id: string;
+  inventory_id: string;
   oracle_id: string,
   card_name: string,
   colors: string[];
