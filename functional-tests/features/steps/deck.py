@@ -45,13 +45,13 @@ def addCardToDeck(context):
         "inventory_card": inventory_card
     }))
 
-    # context.detail["modify_deck_result"] = json.loads(context.ws.recv())
+    context.detail["modify_deck_result"] = json.loads(context.ws.recv())
     context.detail["card_added_to_deck"] = json.loads(context.ws.recv())
 
-    # if context.detail["modify_deck_result"]["event_type"] == "INSERT_DECK_RESULT":
-    #     tmp = context.detail["modify_deck_result"]
-    #     context.detail["modify_deck_result"] = context.detail["card_added_to_deck"]
-    #     context.detail["card_added_to_deck"] = tmp
+    if context.detail["modify_deck_result"]["event_type"] == "INSERT_DECK_CARD_RESULT":
+        tmp = context.detail["modify_deck_result"]
+        context.detail["modify_deck_result"] = context.detail["card_added_to_deck"]
+        context.detail["card_added_to_deck"] = tmp
 
 
 def addCardToSideDeck(context):
@@ -81,13 +81,13 @@ def addCardToSideDeck(context):
         "inventory_card": inventory_card
     }))
 
-    # context.detail["modify_side_deck_result"] = json.loads(context.ws.recv())
+    context.detail["modify_side_deck_result"] = json.loads(context.ws.recv())
     context.detail["card_added_to_side_deck"] = json.loads(context.ws.recv())
 
-    # if context.detail["modify_side_deck_result"]["event_type"] == "INSERT_DECK_RESULT":
-    #     tmp = context.detail["modify_side_deck_result"]
-    #     context.detail["modify_side_deck_result"] = context.detail["card_added_to_side_deck"]
-    #     context.detail["card_added_to_side_deck"] = tmp
+    if context.detail["modify_side_deck_result"]["event_type"] == "INSERT_SIDE_DECK_CARD_RESULT":
+        tmp = context.detail["modify_side_deck_result"]
+        context.detail["modify_side_deck_result"] = context.detail["card_added_to_side_deck"]
+        context.detail["card_added_to_side_deck"] = tmp
 
 def getDeck(context):
     context.ws.send(json.dumps({
@@ -130,13 +130,13 @@ def removeCardFromDeck(context):
         "inventory_id": "09660b91-e394-44ca-882d-438eb1cc9d25"
     }))
 
-    # context.detail["modify_deck_result"] = json.loads(context.ws.recv())
+    context.detail["modify_deck_result"] = json.loads(context.ws.recv())
     context.detail["removed_card_from_deck"] = json.loads(context.ws.recv())
 
-    # if context.detail["modify_deck_result"]["event_type"] == "INSERT_DECK_RESULT":
-    #     tmp = context.detail["modify_deck_result"]
-    #     context.detail["modify_deck_result"] = context.detail["removed_card_from_deck"]
-    #     context.detail["removed_card_from_deck"] = tmp
+    if context.detail["modify_deck_result"]["event_type"] == "REMOVE_DECK_CARD_RESULT":
+        tmp = context.detail["modify_deck_result"]
+        context.detail["modify_deck_result"] = context.detail["removed_card_from_deck"]
+        context.detail["removed_card_from_deck"] = tmp
 
 def removeCardFromSideDeck(context):
     deck_card = {
@@ -164,13 +164,13 @@ def removeCardFromSideDeck(context):
         "inventory_id": "09660b91-e394-44ca-882d-438eb1cc9d25"
     }))
 
-    # context.detail["modify_side_deck_result"] = json.loads(context.ws.recv())
+    context.detail["modify_side_deck_result"] = json.loads(context.ws.recv())
     context.detail["removed_card_from_side_deck"] = json.loads(context.ws.recv())
 
-    # if context.detail["modify_side_deck_result"]["event_type"] == "INSERT_DECK_RESULT":
-    #     tmp = context.detail["modify_side_deck_result"]
-    #     context.detail["modify_side_deck_result"] = context.detail["removed_card_from_side_deck"]
-    #     context.detail["removed_card_from_side_deck"] = tmp
+    if context.detail["modify_side_deck_result"]["event_type"] == "REMOVE_SIDE_DECK_CARD_RESULT":
+        tmp = context.detail["modify_side_deck_result"]
+        context.detail["modify_side_deck_result"] = context.detail["removed_card_from_side_deck"]
+        context.detail["removed_card_from_side_deck"] = tmp
 
 def moveCardToDeck(context):
     context.ws.send(json.dumps({
@@ -259,8 +259,8 @@ def step_impl(context):
     assert context.detail["card_added_to_deck"]["data"]["deck_id"] == context.detail["create_deck"]["data"]["deck_id"]
     assert context.detail["card_added_to_deck"]["data"]["prices"] == {"usd_foil": "0.80", "usd_etched": None, "eur_foil": "0.18", "tix": None, "eur": "0.09"}
 
-    # assert context.detail["modify_deck_result"]["event_type"] == "MODIFY_DECK_RESULT"
-    # assert context.detail["modify_deck_result"]["data"]["total_value"] == {"tix": "0", "usd_etched": "0.8", "eur": "0.09", "usd": "0", "eur_foil": "0.18"}
+    assert context.detail["modify_deck_result"]["event_type"] == "MODIFY_DECK_RESULT"
+    assert context.detail["modify_deck_result"]["data"]["total_value"] == {"tix": "0", "usd_etched": "0.8", "eur": "0.09", "usd": "0", "eur_foil": "0.18"}
 
 @then("the side deck collection is updated and should contain the new card")
 def step_impl(context):
@@ -272,17 +272,16 @@ def step_impl(context):
     assert context.detail["card_added_to_side_deck"]["data"]["deck_id"] == context.detail["create_deck"]["data"]["deck_id"]
     assert context.detail["card_added_to_side_deck"]["data"]["prices"] == {"usd_foil": "5000", "usd_etched": None, "tix": None, "eur": "0.09", "eur_foil": "4500"}
 
-    # assert context.detail["modify_side_deck_result"]["event_type"] == "MODIFY_DECK_RESULT"
-    # assert context.detail["modify_side_deck_result"]["data"]["total_value"] == {"tix": "0", "usd_etched": "5000.8", "eur": "0.18", "usd": "0", "eur_foil": "4500.18"}
+    assert context.detail["modify_side_deck_result"]["event_type"] == "MODIFY_DECK_RESULT"
+    assert context.detail["modify_side_deck_result"]["data"]["total_value"] == {"tix": "0", "usd_etched": "5000.8", "eur": "0.18", "usd": "0", "eur_foil": "4500.18"}
 
 @then("I should be able to see my deck details including main deck and side deck cards")
 def step_impl(context):
-    print(context.detail["get_deck"])
     assert context.detail["get_deck"]["event_type"] == "GET_DECK_RESULT"
     assert context.detail["get_deck"]["data"]["deck"]["deck_id"] == context.detail["create_deck"]["data"]["deck_id"]
     assert context.detail["get_deck"]["data"]["deck"]["deck_name"] == "White-Blue: Azorius"
     assert context.detail["get_deck"]["data"]["deck"]["entity_type"] == "DECK"
-    # assert context.detail["get_deck"]["data"]["deck"]["total_value"] == {"eur_foil": "4500.18", "tix": "0", "usd_etched": "5000.8", "eur": "0.18", "usd": "0"}
+    assert context.detail["get_deck"]["data"]["deck"]["total_value"] == {"eur_foil": "4500.18", "tix": "0", "usd_etched": "5000.8", "eur": "0.18", "usd": "0"}
 
     # Main Deck
     assert context.detail["get_deck"]["data"]["deck_cards"][0]["entity_type"] == "DECK_CARD"
@@ -316,8 +315,8 @@ def step_impl(context):
     assert context.detail["removed_card_from_deck"]["data"]["rarity"] == "uncommon"
     assert context.detail["removed_card_from_deck"]["data"]["prices"] == {"usd_foil": "0.80", "usd_etched": None, "tix": None, "eur": "0.09", "eur_foil": "0.18"}
 
-    # assert context.detail["modify_deck_result"]["data"]["total_value"] == {"tix": "0", "usd_etched": "5000", "eur": "0.09", "usd": "0", "eur_foil": "4500"}
-    # assert context.detail["modify_deck_result"]["event_type"] == "MODIFY_DECK_RESULT"
+    assert context.detail["modify_deck_result"]["data"]["total_value"] == {"tix": "0", "usd_etched": "5000", "eur": "0.09", "usd": "0", "eur_foil": "4500"}
+    assert context.detail["modify_deck_result"]["event_type"] == "MODIFY_DECK_RESULT"
 
 @then("the side deck collection is updated and the card is removed")
 def step_impl(context):
@@ -328,12 +327,11 @@ def step_impl(context):
     assert context.detail["removed_card_from_side_deck"]["data"]["rarity"] == "uncommon"
     assert context.detail["removed_card_from_side_deck"]["data"]["prices"] == {"usd_foil": "5000", "usd_etched": None, "tix": None, "eur": "0.09", "eur_foil": "4500"}
 
-    # assert context.detail["modify_side_deck_result"]["data"]["total_value"] == {"tix": "0", "usd_etched": "0", "eur": "0", "usd": "0", "eur_foil": "0"}
-    # assert context.detail["modify_side_deck_result"]["event_type"] == "MODIFY_DECK_RESULT"
+    assert context.detail["modify_side_deck_result"]["data"]["total_value"] == {"tix": "0", "usd_etched": "0", "eur": "0", "usd": "0", "eur_foil": "0"}
+    assert context.detail["modify_side_deck_result"]["event_type"] == "MODIFY_DECK_RESULT"
 
 @then("the side deck collection should contain the moved card")
 def step_impl(context):
-    print(context.detail["moved_card"])
     assert context.detail["moved_card"]["event_type"] == "MODIFY_SIDE_DECK_CARD_RESULT"
     assert context.detail["moved_card"]["data"]["entity_type"] == "SIDE_DECK_CARD"
     assert context.detail["moved_card"]["data"]["card_name"] == "Abdel Adrian, Gorion's Ward"
