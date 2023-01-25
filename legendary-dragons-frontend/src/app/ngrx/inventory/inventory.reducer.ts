@@ -89,12 +89,12 @@ export const inventoryReducer = createReducer(
       hasError: false, 
       isLoading: false, 
       paginatorKey: paginatorKey,
-      inventory: inventory
+      inventory: inventory,
+      total_cards : inventoryCards,
     }
 
     const newInventoryResult = {
       ...state.inventory,
-      total_cards : inventoryCards,
       inventory_cards: inventory.inventory_cards
     };
 
