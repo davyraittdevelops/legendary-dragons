@@ -73,11 +73,13 @@ export class InventoryEffects {
   public addCardtoInventoryEffect$ = createEffect(() =>
     this.actions$.pipe(
       ofType(addCardtoInventory),
-      tap(({inventoryCard, inventoryId}) => this.websocketService.sendAddCardToInventoryMessage(inventoryId, inventoryCard)),
+      tap(({inventoryCard, inventoryId}) => {
+        this.store.dispatch(updateInventory());
+        this.websocketService.sendAddCardToInventoryMessage(inventoryId, inventoryCard);
+      }),
       switchMap(() => {
         return this.websocketService.dataUpdates$().pipe(
           filter((event: any) => event['event_type'] === 'INSERT_INVENTORY_CARD_RESULT'),
-          tap(() => this.store.dispatch(updateInventory())),
           map((event: any) => addCardtoInventorySuccess({inventoryCard: event["data"]})),
           catchError((error) => {
             console.log(error);
@@ -91,11 +93,13 @@ export class InventoryEffects {
   public removeCardFromInventoryEffect$ = createEffect(() =>
     this.actions$.pipe(
       ofType(removeCardFromInventory),
-      tap(({inventoryCardId, inventoryId}) => this.websocketService.sendRemoveCardFromInventoryMessage(inventoryCardId, inventoryId)),
+      tap(({inventoryCardId, inventoryId}) => {
+        this.store.dispatch(updateInventory());
+        this.websocketService.sendRemoveCardFromInventoryMessage(inventoryCardId, inventoryId);
+      }),
       switchMap(() => {
         return this.websocketService.dataUpdates$().pipe(
           filter((event: any) => event['event_type'] === 'REMOVE_INVENTORY_CARD_RESULT'),
-          tap(() => this.store.dispatch(updateInventory())),
           map((event: any) => removeCardFromInventorySuccess({inventoryCard: event["data"]})),
           catchError((error) => {
             console.log(error);

@@ -3,7 +3,7 @@
     <ng-container *ngIf="inventory$ | async as inventory">
 
       <div class="col-12 text-center">
-        <p class="fs-5">
+        <p class="fs-5" aria-label="inventory-prices">
           <span class="badge rounded-pill text-bg-success price-text fw-normal me-2 mt-2"
                 *ngFor="let inventoryValue of inventory.total_value | keyvalue">
             {{inventoryValue.key.toUpperCase().replace("_", " ")}}: {{inventoryValue.value}}
