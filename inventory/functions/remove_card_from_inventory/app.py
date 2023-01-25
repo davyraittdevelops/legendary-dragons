@@ -36,6 +36,10 @@ def lambda_handler(event, context):
 
         logger.info(f"Deleted card from table, result is {result}")
 
+        #Remove card from deck if deck location has a value.
+        print('@@@@', result['Attributes']['deck_location'])
+        # if (result['Attributes']['deck_location'])
+
         update_inventory_total_value(user_id, inventory_id, result["Attributes"]["prices"])
     except Exception as e:
         logger.info(f"Error deleting card from database: {e}")
