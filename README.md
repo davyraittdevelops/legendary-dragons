@@ -235,6 +235,72 @@ The Legendary Dragons application also has one API Gateway configured for websoc
 
 # AWS
 
+# OWASP / Security
+
+Here, we will test and document the 10 most important security risks in our application.
+
+# 1. Injection
+
+We use input validation where necessary. Input validation is an important step in preventing injection attacks.
+To prevent SQL injection, we use parameterized queries with DynamoDB. The values are passed as parameters to the query and are not directly integrated into the query. This makes it more difficult for hackers to insert dangerous instructions, as they are not directly integrated into the query. See an example below where a card is retrieved by its ID:
+```
+table.update_item(
+      Key={
+        "PK": pk,
+        "SK": sk
+      },
+      ConditionExpression='attribute_exists(PK) AND attribute_exists(SK)',
+      UpdateExpression='set total_value = :new_total_values',
+      ExpressionAttributeValues={
+        ":new_total_values": new_total_values
+      }
+  )
+)
+```
+
+# 2.  Authentication errors
+* We use strong password policy and do not use hard-coded passwords.
+* We use 2FA (two-factor authentication). 2FA is an additional security layer added to the traditional password-based authentication process. Instead of using just a password, 2FA requires a user to use two different factors to log in:
+* A verification email that is sent to the email address used during the registration process.
+
+# 3.  Sensitive data
+* We use the AWS Cognito service which provides encryption. This means that sensitive information such as user passwords are encrypted.
+To limit this risk, it is important to restrict access to management interfaces to only authorized users. This can be done through authentication and authorization controls, such as 2-factor authentication and role-based access policy.
+* We use a verification email.
+
+# 4.  Failing access controls
+* To limit this risk, it is important to restrict access to management interfaces to only authorized users. This can be done through authentication and authorization controls, such as 2-factor authentication and role-based access policy.
+* We use a verification email.
+
+# 5.  Incorrect configuration
+* A way to prevent security mistakes in architecture and design is by applying input and output validation. Input validation means checking the input data for validity and suitability for the specific purpose they are used for. This prevents users from entering invalid or dangerous data. Output validation means checking the output of an application for validity and suitability for the specific situation it is used in. This prevents users from receiving dangerous or invalid data. And this is implemented in our implementation.
+
+# 6.  Insufficient security of communication channels
+* We use AWS API Gateway. AWS API Gateway is a service that can be used to create, publish, secure, and manage APIs. With API Gateway, you can secure APIs using SSL/TLS encryption. For example, you can upload a certificate to the service and then configure all traffic to the API to go through HTTPS. This encrypts all data sent to and from the API with SSL/TLS.
+
+# 7. Incorrect management of changes and configurations
+* A way to limit this risk is by using automation for application change management.
+* Automation is the process of implementing systems and software that can automate repetitive manual tasks, such as implementing changes and configurations. This allows for more efficient work and can reduce errors. We do this through GitHub actions pipelines.
+
+# 8.  Insufficient data security
+* A way to limit this risk is by using access control to restrict data access to only those users who have permission. Access control is a process of setting rules for who has access to which data and for what purposes. This allows for monitoring of who has access to which data and how this data is used.
+* For this, we use AWS Identity and Access Management (IAM) in our application.
+
+# 9.  Insufficient security of software dependencies
+* A way to limit this risk is by keeping dependencies up-to-date and regularly checking them for security issues. It is important to use the latest versions of dependencies as they often fix security issues that were present in previous versions.
+* In our implementation, we primarily use LTS (Long-Term Support) versions of software which have resolved issues and security problems.
+
+# 10.  Insufficient logging and monitoring
+* A way to limit this risk is by using logging and monitoring. Logging is the process of recording data about activities within an application. Monitoring is the process of monitoring this data in real-time to quickly identify problems. This allows for quick action to be taken if a security issue is found.
+
+* Our application has a good logging and monitoring strategy.
+
+* We use AWS X-Ray for logging of AWS services such as AWS Lambda, EC2 and S3.
+
+* We use AWS CloudWatch to monitor our application.
+
+* Additionally, we have set up an AWS dashboard which allows us to monitor and manage the usage of the AWS resources used. This allows us to map and visualize the performance of our application in real-time through various charts and data.
+
 # Requirements
 
 * :heavy_check_mark: = Done
