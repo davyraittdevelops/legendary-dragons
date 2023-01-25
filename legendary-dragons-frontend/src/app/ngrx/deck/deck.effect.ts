@@ -152,11 +152,11 @@ export class DeckEffects {
           filter((event: any) => {
             return event['event_type'] === 'INSERT_DECK_CARD_RESULT' || event['event_type'] === 'INSERT_SIDE_DECK_CARD_RESULT'
           }),
-          map((event: any) => addCardToDeckSuccess({deckCard: event["data"], deckType: deck_type})),
           tap(() => {
             this.store.dispatch(updateInventoryCard());
             this.store.dispatch(updateDeck());
           }),
+          map((event: any) => addCardToDeckSuccess({deckCard: event["data"], deckType: deck_type})),
           catchError((error) => {
             console.log(error);
             return of(addCardToDeckFail({error: true}))
@@ -174,6 +174,10 @@ export class DeckEffects {
         return this.websocketService.dataUpdates$().pipe(
           filter((event: any) => {
             return event['event_type'] === 'REMOVE_DECK_CARD_RESULT' || event['event_type'] === 'REMOVE_SIDE_DECK_CARD_RESULT'
+          }),
+          tap(() => {
+            this.store.dispatch(updateInventoryCard());
+            this.store.dispatch(updateDeck());
           }),
           map((event: any) => removeCardFromDeckSuccess({deck_id: event["deck_id"], deck_card: event["data"], deck_type: deck_type})),
           catchError((error) => {
