@@ -150,6 +150,7 @@ describe("Move deck card from deck to side-deck", () => {
     cy.get("div[aria-label=side-deck-viewport").should("be.visible");
     cy.get("div[aria-label=side-deck-viewport").within(() => {
       cy.get("div[aria-label=deck-card]").should("exist");
+      cy.get("button[name=removeCardFromDeck]").click();
     });
   });
 });
@@ -173,6 +174,7 @@ describe("Move deck card from side-deck to deck", () => {
     cy.get("div[aria-label=deck-viewport").should("be.visible");
     cy.get("div[aria-label=deck-viewport").within(() => {
       cy.get("div[aria-label=deck-card]").should("exist");
+      cy.get("button[name=removeCardFromDeck]").click();
     });
   });
 });
