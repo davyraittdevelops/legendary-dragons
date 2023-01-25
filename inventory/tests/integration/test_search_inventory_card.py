@@ -1,13 +1,10 @@
 import os
 import json
-from decimal import Decimal
-
+import botocore.client
 import boto3
 import pytest
 from moto import mock_dynamodb
 from unittest.mock import patch
-from boto3.dynamodb.conditions import Key
-from datetime import datetime
 
 CONNECTION_ID = "abcdefg"
 TABLE_NAME = "test_inventory"
@@ -51,6 +48,17 @@ def table_definition():
 
 
 @pytest.fixture()
+def inventory_card():
+    return {
+        "card_name": "Swords of Doom", "oracle_id": "oracle-123",
+        "colors": ["R"], "prices": {"usd": "0.05"},
+        "type_line": "Legendary Creature",
+        "rarity": "meta", "quality": "rare",
+        "scryfall_id": "scryfall-1"
+    }
+
+
+@pytest.fixture()
 def websocket_event():
     """Generates Websocket Event"""
     return {
@@ -63,76 +71,52 @@ def websocket_event():
             }
         },
         "body": json.dumps({
-            "action": "removeCardToInventoryReq",
-            "inventory_card_id": "1",
-            "inventory_id": "inv-12",
+            "action": "searchInventoryCardReq",
+            "filter": {
+                "colors": ["R"],
+                "type_line": "Creature",
+            },
+            "card_name": "swords",
+            "paginatorKey": {},
         }),
     }
 
 
+orig = botocore.client.BaseClient._make_api_call
+
+
+def mock_make_api_call(self, operation_name, kwarg):
+    if operation_name == "PostToConnection":
+        return None
+    return orig(self, operation_name, kwarg)
+
+
 @patch.dict(os.environ, OS_ENV, clear=True)
 @mock_dynamodb
-def test_lamda_handler_success(websocket_event, table_definition):
+def test_lamda_handler_success(websocket_event, table_definition,
+                               inventory_card):
     # Arrange
-    # 1. Create the DynamoDB Table
     dynamodb = boto3.resource("dynamodb")
     table = dynamodb.create_table(**table_definition)
-    now = datetime.utcnow().isoformat()
 
     user_pk = "USER#user-123"
-    inventory_card_sk = "INVENTORY#inv-12#INVENTORY_CARD#1"
+    inventory_sk = "INVENTORY#3b90345a-99cc-11ed-a8fc-0242ac120002"
 
     table.put_item(Item={
         "PK": user_pk,
-        "SK": "INVENTORY#inv-12",
-        "total_value": {
-            "usd": 0,
-            "usd_foil": 0,
-            "usd_etched": 0,
-            "eur": 24,
-            "eur_foil": 0,
-            "tix": 0
-        },
-    })
-
-    table.put_item(Item={
-        "PK": user_pk,
-        "SK": inventory_card_sk,
+        "SK": f"{inventory_sk}#INVENTORY_CARD#4efa1ab0-99cc-11ed-a8fc-0242ac120002",
+        "GSI1_PK": user_pk,
+        "GSI1_SK": "INVENTORY_CARD#swords of doom",
         "entity_type": "INVENTORY_CARD",
-        "inventory_id": "inv-12",
-        "user_id": "user-123",
+        "inventory_id": "1",
         "card_id": "1",
-        "prices": {'usd_foil': None, 'usd_etched': None, 'eur_foil': None, 'tix': None, 'eur': '1.98', 'usd': '2.18'},
-        "created_at": now,
-        "last_modified": now,
-        "GSI1_PK": inventory_card_sk,
-        "GSI1_SK": user_pk
+        **inventory_card
     })
 
-    # Act
-    from functions.remove_card_from_inventory import app
-    response = app.lambda_handler(websocket_event, {})
+    with patch("botocore.client.BaseClient._make_api_call", new=mock_make_api_call):
+        # Act
+        from functions.search_inventory_card import app
+        response = app.lambda_handler(websocket_event, {})
 
-    inventory_card = table.query(
-        KeyConditionExpression=Key("PK").eq(user_pk) &
-        Key("SK").begins_with("INVENTORY#inv-12#INVENTORY_CARD#")
-    )["Items"]
-
-    inventory = table.query(
-        KeyConditionExpression=Key("PK").eq(user_pk) &
-        Key("SK").eq("INVENTORY#inv-12")
-    )["Items"][0]
-
-    # Assert
-    assert response['statusCode'] == 200
-    assert len(inventory_card) == 0
-
-    total_values = inventory["total_value"]
-    assert total_values["usd"] == 0
-    assert total_values["usd_foil"] == 0
-    assert total_values["usd_etched"] == 0
-    assert total_values["eur"] == Decimal("22.02")
-    assert total_values["eur_foil"] == 0
-    assert total_values["tix"] == 0
-
-
+        # Assert
+        assert response["statusCode"] == 200

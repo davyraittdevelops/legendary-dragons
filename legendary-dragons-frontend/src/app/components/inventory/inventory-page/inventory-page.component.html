@@ -2,18 +2,27 @@
   <div class="row row-cols-auto gy-4">
     <ng-container *ngIf="inventory$ | async as inventory">
 
-      <div class="col-12 text-end">
-        <p class="fs-5">
+      <div class="col-12 text-center">
+        <p class="fs-5" aria-label="inventory-prices">
+          <span class="badge rounded-pill text-bg-success price-text fw-normal me-2 mt-2"
+                *ngFor="let inventoryValue of inventory.total_value | keyvalue">
+            {{inventoryValue.key.toUpperCase().replace("_", " ")}}: {{inventoryValue.value}}
+          </span>
           Total cards: {{inventory.total_cards}} <i class="bi bi-files"></i>
         </p>
-        <div class="w-100 text-start">
-          <mat-form-field class="w-90 fs-5 text-light">
+        <div class="w-100">
+          <mat-form-field class="w-75 fs-5 text-light" id="inventory-search-field">
             <mat-label>Search for a card</mat-label>
-            <input matInput placeholder="Jace" name="inventorySearch" color="white" #input [(ngModel)]="query" (keyup.enter)="searchCard(query)">
+            <input matInput placeholder="Jace" name="inventorySearch" color="white" #input
+                   [readonly]="isLoading$ | async"
+                   [(ngModel)]="query" (keyup.enter)="searchCard()">
 
           </mat-form-field>
-          <button class="btn btn-lg text-white" (click)="searchCard(query)">
+          <button class="btn btn-lg text-white" (click)="searchCard()" [disabled]="isLoading$ | async">
             <i class="bi bi-search"></i>
+          </button>
+          <button class="btn btn-light" (click)="clearFilter()" [disabled]="isLoading$ | async">
+            Clear filter
           </button>
         </div>
       </div>

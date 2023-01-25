@@ -48,6 +48,23 @@ Resources:
                     Fn::ImportValue:
                       'Fn::Sub': "${LegDragonsWebSocketApi}"
 
+  SearchInventoryCardFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/search_inventory_card/
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref InventoryTable
+        - Statement:
+          - Effect: Allow
+            Action:
+              - 'execute-api:ManageConnections'
+            Resource:
+              Fn::Sub:
+                - 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${WebSocketApi}/*'
+                - WebSocketApi:
+                    Fn::ImportValue:
+                      'Fn::Sub': "${LegDragonsWebSocketApi}"
 
   AddCardToInventoryFunction:
     Type: AWS::Serverless::Function
@@ -55,6 +72,8 @@ Resources:
       CodeUri: functions/add_card_to_inventory/
       Policies:
         - DynamoDBWritePolicy:
+            TableName: !Ref InventoryTable
+        - DynamoDBReadPolicy:
             TableName: !Ref InventoryTable
 
   UpdateInventoryCardFunction:
@@ -246,11 +265,37 @@ Resources:
       ApiId:
         Fn::ImportValue:
           !Sub "${LegDragonsWebSocketApi}"
-      Description: Search chard by keyword integration
+      Description: Get Inventory integration
       IntegrationType: AWS_PROXY
       IntegrationUri:
         Fn::Sub:
             arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GetInventoryFunction.Arn}/invocations
+
+  SearchInventoryCardRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Fn::ImportValue:
+          !Sub "${LegDragonsWebSocketApi}"
+      RouteKey: searchInventoryCardReq
+      AuthorizationType: NONE
+      OperationName: searchInventoryCardRoute
+      Target: !Join
+        - '/'
+        - - 'integrations'
+          - !Ref SearchInventoryCardInteg
+
+  SearchInventoryCardInteg:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Fn::ImportValue:
+          !Sub "${LegDragonsWebSocketApi}"
+      Description: Search Inventory Card integration
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::Sub:
+            arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${SearchInventoryCardFunction.Arn}/invocations
 
   AddCardToInventoryRoute:
     Type: AWS::ApiGatewayV2::Route
@@ -272,7 +317,7 @@ Resources:
       ApiId:
         Fn::ImportValue:
           !Sub "${LegDragonsWebSocketApi}"
-      Description: Search chard by keyword integration
+      Description: Add Card To Inventory integration
       IntegrationType: AWS_PROXY
       IntegrationUri:
         Fn::Sub:
@@ -311,6 +356,13 @@ Resources:
       FunctionName: !Ref GetInventoryFunction
       Principal: apigateway.amazonaws.com
 
+  SearchInventoryCardPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref SearchInventoryCardFunction
+      Principal: apigateway.amazonaws.com
+
   AddCardToInventoryPermission:
     Type: AWS::Lambda::Permission
     Properties:
@@ -325,7 +377,6 @@ Resources:
       FunctionName: !Ref RemoveCardFromInventoryFunction
       Principal: apigateway.amazonaws.com
 
-
 Outputs:
   GetInventoryFunction:
     Description: "Get Inventory Function ARN"
@@ -339,3 +390,21 @@ Outputs:
   AddCardToInventoryFunctionIamRole:
     Description: "Implicit IAM Role created for Add Card To Inventory Function"
     Value: !GetAtt AddCardToInventoryFunctionRole.Arn
+  SearchInventoryCardFunction:
+    Description: "Search Inventory Card Function ARN"
+    Value: !GetAtt SearchInventoryCardFunction.Arn
+  SearchInventoryCardFunctionIamRole:
+    Description: "Implicit IAM Role created for Search Inventory Card Function"
+    Value: !GetAtt SearchInventoryCardFunctionRole.Arn
+  UpdateInventoryCardFunction:
+    Description: "Update Inventory Card Function ARN"
+    Value: !GetAtt UpdateInventoryCardFunction.Arn
+  UpdateInventoryCardFunctionRole:
+    Description: "Implicit IAM Role created for Update Inventory Card Function"
+    Value: !GetAtt UpdateInventoryCardFunctionRole.Arn
+  RemoveCardFromInventoryFunction:
+    Description: "Remove Card From Inventory Function ARN"
+    Value: !GetAtt RemoveCardFromInventoryFunction.Arn
+  RemoveCardFromInventoryFunctionRole:
+    Description: "Implicit IAM Role created for Remove Card From Inventory Function"
+    Value: !GetAtt RemoveCardFromInventoryFunctionRole.Arn

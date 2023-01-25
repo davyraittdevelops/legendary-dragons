@@ -1,34 +1,37 @@
-import { Injectable } from "@angular/core";
-import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { Store } from "@ngrx/store";
-import { of } from 'rxjs';
-import { catchError, filter, map, switchMap, tap } from 'rxjs/operators';
-import { AppState } from "src/app/app.state";
-import { WebsocketService } from "src/app/services/websocket/websocket.service";
-import { updateInventoryCard } from "../inventory/inventory.actions";
+import {Injectable} from "@angular/core";
+import {Actions, createEffect, ofType} from '@ngrx/effects';
+import {Store} from "@ngrx/store";
+import {of} from 'rxjs';
+import {catchError, filter, map, switchMap, tap} from 'rxjs/operators';
+import {AppState} from "src/app/app.state";
+import {WebsocketService} from "src/app/services/websocket/websocket.service";
+import {updateInventoryCard} from "../inventory/inventory.actions";
 
 import {
-  createDeck,
-  createDeckSuccess,
-  createDeckFail,
-  removeDeck,
-  removeDeckSuccess,
-  removeDeckFail,
-  getDecks,
-  getDecksSuccess,
-  getDecksFail,
-  getDeck,
-  getDeckFail,
-  getDeckSuccess,
   addCardToDeck,
   addCardToDeckFail,
   addCardToDeckSuccess,
+  createDeck,
+  createDeckFail,
+  createDeckSuccess,
+  getDeck,
+  getDeckFail,
+  getDecks,
+  getDecksFail,
+  getDecksSuccess,
+  getDeckSuccess,
+  moveDeckCard,
+  moveDeckCardFail,
+  moveDeckCardSuccess,
   removeCardFromDeck,
   removeCardFromDeckFail,
   removeCardFromDeckSuccess,
-  moveDeckCard,
-  moveDeckCardFail,
-  moveDeckCardSuccess
+  removeDeck,
+  removeDeckFail,
+  removeDeckSuccess,
+  updateDeck,
+  updateDeckFail,
+  updateDeckSuccess
 } from "./deck.actions";
 
 @Injectable()
@@ -40,7 +43,7 @@ export class DeckEffects {
     private store: Store<AppState>
   ) { }
 
-  public addCardtoInventoryEffect$ = createEffect(() =>
+  public createDeckEffect$ = createEffect(() =>
     this.actions$.pipe(
       ofType(createDeck),
       tap(({deck_name, deck_type}) => this.websocketService.sendCreateDeckMessage(deck_name, deck_type)),
@@ -124,17 +127,36 @@ export class DeckEffects {
     )
   );
 
+  public updateDeckEffect$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(updateDeck),
+      switchMap(() => {
+        return this.websocketService.dataUpdates$().pipe(
+          filter((event: any) => event['event_type'] === 'MODIFY_DECK_RESULT'),
+          map((event: any) => updateDeckSuccess({deck: event["data"]})),
+          catchError((error) => {
+            console.log(error);
+            return of(updateDeckFail({error: true}))
+          })
+        )
+      })
+    )
+  );
+
   public addCardtoDeckEffect$ = createEffect(() =>
     this.actions$.pipe(
       ofType(addCardToDeck),
-      tap(({deck_id, deck_type, inventory_card, deck_name}) => this.websocketService.sendAddCardToDeckMessage(deck_id, deck_type, inventory_card, deck_name)),
+      tap(({deck_id, deck_type, inventory_card, deck_name}) => {
+        this.store.dispatch(updateDeck());
+        this.store.dispatch(updateInventoryCard());
+        this.websocketService.sendAddCardToDeckMessage(deck_id, deck_type, inventory_card, deck_name);
+      }),
       switchMap(({deck_type}) => {
         return this.websocketService.dataUpdates$().pipe(
           filter((event: any) => {
             return event['event_type'] === 'INSERT_DECK_CARD_RESULT' || event['event_type'] === 'INSERT_SIDE_DECK_CARD_RESULT'
           }),
           map((event: any) => addCardToDeckSuccess({deckCard: event["data"], deckType: deck_type})),
-          tap(() => this.store.dispatch(updateInventoryCard())),
           catchError((error) => {
             console.log(error);
             return of(addCardToDeckFail({error: true}))
@@ -147,7 +169,11 @@ export class DeckEffects {
   public removeCardFromDeckEffect$ = createEffect(() =>
     this.actions$.pipe(
       ofType(removeCardFromDeck),
-      tap(({deck_id, deck_card, deck_type, inventory_id}) => this.websocketService.sendRemoveCardFromDeckMessage(deck_id, deck_card, inventory_id)),
+      tap(({deck_id, deck_card, deck_type, inventory_id}) => {
+        this.store.dispatch(updateDeck());
+        this.store.dispatch(updateInventoryCard());
+        this.websocketService.sendRemoveCardFromDeckMessage(deck_id, deck_card, inventory_id)
+      }),
       switchMap(({deck_type}) => {
         return this.websocketService.dataUpdates$().pipe(
           filter((event: any) => {

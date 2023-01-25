@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Store } from "@ngrx/store";
-import { Observable, tap } from "rxjs";
+import {delay, map, Observable, tap} from "rxjs";
 import { AlertType } from 'src/app/models/alert-type.enum';
 import { AppState } from "../../../app.state";
 import { WishlistAlert, WishlistItem } from "../../../models/wishlist.model";
@@ -10,6 +10,7 @@ import {
     removeWishlistItem
 } from "../../../ngrx/wishlist/wishlist.actions";
 import { alertItemsSelector, errorSelector, isLoadingSelector } from "../../../ngrx/wishlist/wishlist.selectors";
+import {isLoggedInSelector} from "../../../ngrx/user/user.selectors";
 
 @Component({
   selector: 'app-wishlist-item',
@@ -50,7 +51,25 @@ export class WishlistItemComponent {
   }
 
   removeWishlistItem(wishlist_item: WishlistItem) {
-    this.appStore.dispatch(removeWishlistItem({wishlist_item_id: wishlist_item.wishlist_item_id}))
+    let triggerCount = 0
+    this.appStore.dispatch(getAlerts({wishlist_item_id: wishlist_item.wishlist_item_id}));
+    this.appStore.select(alertItemsSelector)
+      .pipe(
+        tap((result) => {
+          triggerCount += 1
+          if (triggerCount == 2) {
+            if (result.length == 0)
+            {
+              this.appStore.dispatch(removeWishlistItem({wishlist_item_id: wishlist_item.wishlist_item_id}))
+            }
+
+            else {
+              window.alert('There are still alerts on this wishlist item.')
+            }
+          }
+        })
+      ).subscribe();
+
   }
 
   addAlert(wishlist_item: WishlistItem) {
@@ -62,7 +81,8 @@ export class WishlistItemComponent {
       card_market_id: this.wishlist_item.card_market_id,
       price_point : this.pricePoint.trim(),
       alert_type: this.alertType,
-      alert_id: ''
+      alert_id: wishlist_item.oracle_id,
+      card_name : wishlist_item.card_name
     }
 
     this.appStore.dispatch(createAlert({alert_item: alert_item_obj, wishlist_item_id: wishlist_item.wishlist_item_id}))

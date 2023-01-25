@@ -1,10 +1,10 @@
-<div class="collection-card card-size">
+<div class="collection-card card-size" aria-label="wishlist-card">
   <img class="card-image" src="{{wishlist_item.image_url}}" alt="Card Name" loading="lazy">
   <div class="d-flex justify-content-end pointer" (click)="open({content : content});"></div>
 </div>
 
-<div class="btn-group card-action-footer" role="group" aria-label="Basic example">
-  <button type="button"  (click)="open({content : content});"  class="btn btn-dark">
+<div class="btn-group card-action-footer" role="group" aria-label="Basic-example">
+  <button type="button"  name="detailWishlistItem" (click)="open({content : content});"  class="btn btn-dark">
     <i class="bi bi-eye"></i>
   </button>
   <button type="button" class="btn btn-dark" name="removeWishlistItem" (click)="removeWishlistItem(wishlist_item)"
@@ -31,11 +31,11 @@
 
     <mat-form-field *ngIf="alertType === alertTypeEnum.PRICE" class="ms-3">
       <mat-label>Price point</mat-label>
-      <input matInput [(ngModel)]="pricePoint" min="0">
+      <input name="pricePointInput" matInput [(ngModel)]="pricePoint" min="0">
 
     </mat-form-field>
 
-    <button class="btn btn-outline-dark ms-2" (click)="addAlert(wishlist_item)"
+    <button name="addAlertButton" class="btn btn-outline-dark ms-2" (click)="addAlert(wishlist_item)"
             [disabled]="isInvalidPricePoint">
       Add Alert
     </button>
