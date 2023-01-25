@@ -16,6 +16,7 @@ if "DISABLE_XRAY" not in os.environ:
 dynamodb = boto3.resource("dynamodb")
 table = dynamodb.Table(os.getenv("TABLE_NAME"))
 
+
 def lambda_handler(event, context):
     """Read neccesary information from the body/event."""
     connection_id = event["requestContext"]["connectionId"]
@@ -25,21 +26,19 @@ def lambda_handler(event, context):
     apigateway = boto3.client("apigatewaymanagementapi", endpoint_url=endpoint)
     user_id = event["requestContext"]["authorizer"]["userId"]
 
-    """Do query/data manipulation.  """
     try:
         wishlist_items = table.query(
-            KeyConditionExpression=Key("PK").eq(f"USER#{user_id}") 
+            KeyConditionExpression=Key("PK").eq(f"USER#{user_id}")
             &
             Key("SK").begins_with("WISHLIST_ITEM#"),
             FilterExpression="#entity_type = :entity_type",
-             ExpressionAttributeNames={"#entity_type": "entity_type"},
-             ExpressionAttributeValues={":entity_type": "WISHLIST_ITEM"}
+            ExpressionAttributeNames={"#entity_type": "entity_type"},
+            ExpressionAttributeValues={":entity_type": "WISHLIST_ITEM"}
         )['Items']
         logger.info(f'Result from table get item : {wishlist_items}')
     except Exception as error:
         logger.info(f'Received an error: {error}')
 
-    """Post output back to the connection."""
     output = {
         "event_type": "GET_WISHLIST_RESULT",
         "data": wishlist_items,
@@ -51,6 +50,7 @@ def lambda_handler(event, context):
     )
 
     return {"statusCode": 200}
+
 
 class DecimalEncoder(json.JSONEncoder):
     def default(self, obj):

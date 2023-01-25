@@ -1,0 +1,118 @@
+<div class="modal-header bg-dark">
+  <h2 class="modal-title" id="modal-basic-title">Add card to deck</h2>
+  <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="modal.dismiss('Cross click')">
+  </button>
+</div>
+
+<div class="modal-body bg-body-secondary text-black">
+  <div class="modal-body bg-body-secondary text-black">
+    <ng-container *ngIf="inventory$ | async as inventory">
+      <p class="mb-1 text-end fs-5">
+        Total cards {{inventory.total_cards}} <i class="bi bi-files"></i>
+      </p>
+
+      <mat-form-field class="w-90 fs-5">
+        <mat-label>Card name</mat-label>
+        <input matInput (keyup.enter)="applyFilter()" placeholder="Search" #input
+               [readonly]="isSearchLoading$ | async"
+               [(ngModel)]="cardNameFilter">
+      </mat-form-field>
+
+      <button class="btn" (click)="applyFilter()" [disabled]="isSearchLoading$ | async">
+        <i class="bi bi-search"></i>
+      </button>
+
+      <div class="input-group">
+        <select class="form-select w-50" name="typeLineFilterSelect" [(ngModel)]="typeLineFilter">
+          <option selected value="">Type Line</option>
+          <option value="Artifact">Artifact</option>
+          <option value="Creature">Creature</option>
+          <option value="Enchantment">Enchantment</option>
+          <option value="Instant">Instant</option>
+          <option value="Planeswalker">Planeswalker</option>
+          <option value="Sorcery">Sorcery</option>
+          <option value="Land">Land</option>
+        </select>
+
+        <select class="form-select w-50" name="colorFilterSelect" [(ngModel)]="colorFilter">
+          <option selected value="">Colors</option>
+          <option value="W">White</option>
+          <option value="U">Blue</option>
+          <option value="B">Black</option>
+          <option value="R">Red</option>
+          <option value="G">Green</option>
+        </select>
+      </div>
+
+      <div class="text-end mt-3 mb-3">
+        <button class="btn btn-outline-dark" (click)="clearFilter()">
+          Clear filter
+        </button>
+      </div>
+
+      <ng-container *ngIf="inventory.inventory_cards as cards">
+        <div class="text-center" *ngIf="cards.length === 0">
+          <h1>No results found</h1>
+        </div>
+
+        <ng-container *ngIf="cards.length > 0">
+
+          <p class="mb-3 text-end fs-6">
+            Found {{cards.length}} unassigned <i class="bi bi-files"></i>
+          </p>
+
+          <table mat-table [dataSource]="cards">
+            <ng-container matColumnDef="Image">
+              <th mat-header-cell *matHeaderCellDef> Image </th>
+              <td mat-cell *matCellDef="let card">
+                <img [src]="card.image_url" class="small-image" loading="lazy">
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="Name">
+              <th mat-header-cell *matHeaderCellDef> Name </th>
+              <td mat-cell *matCellDef="let card"> {{card.card_name}} </td>
+            </ng-container>
+            <ng-container matColumnDef="MainDeck">
+              <th mat-header-cell *matHeaderCellDef>Action</th>
+              <td mat-cell *matCellDef="let card">
+                <button type="button" [disabled]="deckCardsLimitReached" (click)="addCardToDeck(card, deckType.MAIN);" class="btn btn-dark" name="addCardToDeck">
+                  <i class="bi bi-arrow-bar-left"></i>
+                  Add to deck
+                </button>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="SideDeck">
+              <th mat-header-cell *matHeaderCellDef></th>
+              <td mat-cell *matCellDef="let card">
+                <button type="button" (click)="addCardToDeck(card, deckType.SIDE);" class="btn btn-dark" name="addCardToSideDeck">
+                  <i class="bi bi-arrow-bar-right"></i>
+                  Add to side deck
+                </button>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+        </ng-container>
+
+        <ng-container *ngIf="paginator$ | async as paginator">
+          <div class="mt-2 text-center">
+            <button class="btn btn-dark btn-lg me-1"
+                    *ngFor="let page of paginator.pages; let i = index"
+                    [ngClass]="{'active': paginator.currentPageIndex ===  i}"
+                    (click)="navigateToExistingPage(page, paginator.currentPageIndex, i)"
+                    [disabled]="(isSearchLoading$ | async)">
+              {{ (i + 1) }}
+            </button>
+
+            <button class="btn btn-dark btn-lg" *ngIf="paginator.paginatorKey"
+                    (click)="navigatePage(paginator.paginatorKey)" [disabled]="isSearchLoading$ | async">
+              Next
+            </button>
+          </div>
+        </ng-container>
+      </ng-container>
+    </ng-container>
+
+  </div>

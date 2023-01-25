@@ -1,5 +1,7 @@
 import os
 import json
+from decimal import Decimal
+
 import boto3
 import pytest
 from moto import mock_dynamodb
@@ -64,7 +66,7 @@ def websocket_event():
             "inventory_id": "inv-12",
             "inventory_card": {
                 "card_name": "Swords of Doom", "oracle_id": "oracle-123",
-                "colors": ["R"], "prices": {"usd": "0.05"},
+                "colors": ["R"], "prices": {"usd": "0.05", "usd_foil": None, "usd_etched": None, "tix": None, "eur": None, "eur_foil": None},
                 "rarity": "meta", "quality": "rare",
                 "scryfall_id": "scryfall-1"
             }
@@ -79,6 +81,18 @@ def test_lamda_handler_success(websocket_event, table_definition):
     # 1. Create the DynamoDB Table
     dynamodb = boto3.resource("dynamodb")
     table = dynamodb.create_table(**table_definition)
+    table.put_item(Item={
+        "PK": "USER#user-123",
+        "SK": "INVENTORY#inv-12",
+        "total_value": {
+            "usd": Decimal("14.13"),
+            "usd_foil": 0,
+            "usd_etched": 0,
+            "eur": 0,
+            "eur_foil": 0,
+            "tix": 0
+        },
+    })
 
     # Act
     from functions.add_card_to_inventory import app
@@ -89,7 +103,20 @@ def test_lamda_handler_success(websocket_event, table_definition):
         Key("SK").begins_with("INVENTORY#inv-12#INVENTORY_CARD"),
     )["Items"][0]
 
+    inventory = table.query(
+        KeyConditionExpression=Key("PK").eq("USER#user-123") &
+                               Key("SK").eq("INVENTORY#inv-12")
+    )["Items"][0]
+
     # Assert
     assert response["statusCode"] == 200
     assert inventory_card["inventory_id"] == "inv-12"
     assert inventory_card["entity_type"] == "INVENTORY_CARD"
+
+    total_values = inventory["total_value"]
+    assert total_values["usd"] == Decimal("14.18")
+    assert total_values["usd_foil"] == 0
+    assert total_values["usd_etched"] == 0
+    assert total_values["eur"] == 0
+    assert total_values["eur_foil"] == 0
+    assert total_values["tix"] == 0

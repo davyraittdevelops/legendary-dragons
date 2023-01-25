@@ -1,9 +1,11 @@
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
-import { InventoryCard } from 'src/app/models/inventory.model';
-import {WishlistAlert, WishlistAlertRequest, WishlistItem} from 'src/app/models/wishlist.model';
-import { environment } from 'src/environments/environment';
+import {Injectable} from '@angular/core';
+import {Observable} from 'rxjs';
+import {webSocket, WebSocketSubject} from 'rxjs/webSocket';
+import {InventoryCard} from 'src/app/models/inventory.model';
+import {WishlistAlertRequest, WishlistItem} from 'src/app/models/wishlist.model';
+import { PaginatorKey } from 'src/app/ngrx/inventory/models/inventory-state.model';
+import {environment} from 'src/environments/environment';
+import {DeckCard} from "../../models/deck.model";
 
 @Injectable({
   providedIn: 'root'
@@ -57,8 +59,8 @@ export class WebsocketService {
     )
   }
 
-  sendGetInventoryMessage() {
-    this.sendMessage('getInventoryReq', {});
+  sendGetInventoryMessage(paginatorKey: PaginatorKey) {
+    this.sendMessage('getInventoryReq', {paginatorKey});
   }
 
   sendCreateDeckMessage(deck_name: string, deck_type: string) {
@@ -83,9 +85,9 @@ export class WebsocketService {
     });
   }
 
-  sendRemoveCardFromDeckMessage(deck_id : string, inventory_card : InventoryCard) {
+  sendRemoveCardFromDeckMessage(deck_id : string, deck_card : DeckCard, inventory_id: string) {
     this.sendMessage('removeCardFromDeckReq', {
-      deck_id, inventory_card
+      deck_id, deck_card, inventory_id
     });
   }
 
@@ -122,5 +124,17 @@ export class WebsocketService {
 
   sendRemoveAlertMessage(alert_item: WishlistAlertRequest, wishlist_item_id: string) {
     this.sendMessage('removeAlertReq', {alert_item, wishlist_item_id});
+  }
+
+  sendGetCardMessage(scryfall_id: any) {
+    this.sendMessage('getCardReq', {scryfall_id});
+  }
+  
+  sendSearchInventoryCardMessage(paginatorKey: PaginatorKey, filter: object, cardName: string = '') {
+    this.sendMessage('searchInventoryCardReq', {paginatorKey, filter, card_name: cardName})
+  }
+  
+  sendMoveDeckCardMessage(deck_id: string, deck_card_id: string, deck_type: string) {
+    this.sendMessage('moveDeckCardReq', {deck_id, deck_card_id, deck_type});
   }
 }

@@ -1,0 +1,53 @@
+name: Functional and performance test workflow
+
+on: 
+  workflow_run: 
+    workflows:
+      - 'Card Release workflow'
+      - 'Connection Release workflow'
+      - 'Deck Release workflow'
+      - 'Identity & Access Release workflow'
+      - 'Inventory Release workflow'
+      - 'Layered Stack Release workflow'
+      - 'Wishlist Release workflow'
+    types:
+      - completed
+  workflow_dispatch: 
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1-node16
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Run functional tests
+        working-directory: ./functional-tests
+        env:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+        run: |
+          pip install -r requirements.txt
+          behave
+
+      # - name: Run performance tests
+      #   working-directory: ./performance-tests
+      #   run: |
+      #     mvn install
+      #     mvn gatling:test -Dsimulation=RegisterAccountSimulation -Dduration=5 -DuserRate=1 -X
+      #     mvn gatling:test -Dsimulation=VisitFrontEndSimulation -Dduration=300 -DuserRate=30 -X
+      #     mvn gatling:test -Dsimulation=LoginAccountSimulation -Dduration=5 -DuserRate=1 -X
+      #     mvn gatling:test -Dsimulation=LoginThenConnectToWebSocketSimulation -Dduration=5 -DuserRate=1 -X
+      #     mvn gatling:test -Dsimulation=AddCardToInventorySimulation -Dduration=5 -DuserRate=1 -X
+      #     mvn gatling:test -Dsimulation=GetInventorySimulation -Dduration=5 -DuserRate=1 -X
+      #     mvn gatling:test -Dsimulation=AddCardToDeckSimulation -Dduration=5 -DuserRate=1 -X
+      #     mvn gatling:test -Dsimulation=CreateDeckAndRemoveSimulation -Dduration=5 -DuserRate=1 -X
+

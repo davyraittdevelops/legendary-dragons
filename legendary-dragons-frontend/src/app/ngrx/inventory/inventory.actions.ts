@@ -1,6 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 import { Inventory, InventoryCard, InventoryCardRequest } from 'src/app/models/inventory.model';
-
+import { PaginatorKey } from './models/inventory-state.model';
 
 export const addCardtoInventory = createAction(
   '[Add Card Component] Add To Inventory',
@@ -33,7 +33,8 @@ export const removeCardFromInventorySuccess = createAction(
 );
 
 export const getInventory = createAction(
-  '[Inventory Component] Get Inventory'
+  '[Inventory Component] Get Inventory',
+  props<{paginatorKey: PaginatorKey}>()
 );
 
 export const getInventoryFail = createAction(
@@ -43,7 +44,11 @@ export const getInventoryFail = createAction(
 
 export const getInventorySuccess = createAction(
   '[Inventory Component] Get Inventory Success',
-  props<{inventory: Inventory}>(),
+  props<{inventory: Inventory, paginatorKey: PaginatorKey}>(),
+);
+
+export const updateInventoryCard = createAction(
+  '[Add Card Component] Update Inventory Card'
 );
 
 export const updateInventoryCardFail = createAction(
@@ -55,3 +60,34 @@ export const updateInventoryCardSuccess = createAction(
   '[Add Card Component] Update Inventory Card Success',
   props<{ inventoryCard: InventoryCard}>()
 );
+
+export const updateInventory = createAction(
+  '[Add Card Component] Update Inventory'
+);
+
+export const updateInventoryFail = createAction(
+  '[Add Card Component] Update Inventory Fail',
+  props<{ error: boolean }>(),
+);
+
+export const updateInventorySuccess = createAction(
+  '[Add Card Component] Update Inventory Success',
+  props<{ inventory: Inventory}>()
+);
+
+export const searchInventoryCard = createAction(
+  '[Inventory Component] Search Inventory Card',
+  props<{paginatorKey: PaginatorKey, filter: object, cardName: string}>()
+);
+
+export const searchInventoryCardFail = createAction(
+  '[Inventory Component] Search Inventory Card Fail',
+  props<{ error: boolean }>(),
+);
+
+export const searchInventoryCardSuccess = createAction(
+  '[Inventory Component] Search Inventory Card Success',
+  props<{inventoryCards: InventoryCard[], totalCards: number, paginatorKey: PaginatorKey}>(),
+);
+
+export const clearPaginator = createAction('[Inventory Page Component] Clear Paginator');

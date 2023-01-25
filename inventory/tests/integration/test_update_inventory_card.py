@@ -48,36 +48,42 @@ def table_definition():
 
 
 @pytest.fixture()
-def bus_event():
+def bus_event_single_update_field():
   return {
     "source": "legdragons.decks.add_card_to_deck",
     "detail-type": "CARD_ADDED_TO_DECK",
     "detail": {
-      "inventory_card": {
-        "PK": "USER#1",
-        "SK": "INVENTORY#1#INVENTORY_CARD#1",
-        "entity_type": "INVENTORY_CARD",
-        "card_name": "Swords of Doom",
-        "card_id": "1",
-        "user_id": "1",
-        "inventory_id": "123",
-        "oracle_id": "oracle-123",
-        "colors": ["R"],
-        "prices": {"usd": "0.05"},
-        "rarity": "meta",
-        "quality": "rare",
-        "scryfall_id": "scryfall-1",
-        "image_url": "example-image-url.com",
+      "user_id": "1",
+      "inventory_id": "1",
+      "inventory_card_id": "1",
+      "fields": {
+        "deck_location": "deck-1"
+      }
+    }
+  }
+
+@pytest.fixture()
+def bus_event_multiple_update_fields():
+  return {
+    "source": "legdragons.decks.add_card_to_deck",
+    "detail-type": "CARD_ADDED_TO_DECK",
+    "detail": {
+      "user_id": "1",
+      "inventory_id": "1",
+      "inventory_card_id": "1",
+      "fields": {
         "deck_location": "deck-1",
-        "GSI1_PK": "INVENTORY#1#INVENTORY_CARD#1",
-        "GSI1_SK": "USER#1",
+        "prices": {
+          "usd": "500.00",
+          "eur": "470.00"
+        }
       }
     }
   }
 
 @patch.dict(os.environ, OS_ENV, clear=True)
 @mock_dynamodb
-def test_lamda_handler_update_card_deck_location(bus_event, table_definition):
+def test_lamda_handler_update_card_deck_location(bus_event_single_update_field, table_definition):
   # Arrange
   # 1. Create the DynamoDB Table
   dynamodb = boto3.resource("dynamodb")
@@ -106,7 +112,7 @@ def test_lamda_handler_update_card_deck_location(bus_event, table_definition):
   })
   # Act
   from functions.update_inventory_card import app
-  response = app.lambda_handler(bus_event, {})
+  response = app.lambda_handler(bus_event_single_update_field, {})
 
   inventory_cards = table.query(
       KeyConditionExpression=Key("PK").eq(user_pk) &
@@ -122,7 +128,53 @@ def test_lamda_handler_update_card_deck_location(bus_event, table_definition):
 
 @patch.dict(os.environ, OS_ENV, clear=True)
 @mock_dynamodb
-def test_lamda_handler_update_card_deck_location(bus_event, table_definition):
+def test_lamda_handler_update_multiple_fields(bus_event_multiple_update_fields, table_definition):
+  # Arrange
+  # 1. Create the DynamoDB Table
+  dynamodb = boto3.resource("dynamodb")
+  table = dynamodb.create_table(**table_definition)
+  user_pk = "USER#1"
+  inventory_card_sk = "INVENTORY#1#INVENTORY_CARD#1"
+
+  table.put_item(Item={
+    "PK": user_pk,
+    "SK": inventory_card_sk,
+    "entity_type": "INVENTORY_CARD",
+    "card_name": "Swords of Doom",
+    "card_id": "1",
+    "user_id": "1",
+    "inventory_id": "123",
+    "oracle_id": "oracle-123",
+    "colors": ["R"],
+    "prices": {"usd": "0.05"},
+    "rarity": "meta",
+    "quality": "rare",
+    "scryfall_id": "scryfall-1",
+    "image_url": "example-image-url.com",
+    "deck_location": "unassigned",
+    "GSI1_PK": inventory_card_sk,
+    "GSI1_SK": user_pk
+  })
+  # Act
+  from functions.update_inventory_card import app
+  response = app.lambda_handler(bus_event_multiple_update_fields, {})
+
+  inventory_cards = table.query(
+      KeyConditionExpression=Key("PK").eq(user_pk) &
+                             Key("SK").begins_with("INVENTORY")
+  )["Items"]
+
+  # Assert
+  assert response["statusCode"] == 200
+  assert len(inventory_cards) == 1
+  assert inventory_cards[0]["card_id"] == "1"
+  assert inventory_cards[0]["entity_type"] == "INVENTORY_CARD"
+  assert inventory_cards[0]["deck_location"] == "deck-1"
+  assert inventory_cards[0]["prices"] == {"usd": "500.00", "eur": "470.00"}
+
+@patch.dict(os.environ, OS_ENV, clear=True)
+@mock_dynamodb
+def test_lamda_handler_update_card_deck_location(bus_event_single_update_field, table_definition):
   # Arrange
   # 1. Create the DynamoDB Table
   dynamodb = boto3.resource("dynamodb")
@@ -130,7 +182,7 @@ def test_lamda_handler_update_card_deck_location(bus_event, table_definition):
 
   # Act
   from functions.update_inventory_card import app
-  response = app.lambda_handler(bus_event, {})
+  response = app.lambda_handler(bus_event_single_update_field, {})
 
   # Assert
   assert response["statusCode"] == 400

@@ -2,8 +2,10 @@ import json
 import logging
 import os
 
-import boto3
 from datetime import datetime
+from decimal import Decimal
+
+import boto3
 from aws_xray_sdk.core import patch_all
 
 logger = logging.getLogger()
@@ -13,9 +15,9 @@ if "DISABLE_XRAY" not in os.environ:
   patch_all()
 
 dynamodb = boto3.resource("dynamodb")
-events_client = boto3.client("events")
 table = dynamodb.Table(os.getenv("TABLE_NAME"))
 eventbus = os.getenv("EVENT_BUS_NAME")
+events_client = boto3.client("events")
 
 def lambda_handler(event, context):
   """Creates a new Deck_Card entry"""
@@ -35,8 +37,9 @@ def lambda_handler(event, context):
     entity_type = "SIDE_DECK_CARD"
 
   try:
-    inventory_card['deck_location'] = deck_name
-    update_inventory_card_deck_location(inventory_card)
+    update_deck_total_value(user_id, deck_id, inventory_card["prices"])
+
+    update_inventory_card_deck_location(user_id, inventory_card['inventory_id'], inventory_card['card_id'], deck_name)
 
     logger.info(f"Adding deck card ({inventory_card['card_id']}) to DynamoDB table")
 
@@ -66,13 +69,47 @@ def lambda_handler(event, context):
   return {"statusCode": 200}
 
 
-def update_inventory_card_deck_location(inventory_card):
+def update_inventory_card_deck_location(user_id, inventory_id, inventory_card_id, deck_location):
   events_client.put_events(Entries=[
     {
       "Time": datetime.now(),
       "Source": "legdragons.decks.add_card_to_deck",
       "DetailType": "CARD_ADDED_TO_DECK",
-      "Detail": json.dumps({"inventory_card": inventory_card}),
+      "Detail": json.dumps({
+        "user_id": user_id,
+        "inventory_id": inventory_id,
+        "inventory_card_id": inventory_card_id,
+        "fields": {
+          "deck_location": deck_location
+        }
+      }),
       "EventBusName": eventbus
     }
   ])
+
+def update_deck_total_value(user_id, deck_id, inventory_card_prices):
+  deck = table.get_item(
+      Key={
+        "PK": f"USER#{user_id}",
+        "SK": f"DECK#{deck_id}"
+      }
+  )["Item"]
+
+  deck_total_values = dict(sorted(deck["total_value"].items()))
+  inventory_card_prices = dict(sorted(inventory_card_prices.items()))
+
+  new_total_values = {}
+  for (key, value), (key2, value2) in zip(deck_total_values.items(), inventory_card_prices.items()):
+    new_total_values[key] = value + Decimal(value2.replace(',','.')) if value2 else value
+
+  table.update_item(
+      Key={
+        "PK": f"USER#{user_id}",
+        "SK": f"DECK#{deck_id}"
+      },
+      UpdateExpression='set total_value = :new_total_values',
+      ExpressionAttributeValues={
+        ":new_total_values": new_total_values
+      },
+      ConditionExpression='attribute_exists(PK) AND attribute_exists(SK)',
+  )

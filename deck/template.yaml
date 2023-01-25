@@ -217,6 +217,49 @@ Resources:
         Fn::Sub:
           arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${RemoveDeckFunction.Arn}/invocations
 
+  RemoveCardFromDeckFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/remove_card_from_deck/
+      Policies:
+        - EventBridgePutEventsPolicy:
+            EventBusName: "connection-event-bus"
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DeckTable
+
+  RemoveCardFromDeckPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref RemoveCardFromDeckFunction
+      Principal: apigateway.amazonaws.com
+
+  RemoveCardFromDeckRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Fn::ImportValue:
+          !Sub "${LegDragonsWebSocketApi}"
+      RouteKey: removeCardFromDeckReq
+      AuthorizationType: NONE
+      OperationName: RemoveCardFromDeckRoute
+      Target: !Join
+        - '/'
+        - - 'integrations'
+          - !Ref RemoveCardFromDeckInteg
+
+  RemoveCardFromDeckInteg:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Fn::ImportValue:
+          !Sub "${LegDragonsWebSocketApi}"
+      Description: Remove Card From Deck
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::Sub:
+          arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${RemoveCardFromDeckFunction.Arn}/invocations
+
   AddCardToDeckFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -225,6 +268,8 @@ Resources:
         - EventBridgePutEventsPolicy:
             EventBusName: "connection-event-bus"
         - DynamoDBWritePolicy:
+            TableName: !Ref DeckTable
+        - DynamoDBReadPolicy:
             TableName: !Ref DeckTable
 
   AddCardToDeckPermission:
@@ -259,6 +304,47 @@ Resources:
       IntegrationUri:
         Fn::Sub:
           arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AddCardToDeckFunction.Arn}/invocations
+
+  MoveDeckCardFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/move_deck_card/
+      Policies:
+        - DynamoDBWritePolicy:
+            TableName: !Ref DeckTable
+
+  MoveDeckCardPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref MoveDeckCardFunction
+      Principal: apigateway.amazonaws.com
+
+  MoveDeckCardRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Fn::ImportValue:
+          !Sub "${LegDragonsWebSocketApi}"
+      RouteKey: moveDeckCardReq
+      AuthorizationType: NONE
+      OperationName: MoveDeckCardRoute
+      Target: !Join
+        - '/'
+        - - 'integrations'
+          - !Ref MoveDeckCardInteg
+
+  MoveDeckCardInteg:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Fn::ImportValue:
+          !Sub "${LegDragonsWebSocketApi}"
+      Description: Move Deck Card
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::Sub:
+            arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${MoveDeckCardFunction.Arn}/invocations
 
   StreamDeckChangesFunction:
     Type: AWS::Serverless::Function
