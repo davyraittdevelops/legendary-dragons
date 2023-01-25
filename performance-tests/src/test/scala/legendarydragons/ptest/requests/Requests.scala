@@ -33,7 +33,7 @@ object Requests {
     )
 
   val getInventory = ws("getInventory")
-    .sendText("""{"action": "getInventoryReq"}""")
+    .sendText("""{"action": "getInventoryReq", "paginatorKey": {} }""")
     .await(25)(checkGetInventoryReply)
 
   val checkAddCardToInventoryReply = ws.checkTextMessage("Add Card To Inventory Check")
@@ -41,6 +41,11 @@ object Requests {
       regex("INSERT_INVENTORY_CARD_RESULT"),
       jsonPath("$.data.card_id").saveAs("inventoryCardId"),
       jsonPath("$.data").saveAs("inventoryCard"),
+    )
+
+  val updateInventoryValueCheck = ws.checkTextMessage("Update Inventory Value Check")
+    .check(
+      regex("MODIFY_INVENTORY_RESULT")
     )
 
   val addCardToInventory = ws("addCardToInventory")
@@ -51,7 +56,8 @@ object Requests {
         |"meta","quality" : "uncommon", "deck_location" : "","scryfall_id" : "${rid4}", "image_url": "foobar"}}
         |""".stripMargin
     )
-    .await(15)(checkAddCardToInventoryReply)
+    .await(30)(updateInventoryValueCheck)
+    .await(30)(checkAddCardToInventoryReply)
 
   val checkRemoveCardFromInventoryReply = ws.checkTextMessage("Remove Card From Inventory Check")
     .check(
@@ -102,10 +108,15 @@ object Requests {
       jsonPath("$.data").saveAs("deckCard"),
     )
 
+  val checkUpdateDeckValueReply = ws.checkTextMessage("Update Deck Value Reply")
+    .check(regex("MODIFY_DECK_RESULT"))
+
   val addCardToDeck = ws("addCardToDeckReq")
     .sendText(
       """{"action": "addCardToDeckReq", "deck_id": "${deckId}", "inventory_card": ${inventoryCard}, "deck_type": "main",  "deck_name": "${deckName}" } """
-    ).await(10)(checkAddCardToDeckReply)
+    )
+    .await(30)(checkUpdateDeckValueReply)
+    .await(30)(checkAddCardToDeckReply)
 
   val checkGetDeckReply = ws.checkTextMessage("Get Deck Reply")
     .check(
@@ -130,7 +141,7 @@ object Requests {
 
   val moveDeckCard = ws("moveDeckCardReq")
     .sendText(
-      """{"action": "moveDeckCardReq", "deck_id": "${deckId}", "deck_card_id": "${inventoryCardId}", "deck_type": "side_deck"}"""
+      """{"action": "moveDeckCardReq", "deck_id": "${deckId}", "deck_card_id": "${inventoryCardId}", "deck_type": "side_deck" }"""
     ).await(10)(checkMoveDeckCardReply)
 
   // Wishlist
