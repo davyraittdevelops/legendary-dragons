@@ -1,7 +1,9 @@
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { Store } from "@ngrx/store";
 import { of } from 'rxjs';
 import { catchError, filter, map, switchMap, tap } from 'rxjs/operators';
+import { AppState } from "src/app/app.state";
 import { WebsocketService } from "src/app/services/websocket/websocket.service";
 
 import {
@@ -28,6 +30,7 @@ export class WishlistEffects {
   constructor(
     private readonly actions$: Actions,
     private readonly websocketService: WebsocketService,
+    private store: Store<AppState>
   ) { }
 
   public getWishlistEffect$ = createEffect(() =>
@@ -95,7 +98,8 @@ export class WishlistEffects {
       switchMap(() => {
         return this.websocketService.dataUpdates$().pipe(
           filter((event: any) => {
-            return event['event_type'] === 'INSERT_ALERT#AVAILABILITY_RESULT' || event['event_type'] === 'INSERT_ALERT#PRICE_RESULT'
+            console.log(event)
+            return event['event_type'] === 'INSERT_ALERT#AVAILABILITY_RESULT' || event['event_type'] === 'INSERT_ALERT#PRICE_RESULT' || event['event_type'] === 'MODIFY_ALERT#PRICE_RESULT'
           }),
           map((event: any) => createAlertSuccess({alert_item: event["data"]})),
           catchError((error) => {
@@ -136,6 +140,7 @@ export class WishlistEffects {
             return event['event_type'] === 'REMOVE_ALERT#PRICE_RESULT' || event['event_type'] === 'REMOVE_ALERT#AVAILABILITY_RESULT'
           }),
           map((event: any) => removeAlertSuccess({alert_item: event["data"]})),
+          // tap(this.store.dispatch(getAlerts))
           catchError((error) => {
             console.log(error);
             return of(removeAlertFail({error: true}))

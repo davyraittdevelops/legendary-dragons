@@ -67,11 +67,14 @@ export const wishlistReducer = createReducer(
   on(removeWishlistItemFail, (state) => ({...state, isLoading: false, hasError: true})),
   on(createAlert, (state, {alert_item, wishlist_item_id}) => ({...state, isLoading: true})),
   on(createAlertSuccess, (state, {alert_item}) => {
-    const foundIndex = state.alert_items.findIndex((item) => item.alert_id === alert_item.alert_id);
-    if (foundIndex > -1)
-      return {...state, isLoading: false, hasError: false};
-    const alert_items_list = [...state.alert_items, alert_item];
-    return {...state, isLoading: false, hasError: false, alert_items: alert_items_list};
+    const foundIndex = state.alert_items.findIndex((item) => item.entity_type === alert_item.entity_type);
+    if (foundIndex !== -1) {
+        const updated_items_list = [...state.alert_items];
+        updated_items_list.splice(foundIndex, 1, alert_item);
+        return {...state, isLoading: false, hasError: false, alert_items: updated_items_list};
+    } 
+     
+    return {...state, isLoading: false, hasError: false, alert_items: [...state.alert_items, alert_item]};
   }),
   on(createAlertFail, (state) => ({...state, isLoading: false, hasError: true})),
 
@@ -81,7 +84,7 @@ export const wishlistReducer = createReducer(
       ...state,
       isLoading: false,
       hasError: false,
-      alert_items: state.alert_items.filter(alert_it => alert_it.alert_id !== alert_item.alert_id)
+      alert_items: state.alert_items.filter(item => item.entity_type !== alert_item.entity_type)
     };
   }),
   on(removeAlertFail, (state) => ({...state, isLoading: false, hasError: true})),
