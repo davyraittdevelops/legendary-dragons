@@ -11,6 +11,7 @@ import {
 } from "../../../ngrx/wishlist/wishlist.actions";
 import { alertItemsSelector, errorSelector, isLoadingSelector } from "../../../ngrx/wishlist/wishlist.selectors";
 import {isLoggedInSelector} from "../../../ngrx/user/user.selectors";
+import {ToastService} from "../../../services/toast/toast.service";
 
 @Component({
   selector: 'app-wishlist-item',
@@ -27,7 +28,7 @@ export class WishlistItemComponent {
   alertType: any;
   hasAvailabilityAlert: boolean = false;
 
-  constructor(private appStore: Store<AppState>, public modalService: NgbModal) {
+  constructor(private appStore: Store<AppState>, public modalService: NgbModal, private toastService: ToastService) {
     this.isLoading$ = this.appStore.select(isLoadingSelector);
     this.hasError$ = this.appStore.select(errorSelector);
     this.alert_items$ = this.appStore.select(alertItemsSelector).pipe(
@@ -64,7 +65,8 @@ export class WishlistItemComponent {
             }
 
             else {
-              window.alert('There are still alerts on this wishlist item.')
+              this.toastService.showDanger('There are still alerts on this wishlist item.');
+
             }
           }
         })
