@@ -36,7 +36,7 @@ export const addCardToInventory = () => {
 export const removeAllDecks = () => {
   cy.visit("/dashboard");
   cy.get("#mat-tab-label-0-1").click();
-  cy.wait(4000);
+  cy.wait(5000);
   cy.get("body").then($body => {
     if ($body.find("div[aria-label=deck]").length > 0) {
       cy.get("button[name=removeDeck]").click({multiple: true});
@@ -58,7 +58,7 @@ export const createDeck = () => {
 export const removeAllWishlistCards = () => {
   cy.visit("/dashboard");
   cy.get("#mat-tab-label-0-2").click();
-  cy.wait(2000);
+  cy.wait(4000);
   cy.get("body").then($body => {
     if ($body.find("div[aria-label=Basic-example]").length > 0) {
       cy.get("button[name=removeWishlistItem]").click({multiple: true});
@@ -70,7 +70,7 @@ export const removeAllWishlistCards = () => {
 export const createWishlistCard = () => {
   cy.visit("/dashboard");
   cy.get("#mat-tab-label-0-2").click();
-  cy.wait(2000);
+  cy.wait(4000);
   cy.get("button[name=openAddCardModal]").click();
   cy.get("div[role=document]").should("be.visible");
   cy.get("input[name=keywordSearch]").type("Swords to plowshares");
