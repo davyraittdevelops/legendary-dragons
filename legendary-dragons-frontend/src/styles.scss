@@ -1,7 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
 
 /* Importing Bootstrap SCSS file. */
-@import 'node_modules/bootstrap/scss/bootstrap';
+@import "node_modules/bootstrap/scss/bootstrap";
+@import "node_modules/bootstrap-icons/font/bootstrap-icons.scss";
 
 body{
   margin: 0;
@@ -25,4 +26,16 @@ html, body { height: 100%; }
 
 .pointer {
   cursor: pointer !important;
+}
+
+.add-icon {
+  font-size: 3rem;
+}
+
+.color-icon {
+  height: 25px;
+}
+
+.w-90 {
+  width: 90% !important;
 }

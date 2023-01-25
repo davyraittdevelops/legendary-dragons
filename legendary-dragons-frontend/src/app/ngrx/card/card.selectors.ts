@@ -7,3 +7,4 @@ export const isLoadingSelector = createSelector(selectCard, (state) => state.isL
 export const errorSelector = createSelector(selectCard, (state) => state.hasError);
 export const searchedCardSelector = createSelector(selectCard, (state) => state.searchedCards);
 export const querySelector = createSelector(selectCard, (state) => state.query);
+export const cardDetailSelector = createSelector(selectCard, (state) => state.card_details);

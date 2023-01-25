@@ -4,8 +4,6 @@
 
 .container {
   padding-top: 20px;
-  //display: flex;
-  //flex-direction: row;
   justify-content: center; /* align elements to the left */
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -15,6 +13,10 @@
   margin: 0 10px;
 }
 
+.container-fluid {
+  position: relative;
+}
+
 /* add padding between the elements */
 @media only screen and (min-width: 960px) {
   .container{
@@ -22,3 +24,37 @@
   }
 }
 
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  background-color: transparent;
+  margin-top: auto;
+  font-size: 20px;
+  bottom: 0;
+  width: 90%;
+  padding: 10px;
+  position: absolute;
+}
+
+::ng-deep #inventory-search-field .mat-input-element::placeholder {
+  color: white;
+}
+
+::ng-deep #inventory-search-field .mat-focused .mat-form-field-label {
+  /*change color of label*/
+  color: white !important;
+ }
+
+::ng-deep #inventory-search-field .mat-form-field-underline {
+  /*change color of underline*/
+  background-color: white !important;
+}
+
+::ng-deep #inventory-search-field .mat-form-field-ripple {
+ /*change color of underline when focused*/
+ background-color: white !important;
+}
+
+::ng-deep #inventory-search-field .mat-form-field-label {
+  color: white !important;
+}

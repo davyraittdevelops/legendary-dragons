@@ -3,6 +3,7 @@ export interface Inventory {
   created_at: string;
   last_modified: string;
   total_value: string;
+  total_cards: number;
   inventory_cards: InventoryCard[];
 }
 
@@ -40,4 +41,11 @@ export interface InventoryCardRequest {
   quality: string;
   deck_location: string;
   image_url: string;
+  type_line: string;
+}
+
+export interface Filter {
+  deck_location?: string;
+  colors?: string[];
+  type_line?: string;
 }

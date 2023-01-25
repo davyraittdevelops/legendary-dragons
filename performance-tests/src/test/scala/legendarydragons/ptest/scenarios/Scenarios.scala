@@ -104,7 +104,7 @@ object Scenarios {
     .pause(1)
     .exec(Requests.removeDeck)
 
-  def AddCardToDeckScenario() = scenario("CreateDeckScenario")
+  def AddCardToDeckScenario() = scenario("AddCardToDeckScenario")
     .feed(emailFeeder)
     .exec(Requests.loginAccount.check(header("x-amzn-Remapped-Authorization").saveAs("token")))
     .exec { session =>
@@ -125,9 +125,34 @@ object Scenarios {
     .pause(1)
     .exec(Requests.addCardToDeck)
     .pause(2)
+    .exec(Requests.moveDeckCard)
+    .pause(1)
+    .exec(Requests.removeSideDeckCardFromDeck)
+    .pause(2)
     .exec(Requests.getDeck)
     .pause(1)
     .exec(Requests.removeDeck)
     .pause(2)
     .exec(Requests.removeCardFromInventory)
+
+  def ManageWishlistScenario() = scenario("ManageWishlistScenario")
+    .feed(emailFeeder)
+    .exec(Requests.loginAccount.check(header("x-amzn-Remapped-Authorization").saveAs("token")))
+    .exec { session =>
+      var token = session("token").as[String].replace("Bearer ", "")
+      session.set("token", token)
+    }
+    .exec(Requests.connectToWebsocket)
+    .pause(2)
+    .exec(Requests.createWishlistItem)
+    .pause(1)
+    .exec(Requests.getWishlist)
+    .pause(2)
+    .exec(Requests.createAlert)
+    .pause(1)
+    .exec(Requests.getAlerts)
+    .pause(2)
+    .exec(Requests.removeAlert)
+    .pause(2)
+    .exec(Requests.removeWishlistItem)
 }
