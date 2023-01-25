@@ -88,12 +88,10 @@ def update_inventory_card_deck_location(user_id, inventory_id, inventory_card_id
   ])
 
 def update_deck_total_value(user_id, deck_id, inventory_card_prices):
-  pk = "USER#" + user_id
-  sk = "DECK#" + deck_id
   deck = table.get_item(
       Key={
-        "PK": pk,
-        "SK": sk
+        "PK": f"USER#{user_id}",
+        "SK": f"DECK#{deck_id}"
       }
   )["Item"]
 
@@ -106,12 +104,12 @@ def update_deck_total_value(user_id, deck_id, inventory_card_prices):
 
   table.update_item(
       Key={
-        "PK": pk,
-        "SK": sk
+        "PK": f"USER#{user_id}",
+        "SK": f"DECK#{deck_id}"
       },
-      ConditionExpression='attribute_exists(PK) AND attribute_exists(SK)',
       UpdateExpression='set total_value = :new_total_values',
       ExpressionAttributeValues={
         ":new_total_values": new_total_values
-      }
+      },
+      ConditionExpression='attribute_exists(PK) AND attribute_exists(SK)',
   )
