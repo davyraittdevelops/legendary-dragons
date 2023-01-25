@@ -66,7 +66,6 @@ export class WishlistItemComponent {
 
             else {
               this.toastService.showDanger('There are still alerts on this wishlist item.');
-
             }
           }
         })
