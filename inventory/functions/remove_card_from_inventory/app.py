@@ -42,6 +42,7 @@ def lambda_handler(event, context):
 
     return {"statusCode": 200}
 
+
 def update_inventory_total_value(user_id, inventory_id, card_prices):
     pk = "USER#" + user_id
     sk = "INVENTORY#" + inventory_id
@@ -52,8 +53,10 @@ def update_inventory_total_value(user_id, inventory_id, card_prices):
         }
     )["Item"]
 
+    new_total_cards = int(inventory["total_cards"]) - 1
+    inventory_total_cards = new_total_cards if new_total_cards >= 0 else 0
+
     inventory_total_values = dict(sorted(inventory["total_value"].items()))
-    inventory_total_cards = int(inventory["total_cards"]) - 1
     card_prices = dict(sorted(card_prices.items()))
 
     new_total_values = {}
