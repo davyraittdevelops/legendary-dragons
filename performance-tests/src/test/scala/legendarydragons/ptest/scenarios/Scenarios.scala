@@ -135,4 +135,24 @@ object Scenarios {
     .pause(2)
     .exec(Requests.removeCardFromInventory)
 
+  def ManageWishlistScenario() = scenario("ManageWishlistScenario")
+    .feed(emailFeeder)
+    .exec(Requests.loginAccount.check(header("x-amzn-Remapped-Authorization").saveAs("token")))
+    .exec { session =>
+      var token = session("token").as[String].replace("Bearer ", "")
+      session.set("token", token)
+    }
+    .exec(Requests.connectToWebsocket)
+    .pause(2)
+    .exec(Requests.createWishlistItem)
+    .pause(1)
+    .exec(Requests.getWishlist)
+    .pause(2)
+    .exec(Requests.createAlert)
+    .pause(1)
+    .exec(Requests.getAlerts)
+    .pause(2)
+    .exec(Requests.removeAlert)
+    .pause(2)
+    .exec(Requests.removeWishlistItem)
 }

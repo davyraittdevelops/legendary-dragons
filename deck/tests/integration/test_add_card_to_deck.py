@@ -1,5 +1,7 @@
 import os
 import json
+from decimal import Decimal
+
 import boto3
 import pytest
 from moto import mock_dynamodb, mock_events, mock_sqs
@@ -71,7 +73,7 @@ def websocket_event():
         "inventory_id": "123",
         "oracle_id": "oracle-123",
         "colors": ["R"],
-        "prices": {"usd": "0.05"},
+        "prices": {"eur": "1.98", "usd_foil": None, "usd": "2.18", "usd_etched": None, "eur_foil": None, "tix": None},
         "rarity": "meta",
         "quality": "rare",
         "scryfall_id": "scryfall-1",
@@ -90,6 +92,19 @@ def test_lamda_handler_success(websocket_event, table_definition):
   # 1. Create the DynamoDB Table
   dynamodb = boto3.resource("dynamodb")
   table = dynamodb.create_table(**table_definition)
+  table.put_item(Item={
+    "PK": "USER#user-123",
+    "SK": "DECK#123",
+    "total_value": {
+      "usd": 0,
+      "usd_foil": 0,
+      "usd_etched": 0,
+      "eur": 0,
+      "eur_foil": 0,
+      "tix": 0
+    },
+    "is_valid": True
+  })
 
   # 2. Create SQS and EventBridge
   sqs = boto3.resource("sqs")
@@ -124,6 +139,11 @@ def test_lamda_handler_success(websocket_event, table_definition):
                              Key("SK").begins_with("DECK#123#DECK_CARD"),
   )["Items"][0]
 
+  deck = table.query(
+      KeyConditionExpression=Key("PK").eq("USER#user-123") &
+                             Key("SK").eq("DECK#123"),
+  )["Items"][0]
+
   # Assert
   assert response["statusCode"] == 200
   assert len(messages) == 1
@@ -131,6 +151,14 @@ def test_lamda_handler_success(websocket_event, table_definition):
   assert deck_card
   assert deck_card["deck_id"] == "123"
   assert deck_card["entity_type"] == "DECK_CARD"
+
+  total_values = deck["total_value"]
+  assert total_values["usd"] == Decimal("2.18")
+  assert total_values["usd_foil"] == 0
+  assert total_values["usd_etched"] == 0
+  assert total_values["eur"] == Decimal("1.98")
+  assert total_values["eur_foil"] == 0
+  assert total_values["tix"] == 0
 
 
 @patch.dict(os.environ, OS_ENV, clear=True)
@@ -142,6 +170,19 @@ def test_lamda_handler_sidedeck(websocket_event, table_definition):
   # 1. Create the DynamoDB Table
   dynamodb = boto3.resource("dynamodb")
   table = dynamodb.create_table(**table_definition)
+  table.put_item(Item={
+    "PK": "USER#user-123",
+    "SK": "DECK#123",
+    "total_value": {
+      "usd": 0,
+      "usd_foil": 0,
+      "usd_etched": 0,
+      "eur": 0,
+      "eur_foil": 0,
+      "tix": 0
+    },
+    "is_valid": True
+  })
 
   # 2. Create SQS and EventBridge
   sqs = boto3.resource("sqs")
@@ -179,6 +220,11 @@ def test_lamda_handler_sidedeck(websocket_event, table_definition):
                              Key("SK").begins_with("DECK#123#DECK_CARD"),
   )["Items"][0]
 
+  deck = table.query(
+      KeyConditionExpression=Key("PK").eq("USER#user-123") &
+                             Key("SK").eq("DECK#123"),
+  )["Items"][0]
+
   # Assert
   assert response["statusCode"] == 200
   assert len(messages) == 1
@@ -186,3 +232,11 @@ def test_lamda_handler_sidedeck(websocket_event, table_definition):
   assert deck_card
   assert deck_card["deck_id"] == "123"
   assert deck_card["entity_type"] == "SIDE_DECK_CARD"
+
+  total_values = deck["total_value"]
+  assert total_values["usd"] == Decimal("2.18")
+  assert total_values["usd_foil"] == 0
+  assert total_values["usd_etched"] == 0
+  assert total_values["eur"] == Decimal("1.98")
+  assert total_values["eur_foil"] == 0
+  assert total_values["tix"] == 0

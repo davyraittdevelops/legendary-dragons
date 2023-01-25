@@ -1,4 +1,4 @@
-import { createReducer, on } from "@ngrx/store";
+import {createReducer, on} from "@ngrx/store";
 import {
   addCardtoInventory,
   addCardtoInventoryFail,
@@ -14,9 +14,11 @@ import {
   searchInventoryCardFail,
   searchInventoryCardSuccess,
   updateInventoryCardFail,
-  updateInventoryCardSuccess
+  updateInventoryCardSuccess,
+  updateInventoryFail,
+  updateInventorySuccess
 } from "./inventory.actions";
-import { InventoryState, PaginatorKey } from "./models/inventory-state.model";
+import {InventoryState, PaginatorKey} from "./models/inventory-state.model";
 
 const initialState: InventoryState = {
   isLoading: false,
@@ -88,6 +90,18 @@ export const inventoryReducer = createReducer(
     return {...state, hasError: false, inventory}
   }),
   on(updateInventoryCardFail, (state) => ({...state, hasError: true})),
+  on(updateInventorySuccess, (state, {inventory}) => {
+    let current_inventory = {...state.inventory};
+    current_inventory.total_value = inventory.total_value;
+
+    return {
+      ...state,
+      hasError: false,
+      isLoading: false,
+      inventory: current_inventory
+    };
+  }),
+  on(updateInventoryFail, (state) => ({...state, hasError: true})),
   on(searchInventoryCard, (state, {paginatorKey}) => inventoryPaginatorUpdateState(state, paginatorKey)),
   on(searchInventoryCardSuccess, (state, {inventoryCards, paginatorKey, totalCards}) => {
     const inventory = {

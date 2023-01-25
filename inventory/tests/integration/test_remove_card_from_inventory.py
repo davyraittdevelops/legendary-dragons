@@ -1,5 +1,7 @@
 import os
 import json
+from decimal import Decimal
+
 import boto3
 import pytest
 from moto import mock_dynamodb
@@ -64,7 +66,6 @@ def websocket_event():
             "action": "removeCardToInventoryReq",
             "inventory_card_id": "1",
             "inventory_id": "inv-12",
-
         }),
     }
 
@@ -83,11 +84,25 @@ def test_lamda_handler_success(websocket_event, table_definition):
 
     table.put_item(Item={
         "PK": user_pk,
+        "SK": "INVENTORY#inv-12",
+        "total_value": {
+            "usd": 0,
+            "usd_foil": 0,
+            "usd_etched": 0,
+            "eur": 24,
+            "eur_foil": 0,
+            "tix": 0
+        },
+    })
+
+    table.put_item(Item={
+        "PK": user_pk,
         "SK": inventory_card_sk,
         "entity_type": "INVENTORY_CARD",
         "inventory_id": "inv-12",
         "user_id": "user-123",
         "card_id": "1",
+        "prices": {'usd_foil': None, 'usd_etched': None, 'eur_foil': None, 'tix': None, 'eur': '1.98', 'usd': '2.18'},
         "created_at": now,
         "last_modified": now,
         "GSI1_PK": inventory_card_sk,
@@ -100,9 +115,24 @@ def test_lamda_handler_success(websocket_event, table_definition):
 
     inventory_card = table.query(
         KeyConditionExpression=Key("PK").eq(user_pk) &
-        Key("SK").begins_with("INVENTORY")
+        Key("SK").begins_with("INVENTORY#inv-12#INVENTORY_CARD#")
     )["Items"]
+
+    inventory = table.query(
+        KeyConditionExpression=Key("PK").eq(user_pk) &
+        Key("SK").eq("INVENTORY#inv-12")
+    )["Items"][0]
 
     # Assert
     assert response['statusCode'] == 200
     assert len(inventory_card) == 0
+
+    total_values = inventory["total_value"]
+    assert total_values["usd"] == 0
+    assert total_values["usd_foil"] == 0
+    assert total_values["usd_etched"] == 0
+    assert total_values["eur"] == Decimal("22.02")
+    assert total_values["eur_foil"] == 0
+    assert total_values["tix"] == 0
+
+
