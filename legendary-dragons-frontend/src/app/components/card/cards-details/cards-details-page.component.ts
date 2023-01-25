@@ -5,16 +5,17 @@ import { Observable } from "rxjs";
 import { AppState } from 'src/app/app.state';
 import { InventoryCard } from 'src/app/models/inventory.model';
 import { removeCardFromInventory } from 'src/app/ngrx/inventory/inventory.actions';
+import { ToastService } from 'src/app/services/toast/toast.service';
 import { CardDetail } from "../../../models/card.model";
 import { getCard } from "../../../ngrx/card/card.actions";
 import * as CardSelector from "../../../ngrx/card/card.selectors";
 import { errorSelector, isLoadingSelector } from "../../../ngrx/inventory/inventory.selectors";
+
 @Component({
   selector: 'app-cards-details-page',
   templateUrl: './cards-details-page.component.html',
   styleUrls: ['./cards-details-page.component.scss']
 })
-
 export class CardsDetailsPageComponent {
   @Input('inventory_id') inventoryId: string = '';
   @Input() card!: InventoryCard;
@@ -24,7 +25,7 @@ export class CardsDetailsPageComponent {
   isCardDetailLoading$: Observable<boolean>;
   hasError$: Observable<boolean>;
 
-  constructor(public modalService: NgbModal, private appStore: Store<AppState>) {
+  constructor(public modalService: NgbModal, private appStore: Store<AppState>, private toastService: ToastService) {
     this.isLoading$ = this.appStore.select(isLoadingSelector);
     this.hasError$ = this.appStore.select(errorSelector);
     this.card_details$ = this.appStore.select(CardSelector.cardDetailSelector);
@@ -51,7 +52,12 @@ export class CardsDetailsPageComponent {
     return price;
   }
 
-  removeCardFromInventory(inventoryCardId: string) {
+  removeCardFromInventory(inventoryCardId: string, deckLocation: string): void {
+    if (deckLocation.trim() !== '') {
+      this.toastService.showDanger(`Unable to remove card! Currently used in deck: ${deckLocation}`)
+      return;
+    }
+
     this.appStore.dispatch(removeCardFromInventory({inventoryCardId: inventoryCardId, inventoryId: this.inventoryId}));
   }
 }
