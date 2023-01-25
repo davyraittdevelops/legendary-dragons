@@ -12,6 +12,9 @@ Parameters:
   LegDragonsConnectionsEventBus:
     Type: String
     Default: "legendary-dragons-connection-event-bus-LegDragonsConnectionsEventBus"
+  LegDragonsConnectionsEventBusName:
+    Type: String
+    Default: "legendary-dragons-connection-event-bus-LegDragonsConnectionsEventBusName"
   LegDragonUserPool:
     Type: String
     Default: "legendary-dragons-cognito-LegDragonUserPool"
@@ -70,7 +73,7 @@ Resources:
             Description: Runs the lambda every day at 23.45PM.
             Enabled: True
             Schedule: "cron(45 23 * * ? *)"
-  
+
 
   SteamCardChangesFunction:
     Type: AWS::Serverless::Function
@@ -80,7 +83,7 @@ Resources:
         - EventBridgePutEventsPolicy:
             EventBusName:
               Fn::ImportValue:
-                !Sub "${LegDragonsConnectionsEventBus}"
+                !Sub "${LegDragonsConnectionsEventBusName}"
         - DynamoDBStreamReadPolicy:
             TableName: !Ref CardTable
             # Reason: https://github.com/aws/serverless-application-model/issues/289#issuecomment-939738271
@@ -164,7 +167,7 @@ Resources:
       FunctionName: !Ref SearchCardByKeywordFunction
       Principal: apigateway.amazonaws.com
 
-  #Alert procesor 
+  #Alert procesor
   CardAlertQueue:
     Type: 'AWS::SQS::Queue'
     Properties:
@@ -241,7 +244,7 @@ Resources:
       Action: lambda:InvokeFunction
       FunctionName: !Ref GetCardFunction
       Principal: apigateway.amazonaws.com
-            
+
 Outputs:
   SearchCardByKeywordFunction:
     Description: "Search Card By Keyword Lambda Function ARN"
@@ -254,4 +257,3 @@ Outputs:
     Value: !Ref CardAlertQueue
     Export:
       Name: !Sub "${AWS::StackName}-CardAlertQueue"
-

@@ -12,6 +12,9 @@ Parameters:
   LegDragonsConnectionsEventBus:
     Type: String
     Default: "legendary-dragons-connection-event-bus-LegDragonsConnectionsEventBus"
+  LegDragonsConnectionsEventBusName:
+    Type: String
+    Default: "legendary-dragons-connection-event-bus-LegDragonsConnectionsEventBusName"
   LegDragonsBroadcastArn:
     Type: String
     Default: "legendary-dragons-connection-LegDragonsBroadcastArn"
@@ -88,7 +91,9 @@ Resources:
     Type: AWS::Events::Rule
     Properties:
       Name: update-inventory-card-rule
-      EventBusName: "connection-event-bus"
+      EventBusName:
+        Fn::ImportValue:
+          !Sub "${LegDragonsConnectionsEventBusName}"
       EventPattern:
         source:
           - "legdragons.decks.remove_card_from_deck"
@@ -123,9 +128,9 @@ Resources:
       CodeUri: functions/stream_inventory_changes/
       Policies:
         - EventBridgePutEventsPolicy:
-            EventBusName: "connection-event-bus"
-              # Fn::ImportValue:
-                # !Sub "${LegDragonsConnectionsEventBus}"
+            EventBusName:
+              Fn::ImportValue:
+                !Sub "${LegDragonsConnectionsEventBusName}"
         - DynamoDBStreamReadPolicy:
             TableName: !Ref InventoryTable
             # Reason: https://github.com/aws/serverless-application-model/issues/289#issuecomment-939738271
@@ -188,7 +193,9 @@ Resources:
     Type: AWS::Events::Rule
     Properties:
       Name: inventory-create-rule
-      EventBusName: "connection-event-bus"
+      EventBusName:
+        Fn::ImportValue:
+          !Sub "${LegDragonsConnectionsEventBusName}"
       EventPattern:
         source:
           - "legdragons.identity-and-access.signup"
@@ -211,7 +218,9 @@ Resources:
     Type: AWS::Events::Rule
     Properties:
       Name: inventory-broadcast-rule
-      EventBusName: "connection-event-bus" # or arn
+      EventBusName:
+        Fn::ImportValue:
+          !Sub "${LegDragonsConnectionsEventBusName}"
       EventPattern:
         source:
           - "inventory.database"
