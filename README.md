@@ -8,6 +8,7 @@ Legendary Dragons is a Magic The Gathering collection management tool that allow
 - [Starting the CI/CD Pipelines](#starting-the-cicd-pipelines)
 - [AWS](#aws)
 - [OWASP](#owasp)
+- [Definition of Done/Ready](#definition-of-readydone)
 - [Requirements](#requirements)
 
 # SonarQube Projects
@@ -407,6 +408,37 @@ To limit this risk, it is important to restrict access to management interfaces 
 * We use AWS CloudWatch to monitor our application.
 
 * Additionally, we have set up an AWS dashboard which allows us to monitor and manage the usage of the AWS resources used. This allows us to map and visualize the performance of our application in real-time through various charts and data.
+
+# Definition of Ready/Done
+
+## Definition of Ready
+   
+- De user story moet zijn beschreven in een functioneel ontwerp
+- De user story is geprioriteerd in de Product Backlog
+- De user story moet een uren schatting (story points) hebben
+- De user story moet een SMART beschrijving hebben
+- De user story beschrijving aan de hand van het volgende format: “Als … wil ik … zodat …”
+- Alle taken van een user story zijn beschreven
+- De user story moet acceptatie criteria bevatten
+
+## Definition of Done
+
+- Alle subtaken van de user story moeten “Done“ zijn
+- De user story moet voor “overall code“ de quality gate van SonarQube passeren
+- De user story moet gereviewd zijn door 1 ander teamlid
+- Code is leesbaar
+- Code is consistent
+- De user story moet zijn gedeployed naar de Acceptatietest omgeving
+- De user story mag geen openstaande testbevindingen hebben
+- De user story moet functionele tests bevatten (Cypress/Behave)
+- De relevante performance testen slagen
+- De user story bevatten unit-/integratietests
+- De code coverage is minimaal 80%
+- De user story is gemaakt in een feature branch
+- De user story is gecontroleerd op security risico’s uit de OWASP top 10
+- De user story moet een slagende CI/CD pipeline hebben
+- De relevante onderdelen zijn toegevoegd aan het CloudWatch monitoring dashboard
+- De relevante API documentatie is toegevoegd.
 
 # Requirements
 
